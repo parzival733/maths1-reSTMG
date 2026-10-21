@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Algorithmique et tableur · Terminale STMG | Maths</title><link rel="stylesheet" href="../../assets/styles.css"><link rel="stylesheet" href="../../assets/cours.css"><link rel="stylesheet" href="../../assets/apprentissage.css"><link rel="stylesheet" href="../../assets/niveaux.css"><script src="../../assets/cours.js" defer></script><script src="../../assets/apprentissage.js" defer></script></head><body class="lesson-immersive terminal-course" data-course="t-outils"><a class="skip-link" href="#contenu">Aller au contenu</a><header class="site-header"><div class="container header-inner"><a class="brand" href="../../index.html">maths<span class="brand-dot">.</span></a><nav class="main-nav" aria-label="Navigation principale"><a href="../../index.html">Accueil</a><a href="../lecons.html" aria-current="location">Leçons</a><a href="../exercices.html">Exercices</a></nav></div></header><main id="contenu" class="container lesson-page" tabindex="-1"><nav class="breadcrumb" aria-label="Fil d’Ariane"><a href="../lecons.html">Leçons de Terminale</a><span>/</span><span aria-current="page">Repère numérique</span></nav><header class="lesson-heading"><p class="eyebrow">TERMINALE STMG · OUTILS TRANSVERSAUX</p><h1>Algorithmique et tableur</h1><p class="lead">Utiliser les outils numériques pour explorer les notions, calculer et contrôler les résultats.</p><div class="learning-path"><span><b>1</b> Je comprends</span><span><b>2</b> Je vérifie</span><span><b>3</b> Je m’entraîne</span></div></header><nav class="level-switch" aria-label="Niveau"><a href="../../lecons.html">Première STMG</a><a href="../lecons.html" aria-current="page">Terminale STMG</a></nav><div class="lesson-reading-controls" hidden><span>Mon confort de lecture</span><button id="reading-large-toggle" type="button" aria-pressed="false">Agrandir le texte</button><button id="reading-focus-toggle" type="button" aria-pressed="false">Lecture concentrée</button><a href="../../pedagogie.html">Pourquoi ces méthodes ?</a></div><div class="lesson-layout"><aside class="lesson-toc" hidden><h2>Dans cette leçon</h2><nav aria-label="Sommaire de la leçon"></nav><button class="print-button" type="button">Imprimer le cours</button></aside><article class="lesson-content">
+<section class="objectives"><h2>À mobiliser toute l’année</h2><p>Les pratiques algorithmiques et le tableur font partie du programme. Ce repère est à utiliser au fil des chapitres, pas comme une option du programme ni comme une longue séquence préalable.</p><p>Les programmes Python 3 ci-dessous sont à copier dans un environnement Python ; le site ne les exécute pas. Le <a href="t-variables.html">simulateur de fréquences</a>, lui, fonctionne directement dans le navigateur. Les bases de syntaxe restent disponibles dans la <a href="../../cours/python-tableur.html">ressource de Première</a>.</p></section><details class="support-scaffold"><summary>Besoin d’un coup de pouce ? La méthode en 3 étapes</summary><ol><li>Identifie les données d’entrée, le résultat attendu et les unités.</li><li>Fais un tableau des variables sur un petit exemple.</li><li>Teste ensuite les cas limites et compare à un calcul indépendant.</li></ol></details>
+<h2>1. Compter et accumuler</h2><p>Un compteur augmente pour dénombrer des éléments. Un accumulateur mémorise une somme ou un produit. Une somme commence généralement à 0 ; un produit commence à 1.</p><pre><code>def somme_carres(n):
+    if not isinstance(n, int) or n &lt; 0:
+        raise ValueError("n doit etre un entier positif ou nul")
+    total = 0
+    for k in range(1, n + 1):
+        total = total + k * k
+    return total
+
+print(somme_carres(4))  # 1 + 4 + 9 + 16 = 30
+</code></pre><p>La borne de fin de range est exclue : range(1,n+1) fournit les entiers de 1 à n. Pour n=0, la boucle ne fait aucun passage et la somme vide vaut 0. Remplacer k*k par k**3 permet d’explorer une somme de cubes ; par 1/k, une somme d’inverses pour k≥1.</p>
+<h2>2. Respecter l’ordre des instructions</h2><p>Pour additionner les N premiers termes d’une suite géométrique de premier terme u0, on ajoute d’abord le terme courant, puis on calcule le suivant.</p><pre><code>def somme_geometrique(u0, q, N):
+    if not isinstance(N, int) or N &lt; 0:
+        raise ValueError("N doit etre un entier positif ou nul")
+    u = u0
+    total = 0
+    for _ in range(N):
+        total = total + u
+        u = q * u
+    return total
+
+print(somme_geometrique(100, 0.5, 4))  # 187.5
+</code></pre><p>Après la dernière itération, u contient déjà le terme suivant, qui n’a pas été ajouté. Avec des versements de fin de période, on peut au contraire mettre à jour directement le capital par capital=q*capital+versement.</p><section class="study-quiz" data-correct="b" data-hint="Le premier terme ajouté est 3 ; le suivant est 6." data-explanation="On additionne 3 puis 6 : le total vaut 9. Le dernier doublement prépare 12 sans l’ajouter."><h3>Pause mémoire · Suivre l’ordre</h3><p>u=3 et s=0. Deux fois, on fait s=s+u puis u=2*u. Que vaut s à la fin ?</p><form hidden><fieldset><legend>Choisis une réponse.</legend><label><input type="radio" name="outil1" value="a">12</label><label><input type="radio" name="outil1" value="b">9</label><label><input type="radio" name="outil1" value="c">18</label></fieldset><button class="study-submit" type="submit">Vérifier ma réponse</button><p class="study-feedback" role="status"></p></form><details class="study-solution"><summary>Voir le raisonnement et la réponse</summary><p>Après un passage, s=3 et u=6. Après deux passages, s=9 et u=12.</p></details></section>
+<h2>3. Construire une ligne du triangle de Pascal</h2><p>Pour construire la ligne suivante, on conserve des 1 aux extrémités et on additionne les voisins de la ligne précédente. Une nouvelle liste évite d’écraser des valeurs encore utiles.</p><pre><code>def pascal(n):
+    if not isinstance(n, int) or n &lt; 0:
+        raise ValueError("n doit etre un entier positif ou nul")
+    ligne = [1]
+    for _ in range(n):
+        milieu = [ligne[k] + ligne[k + 1]
+                  for k in range(len(ligne) - 1)]
+        ligne = [1] + milieu + [1]
+    return ligne
+
+print(pascal(4))  # [1, 4, 6, 4, 1]
+</code></pre><p>La ligne n possède n+1 éléments et sa somme vaut 2**n. Ces deux propriétés fournissent des tests simples. Le coefficient en position k compte les chemins avec k succès.</p>
+<h2>4. Simuler une loi binomiale</h2><p>Un tirage pseudo-aléatoire U uniforme entre 0 et 1 est codé comme un succès lorsque U&lt;p. On compte les succès dans n essais, puis on répète N fois ce groupe d’essais.</p><pre><code>from random import random
+
+def distribution_binomiale(n, p, N):
+    if not isinstance(n, int) or n &lt; 1:
+        raise ValueError("n doit etre un entier strictement positif")
+    if not isinstance(N, int) or N &lt; 1 or not 0 &lt;= p &lt;= 1:
+        raise ValueError("Verifier N et p")
+    effectifs = [0] * (n + 1)
+    for _ in range(N):
+        succes = 0
+        for _ in range(n):
+            if random() &lt; p:
+                succes = succes + 1
+        effectifs[succes] = effectifs[succes] + 1
+    return effectifs
+
+print(distribution_binomiale(3, 0.5, 80))
+</code></pre><p>Les sorties changent à chaque exécution. La somme des effectifs doit toujours valoir N. Pour p=0, tous les succès comptés valent 0 ; pour p=1, ils valent n. On peut diviser chaque effectif par N et comparer les fréquences aux probabilités binomiales, puis représenter deux diagrammes en bâtons dans un tableur.</p>
+<h2>5. Filtrer une liste avec deux conditions</h2><p>Les listes permettent de travailler sur des données réelles ou fictives. Le mot and exige que les deux conditions soient vraies. Le mot or accepte qu’au moins l’une soit vraie.</p><pre><code>valeurs = [2, 5, 6, 8, 11, 12]
+retenues = [x for x in valeurs if x &gt; 5 and x % 2 == 0]
+print(retenues)       # [6, 8, 12]
+print(len(retenues))  # 3
+print(sum(retenues))  # 26
+</code></pre><p>Pour un fichier de données, il faut aussi comprendre les en-têtes, les unités, les valeurs manquantes et le champ de la source. La <a href="../../donnees/README.md">provenance du fichier Insee</a> du site constitue un exemple de documentation à conserver.</p>
+<h2>6. Utiliser des références de tableur</h2><p>Une référence relative se décale à la recopie. Une référence absolue, marquée par des dollars, reste fixe.</p><div class="example"><h3>Une évolution à coefficient constant</h3><p>B2 contient 100 et E1 contient 1,1. En B3, la formule <strong>=B2*$E$1</strong> donne 110. Recopiée vers B4, elle devient =B3*$E$1 et donne 121. B2 évolue, tandis que le coefficient E1 reste fixe.</p></div><p>On peut ajouter une colonne de sommes cumulées et une colonne d’écarts avec une formule explicite. Pour un ajustement statistique, créer d’abord la variable transformée permet de comparer clairement le nuage initial et le nouveau nuage.</p>
+<section class="study-quiz" data-correct="a" data-hint="Les dollars figent la colonne et la ligne du coefficient." data-explanation="La référence $E$1 reste fixe lors de la recopie."><h3>Pause mémoire · Recopier sans déplacer le coefficient</h3><p>Quelle écriture garde E1 fixe dans une formule recopiée ?</p><form hidden><fieldset><legend>Choisis une réponse.</legend><label><input type="radio" name="outil2" value="a">$E$1</label><label><input type="radio" name="outil2" value="b">E1</label><label><input type="radio" name="outil2" value="c">E2</label></fieldset><button class="study-submit" type="submit">Vérifier ma réponse</button><p class="study-feedback" role="status"></p></form><details class="study-solution"><summary>Voir le raisonnement et la réponse</summary><p>$E$1 est une référence absolue : colonne E et ligne 1 sont toutes deux figées.</p></details></section>
+<h2>7. Vérifier sa compréhension</h2><p>On calcule somme_geometrique(2,3,3). Prévois le résultat sans exécuter le programme, puis vérifie avec la formule du cours.</p><details class="check"><summary>Afficher la correction</summary><p>Les trois termes sont 2, 6 et 18 : leur somme vaut 26. La formule donne 2×(3³−1)/(3−1)=26. Après la boucle, le terme suivant vaudrait 54, mais il ne fait pas partie de la somme demandée.</p></details><div class="recap"><h2>À retenir</h2><p>Une sortie numérique n’est pas une justification à elle seule. Prévoir un petit cas, suivre les variables et contrôler les cas limites permet de détecter les décalages d’indice et les erreurs de modèle.</p></div><p><a class="button button-primary" href="../exercices/t-outils.html">Faire les 6 exercices →</a></p><section class="study-review"><h2>La bonne routine pour retenir</h2><p>Refais demain un tableau de variables. Plus tard, explique l’utilité d’une nouvelle liste pour Pascal et d’une référence absolue dans le tableur.</p></section><p><a href="../programme.html">Programme et sources</a> · <a href="../../pedagogie.html">Méthodes d’apprentissage</a></p></article></div><nav class="course-pagination" aria-label="Navigation entre les leçons"><a href="t-variables.html">← Espérance et simulation</a><a href="../lecons.html">Catalogue Terminale →</a></nav></main><footer class="site-footer"><div class="container footer-inner"><p><strong>maths.</strong> Comprendre, puis pratiquer.</p><p>Mathématiques · Première–Terminale STMG</p></div></footer></body></html>
