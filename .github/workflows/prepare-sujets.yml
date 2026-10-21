@@ -28,6 +28,34 @@ jobs:
                   assert p.parts[0] in {'assets','tests','tools','donnees'}
               bundle.extractall('.')
           PY
+      - name: Comparer les versions des deux PDF de Metropole
+        run: |
+          python3 -m pip install --quiet pypdf==5.9.0
+          python3 - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request,urlopen
+          from pypdf import PdfReader
+          import io,json,hashlib,re
+          known={'sujet-02':'8c06e28775cd7254953a0779d8aa5b67a13527d1b8bda0326cd1f47a8c119fdb','sujet-08':'23cf4ccdef179671bce5f052486a518c7270fdd890f95ac4c4b8fc43e3e5f4d0'}
+          path=Path('donnees/sujets.json');rows=json.loads(path.read_text())
+          out=Path('.qa-sujets');out.mkdir(exist_ok=True)
+          report=[];failures=[]
+          for row in rows:
+              if row['id'] not in known:continue
+              with urlopen(Request(row['url'],headers={'User-Agent':'Mozilla/5.0 (educational link verification)'}),timeout=30) as resp:
+                  raw=resp.read(15000001);assert resp.status==200 and raw.startswith(b'%PDF-') and len(raw)<15000000
+              (out/(row['id']+'-current.pdf')).write_bytes(raw)
+              pdf=PdfReader(io.BytesIO(raw))
+              text=''.join(re.sub(r'\s+','',page.extract_text() or '') for page in pdf.pages)
+              digest=hashlib.sha256(raw).hexdigest();text_digest=hashlib.sha256(text.encode()).hexdigest()
+              item={'id':row['id'],'pages':len(pdf.pages),'bytes':len(raw),'sha256':digest,'text_sha256':text_digest,'first_page':pdf.pages[0].extract_text()[:1600]}
+              report.append(item);print(json.dumps(item,ensure_ascii=False))
+              if len(pdf.pages)!=row['pages'] or text_digest!=known[row['id']]:failures.append(row['id']);continue
+              row['collection_sha256']=row['sha256'];row['sha256']=digest;row['bytes']=len(raw)
+          (out/'pdf-version-review.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          assert not failures,'Different text requires review: '+str(failures)
+          path.write_text(json.dumps(rows,ensure_ascii=False,indent=2)+'\n')
+          PY
           python3 tools/build_sujets.py
       - name: Verifier les 41 PDF chez leurs sources
         run: python3 tests/check_sujets_sources.py
