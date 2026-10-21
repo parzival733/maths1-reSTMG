@@ -1,0 +1,38 @@
+name: Verification calcul rapide
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Lire les sources sans conserver les identifiants
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verifier les calculs et les liens
+        run: |
+          node --check assets/calcul-rapide-data.js
+          node --check assets/calcul-rapide.js
+          node tests/test_calcul_rapide.js
+          python3 tests/test_calcul_rapide.py
+      - name: Installer le navigateur de test
+        run: |
+          python3 -m pip install playwright==1.55.0
+          python3 -m playwright install --with-deps chromium
+      - name: Verifier les interactions et l'impression
+        run: python3 tests/browser_calcul_rapide.py
+      - name: Conserver les captures de controle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: captures-calcul-rapide
+          path: .qa-rapide/*.png
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
