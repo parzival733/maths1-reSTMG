@@ -192,3 +192,5 @@ main:focus { outline: none; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .pathway-card:hover, .button-primary:hover { transform: none; }
 }
+/* The shared header serves both STMG levels. Keep the level in page context. */
+.level-badge { display: none; }
