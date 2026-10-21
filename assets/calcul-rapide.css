@@ -124,3 +124,6 @@
   .rapid-method-grid details, .rapid-static-grid article { break-inside:avoid; margin-bottom:12px; }
   .rapid-entry { display:none; }
 }
+
+/* Le corrige de la fiche ne se revele pas dans la previsualisation. */
+@media screen { .rapid-paper-solutions { display:none; } }

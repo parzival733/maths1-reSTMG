@@ -45,7 +45,7 @@ L'atelier reste présenté séparément du parcours de révision sans calculatri
 
 Chaque leçon comprend objectifs, méthode progressive, exemples, deux pauses mémoire, une application corrigée et une routine de révision. Les bases communes sont reliées aux ressources de Première, plutôt que recopiées. En Terminale, l'algorithmique et le tableur sont explicitement présentés comme des pratiques du programme, non comme une option.
 
-Au total : **25 ressources de cours, 50 pauses mémoire et 183 modèles d'exercices** pour les deux niveaux. Ces nombres incluent les repères transversaux et l'atelier de Première ; il ne s'agit pas de 25 chapitres obligatoires.
+Pour les deux parcours de chapitres, hors annexe de calcul rapide : **25 ressources de cours, 50 pauses mémoire et 183 modèles d'exercices** pour les deux niveaux. Ces nombres incluent les repères transversaux et l'atelier de Première ; il ne s'agit pas de 25 chapitres obligatoires.
 
 ## Fonctionnement pédagogique
 
@@ -138,3 +138,26 @@ GitHub Pages publie la branche **`gh-pages`**, à la racine. **`main`** reste la
 Les workflows de vérification disposent uniquement de permissions de lecture et ne déploient pas. Le workflow historique est conservé ; `terminale.yml` ajoute les contrôles des deux niveaux.
 
 Pour modifier le parcours Première, maintenir ses catalogues, le tableau de couverture et `courseOrder` dans `assets/cours.js`. Pour Terminale, maintenir ses deux catalogues, sa page de programme, les liens statiques précédent/suivant et la liste des slugs des tests. Ne pas ajouter les slugs Terminale à l'ordre de Première. Conserver les indications textuelles avec les codes couleur et exécuter les tests avant publication.
+
+
+## Annexe : calcul rapide sans calculatrice
+
+`annexes/calcul-rapide.html` est une annexe distincte des catalogues de chapitres. L'accueil et les quatre catalogues y donnent acces par la navigation et un encadre. Aucun cours ni exercice existant n'est remplace.
+
+La banque `assets/calcul-rapide-data.js` comprend **54 modeles** : 18 bases generales, 24 calculs lies aux chapitres de Premiere et 12 prolongements Terminale. Le parcours par defaut « Bac Premiere » exclut strictement les 12 modeles Terminale. On peut choisir le niveau, la notion, le calcul mental ou sur feuille et une serie de 5, 10 ou 20 questions. Les tirages sont reproductibles par graine, sans promesse de nouveaute indefinie.
+
+Chaque question comprend un indice, une correction expliquee et un lien vers sa lecon. Le bilan compte seulement les reponses justes au premier essai ; les corrections revelees ne rapportent pas de point. Les fractions equivalentes et les decimaux exacts sont acceptes par comparaison rationnelle (BigInt), sans eval et sans arrondis arbitraires. Le chronometre est facultatif, sans limite de temps, et se met en pause quand l'onglet est masque.
+
+Une fiche imprimable reprend la serie courante. Les corrections sont masquees dans la previsualisation et absentes de l'impression par defaut. Une case permet de les imprimer sur des pages separees ; les reponses non encore validees ne peuvent alors plus rapporter de point. Douze methodes et une serie papier de douze questions restent accessibles sans JavaScript. Aucun compte, suivi, transmission ou stockage persistant.
+
+Reference de l'epreuve pour 2026-2027 (session 2028) : [note de service du 11 septembre 2026](https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N), qui prevoit des questions a reponses courtes et interdit la calculatrice. Cette annexe ne constitue ni un sujet officiel ni une preparation exhaustive a toute l'epreuve.
+
+Tests supplementaires :
+
+```sh
+node tests/test_calcul_rapide.js
+python3 tests/test_calcul_rapide.py
+python3 tests/browser_calcul_rapide.py
+```
+
+Le script `tools/integrate_calcul_rapide.py` rend l'ajout des liens idempotent. Il n'est pas necessaire pour servir le site : les fichiers publies sont statiques. Le workflow permanent `calcul-rapide.yml` verifie l'annexe en lecture seule.
