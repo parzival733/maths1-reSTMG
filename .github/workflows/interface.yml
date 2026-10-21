@@ -1,0 +1,28 @@
+name: Verification interface et compte a rebours
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - run: |
+          python3 -m pip install playwright==1.55.0
+          python3 -m playwright install --with-deps chromium
+          python3 tests/test_interface.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: controle-interface
+          path: .qa-interface/*.png
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
