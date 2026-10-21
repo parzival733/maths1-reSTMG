@@ -2,7 +2,7 @@ name: Controle interface et chrono
 on:
   push:
     branches: [travail/interface-chrono-20261021]
-    paths: [.github/interface-ready.txt]
+    paths: [.github/interface-ready.txt, .github/workflows/interface-preview.yml]
   workflow_dispatch:
 permissions:
   contents: write
@@ -17,10 +17,19 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import base64, hashlib, io, zipfile
+          import base64, hashlib, io, zipfile, json
+          repairs = json.loads(Path('.github/interface-repairs.json').read_text())
           parts = sorted(Path('.github').glob('interface-part-*.b64'))
           assert len(parts) == 4
-          data = base64.b64decode(''.join(p.read_text().strip() for p in parts), validate=True)
+          text = ''
+          for p in parts:
+              s = p.read_text().strip()
+              for change in reversed(repairs[p.as_posix()]):
+                  a, b = change['start'], change['end']
+                  assert s[a:b] == change['old']
+                  s = s[:a] + change['new'] + s[b:]
+              text += s
+          data = base64.b64decode(text, validate=True)
           assert hashlib.sha256(data).hexdigest() == Path('.github/interface-ready.txt').read_text().strip()
           with zipfile.ZipFile(io.BytesIO(data)) as bundle:
               for name in bundle.namelist():
@@ -54,7 +63,7 @@ jobs:
         run: python3 tests/test_interface.py
       - name: Enregistrer uniquement sur la branche de travail
         run: |
-          rm .github/interface-part-*.b64 .github/interface-ready.txt .github/workflows/interface-preview.yml tools/refine_interface.py
+          rm .github/interface-part-*.b64 .github/interface-ready.txt .github/interface-repairs.json .github/workflows/interface-preview.yml tools/refine_interface.py
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -u
