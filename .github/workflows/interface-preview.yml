@@ -1,0 +1,41 @@
+name: Controle interface et chrono
+on:
+  push:
+    branches: [travail/interface-chrono-20261021]
+permissions:
+  contents: read
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verifier les modifications disponibles
+        if: hashFiles('tests/test_interface.py') != ''
+        run: |
+          python3 tests/validate_site.py
+          for f in assets/*.js; do node --check "$f"; done
+          node tests/test_variants.js
+          node tests/test_graphiques.js
+          node tests/test_terminale.js
+          python3 tests/test_terminale.py
+          node tests/test_calcul_rapide.js
+          python3 tests/test_calcul_rapide.py
+          python3 -m pip install playwright==1.55.0
+          python3 -m playwright install --with-deps chromium
+          python3 tests/browser_smoke.py
+          python3 tests/browser_terminale.py
+          python3 tests/browser_calcul_rapide.py
+          python3 tests/test_interface.py
+      - name: Copie des sources et captures pour controle local
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: interface-source
+          include-hidden-files: true
+          retention-days: 2
+          path: |
+            .
+            !.git
