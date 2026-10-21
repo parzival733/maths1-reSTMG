@@ -37,5 +37,6 @@ jobs:
         with:
           name: captures-terminale
           path: .qa-terminale/*.png
+          include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 7
