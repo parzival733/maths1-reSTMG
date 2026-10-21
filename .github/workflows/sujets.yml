@@ -1,0 +1,33 @@
+name: Verification du catalogue Sujets
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sujets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Installer le navigateur
+        run: |
+          python3 -m pip install playwright==1.55.0
+          python3 -m playwright install --with-deps chromium
+      - name: Verifier le catalogue et les interactions
+        run: |
+          node --check assets/sujets.js
+          python3 tests/test_sujets.py
+      - name: Conserver les captures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: controle-sujets
+          path: .qa-sujets/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
