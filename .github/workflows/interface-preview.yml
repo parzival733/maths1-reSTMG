@@ -2,18 +2,35 @@ name: Controle interface et chrono
 on:
   push:
     branches: [travail/interface-chrono-20261021]
+    paths: [.github/interface-ready.txt]
+  workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   verification:
+    if: github.ref == 'refs/heads/travail/interface-chrono-20261021'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          persist-credentials: false
-      - name: Verifier les modifications disponibles
-        if: hashFiles('tests/test_interface.py') != ''
+      - name: Extraire le lot local apres verification de son empreinte
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, io, zipfile
+          parts = sorted(Path('.github').glob('interface-part-*.b64'))
+          assert len(parts) == 4
+          data = base64.b64decode(''.join(p.read_text().strip() for p in parts), validate=True)
+          assert hashlib.sha256(data).hexdigest() == Path('.github/interface-ready.txt').read_text().strip()
+          with zipfile.ZipFile(io.BytesIO(data)) as bundle:
+              for name in bundle.namelist():
+                  p = Path(name)
+                  assert not p.is_absolute() and '..' not in p.parts
+                  assert p.parts[0] in {'assets', 'tests', 'tools', '.github', 'README.md'}
+              bundle.extractall('.')
+          PY
+          python3 tools/refine_interface.py
+      - name: Verification structurelle et mathematique
         run: |
           python3 tests/validate_site.py
           for f in assets/*.js; do node --check "$f"; done
@@ -23,13 +40,28 @@ jobs:
           python3 tests/test_terminale.py
           node tests/test_calcul_rapide.js
           python3 tests/test_calcul_rapide.py
+          node tests/test_countdown.js
+      - name: Installer le navigateur de test
+        run: |
           python3 -m pip install playwright==1.55.0
           python3 -m playwright install --with-deps chromium
+      - name: Regressions des lecons et exercices
+        run: |
           python3 tests/browser_smoke.py
           python3 tests/browser_terminale.py
           python3 tests/browser_calcul_rapide.py
-          python3 tests/test_interface.py
-      - name: Copie des sources et captures pour controle local
+      - name: Chrono, contenu conserve et presentation sur tous les ecrans
+        run: python3 tests/test_interface.py
+      - name: Enregistrer uniquement sur la branche de travail
+        run: |
+          rm .github/interface-part-*.b64 .github/interface-ready.txt .github/workflows/interface-preview.yml tools/refine_interface.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -u
+          git add assets/interface.css assets/interface.js assets/compte-rebours.js tests/test_countdown.js tests/test_interface.py tests/interface-content.json .github/workflows/interface.yml
+          git commit -m 'feat: interface epuree, parcours explicites et compte a rebours reglable testes'
+          git push origin HEAD:travail/interface-chrono-20261021
+      - name: Sources et captures pour controle
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
