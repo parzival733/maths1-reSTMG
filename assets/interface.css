@@ -236,3 +236,9 @@ body.reading-large .lesson-content { font-size:20px; }
 #rapid-progress::-webkit-progress-bar { background:#e5e7ef; border-radius:99px; }
 #rapid-progress::-webkit-progress-value { background:var(--purple); border-radius:99px; }
 #rapid-progress::-moz-progress-bar { background:var(--purple); border-radius:99px; }
+
+/* Cinquieme onglet: libelles entiers et navigation utilisable sur petit ecran. */
+@media(max-width:520px) {
+  .site-header .main-nav { grid-template-columns:.95fr .9fr 1.15fr .85fr 1.5fr; }
+  .site-header .main-nav a,.rapid-page .main-nav a,.has-rapid-link .main-nav a { white-space:normal; text-align:center; line-height:1.35; padding-inline:3px; }
+}

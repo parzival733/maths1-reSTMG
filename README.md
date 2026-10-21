@@ -172,3 +172,16 @@ Dans l’annexe, quatre choix explicites remplacent le menu de parcours. Le rég
 Tests : `node tests/test_countdown.js` et `python3 tests/test_interface.py`. Le fichier `tests/interface-content.json` fige les empreintes des 50 contenus de cours/exercices et de 22 modules pédagogiques de la version précédant le changement visuel. Une future modification pédagogique intentionnelle doit mettre à jour son empreinte après relecture.
 
 Références de conception : [W3C, comprendre les contrôles](https://www.w3.org/WAI/WCAG2/supplemental/objectives/o1-understandable/), [W3C, contenu clair](https://www.w3.org/WAI/WCAG2/supplemental/objectives/o3-clear-content/), [WCAG, temps ajustable](https://www.w3.org/WAI/WCAG22/Understanding/timing-adjustable.html), [GOV.UK, choix exclusifs](https://design-system.service.gov.uk/components/radios/). Ces choix ne constituent pas une certification WCAG ni une mesure de l’efficacité auprès des élèves.
+
+
+## Sujets et annales
+
+`sujets.html` est le catalogue statique de 41 PDF : 8 sujets de Première technologique 2026, 2 sujets zéro et 31 archives de Terminale STMG (2017–2020). L’onglet Sujets est présent dans la navigation de toutes les pages. Les niveaux, les programmes et les sources sont distingués. Les corrigés ne sont pas inclus.
+
+Les PDF s’ouvrent chez leur source dans un nouvel onglet, sans iframe, sans copie réhébergée et sans chargement externe avant le clic. Le lecteur PDF permet le téléchargement ou l’impression. APMEP est créditée selon ses [conditions de liens](https://www.apmep.fr/Mentions-legales).
+
+`donnees/sujets.json` conserve les métadonnées et empreintes des fichiers fournis. L’année du filtre est celle de l’épreuve ; le sujet de mars 2019 en Nouvelle-Calédonie reste explicitement rattaché aux archives APMEP 2018. `tools/build_sujets.py` produit le HTML et ajoute les liens de navigation de façon idempotente. Le site ne nécessite pas ce script pour fonctionner.
+
+`assets/sujets.js` ajoute seulement la recherche (sans distinction des accents), le filtre par année et le choix du niveau. Le parcours par défaut est Première ; les 41 liens restent lisibles sans JavaScript. `?niveau=terminale` ouvre directement les archives de Terminale. Aucune réponse ni donnée personnelle n’est stockée.
+
+Contrôles : `python3 tests/test_sujets.py` (structure, contenu, mobile, filtres et navigation) et `python3 tests/check_sujets_sources.py` (vérification réseau explicite des PDF, non nécessaire pour servir le site).
