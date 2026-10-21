@@ -1,123 +1,140 @@
-# Maths · Première STMG
+# Maths · Première–Terminale STMG
 
-Site pédagogique en français, en HTML/CSS/JavaScript statiques.
+Site pédagogique en français, en HTML/CSS/JavaScript statiques. Un même design et les mêmes moteurs pédagogiques, avec **deux parcours séparés**.
 
-**[Ouvrir le site de maths](https://parzival733.github.io/maths1-reSTMG/)**  
-**[Consulter les leçons](https://parzival733.github.io/maths1-reSTMG/lecons.html)**  
-**[Faire les exercices interactifs](https://parzival733.github.io/maths1-reSTMG/exercices.html)**
+**[Ouvrir le site](https://parzival733.github.io/maths1-reSTMG/)**
 
-Dépôt GitHub : [parzival733/maths1-reSTMG](https://github.com/parzival733/maths1-reSTMG).
+| Niveau | Leçons | Exercices |
+| --- | --- | --- |
+| Première STMG | [Catalogue Première](https://parzival733.github.io/maths1-reSTMG/lecons.html) | [Séries Première](https://parzival733.github.io/maths1-reSTMG/exercices.html) |
+| Terminale STMG | [Catalogue Terminale](https://parzival733.github.io/maths1-reSTMG/terminale/lecons.html) | [Séries Terminale](https://parzival733.github.io/maths1-reSTMG/terminale/exercices.html) |
 
-## Programme de référence
+Dépôt : [parzival733/maths1-reSTMG](https://github.com/parzival733/maths1-reSTMG).
 
-Programme de première technologique applicable en **2026–2027**, pour STMG : arrêté du 26 février 2026, BO n° 14 du 2 avril 2026, NOR MENE2602918A.
+## Programmes de référence
 
-Source principale : https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602918A
+- **Première, depuis 2026–2027** : arrêté du 26 février 2026, BO n° 14 du 2 avril 2026, NOR [MENE2602918A](https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602918A).
+- **Terminale, en 2026–2027** : programme de 2019, BO spécial n° 8 du 25 juillet 2019, [annexe sur Éduscol](https://eduscol.education.gouv.fr/sites/default/files/document/spe242annexe1158914pdf-84153.pdf).
+- **Terminale, à partir de 2027–2028** : arrêté du 26 février 2026, NOR [MENE2602921A](https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602921A). L'article 2 précise l'entrée en vigueur en septembre 2027.
 
-`programme.html` relie les contenus officiels aux cours et documente les choix de périmètre. Les leçons sont des rédactions pédagogiques originales ; il ne s'agit pas de cours certifiés par le ministère. Les activités géométriques propres à STD2A sont exclues du parcours STMG.
+`programme.html` documente le parcours Première ; `terminale/programme.html` explique la couverture de Terminale et le changement de programme. Le parcours Terminale s'appuie sur les notions communes aux deux textes, en conservant les rappels utiles à la cohorte issue de Première 2019. Les activités propres à d'autres séries technologiques ne sont pas ajoutées comme prérequis STMG.
+
+Les leçons sont des rédactions pédagogiques originales, pas des documents rédigés ou certifiés par le ministère. Le découpage des chapitres est celui du site. Les banques ne prétendent pas couvrir toutes les formulations possibles d'un sujet ni remplacer le travail en classe.
 
 ## Contenu
 
-**11 chapitres développés** : fonctions et droites ; second degré ; suites ; suites arithmétiques ; suites géométriques ; nombre dérivé et tangente ; dérivées et optimisation ; statistiques à deux variables ; probabilités conditionnelles et indépendance ; répétitions de Bernoulli ; variables aléatoires et simulation.
+### Première : contenu existant conservé
 
-**4 repères de mathématiques** : calcul et proportions ; évolutions en pourcentage ; ensembles et logique ; statistiques descriptives. Ils accompagnent les 11 chapitres dans un parcours centré sur les raisonnements et calculs sur papier.
+**16 leçons** : 11 chapitres, 4 repères mathématiques et 1 atelier Python/tableur séparé. **129 exercices** : 121 exercices de mathématiques en 15 séries et 8 exercices numériques. Les adresses des cours et exercices n'ont pas changé.
 
-**1 atelier numérique facultatif** : [Python et tableur](https://parzival733.github.io/maths1-reSTMG/cours/python-tableur.html), clairement isolé des 15 leçons de mathématiques. Les 13 programmes Python des autres cours ont été déplacés dans [sa bibliothèque](https://parzival733.github.io/maths1-reSTMG/cours/python-tableur.html#bibliotheque-code), et leurs anciennes explications ont été remplacées par des calculs et tableaux réalisés sans programmation. L'atelier conserve aussi [ses 8 exercices spécifiques](https://parzival733.github.io/maths1-reSTMG/exercices/python-tableur.html). Cette séparation est une décision pédagogique, pas une suppression de l'algorithmique du programme officiel.
+L'atelier reste présenté séparément du parcours de révision sans calculatrice. Ce choix d'interface ne signifie pas que l'algorithmique est facultative dans le programme officiel. Les 13 programmes déplacés des autres cours restent dans sa bibliothèque.
 
-Chaque leçon contient objectifs, explications, méthodes, exemples chiffrés, application corrigée et bilan. Les formules sont en HTML, sans chargement d'une bibliothèque distante.
+### Terminale : un parcours parallèle
 
-### Parcours pédagogique accessible
+**8 chapitres + 1 repère transversal**, chacun relié à une série de **6 exercices**, soit **54 modèles** :
 
-Les 16 leçons disposent d'une présentation à codes visuels **toujours accompagnés de mots** : objectifs en bleu, formules en violet, exemples guidés en vert, erreurs fréquentes en ambre. Elles proposent un chemin en trois temps, un **coup de pouce facultatif en trois étapes**, deux **mini-tests de rappel actif** par leçon (32 au total) et une routine de révision différée. Les réponses des mini-tests sont vérifiables sans note ; en cas d'erreur, l'élève reçoit un indice et peut réessayer.
+1. Suites, moyennes et sommes.
+2. Fonctions exponentielles et taux moyen.
+3. Logarithme décimal, équations et seuils.
+4. Fonction inverse, dérivation et optimisation.
+5. Ajustements statistiques et changements de variable.
+6. Conditionnement et probabilités totales.
+7. Loi binomiale et triangle de Pascal.
+8. Espérance et simulation.
+9. Repère transversal : algorithmique et tableur.
 
-Une barre facultative permet d'agrandir le texte et de masquer le sommaire en **lecture concentrée**. Les fonctions interactives ne sont jamais nécessaires pour consulter le texte principal : sans JavaScript, les coups de pouce et les corrigés des mini-tests restent ouverts par des éléments HTML `details`. Aucun suivi nominatif ni score de lecture n'est stocké.
+Chaque leçon comprend objectifs, méthode progressive, exemples, deux pauses mémoire, une application corrigée et une routine de révision. Les bases communes sont reliées aux ressources de Première, plutôt que recopiées. En Terminale, l'algorithmique et le tableur sont explicitement présentés comme des pratiques du programme, non comme une option.
 
-`pedagogie.html` explique les choix retenus, leurs limites et les sources académiques (synthèses couvrant notamment 317 expériences d'apprentissage espacé, 435 études sur le feedback, 225 sur l'apprentissage actif et 181 sur la conception multimédia). Il ne s'agit pas d'une certification de l'efficacité du site pour chaque élève ; une évaluation de terrain reste nécessaire.
+Au total : **25 ressources de cours, 50 pauses mémoire et 183 modèles d'exercices** pour les deux niveaux. Ces nombres incluent les repères transversaux et l'atelier de Première ; il ne s'agit pas de 25 chapitres obligatoires.
 
-Les recherches par mot et domaine, le sommaire des leçons, les liens précédent/suivant et le simulateur de Bernoulli sont des améliorations JavaScript. Les cours, le catalogue, les liens principaux et les corrections natives `details` restent consultables sans JavaScript. L'impression via le bouton ouvre les corrections et restaure ensuite leur état.
+## Fonctionnement pédagogique
 
-**Exercices interactifs : 121 exercices de mathématiques en 15 parcours + 8 exercices dans un atelier facultatif**, soit 129 exercices et 16 parcours au total. Chaque série propose des réponses saisies et des choix, un score, des indices et des corrections détaillées qui remplissent les cases en vert (réponse initiale juste) ou en rouge (réponse fausse ou manquante). Le corrigé ne rapporte pas de point et le bouton Effacer permet de recommencer. La progression se réinitialise au rechargement.
+Les catalogues de leçons et d'exercices comportent un sélecteur Première/Terminale. L'accueil conserve ses deux espaces, Leçons et Exercices. L'ancien badge de Première est masqué dans l'en-tête partagé ; les pages précisent leur niveau dans leur contexte.
 
-### Générateur de variantes procédurales
+Les leçons utilisent les styles et scripts partagés : couleurs accompagnées de mots, aide en trois étapes, deux mini-tests de rappel actif, agrandissement du texte, lecture concentrée, sommaire et impression. Le texte principal et les corrections HTML `details` restent lisibles sans JavaScript. Aucun suivi nominatif ni score de lecture n'est stocké.
 
-**Les 129 exercices disposent chacun d'un modèle paramétrable.** Après chaque clic sur Vérifier (même lorsque la réponse est fausse), une nouvelle variante est calculée à partir de nouveaux paramètres numériques. L'élève conserve l'écran de correction et le feedback jusqu'à ce qu'il clique sur **Nouvelle variante ↻**, pour ne pas perdre le temps de comprendre ses erreurs. Ouvrir une correction prépare également une nouvelle variante si elle n'est pas déjà prête. Il est toujours possible de corriger l'essai actuel.
+Les exercices réutilisent le moteur existant : saisies et choix, score du chapitre, indices, correction détaillée et bouton Effacer. Une correction remplit les champs ; le vert signale une réponse initialement correcte, le rouge une réponse fausse ou manquante. Révéler une réponse ne rapporte pas de point.
 
-Le moteur recalcule **ensemble** les données de l'énoncé, les réponses numériques, les options correctes et les corrections détaillées : aucun simple remplacement arbitraire de nombres dans un texte fixe. Le score correspond aux exercices actuellement validés ; renouveler une question remet sa validation à zéro afin d'éviter de créditer une réponse antérieure. La correction révélée continue d'indiquer en vert ce qui était juste et en rouge ce qui était faux avant la révélation.
+Après une vérification, une variante est préparée, mais l'essai reste visible jusqu'au clic sur **Nouvelle variante ↻**. Énoncé, réponses et correction sont recalculés ensemble. Renouveler une question retire sa validation précédente. Les scores se réinitialisent au rechargement.
 
-Les variations sont déterministes par numéro d'essai (cycle de difficulté borné) et peuvent être répétées indéfiniment ; elles ne sont pas garanties inédites sur toute la vie du site. Elles changent d'une validation à la suivante. La génération est locale au navigateur, sans transmission ni stockage des réponses.
-
-## Données et confidentialité
-
-`donnees/naissances-france-2018-2023.csv` contient six totaux annuels issus de l'Insee Focus 339, figure 1 : https://www.insee.fr/fr/statistiques/8282356. Le champ, l'unité et la période sont décrits dans `donnees/README.md`.
-
-Les autres situations numériques sont fictives. Aucune donnée personnelle, police distante, publicité ou traceur. La simulation s'exécute dans le navigateur, sans transmission ni stockage. Tous les programmes Python sont regroupés dans l'atelier numérique facultatif ; le site n'embarque pas d'interpréteur Python.
+Les variantes sont déterministes avec un cycle borné ; elles sont répétables, pas garanties inédites indéfiniment. En Terminale, les 54 modèles sont testés sur 48 générations chacun, couvrant deux cycles de 24 paramètres. Les fractions et les virgules décimales sont acceptées. Les arrondis sont indiqués dans les exercices. Les exercices de Terminale autorisent l'utilisation d'une calculatrice pour les calculs numériques ; ce ne sont pas des simulations de l'épreuve anticipée de Première.
 
 ## Structure
 
 ```text
-index.html              Accueil et deux espaces
-lecons.html             Catalogue des 16 leçons
-programme.html          Sources, version et correspondance au programme
-pedagogie.html           Méthodes d'apprentissage et sources
-exercices.html          Catalogue des 16 séries d'exercices
-exercices/              16 pages d'exercices (15 parcours déclaratifs)
-assets/exercices.css    Styles des parcours interactifs
-assets/exercices.js     Validation, score et corrections colorées
-assets/exercices-renderer.js  Rendu et renouvellement des fiches
-assets/exercices-variants.js  Moteur de génération et contrôle
-assets/variants-*.js      6 modules de générateurs par notion
-cours/                  16 pages de cours statiques
-assets/styles.css       Thème partagé du site
-assets/cours.css         Catalogue, lecture, tableaux et impression
-assets/cours.js          Améliorations progressives et simulation
-assets/apprentissage.css  Couleurs sémantiques et options de lecture
-assets/apprentissage.js   Mini-tests et outils de lecture
-donnees/                CSV réel et provenance
-tests/                  Vérifications du site et des exemples
-.github/workflows/      Vérifications automatisées
-.nojekyll               Publication statique
+index.html                       Accueil commun
+lecons.html, exercices.html       Catalogues Première avec sélecteur de niveau
+cours/, exercices/               16 cours et 16 séries Première, adresses conservées
+programme.html, pedagogie.html    Références Première et méthodes pédagogiques
+terminale/lecons.html             Catalogue des 9 ressources Terminale
+terminale/exercices.html          Catalogue des 9 séries Terminale
+terminale/programme.html          Périmètre et calendrier 2019 / 2026
+terminale/cours/t-*.html           9 leçons statiques
+terminale/exercices/t-*.html       9 pages de séries
+assets/terminale-exercices.js      54 générateurs Terminale et aides progressives
+assets/niveaux.css                Sélecteur de niveau et adaptations Terminale
+assets/exercices-variants.js      Moteur commun de génération et validation
+assets/exercices-renderer.js      Rendu partagé des fiches et renouvellement
+assets/exercices.js               Vérification, score, navigation et corrections
+assets/variants-*.js              Générateurs existants de Première
+assets/coaching-*.js              Aides existantes de Première
+assets/cours.js                   Recherche, sommaire, impression et simulation
+assets/apprentissage.*            Lecture et pauses mémoire
+assets/graphiques-interactifs.*    Graphiques interactifs existants
+assets/styles.css, cours.css      Thème et composants communs
+assets/exercices.css              Styles des parcours interactifs
+donnees/                         CSV réel et provenance
+tests/                           Tests structurels, numériques et navigateur
+.github/workflows/                Vérifications en lecture seule
+.nojekyll                        Publication statique
 ```
 
-## Utilisation locale
+Les pages d'exercices Terminale chargent, dans cet ordre, le moteur de variantes, le module Terminale, le renderer, puis le script d'interaction. Les slugs `t-*` évitent toute collision avec les chapitres de Première. Les liens précédent/suivant des leçons Terminale sont statiques ; leur sommaire utilise le script commun.
 
-Aucun paquet n'est requis pour lire le site. Ouvrir `index.html` directement, ou servir la racine avec Python :
+## Données et confidentialité
+
+Aucune donnée personnelle, police distante, publicité ou traceur. Les réponses, variantes et simulations sont traitées localement sans transmission ni stockage. Aucun interpréteur Python n'est embarqué : les codes du cours se copient dans un environnement Python 3.
+
+`donnees/naissances-france-2018-2023.csv` contient six totaux annuels issus de l'[Insee Focus 339, figure 1](https://www.insee.fr/fr/statistiques/8282356). Le champ, l'unité et la période sont décrits dans `donnees/README.md`. Les autres situations chiffrées sont fictives et pédagogiques, pas des conseils financiers ou fiscaux.
+
+`pedagogie.html` expose les choix d'apprentissage et leurs sources académiques. Ces sources et les tests logiciels ne constituent pas une certification de l'efficacité du site pour chaque élève ; une évaluation de terrain reste nécessaire.
+
+## Utilisation locale et tests
+
+Aucun paquet n'est requis pour lire le site. Ouvrir `index.html`, ou servir la racine :
 
 ```sh
 python3 -m http.server 8000
 ```
 
-Puis ouvrir http://localhost:8000. Tous les chemins internes sont relatifs pour fonctionner aussi dans le sous-répertoire GitHub Pages du projet.
+Tous les chemins internes sont relatifs, y compris les liens entre les niveaux, pour fonctionner dans un sous-répertoire GitHub Pages.
 
-## Tests
-
-Les contrôles structurels et numériques utilisent seulement Python standard et Node :
+Contrôles structurels et numériques :
 
 ```sh
 python3 tests/validate_site.py
-node --check assets/cours.js
-node --check assets/apprentissage.js
-node --check assets/exercices.js
-node --check assets/exercices-renderer.js
-node --check assets/exercices-variants.js
+for f in assets/*.js; do node --check "$f"; done
 node tests/test_variants.js
+node tests/test_graphiques.js
+node tests/test_terminale.js
+python3 tests/test_terminale.py
 ```
 
-Les tests de navigateur utilisent Playwright uniquement comme dépendance de développement :
+Tests de navigateur, avec Playwright comme seule dépendance de développement :
 
 ```sh
 python3 -m pip install playwright==1.55.0
 python3 -m playwright install chromium
 python3 tests/browser_smoke.py
+python3 tests/browser_terminale.py
 ```
 
-La vérification porte sur les liens et ancres statiques, la présence des 16 cours, des 32 mini-tests et de leurs corrections, des 129 exercices et de leurs 4 644 variantes de test, la syntaxe des exemples Python, des exemples numériques représentatifs, le rendu sans débordement global, la recherche, les sommaires, les corrections, le fonctionnement sans JavaScript et les cas limites du simulateur. Elle ne constitue pas une certification pédagogique exhaustive.
+Les nouveaux tests vérifient les 21 pages Terminale, leurs liens, les 18 pauses mémoire, les exemples Python, les 54 modèles avec un recalcul indépendant en Python, la validation des arrondis, les scores et corrections, les variantes, la navigation entre niveaux, les écrans de 320 et 390 pixels et les leçons sans JavaScript. Les tests existants continuent de vérifier le parcours Première.
 
-## Publication
+## Publication et maintenance
 
-GitHub Pages publie la branche **`gh-pages`**, à la racine. `main` contient les sources de référence. Une mise à jour de `main` n'est pas publiée tant que `gh-pages` n'a pas été avancée vers le commit validé. Ne pas forcer l'historique : vérifier que la mise à jour est une avance rapide, puis attendre le succès de `pages build and deployment`.
+GitHub Pages publie la branche **`gh-pages`**, à la racine. **`main`** reste la référence des sources. Une modification de `main` n'est visible qu'après mise à jour de `gh-pages` vers le commit validé et réussite de `pages build and deployment`. Ne pas forcer l'historique : vérifier que l'avancement est possible sans écraser de changements.
 
-Le workflow de vérification ne déploie pas et ne reçoit que des permissions de lecture. Il s'exécute sur les changements de `main`, de la branche de préparation `cours-programme-2026` et sur les demandes de fusion.
+Les workflows de vérification disposent uniquement de permissions de lecture et ne déploient pas. Le workflow historique est conservé ; `terminale.yml` ajoute les contrôles des deux niveaux.
 
-## Continuer
-
-Modifier les HTML de `cours/`, puis maintenir le catalogue, le tableau de couverture et `courseOrder` dans `assets/cours.js`. Exécuter les tests avant publication. Les couleurs des leçons sont dans `assets/apprentissage.css`, celles des exercices dans `assets/exercices.css`. Maintenir les indications textuelles lorsque l'on change un code couleur ; éviter tout effet qui reposerait exclusivement sur une teinte.
+Pour modifier le parcours Première, maintenir ses catalogues, le tableau de couverture et `courseOrder` dans `assets/cours.js`. Pour Terminale, maintenir ses deux catalogues, sa page de programme, les liens statiques précédent/suivant et la liste des slugs des tests. Ne pas ajouter les slugs Terminale à l'ordre de Première. Conserver les indications textuelles avec les codes couleur et exécuter les tests avant publication.

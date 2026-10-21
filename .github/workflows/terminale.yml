@@ -1,0 +1,42 @@
+name: Verification des deux niveaux STMG
+on:
+  push:
+    branches: [main, travail/terminale-stmg-20261021]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Lire les sources sans conserver les identifiants
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verifier la structure et les calculs des deux niveaux
+        run: |
+          python3 tests/validate_site.py
+          for f in assets/*.js; do node --check "$f"; done
+          node tests/test_variants.js
+          node tests/test_graphiques.js
+          node tests/test_terminale.js
+          python3 tests/test_terminale.py
+      - name: Installer le navigateur de test
+        run: |
+          python3 -m pip install playwright==1.55.0
+          python3 -m playwright install --with-deps chromium
+      - name: Verifier les interactions et les petits ecrans
+        run: |
+          python3 tests/browser_smoke.py
+          python3 tests/browser_terminale.py
+      - name: Conserver les captures de controle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: captures-terminale
+          path: .qa-terminale/*.png
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
