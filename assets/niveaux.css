@@ -1,7 +1,7 @@
 /* Navigation entre niveaux, sans modifier les composants pedagogiques. */
 .level-switch { display:flex; flex-wrap:wrap; gap:.65rem; margin:1.5rem 0 2rem; }
 .level-switch a { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:.65rem 1.1rem; border:1px solid #d9d3eb; border-radius:999px; color:#453568; background:#fff; text-decoration:none; font-weight:700; }
-.level-switch a[aria-current="page"] { background:#604bd1; border-color:#604bd1; color:#fff; }
+.level-switch a[aria-current="page"] { background:#604bd1; border-color:#604bd1; color:#604bd1; background:#604bd1; color:#fff; }
 .level-switch a:hover { text-decoration:underline; }
 .level-switch a:focus-visible { outline:3px solid #604bd1; outline-offset:4px; }
 .programme-note { margin:1.2rem 0; padding:1rem 1.25rem; border-left:4px solid #604bd1; border-radius:.5rem; background:#f1eefb; line-height:1.65; }
@@ -11,5 +11,9 @@
 .terminal-course table { width:100%; }
 .terminal-course pre { overflow-x:auto; max-width:100%; }
 .terminal-course .formula { overflow-x:auto; }
+/* Match the existing lesson choice cards, with touch-friendly labels. */
+.terminal-course .study-quiz fieldset > label { display:flex; align-items:flex-start; gap:11px; min-height:44px; min-width:0; padding:12px; margin:10px 0; border:1px solid #bdc9da; border-radius:10px; background:#fff; font-size:15px; line-height:1.5; cursor:pointer; }
+.terminal-course .study-quiz fieldset > label:has(input:checked) { border-color:#426d9f; box-shadow:inset 0 0 0 1px #426d9f; background:#eef5ff; }
+.terminal-course .study-quiz fieldset > label input { flex:0 0 auto; margin-top:4px; accent-color:#315f8a; }
 @media(max-width:600px) { .level-switch a { flex:1 1 auto; } }
 @media print { .level-switch { display:none; } }
