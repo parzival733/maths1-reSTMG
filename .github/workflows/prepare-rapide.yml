@@ -1,0 +1,54 @@
+name: Preparation annexe calcul rapide
+on:
+  push:
+    branches: [travail/calcul-rapide-20261021]
+permissions:
+  contents: write
+concurrency:
+  group: preparation-calcul-rapide
+  cancel-in-progress: true
+jobs:
+  preparation:
+    if: github.ref == 'refs/heads/travail/calcul-rapide-20261021'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Integrer les liens sans toucher aux chapitres
+        run: python3 tools/integrate_calcul_rapide.py
+      - name: Verifier la structure et les calculs des trois espaces
+        run: |
+          python3 tests/validate_site.py
+          for f in assets/*.js; do node --check "$f"; done
+          node tests/test_variants.js
+          node tests/test_graphiques.js
+          node tests/test_terminale.js
+          python3 tests/test_terminale.py
+          node tests/test_calcul_rapide.js
+          python3 tests/test_calcul_rapide.py
+      - name: Installer le navigateur de test
+        run: |
+          python3 -m pip install playwright==1.55.0
+          python3 -m playwright install --with-deps chromium
+      - name: Verifier les trois espaces dans le navigateur
+        run: |
+          python3 tests/browser_smoke.py
+          python3 tests/browser_terminale.py
+          python3 tests/browser_calcul_rapide.py
+      - name: Enregistrer seulement sur la branche de preparation
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/prepare-rapide.yml
+          git add index.html lecons.html exercices.html terminale/lecons.html terminale/exercices.html assets/calcul-rapide.css annexes/calcul-rapide.html README.md
+          git commit -m 'feat: integrer l annexe de calcul rapide validee aux parcours STMG'
+          git push origin HEAD:travail/calcul-rapide-20261021
+      - name: Conserver les captures de controle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: captures-annexe-preparation
+          path: .qa-rapide/*.png
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
