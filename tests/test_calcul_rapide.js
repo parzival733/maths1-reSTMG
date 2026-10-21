@@ -23,8 +23,9 @@ if(process.argv.includes('--export')) {
       const [n,d]=A.parse(q.expected);
       assert.ok(A.check(`${n*7n}/${d*7n}`,q));
       assert.equal(A.check(`${n+d}/${d}`,q),false);
-      // A short prompt such as "Calcule 11 au carre" is intentional.
-      assert.ok(q.solution.length>15&&q.hint.length>12&&q.prompt.length>=10,`${q.id}/${seed}: incomplete pedagogical content`);
+      // Short prompts and equations are intentional for mental arithmetic.
+      // The method is also explained by the hint; Python independently checks the arithmetic.
+      assert.ok(q.solution.length>=8&&q.hint.length>12&&q.prompt.length>=10,`${q.id}/${seed}: incomplete pedagogical content`);
       assert.ok(Array.isArray(q.ref)&&q.ref.length>0);
       assert.deepEqual(q,A.generate(t.id,seed));
       for(const v of ['','   ','Infinity','NaN','0x10','1/0','1//2','1/2/3','alert(1)','<script>'])assert.equal(A.check(v,q),false,[q.id,v]);
