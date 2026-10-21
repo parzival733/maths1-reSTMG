@@ -1,0 +1,74 @@
+name: Preparation et validation Sujets
+on:
+  push:
+    branches: [travail/sujets-20261021]
+permissions:
+  contents: write
+jobs:
+  preparation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Verifier et extraire les nouveaux fichiers
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, io, zipfile
+          parts=sorted(Path('.github').glob('sujets-part-*.b64'))
+          assert len(parts)==2
+          text=''.join(p.read_text().strip() for p in parts)
+          text=text.replace('onWEy5QzTyk','onWEy5zTyk')
+          data=base64.b64decode(text,validate=True)
+          assert hashlib.sha256(data).hexdigest()=='d2d7792c00b50c035280c49166a5a8067d26430803552f61771f3cc45ac5c480'
+          with zipfile.ZipFile(io.BytesIO(data)) as bundle:
+              for name in bundle.namelist():
+                  p=Path(name)
+                  assert not p.is_absolute() and '..' not in p.parts
+                  assert p.parts[0] in {'assets','tests','tools','donnees'}
+              bundle.extractall('.')
+          PY
+          python3 tools/build_sujets.py
+      - name: Verifier les 41 PDF chez leurs sources
+        run: python3 tests/check_sujets_sources.py
+      - name: Verifier les structures et les calculs
+        run: |
+          python3 tests/validate_site.py
+          for f in assets/*.js; do node --check "$f"; done
+          node tests/test_variants.js
+          node tests/test_graphiques.js
+          node tests/test_terminale.js
+          python3 tests/test_terminale.py
+          node tests/test_calcul_rapide.js
+          python3 tests/test_calcul_rapide.py
+          node tests/test_countdown.js
+      - name: Installer le navigateur
+        run: |
+          python3 -m pip install --quiet playwright==1.55.0
+          python3 -m playwright install --with-deps chromium > /tmp/browser-install.log 2>&1 || { tail -40 /tmp/browser-install.log; exit 1; }
+      - name: Tester le nouveau catalogue et la conservation des contenus
+        run: python3 tests/test_sujets.py
+      - name: Verifier les parcours existants et le chronometre
+        run: |
+          python3 tests/browser_smoke.py
+          python3 tests/browser_terminale.py
+          python3 tests/browser_calcul_rapide.py
+          python3 tests/test_interface.py
+      - name: Enregistrer uniquement la version validee sur la branche de travail
+        run: |
+          rm .github/sujets-part-*.b64
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -u
+          git add sujets.html donnees/sujets.json assets/sujets.css assets/sujets.js tools/build_sujets.py tests/test_sujets.py tests/check_sujets_sources.py
+          git commit -m 'feat: ajouter Sujets avec 41 PDF classes par niveau et annee'
+          git push origin HEAD:travail/sujets-20261021
+      - name: Captures et rapport de verification
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: validation-sujets
+          path: .qa-sujets/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
