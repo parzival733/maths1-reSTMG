@@ -146,7 +146,7 @@ Pour modifier le parcours Première, maintenir ses catalogues, le tableau de cou
 
 La banque `assets/calcul-rapide-data.js` comprend **54 modeles** : 18 bases generales, 24 calculs lies aux chapitres de Premiere et 12 prolongements Terminale. Le parcours par defaut « Bac Premiere » exclut strictement les 12 modeles Terminale. On peut choisir le niveau, la notion, le calcul mental ou sur feuille et une serie de 5, 10 ou 20 questions. Les tirages sont reproductibles par graine, sans promesse de nouveaute indefinie.
 
-Chaque question comprend un indice, une correction expliquee et un lien vers sa lecon. Le bilan compte seulement les reponses justes au premier essai ; les corrections revelees ne rapportent pas de point. Les fractions equivalentes et les decimaux exacts sont acceptes par comparaison rationnelle (BigInt), sans eval et sans arrondis arbitraires. Le chronometre est facultatif, sans limite de temps, et se met en pause quand l'onglet est masque.
+Chaque question comprend un indice, une correction expliquee et un lien vers sa lecon. Le bilan compte seulement les reponses justes au premier essai ; les corrections revelees ne rapportent pas de point. Les fractions equivalentes et les decimaux exacts sont acceptes par comparaison rationnelle (BigInt), sans eval et sans arrondis arbitraires. Le compte a rebours se regle avant le depart, de 15 secondes a 120 minutes. Il se lance explicitement avec la serie, propose pause/reprise et termine la serie a zero en evaluant les reponses deja saisies. Changer d'onglet ne suspend pas le delai. Le mode sans limite reste disponible. Le bilan termine ne peut plus etre modifie en consultant les corrections.
 
 Une fiche imprimable reprend la serie courante. Les corrections sont masquees dans la previsualisation et absentes de l'impression par defaut. Une case permet de les imprimer sur des pages separees ; les reponses non encore validees ne peuvent alors plus rapporter de point. Douze methodes et une serie papier de douze questions restent accessibles sans JavaScript. Aucun compte, suivi, transmission ou stockage persistant.
 
@@ -161,3 +161,14 @@ python3 tests/browser_calcul_rapide.py
 ```
 
 Le script `tools/integrate_calcul_rapide.py` rend l'ajout des liens idempotent. Il n'est pas necessaire pour servir le site : les fichiers publies sont statiques. Le workflow permanent `calcul-rapide.yml` verifie l'annexe en lecture seule.
+
+
+## Interface et compte à rebours
+
+La présentation commune est dans `assets/interface.css`. Les catalogues affichent le choix du niveau et la recherche avant les précisions dépliables. Les contenus des leçons et des exercices ne sont pas réécrits. `assets/interface.js` replie le sommaire sur petit écran ; le texte du cours reste toujours disponible. Les couleurs sémantiques, les libellés et les contrastes sont conservés avec des surfaces plus neutres.
+
+Dans l’annexe, quatre choix explicites remplacent le menu de parcours. Le réglage du compte à rebours est indépendant du niveau. La durée s’applique à toute la série ; la pause masque les questions. Le bilan enregistre les réponses saisies non encore vérifiées, sans crédit supplémentaire pour les réponses révélées. Un bilan terminé reste figé. L’impression met temporairement en pause un chrono actif et respecte une pause manuelle déjà en cours.
+
+Tests : `node tests/test_countdown.js` et `python3 tests/test_interface.py`. Le fichier `tests/interface-content.json` fige les empreintes des 50 contenus de cours/exercices et de 22 modules pédagogiques de la version précédant le changement visuel. Une future modification pédagogique intentionnelle doit mettre à jour son empreinte après relecture.
+
+Références de conception : [W3C, comprendre les contrôles](https://www.w3.org/WAI/WCAG2/supplemental/objectives/o1-understandable/), [W3C, contenu clair](https://www.w3.org/WAI/WCAG2/supplemental/objectives/o3-clear-content/), [WCAG, temps ajustable](https://www.w3.org/WAI/WCAG22/Understanding/timing-adjustable.html), [GOV.UK, choix exclusifs](https://design-system.service.gov.uk/components/radios/). Ces choix ne constituent pas une certification WCAG ni une mesure de l’efficacité auprès des élèves.

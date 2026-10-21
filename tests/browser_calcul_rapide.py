@@ -29,6 +29,8 @@ def main():
             page.on('pageerror',lambda e:errors.append(str(e)))
             url=base+'/annexes/calcul-rapide.html?seed=42'
             page.goto(url);expect(page.locator('#rapid-app')).to_be_visible()
+            expect(page.locator('#rapid-work')).to_be_hidden()
+            page.locator('#rapid-timer-none').check();page.locator('#rapid-start').click()
             qs=sample(page);assert len(qs)==10 and all(q['level']!='terminale' for q in qs)
             answer=page.locator('#rapid-answer')
             answer.fill('1/0');page.locator('#rapid-check').click()
@@ -52,16 +54,16 @@ def main():
             expect(page.locator('#rapid-result')).to_be_visible();expect(page.locator('#rapid-score')).to_contain_text('1 / 10')
             expect(page.locator('#rapid-review')).to_contain_text('sans réponse vérifiée')
             page.locator('#rapid-return').click();expect(page.locator('#rapid-session')).to_be_visible()
-            page.locator('#rapid-level').select_option('bases');page.locator('#rapid-method').select_option('mental')
+            page.locator('#rapid-configure').click();page.locator('input[name=level][value=bases]').check();page.locator('#rapid-method').select_option('mental')
             page.locator('#rapid-topic').select_option('fractions');page.locator('#rapid-count').select_option('5')
             page.locator('#rapid-settings button[type=submit]').click()
             qs=sample(page);assert len(qs)==5 and all(q['level']=='bases' and q['method']=='mental' and q['topic']=='fractions' for q in qs)
             expect(page.locator('#rapid-progress-text')).to_contain_text('0 réussite(s)')
-            page.locator('#rapid-level').select_option('terminale');page.locator('#rapid-method').select_option('feuille')
+            page.locator('#rapid-configure').click();page.locator('input[name=level][value=terminale]').check();page.locator('#rapid-method').select_option('feuille')
             page.locator('#rapid-settings button[type=submit]').click()
             qs=sample(page);assert all(q['level']=='terminale' for q in qs)
             expect(page.locator('#rapid-scope')).to_contain_text('ne sont pas des prérequis')
-            page.locator('#rapid-preview').click();expect(page.locator('#rapid-worksheet')).to_be_visible()
+            page.locator('#rapid-paper-tools > summary').click();page.locator('#rapid-preview').click();expect(page.locator('#rapid-worksheet')).to_be_visible()
             expect(page.locator('#rapid-paper-questions > li')).to_have_count(5)
             expect(page.locator('#rapid-paper-solutions')).to_be_hidden()
             assert not page.locator('#rapid-print-answers').is_checked()
@@ -77,14 +79,23 @@ def main():
             page.emulate_media(media='screen');page.evaluate("window.dispatchEvent(new Event('afterprint'))")
             expect(page.locator('#rapid-check')).to_be_disabled()
             expect(page.locator('#rapid-progress-text')).to_contain_text('0 réussite(s)')
-            page.locator('#rapid-settings button[type=submit]').click()
+            page.locator('#rapid-configure').click();page.locator('#rapid-settings button[type=submit]').click()
             assert not page.locator('#rapid-print-answers').is_checked()
-            page.locator('#rapid-timer-enable').check();expect(page.locator('#rapid-timer')).to_be_visible()
-            page.wait_for_timeout(1200);assert page.locator('#rapid-time').inner_text()!='0:00'
-            page.locator('#rapid-timer-enable').uncheck();expect(page.locator('#rapid-timer')).to_be_hidden()
+            # Le compte a rebours est configure AVANT le depart, jamais au milieu d'une serie.
+            page.locator('#rapid-configure').click();page.locator('#rapid-timer-enable').check()
+            page.locator('#rapid-minutes').fill('1');page.locator('#rapid-seconds').fill('0')
+            page.locator('#rapid-start').click();expect(page.locator('#rapid-timer')).to_be_visible()
+            page.wait_for_timeout(1300);assert page.locator('#rapid-time').inner_text()!='01:00'
+            page.locator('#rapid-pause').click();expect(page.locator('#rapid-card')).to_be_hidden()
+            paused=page.locator('#rapid-time').inner_text();page.wait_for_timeout(1100)
+            assert page.locator('#rapid-time').inner_text()==paused
+            page.locator('#rapid-pause').click();expect(page.locator('#rapid-card')).to_be_visible()
             # A settings change must not silently change the in-progress series.
-            old=sample(page);page.locator('#rapid-level').select_option('bac');assert sample(page)==old
-            page.locator('#rapid-settings button[type=submit]').click();assert all(q['level']!='terminale' for q in sample(page))
+            old=sample(page);page.locator('#rapid-configure').click()
+            page.locator('input[name=level][value=bac]').check();assert sample(page)==old
+            page.locator('#rapid-timer-none').check();page.locator('#rapid-start').click()
+            expect(page.locator('#rapid-timer')).to_be_hidden()
+            assert all(q['level']!='terminale' for q in sample(page))
             output=ROOT/'.qa-rapide';output.mkdir(exist_ok=True)
             for width in [320,390,768,1280]:
                 page.set_viewport_size({'width':width,'height':900});page.goto(url)
