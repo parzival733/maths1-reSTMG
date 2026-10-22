@@ -88,7 +88,7 @@
       + '<span id="exercise-progress-fill"></span></div>'
       + '<nav class="exercise-stepper" style="--exercise-steps:' + length
       + '" aria-label="Choisir un exercice">' + steps + '</nav>'
-      + '<p class="correction-legend" aria-label="Signification des couleurs après correction">'
+      + '<p class="correction-legend">'
       + '<span><i class="legend-dot" aria-hidden="true"></i> Vert : ta réponse était juste</span>'
       + '<span><i class="legend-dot wrong" aria-hidden="true"></i> Rouge : réponse fausse ou manquante</span>'
       + '<span>Les cases affichent ensuite la bonne réponse.</span></p></section>'

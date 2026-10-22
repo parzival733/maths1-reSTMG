@@ -4,6 +4,7 @@
   const KEY='maths-stmgdls:acquis:v1',DAY=86400000,LIMIT=500,RETENTION=180*DAY;
   const names={calcul:'Calcul et proportions',fractions:'Fractions',evolutions:'Pourcentages et \u00e9volutions',fonctions:'Fonctions et droites','second-degre':'Second degr\u00e9',suites:'Suites : premiers rep\u00e8res','suites-arithmetiques':'Suites arithm\u00e9tiques','suites-geometriques':'Suites g\u00e9om\u00e9triques',derivees:'Tangentes et nombre d\u00e9riv\u00e9',variations:'D\u00e9riv\u00e9es et variations','statistiques-descriptives':'Statistiques descriptives','statistiques-deux-variables':'Statistiques \u00e0 deux variables','probabilites-conditionnelles':'Probabilit\u00e9s conditionnelles',bernoulli:'R\u00e9p\u00e9titions de Bernoulli','variables-aleatoires':'Esp\u00e9rance et simulation',logique:'Raisonnement et logique','python-tableur':'Algorithmique et tableur','t-suites':'Terminale : suites et sommes','t-exponentielles':'Terminale : exponentielles','t-logarithme':'Terminale : logarithme','t-inverse':'Terminale : inverse et optimisation','t-statistiques':'Terminale : ajustements','t-conditionnelles':'Terminale : conditionnement','t-binomiale':'Terminale : loi binomiale','t-variables':'Terminale : esp\u00e9rance','t-outils':'Terminale : outils num\u00e9riques'};
   const skills=Object.fromEntries(Object.entries(names).map(([id,label])=>[id,Object.freeze({id,label,level:id.startsWith('t-')?'terminale':'premiere',course:(id.startsWith('t-')?'terminale/':'')+'cours/'+(id==='fractions'?'calcul':id)+'.html',exercises:(id.startsWith('t-')?'terminale/':'')+'exercices/'+(id==='fractions'?'calcul':id)+'.html'})]));
+  const errorLabels=Object.freeze({"taux-addition": "taux successifs additionn\u00e9s", "population-reference": "population de r\u00e9f\u00e9rence", "image-antecedent": "image et ant\u00e9c\u00e9dent", "fraction-addition": "addition des fractions", "fraction-division": "division par une fraction", "rang-suite": "rang initial et nombre de passages", "nature-suite": "suite arithm\u00e9tique ou g\u00e9om\u00e9trique", "pente-inversee": "quotient de la pente", "derivee-puissance": "d\u00e9riv\u00e9e d\u2019une puissance", "moyenne-poids": "coefficients de la moyenne", "signe-inverse": "signe d\u2019un quotient", "log-produit": "logarithme d\u2019un produit", "borne-range": "borne exclue de range"});
   const outcomes=new Set(['independent','assisted','retry','revealed','skip']);
   const sources=new Set(['chapitre','calcul','diagnostic','revision','memoire']);
   function hash(text){let h=2166136261;for(const c of String(text)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return(h>>>0).toString(36);}
@@ -13,7 +14,7 @@
     if(!Number.isSafeInteger(e.at)||e.at<now-RETENTION||e.at>now+300000)return null;
     if(typeof e.variant!=='string'||!/^[a-zA-Z0-9_-]{1,64}$/.test(e.variant))return null;
     if(typeof e.template!=='string'||!/^[a-zA-Z0-9:_-]{1,80}$/.test(e.template))return null;
-    const error=['taux-addition','population-reference','image-antecedent',''].includes(e.error)?e.error:'';
+    const error=Object.hasOwn(errorLabels,e.error)?e.error:'';
     return{skill:e.skill,outcome:e.outcome,source:e.source,at:e.at,variant:e.variant,template:e.template,error};
   }
   function clean(raw,now){
@@ -57,6 +58,6 @@
     return{read,enable,remove,record,summary,all,exportJSON,inspectImport,importJSON,get error(){return error;},get enabled(){return!!read();}};
   }
   let storage=null;try{storage=root.localStorage;}catch(_){}
-  const api={KEY,DAY,LIMIT,RETENTION,skills:Object.freeze(skills),hash,skillFor,createStore,store:createStore(storage)};
+  const api={KEY,DAY,LIMIT,RETENTION,errorLabels,skills:Object.freeze(skills),hash,skillFor,createStore,store:createStore(storage)};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;root.MathsAcquis=api;
 })(typeof window!=='undefined'?window:globalThis);

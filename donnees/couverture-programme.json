@@ -1,0 +1,329 @@
+{
+  "verified": "2026-10-23",
+  "sources": {
+    "premiere2026": "https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602918A",
+    "terminale2019": "https://eduscol.education.gouv.fr/sites/default/files/document/spe242annexe1158914pdf-84153.pdf",
+    "terminale2027": "https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602921A",
+    "epreuve2028": "https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N"
+  },
+  "scope": "Correspondance des familles de notions, pas certification de toutes les formulations possibles ni validation en classe.",
+  "cohorts": [
+    {
+      "id": "premiere2026",
+      "year": "Première 2026-2027",
+      "exam": "Épreuve anticipée en 2027, bac 2028",
+      "source": "premiere2026"
+    },
+    {
+      "id": "terminale2026",
+      "year": "Terminale 2026-2027",
+      "exam": "Programme 2019 ; consolidation et contrôle continu",
+      "source": "terminale2019"
+    },
+    {
+      "id": "terminale2027",
+      "year": "Terminale 2027-2028",
+      "exam": "Programme 2026 applicable en septembre 2027",
+      "source": "terminale2027"
+    }
+  ],
+  "skills": [
+    {
+      "id": "calcul",
+      "label": "Calcul et proportions",
+      "level": "premiere",
+      "course": "cours/calcul.html",
+      "exercises": "exercices/calcul.html",
+      "templates": [
+        "g-priorites",
+        "g-parentheses",
+        "g-signes",
+        "g-fois25",
+        "g-fois99",
+        "g-div5",
+        "g-decimaux",
+        "g-puissance",
+        "g-puissance10",
+        "g-carre",
+        "g-proportion",
+        "g-unites",
+        "g-duree",
+        "p-equation",
+        "p-developpement"
+      ]
+    },
+    {
+      "id": "fractions",
+      "label": "Fractions",
+      "level": "premiere",
+      "course": "cours/calcul.html",
+      "exercises": "exercices/calcul.html",
+      "templates": [
+        "g-fraction-somme",
+        "g-fraction-denominateur",
+        "g-fraction-produit",
+        "g-fraction-quotient"
+      ]
+    },
+    {
+      "id": "evolutions",
+      "label": "Pourcentages et évolutions",
+      "level": "premiere",
+      "course": "cours/evolutions.html",
+      "exercises": "exercices/evolutions.html",
+      "templates": [
+        "p-hausse",
+        "p-baisse",
+        "p-retour",
+        "p-successives",
+        "p-taux"
+      ]
+    },
+    {
+      "id": "fonctions",
+      "label": "Fonctions et droites",
+      "level": "premiere",
+      "course": "cours/fonctions.html",
+      "exercises": "exercices/fonctions.html",
+      "templates": [
+        "p-image",
+        "p-antecedent",
+        "p-pente"
+      ]
+    },
+    {
+      "id": "second-degre",
+      "label": "Second degré",
+      "level": "premiere",
+      "course": "cours/second-degre.html",
+      "exercises": "exercices/second-degre.html",
+      "templates": [
+        "p-sommet",
+        "p-second-image"
+      ]
+    },
+    {
+      "id": "suites",
+      "label": "Suites : premiers repères",
+      "level": "premiere",
+      "course": "cours/suites.html",
+      "exercises": "exercices/suites.html",
+      "templates": [
+        "p-recurrence"
+      ]
+    },
+    {
+      "id": "suites-arithmetiques",
+      "label": "Suites arithmétiques",
+      "level": "premiere",
+      "course": "cours/suites-arithmetiques.html",
+      "exercises": "exercices/suites-arithmetiques.html",
+      "templates": [
+        "p-arithmetique"
+      ]
+    },
+    {
+      "id": "suites-geometriques",
+      "label": "Suites géométriques",
+      "level": "premiere",
+      "course": "cours/suites-geometriques.html",
+      "exercises": "exercices/suites-geometriques.html",
+      "templates": [
+        "p-geometrique"
+      ]
+    },
+    {
+      "id": "derivees",
+      "label": "Tangentes et nombre dérivé",
+      "level": "premiere",
+      "course": "cours/derivees.html",
+      "exercises": "exercices/derivees.html",
+      "templates": [
+        "p-tangente"
+      ]
+    },
+    {
+      "id": "variations",
+      "label": "Dérivées et variations",
+      "level": "premiere",
+      "course": "cours/variations.html",
+      "exercises": "exercices/variations.html",
+      "templates": [
+        "p-derivee"
+      ]
+    },
+    {
+      "id": "statistiques-descriptives",
+      "label": "Statistiques descriptives",
+      "level": "premiere",
+      "course": "cours/statistiques-descriptives.html",
+      "exercises": "exercices/statistiques-descriptives.html",
+      "templates": [
+        "g-moyenne",
+        "p-moyenne-ponderee",
+        "p-mediane"
+      ]
+    },
+    {
+      "id": "statistiques-deux-variables",
+      "label": "Statistiques à deux variables",
+      "level": "premiere",
+      "course": "cours/statistiques-deux-variables.html",
+      "exercises": "exercices/statistiques-deux-variables.html",
+      "templates": [
+        "p-point-moyen"
+      ]
+    },
+    {
+      "id": "probabilites-conditionnelles",
+      "label": "Probabilités conditionnelles",
+      "level": "premiere",
+      "course": "cours/probabilites-conditionnelles.html",
+      "exercises": "exercices/probabilites-conditionnelles.html",
+      "templates": [
+        "p-conditionnelle",
+        "p-contraire",
+        "p-arbre",
+        "r-population"
+      ]
+    },
+    {
+      "id": "bernoulli",
+      "label": "Répétitions de Bernoulli",
+      "level": "premiere",
+      "course": "cours/bernoulli.html",
+      "exercises": "exercices/bernoulli.html",
+      "templates": [
+        "r-bernoulli"
+      ]
+    },
+    {
+      "id": "variables-aleatoires",
+      "label": "Espérance et simulation",
+      "level": "premiere",
+      "course": "cours/variables-aleatoires.html",
+      "exercises": "exercices/variables-aleatoires.html",
+      "templates": [
+        "p-esperance"
+      ]
+    },
+    {
+      "id": "logique",
+      "label": "Raisonnement et logique",
+      "level": "premiere",
+      "course": "cours/logique.html",
+      "exercises": "exercices/logique.html",
+      "templates": [
+        "r-contre-exemple"
+      ]
+    },
+    {
+      "id": "python-tableur",
+      "label": "Algorithmique et tableur",
+      "level": "premiere",
+      "course": "cours/python-tableur.html",
+      "exercises": "exercices/python-tableur.html",
+      "templates": [
+        "r-boucle",
+        "r-range"
+      ]
+    },
+    {
+      "id": "t-suites",
+      "label": "Terminale : suites et sommes",
+      "level": "terminale",
+      "course": "terminale/cours/t-suites.html",
+      "exercises": "terminale/exercices/t-suites.html",
+      "templates": [
+        "t-somme-arithmetique",
+        "t-somme-geometrique",
+        "t-moyenne-geometrique"
+      ]
+    },
+    {
+      "id": "t-exponentielles",
+      "label": "Terminale : exponentielles",
+      "level": "terminale",
+      "course": "terminale/cours/t-exponentielles.html",
+      "exercises": "terminale/exercices/t-exponentielles.html",
+      "templates": [
+        "t-taux-moyen",
+        "t-exponentielle"
+      ]
+    },
+    {
+      "id": "t-logarithme",
+      "label": "Terminale : logarithme",
+      "level": "terminale",
+      "course": "terminale/cours/t-logarithme.html",
+      "exercises": "terminale/exercices/t-logarithme.html",
+      "templates": [
+        "t-logarithme",
+        "t-log-produit",
+        "t-seuil"
+      ]
+    },
+    {
+      "id": "t-inverse",
+      "label": "Terminale : inverse et optimisation",
+      "level": "terminale",
+      "course": "terminale/cours/t-inverse.html",
+      "exercises": "terminale/exercices/t-inverse.html",
+      "templates": [
+        "t-inverse",
+        "t-derivee-inverse"
+      ]
+    },
+    {
+      "id": "t-statistiques",
+      "label": "Terminale : ajustements",
+      "level": "terminale",
+      "course": "terminale/cours/t-statistiques.html",
+      "exercises": "terminale/exercices/t-statistiques.html",
+      "templates": [
+        "r-t-stats"
+      ]
+    },
+    {
+      "id": "t-conditionnelles",
+      "label": "Terminale : conditionnement",
+      "level": "terminale",
+      "course": "terminale/cours/t-conditionnelles.html",
+      "exercises": "terminale/exercices/t-conditionnelles.html",
+      "templates": [
+        "r-t-conditions"
+      ]
+    },
+    {
+      "id": "t-binomiale",
+      "label": "Terminale : loi binomiale",
+      "level": "terminale",
+      "course": "terminale/cours/t-binomiale.html",
+      "exercises": "terminale/exercices/t-binomiale.html",
+      "templates": [
+        "t-binomiale",
+        "t-esperance-binomiale"
+      ]
+    },
+    {
+      "id": "t-variables",
+      "label": "Terminale : espérance",
+      "level": "terminale",
+      "course": "terminale/cours/t-variables.html",
+      "exercises": "terminale/exercices/t-variables.html",
+      "templates": [
+        "r-t-esperance"
+      ]
+    },
+    {
+      "id": "t-outils",
+      "label": "Terminale : outils numériques",
+      "level": "terminale",
+      "course": "terminale/cours/t-outils.html",
+      "exercises": "terminale/exercices/t-outils.html",
+      "templates": [
+        "r-t-outils"
+      ]
+    }
+  ]
+}

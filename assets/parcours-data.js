@@ -30,6 +30,21 @@
     q.skill=P.skillFor(q);q.variant=P.hash(q.prompt);q.seed=seed;
     if(!P.skills[q.skill]||!Q.parse(q.expected))throw new Error('Question invalide.');
     if(q.id==='p-successives')q.traps=[{value:'0',code:'taux-addition',message:'Tu sembles avoir additionn\u00e9 les deux taux oppos\u00e9s. Multiplie les coefficients : les deux pourcentages ne portent pas sur la m\u00eame valeur.'}];
+    const r=q.ref, traps=[...(q.traps||[])];
+    const add=(value,code,message)=>{if(value!==null&&value!==undefined&&Q.parse(String(value))&&!Q.check(String(value),q))traps.push({value:String(value),code,message});};
+    const f=Q.fraction;
+    if(['g-fraction-somme','g-fraction-denominateur'].includes(q.id))add(f(r[0]+r[3],r[1]+r[4]),'fraction-addition','Cette valeur peut venir de l’addition des dénominateurs. Mets les fractions au même dénominateur, puis additionne seulement les numérateurs.');
+    if(q.id==='g-fraction-quotient')add(f(r[0]*r[3],r[1]*r[4]),'fraction-division','Tu as peut-être multiplié par la seconde fraction. Pour diviser, multiplie par son inverse.');
+    if(q.id==='p-antecedent')add(r[3]*r[0]+r[1],'image-antecedent','Cette valeur est l’image du nombre donné. Pour son antécédent, résous l’équation f(x) = ce nombre.');
+    if(q.id==='p-arithmetique')add(r[0]+(r[1]+1)*r[2],'rang-suite','Le rang initial est 0. Pour atteindre le rang n, on ajoute la raison n fois, pas n + 1 fois.');
+    if(q.id==='p-geometrique')add(r[0]+r[1]*r[2],'nature-suite','Cette valeur correspond à des additions. Ici la suite est géométrique : on multiplie par la raison à chaque passage.');
+    if(q.id==='p-pente'&&r[0]!==r[1])add(f(r[3]-r[4],r[0]-r[1]),'pente-inversee','Vérifie le quotient : variation des ordonnées divisée par variation des abscisses, et non l’inverse.');
+    if(q.id==='p-derivee')add(r[1]*r[3]+r[5],'derivee-puissance','Le coefficient 2 semble manquer : la dérivée de ax² est 2ax. Dérive avant de remplacer x.');
+    if(q.id==='p-moyenne-ponderee')add(f(r[0]+r[3],2),'moyenne-poids','Cette valeur peut venir d’une moyenne simple. Multiplie les notes par leurs coefficients puis divise par la somme des coefficients.');
+    if(q.id==='t-inverse'&&r[1]<0)add(f(r[0],-r[1]),'signe-inverse','Le dénominateur est négatif. Le quotient garde le signe moins.');
+    if(q.id==='t-log-produit')add(r[0]*r[1],'log-produit','Le logarithme d’un produit est la somme des logarithmes, pas leur produit.');
+    if(q.id==='r-range')add(r[0]+(r[0]+1)*r[0]/2+1,'borne-range','La borne de fin de range est exclue : le dernier entier parcouru est celui juste avant cette borne.');
+    q.traps=traps;
     return q;
   }
   function diagnostic(level,seed){

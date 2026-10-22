@@ -22,7 +22,7 @@
       item.append(node('p',s.label,'progress-evidence'));
       item.append(node('p',`${s.independent} r\u00e9ussite(s) autonome(s) sur ${s.attempts} premi\u00e8re(s) tentative(s).`));
       item.append(node('p',s.overdue?'R\u00e9vision propos\u00e9e : maintenant.':'Prochaine reprise propos\u00e9e : '+new Date(s.due).toLocaleDateString('fr-FR')+'.'));
-      const recurrent=Object.entries(s.errors).filter(([,n])=>n>=2).map(([key])=>({'taux-addition':'taux successifs additionn\u00e9s','population-reference':'population de r\u00e9f\u00e9rence','image-antecedent':'image et ant\u00e9c\u00e9dent'}[key]));
+      const recurrent=Object.entries(s.errors).filter(([,n])=>n>=2).map(([key])=>A.errorLabels[key]);
       if(recurrent.length)item.append(node('p','Point \u00e0 v\u00e9rifier dans les prochains exercices : '+recurrent.join(', ')+'.'));
       const links=node('p','', 'action-row');
       for(const [label,href] of [['Revoir la le\u00e7on',s.course],['Exercices du chapitre',s.exercises]]){const a=node('a',label);a.href=href;links.append(a);}

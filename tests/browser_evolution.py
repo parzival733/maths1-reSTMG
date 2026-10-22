@@ -57,6 +57,23 @@ def main():
   assert page.locator('#practice-results').text_content().count('2/2')==5
   assert page.evaluate('MathsAcquis.store.enabled') is False
   page.screenshot(path=str(out/'diagnostic-bilan.png'));page.context.close()
+  # Early termination must not turn unseen/blank/invalid questions into evidence of difficulty.
+  for mode in ['empty','invalid','skip','one-answer']:
+   page=load('diagnostic.html');page.evaluate('MathsAcquis.store.enable()');page.locator('#practice-start').click()
+   if mode=='invalid':page.locator('#practice-answer').fill('?')
+   if mode=='skip':page.locator('#practice-skip').click()
+   if mode=='one-answer':
+    answer=page.locator('#practice-solution strong').text_content().split(': ',1)[1]
+    page.locator('#practice-answer').fill(answer);page.locator('#practice-next').click()
+   page.once('dialog',lambda d:d.accept());page.locator('#practice-stop').click()
+   events=page.evaluate('MathsAcquis.store.read().events')
+   assert len(events)==(1 if mode in ['skip','one-answer'] else 0),(mode,events)
+   if mode=='skip':assert events[0]['outcome']=='skip'
+   if mode=='one-answer':assert events[0]['outcome']=='independent'
+   result=page.locator('#practice-results').inner_text()
+   assert '0/2' not in result and 'Bilan partiel' in result
+   assert 'Aucune conclusion' in result
+   page.context.close()
   # Targeted review, help attribution, correction, equivalent and first-attempt history.
   page=load('revisions.html');page.evaluate('MathsAcquis.store.enable()')
   page.locator('#practice-skill').select_option('fractions');page.locator('#practice-start').click()

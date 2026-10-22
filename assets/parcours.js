@@ -17,8 +17,8 @@
     available.forEach(key=>select.add(new Option(A.skills[key].label,key)));
     if(available.includes(previous))select.value=previous;
   }
-  function fresh(){return{value:'',first:null,correct:null,aided:false,revealed:false,recorded:false,error:'',message:''};}
-  function save(){if(questions.length&&!finished&&!states[current].revealed)states[current].value=$('practice-answer').value;}
+  function fresh(){return{value:'',first:null,correct:null,aided:false,revealed:false,skipped:false,recorded:false,error:'',message:''};}
+  function save(){if(questions.length&&!finished&&!states[current].revealed){const s=states[current];s.value=$('practice-answer').value;if(s.value.trim())s.skipped=false;}}
   function record(i,outcome){
     const q=questions[i],s=states[i];if(s.recorded)return;s.recorded=true;
     A.store.record({skill:q.skill,source:diagnostic?'diagnostic':'revision',template:q.id,variant:q.variant,outcome,error:s.error});
@@ -68,7 +68,7 @@
     questions.forEach((q,i)=>{
       const s=states[i];if(s.first!==null)return;
       if(Q.parse(s.value,q.unit)){s.first=s.correct=Q.check(s.value,q);s.error=B.mistake(s.value,q)?.code||'';record(i,s.first?(s.aided?'assisted':'independent'):'retry');}
-      else if(diagnostic){s.first=false;record(i,'skip');}
+      else if(diagnostic&&s.skipped){s.first=false;record(i,'skip');}
     });
     $('practice-work').hidden=true;$('practice-result').hidden=false;
     const results=$('practice-results');results.replaceChildren();
@@ -76,8 +76,12 @@
     groups.forEach(skill=>{
       const indices=questions.map((q,i)=>q.skill===skill?i:-1).filter(i=>i>=0),right=indices.filter(i=>states[i].first===true&&!states[i].aided).length;
       const card=node('article','');card.className='progress-card';card.append(node('h3',A.skills[skill].label));
-      card.append(node('p',`${right}/${indices.length} r\u00e9ponse(s) juste(s) sans aide au premier essai.`));
-      card.append(node('p',right===indices.length?'Bien engag\u00e9 : \u00e0 v\u00e9rifier avec d\u2019autres questions, un autre jour.':right?'Une m\u00e9thode \u00e0 reprendre, sans repartir de z\u00e9ro.':'Revois l\u2019exemple guid\u00e9 avant une nouvelle s\u00e9rie.'));
+      const evaluated=indices.filter(i=>states[i].first!==null&&!states[i].skipped).length;
+      const skipped=indices.filter(i=>states[i].skipped).length;
+      card.append(node('p',evaluated?`${right}/${evaluated} r\u00e9ponse(s) juste(s) sans aide au premier essai.`:'Aucune r\u00e9ponse \u00e9valu\u00e9e pour cette notion.'));
+      if(skipped)card.append(node('p',`${skipped} question(s) pass\u00e9e(s) volontairement. Ce choix sert \u00e0 proposer une reprise, pas \u00e0 attribuer une note.`));
+      if(evaluated<indices.length)card.append(node('p','Bilan partiel : les questions non renseign\u00e9es ne sont pas compt\u00e9es comme des erreurs.'));
+      card.append(node('p',!evaluated?'Aucune conclusion sur ta ma\u00eetrise : reprends ces questions quand tu le souhaites.':right===evaluated?'Bien engag\u00e9 : \u00e0 v\u00e9rifier avec d\u2019autres questions, un autre jour.':right?'Une m\u00e9thode \u00e0 reprendre, sans repartir de z\u00e9ro.':'Revois l\u2019exemple guid\u00e9 avant une nouvelle s\u00e9rie.'));
       const links=node('p','');links.className='action-row';
       for(const [label,href]of[['Le\u00e7on',A.skills[skill].course],['Exercices',A.skills[skill].exercises],['Reprise cibl\u00e9e','revisions.html?niveau='+level.value+'&notion='+skill]]){const a=node('a',label);a.href=href;links.append(a);}card.append(links);results.append(card);
     });
@@ -88,7 +92,7 @@
   }
   $('practice-settings').addEventListener('submit',start);$('practice-form').addEventListener('submit',validate);
   $('practice-next').addEventListener('click',next);$('practice-previous').addEventListener('click',()=>{save();if(current>0){current--;render();}});
-  $('practice-skip').addEventListener('click',()=>{states[current].value='';$('practice-answer').value='';if(!diagnostic)record(current,'skip');next();});
+  $('practice-skip').addEventListener('click',()=>{states[current].value='';states[current].skipped=true;$('practice-answer').value='';if(!diagnostic)record(current,'skip');next();});
   $('practice-hint').addEventListener('click',()=>{save();states[current].aided=true;$('practice-hint-text').textContent=questions[current].hint;$('practice-hint-text').hidden=false;$('practice-hint').setAttribute('aria-expanded','true');});
   $('practice-method').addEventListener('click',()=>{save();states[current].aided=true;$('practice-method-text').textContent=methods[questions[current].skill]||'Rep\u00e8re les donn\u00e9es, choisis la formule du cours et remplace les valeurs en gardant les parenth\u00e8ses. Contr\u00f4le le signe et les unit\u00e9s.';$('practice-method-text').hidden=false;$('practice-method').setAttribute('aria-expanded','true');});
   $('practice-reveal').addEventListener('click',()=>{save();const s=states[current];if(s.first===null){s.first=false;record(current,'revealed');}s.revealed=true;s.message='Correction affich\u00e9e : elle ne compte pas comme r\u00e9ussite autonome.';render(false);});

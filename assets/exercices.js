@@ -139,7 +139,9 @@
       next.textContent = current === slides.length - 1 ? 'Fin de la série' : 'Exercice suivant →';
     }
     const slide = slides[current];
-    history.replaceState(null, '', '#' + slide.id);
+    // Do not move the initial keyboard navigation anchor to the first exercise.
+    // Existing deep links and deliberate exercise navigation still keep their URL.
+    if (focus || /^#exercice-\d+$/.test(location.hash)) history.replaceState(null, '', '#' + slide.id);
     if (focus) {
       const heading = slide.querySelector('h2');
       if (heading) {

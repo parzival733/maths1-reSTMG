@@ -98,7 +98,10 @@ def main():
             assert target.is_relative_to(ROOT), (name, 'path escapes site', link)
             assert target.is_file(), (name, 'missing target', link)
             if url.fragment and target.suffix == '.html':
-                assert unquote(url.fragment) in pages[target].ids, (name, 'missing anchor', link)
+                target_page = pages.get(target)
+                if target_page is None:
+                    target_page = Page(target.read_text(encoding='utf-8'))
+                assert unquote(url.fragment) in target_page.ids, (name, 'missing anchor', link)
             links_checked += 1
         if path.parent.name == 'cours':
             assert page.classes['lesson-content'] == 1, name

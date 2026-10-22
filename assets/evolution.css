@@ -24,3 +24,21 @@
 @media print{.evo-page{max-width:none;width:auto!important;margin:0;padding:0}.site-header,.site-footer,.local-status,.evo-note.navigation-only,.exam-toolbar,.practice-nav,.evo-form,.no-print,.exam-correction,.exam-correction summary{display:none!important}.exam-block{border:0;border-radius:0;margin:20px 0;padding:0}.exam-block h2{break-after:avoid}.exam-block li{break-inside:avoid}.exam-answer-space{height:48px}.exam-correction p,.exam-correction li{font-size:11pt}.exam-print-answers .exam-correction{display:block!important;break-before:page;border:0}.exam-print-answers .exam-correction>*:not(summary){display:block!important}.exam-print-answers .exam-correction summary{display:block!important;font-size:17pt}.evo-page a{color:#000}.exam-table{break-inside:avoid}.evo-grid{display:block}.evo-card{break-inside:avoid;margin-bottom:16px;border:1px solid #bbb}.evo-small{color:#333}body{background:#fff!important}h1{font-size:25pt!important}.exam-intro{color:#333}}
 
 @media print{.evo-page p,.evo-page li{font-size:11pt;line-height:1.5}.exam-automatisms>ol{columns:2;column-gap:28px}.exam-answer-space{height:22px;margin:8px 0}.exam-block+.exam-block{break-before:page}.exam-correction{font-size:11pt}.page-intro{margin-block:0 18px!important}.exam-intro{padding:8px 0}.exam-block h2{font-size:18pt}}
+
+/* Closeout: keep primary links legible against their filled background. */
+a.button.button-primary{color:#fff}
+.graph-index,.art-scribble{color:#665477}
+/* Native file inputs have an intrinsic minimum size; allow text-spacing reflow. */
+.progress-data .action-row{min-width:0}
+.progress-data label{min-width:0;max-width:100%;overflow-wrap:anywhere}
+#progress-import{box-sizing:border-box;display:block;max-width:100%;min-width:0;width:100%;margin-top:8px;font:inherit}
+#progress-import::file-selector-button{max-width:100%;white-space:normal}
+/* Reserve room for the generated first exercise, without hiding static content. */
+#exercise-mounted:has(>p:only-child){min-height:800px}
+
+/* Reserve enhancement space only when scripts are enabled; no-JS reading stays compact. */
+@media screen and (scripting:enabled){
+ .lesson-immersive .lesson-reading-controls[hidden]{display:flex!important;visibility:hidden}
+ #practice-app[hidden]{display:block!important;visibility:hidden}
+ #practice-loading{position:absolute;max-width:65ch}
+}

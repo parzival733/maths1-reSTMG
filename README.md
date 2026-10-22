@@ -205,3 +205,15 @@ Maintenance : `python3 tools/build_fallbacks.py` regenere les lectures sans Java
 Validation supplementaire : `node tests/test_acquis.js`, `node tests/test_parcours.js`, `node tests/test_domaines.js`, `python3 tests/test_evolution.py`, `python3 tests/browser_evolution.py`. `tests/evolution-mathematics.json` conserve les empreintes des banques mathematiques anterieures. Les changements volontaires du contenu protege par `interface-content.json` sont documentes : presentation de l'algorithmique, versions sans JavaScript et ameliorations du validateur/retour de saisie. Les generateurs mathematiques et les enonces JSON initiaux restent inchanges.
 
 Retours arriere : commencer par un deploiement de previsualisation. Un retour en production peut utiliser le dernier deploiement Cloudflare valide, ou un commit de revert de cette evolution ; ne pas forcer `main` ou ecraser des changements concurrents. Les sauvegardes locales des eleves ne sont jamais supprimees par un deploiement de code ; leur schema reste versionne.
+
+
+## Cloture technique et pedagogique du 23 octobre 2026
+
+- `couverture.html` et `donnees/couverture-programme.json` relient les trois cohortes aux 26 familles de notions et aux ressources existantes. Le diagnostic court ne pretend pas mesurer tout le programme.
+- Treize familles de retours sur erreurs reconnaissables dans les revisions ; une bonne reponse ne peut pas etre classee parmi ces erreurs. Aucun texte brut de reponse n'est enregistre.
+- Deux activites transversales supplementaires dans le repere Terminale : interpolation exponentielle par moyenne geometrique, comparaison des sommes de carres pour un ensemble fini de modeles. Les exemples Python et les domaines sont executes par les tests.
+- `tests/test_cloture.js` parcourt les 24 etats de parametres des 183 modeles et verifie leur periodicite. Les domaines bornes et exclus sont controles par contrats explicites et contre-exemples. `tests/test_cloture.py` recalcule les sujets blancs, verifie les domaines initiaux et les correspondances de programme.
+- `tests/browser_cloture.py` examine toutes les pages avec axe-core, plusieurs etats interactifs, le clavier, les noms accessibles, le reflow et l'espacement du texte. Il mesure huit pages en reseau mobile simule sur trois passages. Il ne constitue pas une certification WCAG/RGAA, une mesure INP terrain ou un essai humain.
+- `tools/prepare_browser.sh` utilise Chrome/Chromium deja installe, puis verifie son lancement. Tous les workflows de non-regression l'emploient, au lieu d'une installation systeme potentiellement bloquante.
+- Documents de reception : `docs/recette-cloture.md`, `docs/audit-et-arbitrages.md`, `docs/validation-humaine.md`. Les renseignements civils de l'editeur, la validation avec des lecteurs d'ecran et les observations en classe ne sont pas inventes.
+- Sauvegarde avant cloture : `backup/avant-cloture-20261023`, commit `6249d85afe5526a4fa81a71e9d9213101028f8e5`. Retour par deploiement connu ou commit revert, jamais en ecrasant des changements concurrents.

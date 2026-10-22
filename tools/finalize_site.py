@@ -6,7 +6,7 @@ from html import escape,unescape
 import re
 ROOT=Path(__file__).resolve().parents[1]
 ORIGIN='https://mathstmgdls.pages.dev'
-VERSION='20261022-evolution1'
+VERSION='20261023-cloture1'
 
 def main():
     urls=[]
@@ -18,7 +18,8 @@ def main():
         nav=re.search(r'<nav class="main-nav"[^>]*>(.*?)</nav>',text,re.S)
         if nav and '>Progresser</a>' not in nav[0]:text=text[:nav.end()-6]+f'<a href="{base}progresser.html">Progresser</a>'+text[nav.end()-6:]
         if 'assets/evolution.css' not in text:text=text.replace('</head>',f'<link rel="stylesheet" href="{base}assets/evolution.css?v={VERSION}"></head>',1)
-        text=re.sub(r'(assets/interface\.css\?v=)[^"\s]+',r'\g<1>'+VERSION,text)
+        text=re.sub(r'(assets/(?:interface|evolution)\.css\?v=)[^"\s]+',r'\g<1>'+VERSION,text)
+        text=re.sub(r'(assets/(?:acquis|parcours|parcours-data|progres|exercices)\.js\?v=)[^"\s]+',r'\g<1>'+VERSION,text)
         if 'footer-links' not in text and '</footer>' in text:
             text=text.replace('</footer>',f'<div class="container footer-links"><a href="{base}mes-progres.html">Mes progr\u00e8s</a> \u00b7 <a href="{base}a-propos.html">\u00c0 propos et donn\u00e9es</a> \u00b7 <a href="{base}accessibilite.html">Accessibilit\u00e9</a></div></footer>')
         if '<meta property="og:type"' not in text:

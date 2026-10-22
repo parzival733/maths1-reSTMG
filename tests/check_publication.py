@@ -20,7 +20,7 @@ ORIGIN = 'https://mathstmgdls.pages.dev'
 FILES = ('index.html', 'progresser.html', 'diagnostic.html', 'revisions.html',
          'mes-progres.html', 'preparer-bac.html', 'entrainement/sujet-blanc-1.html',
          'entrainement/sujet-blanc-2.html', 'assets/acquis.js', 'assets/parcours.js',
-         'assets/exercices.js', 'robots.txt', 'sitemap.xml')
+         'assets/exercices.js', 'assets/parcours-data.js', 'couverture.html', 'robots.txt', 'sitemap.xml')
 
 def fetch(path: str):
     request = Request(ORIGIN + '/' + path,
@@ -46,7 +46,7 @@ def verify():
             assert headers.get_content_type() == 'text/plain', headers.get('Content-Type')
         if path == 'sitemap.xml':
             sitemap = ET.fromstring(body)
-            assert len(sitemap.findall('{*}url')) == 69
+            assert {e.text for e in sitemap.findall('{*}url/{*}loc')} == {e.text for e in ET.fromstring((ROOT/'sitemap.xml').read_text()).findall('{*}url/{*}loc')}
         checked.append({'path': path, 'status': status, 'url': url, 'matches_checkout': True})
     missing = 'controle-404-' + uuid.uuid4().hex + '/introuvable'
     status, _, body, _ = fetch(missing)
