@@ -24,23 +24,25 @@ jobs:
           assert hashlib.sha256(packed).hexdigest()=='40d35f04dcc8aa7ee6e639dee34e6b2f80cd961afad2fde696dfe1b1c83a94b2'
           rows=json.loads(lzma.decompress(packed))
           assert len(rows)==95
-          for row in rows:
-              path=Path(row['path'])
-              assert not path.is_absolute() and '..' not in path.parts
-              assert not any(p.startswith('.') and p!='.github' for p in path.parts)
-              assert len(path.parts)==1 or path.parts[0] in {'assets','tests','tools','donnees','entrainement','docs','cours','exercices','terminale','annexes','.github'}
-              old=path.read_bytes() if path.exists() else b''
-              assert (hashlib.sha256(old).hexdigest() if path.exists() else None)==row['old'],str(path)
-              text=row.get('text')
-              if text is None:
-                  text=old.decode('utf-8')
-                  for start,end,replacement in reversed(row['edits']):
-                      assert 0<=start<=end<=len(text)
-                      text=text[:start]+replacement+text[end:]
-              data=text.encode('utf-8')
-              assert hashlib.sha256(data).hexdigest()==row['new'],str(path)
-              path.parent.mkdir(parents=True,exist_ok=True)
-              path.write_bytes(data)
+          def apply(rows):
+              for row in rows:
+                  path=Path(row['path'])
+                  assert not path.is_absolute() and '..' not in path.parts
+                  assert not any(p.startswith('.') and p!='.github' for p in path.parts)
+                  assert len(path.parts)==1 or path.parts[0] in {'assets','tests','tools','donnees','entrainement','docs','cours','exercices','terminale','annexes','.github'}
+                  old=path.read_bytes() if path.exists() else b''
+                  assert (hashlib.sha256(old).hexdigest() if path.exists() else None)==row['old'],str(path)
+                  text=row.get('text')
+                  if text is None:
+                      text=old.decode('utf-8')
+                      for start,end,replacement in reversed(row['edits']):
+                          assert 0<=start<=end<=len(text)
+                          text=text[:start]+replacement+text[end:]
+                  data=text.encode('utf-8')
+                  assert hashlib.sha256(data).hexdigest()==row['new'],str(path)
+                  path.parent.mkdir(parents=True,exist_ok=True)
+                  path.write_bytes(data)
+          apply(rows)
           print('95 corrections restaurees et verifiees.')
           path=Path('tests/validate_site.py')
           text=path.read_text(encoding='utf-8')
@@ -73,7 +75,13 @@ jobs:
           path=Path('docs/audit-et-arbitrages.md')
           text=path.read_text().replace('sont les seules empreintes prot\u00e9g\u00e9es renouvel\u00e9es dans ce lot.','et les corrections de r\u00f4les ARIA (sans changement de texte) sont les seules empreintes prot\u00e9g\u00e9es renouvel\u00e9es dans ce lot.')
           path.write_text(text)
+          packed=base64.b64decode(Path('.github/cloture-extra.b64').read_text().strip(),validate=True)
+          assert hashlib.sha256(packed).hexdigest()=='2fb746a324edfc05e99507a86e41a334ec3d7a945d094354a251c85568118974'
+          extra=json.loads(lzma.decompress(packed));assert len(extra)==5
+          apply(extra)
+          print('Diagnostic partiel, tests et stabilite visuelle corriges.')
           PY
+          python3 tools/finalize_site.py
       - name: Tous les tests mathematiques et structurels
         run: |
           for f in assets/*.js; do node --check "$f"; done
@@ -112,7 +120,7 @@ jobs:
           AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
       - name: Enregistrer uniquement les sources validees
         run: |
-          rm .github/cloture-part-*.b64 .github/workflows/prepare-cloture.yml
+          rm .github/cloture-part-*.b64 .github/cloture-extra.b64 .github/workflows/prepare-cloture.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -u
