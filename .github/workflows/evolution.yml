@@ -1,0 +1,54 @@
+name: Verification pedagogique et publication
+on:
+  push:
+    branches: [main, travail/evolution-20261022]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evolution:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Invariants, diagnostic et donnees locales
+        run: |
+          for f in assets/*.js; do node --check "$f"; done
+          node tests/test_acquis.js
+          node tests/test_parcours.js
+          node tests/test_domaines.js
+          python3 tests/test_evolution.py
+      - name: Navigateur reel, stockage, accessibilite et impression
+        run: |
+          python3 -m pip install --quiet playwright==1.55.0
+          python3 -m playwright install --with-deps chromium
+          python3 tests/browser_evolution.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: controle-evolution
+          path: .qa-evolution/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
+  publication:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: evolution
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Controler la version publique sans la modifier
+        run: python3 tests/check_publication.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: controle-publication
+          path: .qa-publication/
+          include-hidden-files: true
+          retention-days: 7
