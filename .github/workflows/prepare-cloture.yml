@@ -42,6 +42,12 @@ jobs:
               path.parent.mkdir(parents=True,exist_ok=True)
               path.write_bytes(data)
           print('95 corrections restaurees et verifiees.')
+          path=Path('tests/validate_site.py')
+          text=path.read_text(encoding='utf-8')
+          old="                assert unquote(url.fragment) in pages[target].ids, (name, 'missing anchor', link)"
+          new="                target_page = pages.get(target)\n                if target_page is None:\n                    target_page = Page(target.read_text(encoding='utf-8'))\n                assert unquote(url.fragment) in target_page.ids, (name, 'missing anchor', link)"
+          assert text.count(old)==1
+          path.write_text(text.replace(old,new),encoding='utf-8')
           PY
       - name: Tous les tests mathematiques et structurels
         run: |
