@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /tests/
+Disallow: /tools/
+Disallow: /.github/
+Sitemap: https://mathstmgdls.pages.dev/sitemap.xml

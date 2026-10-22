@@ -131,6 +131,15 @@
       $('rapid-error').hidden = false; $('rapid-error').focus();
     }
   }
+  function remember(q,s,outcome) {
+    if (s.progressRecorded) return; s.progressRecorded = true;
+    if (!window.MathsAcquis) return;
+    const A = window.MathsAcquis;
+    document.dispatchEvent(new CustomEvent('maths:attempt', {detail:{
+      skill:A.skillFor(q),source:'calcul',template:q.id,variant:A.hash(q.prompt),outcome,
+      error:q.id==='p-successives' && A && window.QuickMath.check(s.value,{expected:'0',unit:q.unit})?'taux-addition':''
+    }}));
+  }
   function validate(event) {
     event.preventDefault(); if (!active()) return;
     save(); const q = questions[current], s = states[current]; if (!q || s.revealed) return;
@@ -138,14 +147,14 @@
       $('rapid-feedback').textContent = 'Écris un nombre ou une fraction valide, par exemple −3, 1,25 ou 2/3. Le dénominateur ne peut pas être nul.';
       $('rapid-feedback').className = 'rapid-feedback is-wrong'; $('rapid-answer').setAttribute('aria-invalid','true'); return;
     }
-    const right = A.check(s.value,q); if (s.first === null) s.first = right; s.correct = right;
+    const right = A.check(s.value,q); if (s.first === null) { s.first = right; remember(q,s,right?(s.usedHint?'assisted':'independent'):'retry'); } s.correct = right;
     s.message = right ? (s.first ? 'Juste dès le premier essai. Explique aussi ta méthode sur feuille.' : 'Juste après un nouvel essai. La méthode progresse ; le score du premier essai reste inchangé.') : 'Pas encore. Vérifie le signe et les étapes ; utilise une fraction si le résultat n’est pas un décimal fini.';
     render();
   }
   function reveal() {
     tick(); if (phase === 'paused' || phase === 'ready') return;
     save(); const s = states[current];
-    if (phase !== 'finished' && s.first === null) s.first = false;
+    if (phase !== 'finished' && s.first === null) { s.first = false; remember(questions[current],s,'revealed'); }
     s.revealed = true; s.message = s.first ? 'Correction consultée après une réponse juste.' : 'Correction affichée : aucun point ajouté. Relis la méthode avant la question suivante.';
     render();
   }
@@ -170,6 +179,7 @@
       const s = states[i];
       if (s.first === null && !s.revealed && A.parse(s.value,q.unit)) {
         s.first = s.correct = A.check(s.value,q);
+        remember(q,s,s.first?(s.usedHint?'assisted':'independent'):'retry');
         s.message = s.correct ? 'Réponse juste enregistrée au moment du bilan.' : 'Réponse enregistrée au moment du bilan. Consulte la correction pour comprendre.';
       }
     });
@@ -199,7 +209,7 @@
     buildSheet(); document.body.classList.add('rapid-printing');
     const answers = $('rapid-print-answers').checked; document.body.classList.toggle('rapid-print-answers', answers);
     if (answers) {
-      states.forEach(s => { if (phase !== 'finished' && s.first === null) s.first = false; s.revealed = true; s.message = s.first ? 'Corrigé imprimé après une réponse juste.' : 'Corrigé imprimé : aucun point ajouté.'; });
+      states.forEach((s,i) => { if (phase !== 'finished' && s.first === null) { s.first = false; remember(questions[i],s,'revealed'); } s.revealed = true; s.message = s.first ? 'Corrigé imprimé après une réponse juste.' : 'Corrigé imprimé : aucun point ajouté.'; });
       render();
     }
   }
@@ -210,7 +220,7 @@
   document.querySelectorAll('[data-minutes]').forEach(button => button.addEventListener('click', () => { $('rapid-minutes').value = button.dataset.minutes; $('rapid-seconds').value = '0'; }));
   $('rapid-answer-form').addEventListener('submit', validate);
   $('rapid-answer').addEventListener('input', () => { if (active()) save(); $('rapid-answer').setAttribute('aria-invalid','false'); });
-  $('rapid-hint-button').addEventListener('click', () => { tick(); if (phase === 'paused') return; save(); states[current].hint = !states[current].hint; render(); });
+  $('rapid-hint-button').addEventListener('click', () => { tick(); if (phase === 'paused') return; save(); states[current].usedHint = true; states[current].hint = !states[current].hint; render(); });
   $('rapid-solution-button').addEventListener('click', reveal);
   $('rapid-previous').addEventListener('click', () => { tick(); if (phase === 'paused' || $('rapid-session').hidden) return; save(); if (current > 0) { current--; render(true); } });
   $('rapid-next').addEventListener('click', () => { tick(); if (phase === 'paused' || $('rapid-session').hidden) return; save(); if (current < questions.length-1) { current++; render(true); } else finish(); });

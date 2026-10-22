@@ -1,0 +1,122 @@
+{
+  "exercices/evolutions.html": {
+    "kind": "exercise-json",
+    "sha256": "08cf5d2bd79670241639ddefe6e9fb1e588a7fb0b66026c61dd35dd193e3dcaa"
+  },
+  "exercices/suites-arithmetiques.html": {
+    "kind": "exercise-json",
+    "sha256": "be26f39ea312188411848b6db59c8a111ed4f7ad2f3e8121a2bd36da90617e5f"
+  },
+  "exercices/statistiques-descriptives.html": {
+    "kind": "exercise-json",
+    "sha256": "aef2c39e9dc15db5477416301b02af4cc1733b6a5e8dc9c242172fb6d65e1061"
+  },
+  "exercices/logique.html": {
+    "kind": "exercise-json",
+    "sha256": "e42569b32fdd45154352580ce3ac4d1009ae7d87c4d82b2059f607f26b79170f"
+  },
+  "exercices/suites-geometriques.html": {
+    "kind": "exercise-json",
+    "sha256": "7a5131d0e53ba8bc362ef87dc3b0cd8ce911b05a5b90a9db0db712cca657fc8a"
+  },
+  "exercices/variations.html": {
+    "kind": "exercise-json",
+    "sha256": "cee7c406d541bb66a459fed83fd57149f1388af0390f7a588f429053b0be01a9"
+  },
+  "exercices/probabilites-conditionnelles.html": {
+    "kind": "exercise-json",
+    "sha256": "cae04fe74d04667e69fc7708a2f77bf507fa66097cecac002e8e6cc40625df0e"
+  },
+  "exercices/derivees.html": {
+    "kind": "exercise-json",
+    "sha256": "177910224b1921b99877c76f9da7738141831f013588f1f483a36bfb7b16fd12"
+  },
+  "exercices/python-tableur.html": {
+    "kind": "exercise-json",
+    "sha256": "61397ce6021ab0614e22ed1ce5142ca78e0bd2d97bc194dda156a7203ac494ac"
+  },
+  "exercices/variables-aleatoires.html": {
+    "kind": "exercise-json",
+    "sha256": "20d5c678978bc0245d89270648c357fd385ad2e04c636d6ccc085e86687073c3"
+  },
+  "exercices/second-degre.html": {
+    "kind": "exercise-json",
+    "sha256": "2e0973a1228275413f944856194c936fc9f63bfd19a5c71a553264224a878947"
+  },
+  "exercices/bernoulli.html": {
+    "kind": "exercise-json",
+    "sha256": "8a5ef94ed89934e86b2dfa5e8fefbd021d80d7f1cf1f966be799d61ac8d17db1"
+  },
+  "exercices/statistiques-deux-variables.html": {
+    "kind": "exercise-json",
+    "sha256": "33eb76d33b05dd980ab94393a0ef925f60f22004934e78343f94b4755c261c2a"
+  },
+  "exercices/calcul.html": {
+    "kind": "exercise-json",
+    "sha256": "3132ae5ec8f423ff3333c2cf2cffd35930e3ade6af9f9d8548901d928c8df089"
+  },
+  "exercices/suites.html": {
+    "kind": "exercise-json",
+    "sha256": "7a18a4db8cfaf8f8afd94b91f6f2d5b7fa6f5a7b05780cfd43630cb79fe84151"
+  },
+  "assets/variants-donnees.js": {
+    "kind": "file",
+    "sha256": "c1663f3ae4157203d9154e57fb779b73ea80ce0434b2b40c7a789a952acd0655"
+  },
+  "assets/variants-reperes.js": {
+    "kind": "file",
+    "sha256": "a4955b3f2841a6bc4e6700cfe6906d1d1a7b5f625f94cf984a521254b3005b38"
+  },
+  "assets/variants-probabilites.js": {
+    "kind": "file",
+    "sha256": "625fbd861c1f3f684bc513c5322cc11c418ad405c3e2888686a11e21062e16ac"
+  },
+  "assets/variants-analyse.js": {
+    "kind": "file",
+    "sha256": "9c49ce3a65fe1d9cabd4513d71d56bdfce8351d37988449a587d27efd1e493df"
+  },
+  "assets/variants-fonctions.js": {
+    "kind": "file",
+    "sha256": "905c1f4f000d5b35ebf940820ad90d3ca2925dfcd8072fbf578ca404d7e7a075"
+  },
+  "assets/variants-suites.js": {
+    "kind": "file",
+    "sha256": "cf0c48080eee847716b6d9fa05311b777e0c92191ecba2d3f082dca1771e0758"
+  },
+  "assets/coaching-reperes.js": {
+    "kind": "file",
+    "sha256": "b135dfaaafe23731d86a702f3ca38673a28eee000a7148a42a482a293116520b"
+  },
+  "assets/coaching-suites.js": {
+    "kind": "file",
+    "sha256": "258f80b218e38bb361bde54bca5da60701888e028767146f106d7dc631c902d5"
+  },
+  "assets/coaching-general.js": {
+    "kind": "file",
+    "sha256": "7afe2160e4f9991f71c390fcab1ab1aef308c06b6f9135e9c9dea698c60603dd"
+  },
+  "assets/coaching-algebre.js": {
+    "kind": "file",
+    "sha256": "e39d28cffb3d09872b0fd8fff1b11d5ed7bdd919650f142316b1bae39a814d30"
+  },
+  "assets/coaching-donnees.js": {
+    "kind": "file",
+    "sha256": "053c5e3708b8023bf7c699d3b5b8f94424e5ec5c87affb4a6a268674ebcf33bc"
+  },
+  "assets/coaching-analyse.js": {
+    "kind": "file",
+    "sha256": "a844491951dd0cd44691aa9147700fc1dc86959b3d5649e6368b88c07fc7e0d6"
+  },
+  "assets/coaching-probabilites.js": {
+    "kind": "file",
+    "sha256": "a23430d03f70a78828e896b5da62f9c0f092d40b8060496d0903d22b85c158f4"
+  },
+  "assets/terminale-exercices.js": {
+    "kind": "file",
+    "sha256": "ecc6b27a18a6d5ec66feacf09ca6aa789da3db9952d47caa1ce423cc54335006"
+  },
+  "assets/calcul-rapide-data.js": {
+    "kind": "file",
+    "sha256": "9460c2643111d26e0977b2c02a2756f03575b8167fc390dd06057facb8d07019"
+  }
+}

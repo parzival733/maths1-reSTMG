@@ -62,6 +62,7 @@ def build():
     (ROOT/'sujets.html').write_text(document,encoding='utf-8')
     paths=[p for p in ROOT.rglob('*.html') if not any(part.startswith('.') for part in p.relative_to(ROOT).parts)]
     for path in paths:
+        if path.name=='404.html':continue
         text=path.read_text(encoding='utf-8')
         prefix='../'*len(path.relative_to(ROOT).parts[:-1])
         def add_nav(m):
@@ -88,4 +89,9 @@ def build():
         p.write_text(s,encoding='utf-8')
     print(f'SUJETS BUILD OK: 41 links; navigation on {len(paths)} pages.')
 
-if __name__=='__main__': build()
+if __name__=='__main__':
+    build()
+    from finalize_site import main as finalize
+    finalize()
+
+# After regenerating the catalogue, run tools/finalize_site.py to restore shared links and metadata.

@@ -99,6 +99,7 @@
 
   function markRow(row) {
     const controls = Array.from(row.querySelectorAll('[data-expect]'));
+    controls.forEach(control => control.setAttribute('aria-invalid', String(Boolean(control.value.trim()) && !isCorrect(control))));
     const hasEmpty = controls.some(control => !control.value.trim());
     const correct = controls.length > 0 && controls.every(isCorrect);
     row.classList.toggle('is-correct', correct);
@@ -319,6 +320,10 @@
     const form = slide.querySelector('.exercise-form');
     if (form) addCoaching(slide, form, index, coachingContext);
     if (!form) return;
+    form.querySelectorAll('.answer-row').forEach((row, r) => {
+      const status = row.querySelector('.answer-status');
+      if (status) { status.id = slug + '-feedback-' + index + '-' + r; row.querySelectorAll('[data-expect]').forEach(c => c.setAttribute('aria-describedby', status.id)); }
+    });
     const reset = form.querySelector('[data-action="reset"]');
     const correction = form.querySelector('details.check');
     const actions = form.querySelector('.exercise-actions');
@@ -373,6 +378,8 @@
     const onChange = event => {
       const row = event.target.closest('.answer-row');
       if (!row) return;
+      if (completed.delete(index)) updateProgress();
+      event.target.setAttribute('aria-invalid', 'false');
       row.classList.remove('is-correct', 'is-wrong', 'is-revealed');
       const status = row.querySelector('.answer-status');
       if (status) status.textContent = '';

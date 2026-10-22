@@ -1,3 +1,4 @@
+import os
 """Browser regressions for quick calculation, served below a GitHub Pages-like prefix."""
 from functools import partial
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
@@ -23,7 +24,7 @@ def main():
     base=f'http://127.0.0.1:{server.server_port}{PREFIX}'
     try:
         with sync_playwright() as p:
-            browser=p.chromium.launch()
+            browser=p.chromium.launch(**({"executable_path":os.environ["PLAYWRIGHT_CHROMIUM_EXECUTABLE"]} if os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE") else {}))
             context=browser.new_context(viewport={'width':1280,'height':900})
             page=context.new_page();errors=[]
             page.on('pageerror',lambda e:errors.append(str(e)))

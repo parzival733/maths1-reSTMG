@@ -1,3 +1,4 @@
+import os
 """Browser regression tests for both-level navigation and Terminale components."""
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -42,7 +43,7 @@ def main():
     failed = []
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch()
+            browser = p.chromium.launch(**({"executable_path":os.environ["PLAYWRIGHT_CHROMIUM_EXECUTABLE"]} if os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE") else {}))
             context = browser.new_context(viewport={'width':1280,'height':900},reduced_motion='reduce')
             page = context.new_page()
             page.on('pageerror',lambda error: errors.append(str(error)))

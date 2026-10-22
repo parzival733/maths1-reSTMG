@@ -2,12 +2,12 @@
 
 Site pédagogique en français, en HTML/CSS/JavaScript statiques. Un même design et les mêmes moteurs pédagogiques, avec **deux parcours séparés**.
 
-**[Ouvrir le site](https://parzival733.github.io/maths1-reSTMG/)**
+**[Ouvrir le site](https://mathstmgdls.pages.dev/)**
 
 | Niveau | Leçons | Exercices |
 | --- | --- | --- |
-| Première STMG | [Catalogue Première](https://parzival733.github.io/maths1-reSTMG/lecons.html) | [Séries Première](https://parzival733.github.io/maths1-reSTMG/exercices.html) |
-| Terminale STMG | [Catalogue Terminale](https://parzival733.github.io/maths1-reSTMG/terminale/lecons.html) | [Séries Terminale](https://parzival733.github.io/maths1-reSTMG/terminale/exercices.html) |
+| Première STMG | [Catalogue Première](https://mathstmgdls.pages.dev/lecons.html) | [Séries Première](https://mathstmgdls.pages.dev/exercices.html) |
+| Terminale STMG | [Catalogue Terminale](https://mathstmgdls.pages.dev/terminale/lecons.html) | [Séries Terminale](https://mathstmgdls.pages.dev/terminale/exercices.html) |
 
 Dépôt : [parzival733/maths1-reSTMG](https://github.com/parzival733/maths1-reSTMG).
 
@@ -93,7 +93,7 @@ Les pages d'exercices Terminale chargent, dans cet ordre, le moteur de variantes
 
 ## Données et confidentialité
 
-Aucune donnée personnelle, police distante, publicité ou traceur. Les réponses, variantes et simulations sont traitées localement sans transmission ni stockage. Aucun interpréteur Python n'est embarqué : les codes du cours se copient dans un environnement Python 3.
+Aucun compte, police distante, publicité ou traceur ajouté dans le code. Les réponses sont traitées localement sans transmission. Un suivi local facultatif, désactivé par défaut, conserve seulement les dates et catégories de résultats après activation ; jamais les réponses saisies. Les requêtes d’hébergement restent traitées par Cloudflare et les sources externes après clic. Aucun interpréteur Python n'est embarqué : les codes du cours se copient dans un environnement Python 3.
 
 `donnees/naissances-france-2018-2023.csv` contient six totaux annuels issus de l'[Insee Focus 339, figure 1](https://www.insee.fr/fr/statistiques/8282356). Le champ, l'unité et la période sont décrits dans `donnees/README.md`. Les autres situations chiffrées sont fictives et pédagogiques, pas des conseils financiers ou fiscaux.
 
@@ -148,7 +148,7 @@ La banque `assets/calcul-rapide-data.js` comprend **54 modeles** : 18 bases gene
 
 Chaque question comprend un indice, une correction expliquee et un lien vers sa lecon. Le bilan compte seulement les reponses justes au premier essai ; les corrections revelees ne rapportent pas de point. Les fractions equivalentes et les decimaux exacts sont acceptes par comparaison rationnelle (BigInt), sans eval et sans arrondis arbitraires. Le compte a rebours se regle avant le depart, de 15 secondes a 120 minutes. Il se lance explicitement avec la serie, propose pause/reprise et termine la serie a zero en evaluant les reponses deja saisies. Changer d'onglet ne suspend pas le delai. Le mode sans limite reste disponible. Le bilan termine ne peut plus etre modifie en consultant les corrections.
 
-Une fiche imprimable reprend la serie courante. Les corrections sont masquees dans la previsualisation et absentes de l'impression par defaut. Une case permet de les imprimer sur des pages separees ; les reponses non encore validees ne peuvent alors plus rapporter de point. Douze methodes et une serie papier de douze questions restent accessibles sans JavaScript. Aucun compte, suivi, transmission ou stockage persistant.
+Une fiche imprimable reprend la serie courante. Les corrections sont masquees dans la previsualisation et absentes de l'impression par defaut. Une case permet de les imprimer sur des pages separees ; les reponses non encore validees ne peuvent alors plus rapporter de point. Douze methodes et une serie papier de douze questions restent accessibles sans JavaScript. Aucun compte ni transmission des réponses. Le suivi local facultatif est décrit dans la section Évolution du 22 octobre 2026.
 
 Reference de l'epreuve pour 2026-2027 (session 2028) : [note de service du 11 septembre 2026](https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N), qui prevoit des questions a reponses courtes et interdit la calculatrice. Cette annexe ne constitue ni un sujet officiel ni une preparation exhaustive a toute l'epreuve.
 
@@ -185,3 +185,23 @@ Les PDF s’ouvrent chez leur source dans un nouvel onglet, sans iframe, sans co
 `assets/sujets.js` ajoute seulement la recherche (sans distinction des accents), le filtre par année et le choix du niveau. Le parcours par défaut est Première ; les 41 liens restent lisibles sans JavaScript. `?niveau=terminale` ouvre directement les archives de Terminale. Aucune réponse ni donnée personnelle n’est stockée.
 
 Contrôles : `python3 tests/test_sujets.py` (structure, contenu, mobile, filtres et navigation) et `python3 tests/check_sujets_sources.py` (vérification réseau explicite des PDF, non nécessaire pour servir le site).
+
+
+## Evolution du 22 octobre 2026
+
+Architecture statique conservee, sans framework, serveur applicatif, compte eleve ni abonnement. Point de retour : branche `backup/avant-evolution-20261022`, commit `280ae6bac5cc95ac5f665ce6ae2152ec0c9750b5`.
+
+- `progresser.html` : acces libre aux parcours ; `diagnostic.html` : dix questions sur cinq bases, sans categorisation definitive.
+- `revisions.html`, `assets/parcours-data.js` : 54 modeles exacts existants et neuf nouveaux modeles ; environ 70 % de questions ciblant les notions representees et 30 % de melange. Les autres notions renvoient aux chapitres ; ne pas promettre une couverture adaptative exhaustive.
+- `assets/acquis.js` : opt-in explicite, cle versionnee, 500 traces / 180 jours maximum ; pas de reponses brutes. Les traces expirees sont purgees a la prochaine lecture. Import/export uniquement local, controle de taille/version/types, suppression limitee a la cle du site. Le navigateur prive ou un stockage bloque peuvent empecher la sauvegarde sans bloquer le travail.
+- `assets/suivi-exercices.js` : la premiere tentative de chaque question concrete est observee au plus une fois par 24 heures. Une aide ou une correction n'est pas une reussite autonome. Le score de chapitre reste un score de seance, distinct du suivi.
+- Reprises proposees : 1 jour apres difficulte/aide ; 2 jours apres reussite recente, puis 7 et 21 jours apres reussites distinctes espacees d'au moins 48 heures. Heuristique transparente a evaluer avec des eleves, non diagnostic psychometrique.
+- `preparer-bac.html`, `entrainement/` : deux sujets blancs originaux de Premiere (6+14 points dont 2 de langue), huit problemes rediges dont deux de Terminale. Corriges et baremes pedagogiques, pas de notation automatique des copies ni de certification ministerielle.
+- `404.html`, `robots.txt`, `sitemap.xml` et URL canoniques : adresse principale Cloudflare ; aucune redirection destructive depuis l'ancien site. `_headers` ajoute une politique de securite compatible avec les scripts locaux ; ne pas ajouter de code inline executable sans revoir cette politique.
+- Accessibilite : tableaux de valeurs des graphiques, messages de correction relies aux champs, menu mobile sur deux lignes ; 24 series initiales sont lisibles sans JavaScript. La conformite RGAA/WCAG n'est pas certifiee et requiert une revue humaine avec lecteurs d'ecran. L'identite et les informations legales de l'editeur doivent etre completees par le responsable selon son statut, sans inventer ces donnees.
+
+Maintenance : `python3 tools/build_fallbacks.py` regenere les lectures sans JavaScript a partir des memes modeles. `python3 tools/build_sujets.py` appelle le finaliseur idempotent ; `python3 tools/finalize_site.py` remet les liens partages et metadonnees. `donnees/entrainements.json` est le jeu de reference arithmetique et de bareme des sujets blancs ; garder ces donnees synchronisees avec les pages HTML.
+
+Validation supplementaire : `node tests/test_acquis.js`, `node tests/test_parcours.js`, `node tests/test_domaines.js`, `python3 tests/test_evolution.py`, `python3 tests/browser_evolution.py`. `tests/evolution-mathematics.json` conserve les empreintes des banques mathematiques anterieures. Les changements volontaires du contenu protege par `interface-content.json` sont documentes : presentation de l'algorithmique, versions sans JavaScript et ameliorations du validateur/retour de saisie. Les generateurs mathematiques et les enonces JSON initiaux restent inchanges.
+
+Retours arriere : commencer par un deploiement de previsualisation. Un retour en production peut utiliser le dernier deploiement Cloudflare valide, ou un commit de revert de cette evolution ; ne pas forcer `main` ou ecraser des changements concurrents. Les sauvegardes locales des eleves ne sont jamais supprimees par un deploiement de code ; leur schema reste versionne.

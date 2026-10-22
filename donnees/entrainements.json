@@ -1,0 +1,690 @@
+[
+  {
+    "id": "sujet-blanc-1",
+    "title": "Sujet blanc 1",
+    "autos": [
+      {
+        "prompt": "Calculer 3/4 + 1/8.",
+        "answer": "7/8",
+        "solution": "3/4 = 6/8 ; la somme vaut 7/8.",
+        "ref": [
+          3,
+          4,
+          "/",
+          1,
+          8,
+          "/",
+          "+"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Calculer (-3)² - 2 × 4.",
+        "answer": "1",
+        "solution": "Le carré vaut 9 ; on soustrait 8.",
+        "ref": [
+          -3,
+          2,
+          "pow",
+          2,
+          4,
+          "*",
+          "-"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Calculer 15 % de 80.",
+        "answer": "12",
+        "solution": "80 × 15/100 = 12.",
+        "ref": [
+          80,
+          15,
+          "*",
+          100,
+          "/"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Un prix de 50 euros augmente de 20 %. Donner le nouveau prix en euros.",
+        "answer": "60",
+        "solution": "50 × 1,2 = 60.",
+        "ref": [
+          50,
+          6,
+          "*",
+          5,
+          "/"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Après une baisse de 20 %, un prix vaut 64 euros. Donner le prix initial.",
+        "answer": "80",
+        "solution": "Le coefficient est 0,8 : 64/0,8 = 80.",
+        "ref": [
+          64,
+          4,
+          5,
+          "/",
+          "/"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Résoudre 3x + 5 = 20. Donner x.",
+        "answer": "5",
+        "solution": "3x = 15, donc x = 5.",
+        "ref": [
+          20,
+          5,
+          "-",
+          3,
+          "/"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "f(x) = 2x - 3 pour tout réel x. Calculer f(-2).",
+        "answer": "-7",
+        "solution": "2 × (-2) - 3 = -7.",
+        "ref": [
+          2,
+          -2,
+          "*",
+          3,
+          "-"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "g(x) = x² - 4x pour tout réel x. Calculer g′(3).",
+        "answer": "2",
+        "solution": "g′(x) = 2x - 4, donc g′(3) = 2.",
+        "ref": [
+          2,
+          3,
+          "*",
+          4,
+          "-"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "u₀ = 5 et u(n+1) = u(n) + 3. Donner u₄.",
+        "answer": "17",
+        "solution": "Quatre accroissements : 5 + 4 × 3 = 17.",
+        "ref": [
+          5,
+          4,
+          3,
+          "*",
+          "+"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "v₀ = 2 et v(n+1) = 2v(n). Donner v₃.",
+        "answer": "16",
+        "solution": "2 × 2³ = 16.",
+        "ref": [
+          2,
+          2,
+          3,
+          "pow",
+          "*"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "P(A) = 3/10. Donner la probabilité de l’événement contraire.",
+        "answer": "7/10",
+        "solution": "1 - 3/10 = 7/10.",
+        "ref": [
+          1,
+          3,
+          10,
+          "/",
+          "-"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Calculer la moyenne de 8, 10 et 15.",
+        "answer": "11",
+        "solution": "(8 + 10 + 15)/3 = 11.",
+        "ref": [
+          8,
+          10,
+          "+",
+          15,
+          "+",
+          3,
+          "/"
+        ],
+        "points": 0.5
+      }
+    ],
+    "problems": [
+      {
+        "title": "Produire et d&#233;cider",
+        "context": "Dans un mod&#232;le fictif, x d&#233;signe une quantit&#233; produite en dizaines d&#8217;objets, avec x dans [0 ; 10]. La recette et le co&#251;t, en centaines d&#8217;euros, sont R(x) = 12x et C(x) = x&#178; + 20. Le b&#233;n&#233;fice est B(x) = R(x) - C(x). Le mod&#232;le est &#233;tudi&#233; sur l&#8217;intervalle r&#233;el [0 ; 10].",
+        "domain": [
+          0,
+          10
+        ],
+        "samples": [
+          0,
+          2,
+          6,
+          10
+        ],
+        "questions": [
+          {
+            "prompt": "Exprimer B(x), puis calculer B(0).",
+            "answer": "-20",
+            "solution": "B(x) = -x² + 12x - 20. B(0) = -20 : une perte de 2 000 euros.",
+            "ref": [
+              -20
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Vérifier B(x) = -(x - 2)(x - 10), puis résoudre B(x) ≥ 0 sur [0 ; 10].",
+            "answer": "[2;10]",
+            "solution": "Le développement donne -x² + 12x - 20. Entre 2 et 10, (x - 2)(x - 10) est négatif ou nul. Ainsi B(x) ≥ 0 pour x dans [2 ; 10].",
+            "ref": null,
+            "points": 1
+          },
+          {
+            "prompt": "Calculer B′(x), puis résoudre B′(x) = 0.",
+            "answer": "6",
+            "solution": "B′(x) = -2x + 12 ; B′(x) = 0 si et seulement si x = 6.",
+            "ref": [
+              12,
+              2,
+              "/"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Justifier les variations de B sur [0 ; 10].",
+            "answer": "croissante puis decroissante",
+            "solution": "B′ est positive sur [0 ; 6[, nulle en 6, négative sur ]6 ; 10]. B croît jusqu’à 6 puis décroît.",
+            "ref": null,
+            "points": 1
+          },
+          {
+            "prompt": "Calculer le bénéfice maximal et l’exprimer en euros.",
+            "answer": "1600",
+            "solution": "B(6) = -36 + 72 - 20 = 16 centaines d’euros, soit 1 600 euros.",
+            "ref": [
+              0,
+              6,
+              2,
+              "pow",
+              "-",
+              12,
+              6,
+              "*",
+              "+",
+              20,
+              "-",
+              100,
+              "*"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Un responsable affirme : « Produire 100 objets maximise le bénéfice. » Réfuter cette affirmation avec une comparaison chiffrée.",
+            "answer": "0",
+            "solution": "100 objets correspondent à x = 10 : B(10) = 0. Produire 60 objets donne 1 600 euros de bénéfice dans ce modèle. Le responsable confond quantité et bénéfice.",
+            "ref": [
+              0,
+              10,
+              2,
+              "pow",
+              "-",
+              12,
+              10,
+              "*",
+              "+",
+              20,
+              "-"
+            ],
+            "points": 1
+          }
+        ],
+        "math_points": 6,
+        "language_points": 1
+      },
+      {
+        "title": "Satisfaction et population de r&#233;f&#233;rence",
+        "context": "Une enqu&#234;te fictive porte sur 200 clients. Parmi les 120 abonn&#233;s, 96 sont satisfaits. Parmi les 80 non-abonn&#233;s, 48 sont satisfaits. On choisit uniform&#233;ment un client. A : &#171; le client est abonn&#233; &#187; ; S : &#171; le client est satisfait &#187;.",
+        "questions": [
+          {
+            "prompt": "Donner les nombres d’abonnés non satisfaits, de non-abonnés non satisfaits et le nombre total de clients satisfaits.",
+            "answer": "144",
+            "solution": "120 - 96 = 24 ; 80 - 48 = 32 ; 96 + 48 = 144 clients satisfaits. Barème : 0,25 + 0,25 + 0,5 point.",
+            "ref": [
+              96,
+              48,
+              "+"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Calculer P(S).",
+            "answer": "18/25",
+            "solution": "P(S) = 144/200 = 18/25.",
+            "ref": [
+              144,
+              200,
+              "/"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Calculer P(S sachant A) et expliquer le dénominateur utilisé.",
+            "answer": "4/5",
+            "solution": "On se limite aux 120 abonnés : P(S sachant A) = 96/120 = 4/5.",
+            "ref": [
+              96,
+              120,
+              "/"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Les événements A et S sont-ils indépendants ? Justifier.",
+            "answer": "non",
+            "solution": "P(S sachant A) = 4/5 = 20/25, différent de P(S) = 18/25. Comme P(A) est non nul, cette différence prouve la non-indépendance.",
+            "ref": null,
+            "points": 1
+          },
+          {
+            "prompt": "Calculer la probabilité que le client soit abonné sachant qu’il est satisfait.",
+            "answer": "2/3",
+            "solution": "Parmi les 144 clients satisfaits, 96 sont abonnés : P(A sachant S) = 96/144 = 2/3.",
+            "ref": [
+              96,
+              144,
+              "/"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "On effectue deux choix indépendants avec remise parmi les abonnés. Calculer la probabilité qu’au moins un des deux clients soit satisfait.",
+            "answer": "24/25",
+            "solution": "La probabilité de non-satisfaction est 1/5. Le contraire de « au moins un satisfait » est « aucun satisfait » : 1 - (1/5)² = 24/25. La remise justifie le maintien du modèle.",
+            "ref": [
+              1,
+              1,
+              5,
+              "/",
+              2,
+              "pow",
+              "-"
+            ],
+            "points": 1
+          }
+        ],
+        "math_points": 6,
+        "language_points": 1
+      }
+    ]
+  },
+  {
+    "id": "sujet-blanc-2",
+    "title": "Sujet blanc 2",
+    "autos": [
+      {
+        "prompt": "Calculer (2/3) ÷ (4/9).",
+        "answer": "3/2",
+        "solution": "(2/3) × (9/4) = 3/2.",
+        "ref": [
+          2,
+          3,
+          "/",
+          4,
+          9,
+          "/",
+          "/"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Calculer 4 - 3 × (-2).",
+        "answer": "10",
+        "solution": "On soustrait -6 : 4 + 6 = 10.",
+        "ref": [
+          4,
+          3,
+          -2,
+          "*",
+          "-"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Une valeur passe de 80 à 100. Donner son taux d’évolution en %. ",
+        "answer": "25",
+        "solution": "(100 - 80)/80 × 100 = 25 %.",
+        "ref": [
+          100,
+          80,
+          "-",
+          80,
+          "/",
+          100,
+          "*"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Une valeur augmente de 10 % puis de 20 %. Donner le taux global en %. ",
+        "answer": "32",
+        "solution": "1,1 × 1,2 = 1,32, soit +32 %.",
+        "ref": [
+          11,
+          10,
+          "/",
+          6,
+          5,
+          "/",
+          "*",
+          1,
+          "-",
+          100,
+          "*"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Résoudre 5x - 7 = 8. Donner x.",
+        "answer": "3",
+        "solution": "5x = 15, donc x = 3.",
+        "ref": [
+          8,
+          7,
+          "+",
+          5,
+          "/"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "f(x) = 4x + 1 sur les réels. Donner l’antécédent de 13.",
+        "answer": "3",
+        "solution": "4x + 1 = 13, donc x = 3.",
+        "ref": [
+          13,
+          1,
+          "-",
+          4,
+          "/"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Donner le coefficient directeur de la droite passant par A(1 ; 2) et B(3 ; 8).",
+        "answer": "3",
+        "solution": "(8 - 2)/(3 - 1) = 3.",
+        "ref": [
+          8,
+          2,
+          "-",
+          3,
+          1,
+          "-",
+          "/"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "g(x) = x³ pour tout réel x. Calculer g′(2).",
+        "answer": "12",
+        "solution": "g′(x) = 3x² ; g′(2) = 12.",
+        "ref": [
+          3,
+          2,
+          2,
+          "pow",
+          "*"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "u₀ = 12 et u(n+1) = u(n) + 3. Donner u₄.",
+        "answer": "24",
+        "solution": "12 + 4 × 3 = 24.",
+        "ref": [
+          12,
+          4,
+          3,
+          "*",
+          "+"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "P(A) = 3/10 et P(B sachant A) = 1/2. Donner P(A ∩ B).",
+        "answer": "3/20",
+        "solution": "On multiplie le long du chemin : (3/10)(1/2) = 3/20.",
+        "ref": [
+          3,
+          10,
+          "/",
+          1,
+          2,
+          "/",
+          "*"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "Deux notes 10 et 16 ont respectivement les coefficients 2 et 1. Donner leur moyenne pondérée.",
+        "answer": "12",
+        "solution": "(2 × 10 + 16)/3 = 12.",
+        "ref": [
+          2,
+          10,
+          "*",
+          16,
+          "+",
+          3,
+          "/"
+        ],
+        "points": 0.5
+      },
+      {
+        "prompt": "X vaut 0 avec probabilité 3/4 et 8 avec probabilité 1/4. Calculer E(X).",
+        "answer": "2",
+        "solution": "0 × 3/4 + 8 × 1/4 = 2.",
+        "ref": [
+          8,
+          4,
+          "/"
+        ],
+        "points": 0.5
+      }
+    ],
+    "problems": [
+      {
+        "title": "Deux projets de d&#233;veloppement",
+        "context": "Au d&#233;but du mois num&#233;rot&#233; 0, une association compte 80 adh&#233;rents. Le projet A pr&#233;voit 20 adh&#233;rents suppl&#233;mentaires chaque mois : u(n) est l&#8217;effectif au d&#233;but du mois n. Le projet B mod&#233;lise une hausse de 25 % par mois &#224; partir du m&#234;me effectif, not&#233; v(n). Les pr&#233;visions sont des valeurs th&#233;oriques, &#233;ventuellement non enti&#232;res.",
+        "questions": [
+          {
+            "prompt": "Donner u(1) et u(2).",
+            "answer": "120",
+            "solution": "u(1) = 100 et u(2) = 120. Chaque réponse vaut 0,5 point.",
+            "ref": [
+              80,
+              2,
+              20,
+              "*",
+              "+"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Donner une expression de u(n) pour un entier naturel n.",
+            "answer": "80+20n",
+            "solution": "La suite est arithmétique de premier terme 80 et de raison 20 : u(n) = 80 + 20n.",
+            "ref": null,
+            "points": 1
+          },
+          {
+            "prompt": "Chercher le premier rang n tel que u(n) ≥ 200. Vérifier le rang précédent.",
+            "answer": "6",
+            "solution": "80 + 20n ≥ 200 équivaut à n ≥ 6. u(5) = 180 et u(6) = 200.",
+            "ref": [
+              200,
+              80,
+              "-",
+              20,
+              "/"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Donner le coefficient multiplicateur du projet B et calculer v(2).",
+            "answer": "125",
+            "solution": "Le coefficient est 1,25 = 5/4. v(1) = 100 ; v(2) = 125.",
+            "ref": [
+              80,
+              5,
+              4,
+              "/",
+              2,
+              "pow",
+              "*"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Comparer les deux prévisions au mois 3. Pourquoi cela ne prouve-t-il pas que B sera toujours meilleur dans la réalité ?",
+            "answer": "625/4",
+            "solution": "u(3) = 140 et v(3) = 156,25. B est supérieur dans le modèle à ce rang ; une croissance de 25 % chaque mois n’est pas une garantie réelle.",
+            "ref": [
+              80,
+              5,
+              4,
+              "/",
+              3,
+              "pow",
+              "*"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "On initialise u = 80 puis on répète quatre fois u = u + 20. Donner la valeur finale et le rang auquel elle correspond.",
+            "answer": "160",
+            "solution": "La valeur finale est 160, soit u(4). Les quatre passages viennent après l’initialisation u(0).",
+            "ref": [
+              80,
+              4,
+              20,
+              "*",
+              "+"
+            ],
+            "points": 1
+          }
+        ],
+        "math_points": 6,
+        "language_points": 1
+      },
+      {
+        "title": "Fr&#233;quentation et limites d&#8217;une pr&#233;vision",
+        "context": "Un commerce note sa fr&#233;quentation y en centaines de visites sur quatre p&#233;riodes x : (1 ; 12), (2 ; 16), (3 ; 18), (4 ; 22). On envisage un ajustement affine. Les donn&#233;es sont fictives.",
+        "questions": [
+          {
+            "prompt": "Calculer les coordonnées du point moyen G.",
+            "answer": "17",
+            "solution": "La moyenne des x est (1+2+3+4)/4 = 2,5 et celle des y est 68/4 = 17 : G(2,5 ; 17).",
+            "ref": [
+              12,
+              16,
+              "+",
+              18,
+              "+",
+              22,
+              "+",
+              4,
+              "/"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Calculer le point moyen G1 des deux premières observations et G2 des deux dernières.",
+            "answer": "20",
+            "solution": "G1(1,5 ; 14) et G2(3,5 ; 20). Chaque point vaut 0,5 point.",
+            "ref": [
+              18,
+              22,
+              "+",
+              2,
+              "/"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Déterminer le coefficient directeur de la droite (G1G2).",
+            "answer": "3",
+            "solution": "a = (20 - 14)/(3,5 - 1,5) = 6/2 = 3.",
+            "ref": [
+              20,
+              14,
+              "-",
+              2,
+              "/"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "En déduire l’équation y = ax + b de cette droite.",
+            "answer": "19/2",
+            "solution": "14 = 3 × 1,5 + b ; b = 9,5. La droite est y = 3x + 9,5.",
+            "ref": [
+              14,
+              3,
+              3,
+              2,
+              "/",
+              "*",
+              "-"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Utiliser cette droite pour estimer la fréquentation à x = 6. Donner le résultat en visites.",
+            "answer": "2750",
+            "solution": "y = 3 × 6 + 9,5 = 27,5 centaines, soit 2 750 visites.",
+            "ref": [
+              3,
+              6,
+              "*",
+              19,
+              2,
+              "/",
+              "+",
+              100,
+              "*"
+            ],
+            "points": 1
+          },
+          {
+            "prompt": "Qualifier cette estimation et discuter l’affirmation : « Le commerce recevra exactement ce nombre de visites. »",
+            "answer": "extrapolation",
+            "solution": "x = 6 est en dehors des observations [1 ; 4] : c’est une extrapolation, explicitement demandée. Le modèle n’établit ni certitude ni causalité.",
+            "ref": null,
+            "points": 1
+          }
+        ],
+        "math_points": 6,
+        "language_points": 1
+      }
+    ]
+  }
+]

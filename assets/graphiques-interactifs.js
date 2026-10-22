@@ -268,7 +268,7 @@
       suites: 'Points bleus : suite arithmétique. Points orange : suite géométrique. Les points restent séparés.',
       derivee: 'Courbe bleue : fonction. Droite orange : tangente au point vert.'
     };
-    const note = el('p', 'math-lab__note', legends[key]);
+    const note = el('p', 'math-lab__note', legends[key] + (key==='suites'?'':' La fenêtre du graphique n’est pas une restriction du domaine : les fonctions affichées ici sont définies sur les réels.'));
     visual.append(note);
     const controls = el('div', 'math-lab__controls');
     const values = el('div', 'math-lab__readout');
@@ -339,7 +339,7 @@
     answer.id = id + '-answer';
     answer.type = 'text';
     answer.autocomplete = 'off';
-    answer.inputMode = 'decimal';
+    answer.inputMode = 'text';
     answer.setAttribute('aria-label', 'Ta réponse numérique');
     const check = el('button', '', 'Vérifier ma réponse');
     check.type = 'submit';
@@ -355,13 +355,13 @@
     exercise.append(question, answer, check, next, feedback);
     exercise.addEventListener('submit', event => {
       event.preventDefault();
-      const raw = answer.value.trim().replace(/\s+/g,'').replace(',', '.');
-      if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(raw)) {
-        feedback.textContent = 'Entre un nombre, avec un point ou une virgule.';
-        return;
-      }
+      const raw = answer.value.trim().replace(/[−–—]/g,'-').replace(/\s+/g,'').replace(/,/g,'.');
+      const parts=raw.split('/'), valid=parts.length<=2 && parts.every(x=>/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(x));
+      const value=valid ? Number(parts[0])/(parts.length===2?Number(parts[1]):1) : NaN;
+      if (!Number.isFinite(value)) { feedback.textContent='Entre un nombre ou une fraction valide, avec un dénominateur non nul.'; return; }
       const expected = config.questions(p)[questionIndex].answer;
-      if (Math.abs(Number(raw) - expected) < 0.011) {
+      const rounded=Math.sign(expected)*Math.round(Math.abs(expected)*100+1e-9)/100;
+      if (Math.abs(value-expected)<1e-9 || Math.abs(value-rounded)<1e-9) {
         feedback.textContent = 'Bravo ! Tu as trouvé la bonne réponse.';
         feedback.dataset.result = 'correct';
       } else {
@@ -373,13 +373,26 @@
     function update() {
       draw({svg, title:svgTitle, desc:svgDesc}, key, p, config, id);
       values.textContent = config.explanation(p);
+      const table = el('table', 'math-lab__values-table');
+      table.append(el('caption', '', 'Valeurs avec les paramètres actuels (arrondies au centième si nécessaire)'));
+      const tr = el('tr');
+      (key === 'suites' ? ['Rang n', 'u(n)', 'v(n)'] : ['x', 'f(x)']).forEach(t => { const th=el('th','',t); th.scope='col'; tr.append(th); });
+      const head=el('thead'); head.append(tr); table.append(head); const body=el('tbody');
+      const xs=key==='suites'?[0,1,2,3,4,5,6]:[-2,-1,0,1,2];
+      xs.forEach(x => { const row=el('tr'); const th=el('th','',String(x)); th.scope='row'; row.append(th);
+        (key==='suites'?[arithmetic(p,x),geometric(p,x)]:[config.calculate(p,x)]).forEach(v=>row.append(el('td','',fmt(v)))); body.append(row); });
+      table.append(body); dataWrap.replaceChildren(table);
       question.textContent = 'Question ' + (questionIndex + 1) + '/' +
         config.questions(p).length + ' : ' + config.questions(p)[questionIndex].text;
       answer.value = '';
       feedback.textContent = '';
       delete feedback.dataset.result;
     }
-    root.replaceChildren(title, introduction, layout, exercise);
+    const dataDetails = el('details', 'math-lab__data');
+    const dataSummary = el('summary', '', 'Lire les valeurs du graphique en tableau');
+    const dataWrap = el('div', 'math-lab__table-wrap');
+    dataDetails.append(dataSummary, dataWrap);
+    root.replaceChildren(title, introduction, layout, dataDetails, exercise);
     root.setAttribute('aria-labelledby', id + '-title');
     if (requested === 'variations') {
       const help = el('p', 'math-lab__note',

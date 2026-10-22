@@ -135,7 +135,7 @@ def main():
     assert 'data-category="atelier"' in catalog_raw
     assert 'option value="atelier"' in catalog_raw
     assert '121 exercices de mathématiques dans 15 séries' in exercises_raw
-    assert '8 exercices de programmation facultatifs' in exercises_raw
+    assert '8 exercices de programmation transversaux' in exercises_raw
     for slug in COURSES:
         if slug == 'python-tableur':
             continue

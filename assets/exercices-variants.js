@@ -48,7 +48,7 @@
   function unorderedValues(value) {
     const input = String(value).trim().replace(/^\{|\}$/g, '')
       .replace(/\bx\s*=\s*/gi, '');
-    const tokens = input.split(/\s*(?:;|,|\bet\b)\s*/i);
+    const tokens = /;|\bet\b/i.test(input) ? input.split(/\s*(?:;|\bet\b)\s*/i) : input.split(/\s*,\s*/);
     if (tokens.length < 2 || tokens.some(token => !token.trim())) return null;
     const numbers = tokens.map(readNumber);
     return numbers.every(Number.isFinite) ? numbers.sort((a, b) => a - b) : null;

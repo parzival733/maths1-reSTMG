@@ -108,11 +108,11 @@ def main():
             # Every screen uses the same stylesheet and a usable four-link navigation.
             paths=sorted(p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*.html') if not any(part.startswith('.') for part in p.relative_to(ROOT).parts))
             representatives=['index.html','lecons.html','exercices.html','cours/fonctions.html','exercices/fonctions.html','terminale/lecons.html','terminale/cours/t-logarithme.html','annexes/calcul-rapide.html']
-            for name in (representatives if INLINE else paths):
+            for name in (representatives if INLINE else [x for x in paths if x != "404.html"]):
                 for width in [320,390,1280]:
                     page=load(name,width)
                     expect(page.locator('h1')).to_be_visible()
-                    expect(page.locator('.main-nav a')).to_have_count(5)
+                    expect(page.locator('.main-nav a')).to_have_count(6)
                     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),('overflow',name,width)
                     if name in representatives and width in [390,1280]:
                         page.screenshot(path=str(output/f'{name.replace("/","-")}-{width}.png'),full_page=False)

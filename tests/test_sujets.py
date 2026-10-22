@@ -44,8 +44,9 @@ def main():
         text=p.read_text();page=pages[p.resolve()]
         assert page.tags['h1']==1 and page.tags['main']==1
         assert len(page.ids)==len(set(page.ids)),p
+        if p.name=='404.html':continue
         nav=re.search(r'<nav\b[^>]*class="main-nav"[^>]*>[\s\S]*?</nav>',text).group()
-        assert nav.count('<a ')==5 and nav.count('>Sujets</a>')==1,p
+        assert nav.count('<a ')==6 and nav.count('>Sujets</a>')==1,p
         for link in page.links:
             u=urlsplit(link)
             if u.scheme or u.netloc:continue
@@ -103,7 +104,7 @@ def main():
                 for name in ['sujets.html','index.html','lecons.html','cours/fonctions.html','exercices/fonctions.html','terminale/lecons.html','terminale/cours/t-logarithme.html','annexes/calcul-rapide.html']:
                     page.goto(base+name)
                     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'),(name,width)
-                    links=page.locator('.main-nav a');expect(links).to_have_count(5)
+                    links=page.locator('.main-nav a');expect(links).to_have_count(6)
                     for link in links.all():
                         assert link.bounding_box()['height']>=44
                         assert link.evaluate('e=>e.scrollWidth<=e.clientWidth+1'),('clipped nav',name,width)
@@ -116,7 +117,9 @@ def main():
                         if width==1280:page.screenshot(path=str(out/'sujets-terminale-desktop.png'),full_page=True)
                     else:
                         page.get_by_role('link',name='Sujets',exact=True).click()
-                        expect(page.locator('.subject-card:visible')).to_have_count(10)
+                        expected_level = 'terminale' if name.startswith('terminale/') else 'premiere'
+                        expect(page.locator('input[name=level][value=' + expected_level + ']')).to_be_checked()
+                        expect(page.locator('.subject-card:visible')).to_have_count(31 if expected_level == 'terminale' else 10)
             assert not external,('unexpected external page load',external)
             nojs=browser.new_context(java_script_enabled=False,viewport={'width':390,'height':900})
             plain=nojs.new_page();plain.goto(base+'sujets.html')

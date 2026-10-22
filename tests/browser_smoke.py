@@ -3,6 +3,7 @@ Development dependencies: playwright==1.55.0 and its Chromium browser.
 Run python3 tests/browser_smoke.py from any directory.
 """
 from __future__ import annotations
+import os
 import functools
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -28,7 +29,7 @@ def main():
              + sorted((ROOT / 'exercices').glob('*.html')))
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch()
+            browser = p.chromium.launch(**({"executable_path":os.environ["PLAYWRIGHT_CHROMIUM_EXECUTABLE"]} if os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE") else {}))
             context = browser.new_context()
             page = context.new_page()
             page.on('pageerror', lambda error: errors.append(str(error)))
@@ -98,7 +99,7 @@ def main():
             expect(page.locator('#atelier .lesson-card')).to_have_count(1)
             expect(page.locator('#reperes .lesson-card')).to_have_count(4)
             page.goto(base + 'exercices/python-tableur.html')
-            expect(page.locator('h1')).to_contain_text('Atelier facultatif')
+            expect(page.locator('h1')).to_contain_text('Atelier numérique : Python et tableur')
             expect(page.locator('.exercise-block')).to_have_count(8)
             print('PARCOURS PAPIER OK: 15 leçons sans code, atelier facultatif, 13 programmes transférés, 121 + 8 exercices.')
 
