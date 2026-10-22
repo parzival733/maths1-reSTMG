@@ -12,40 +12,19 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Lire le depot
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
       - name: Verifier les pages et les exemples
         run: python3 tests/validate_site.py
       - name: Verifier JavaScript
         run: |
-          node --check assets/cours.js
-          node --check assets/apprentissage.js
-          node --check assets/graphiques-interactifs.js
-          node --check assets/exercices.js
-          node --check assets/exercices-renderer.js
-          node --check assets/exercices-variants.js
-          node --check assets/variants-fonctions.js
-          node --check assets/fonctions-coaching.js
-          node --check assets/coaching-general.js
-          node --check assets/coaching-algebre.js
-          node --check assets/coaching-suites.js
-          node --check assets/coaching-analyse.js
-          node --check assets/coaching-probabilites.js
-          node --check assets/coaching-reperes.js
-          node --check assets/coaching-donnees.js
-          node --check assets/variants-suites.js
-          node --check assets/variants-analyse.js
-          node --check assets/variants-probabilites.js
-          node --check assets/variants-reperes.js
-          node --check assets/variants-donnees.js
+          for f in assets/*.js; do node --check "$f"; done
       - name: Verifier les variantes mathematiques
         run: node tests/test_variants.js
       - name: Verifier les calculs des graphiques
         run: node tests/test_graphiques.js
       - name: Installer le navigateur de test
-        run: |
-          python3 -m pip install playwright==1.55.0
-          python3 -m playwright install --with-deps chromium
+        run: sh tools/prepare_browser.sh
       - name: Tester le site dans Chromium
         run: python3 tests/browser_smoke.py

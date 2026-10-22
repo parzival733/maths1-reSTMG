@@ -15,8 +15,7 @@ jobs:
         with:
           persist-credentials: false
       - run: |
-          python3 -m pip install playwright==1.55.0
-          python3 -m playwright install --with-deps chromium
+          . tools/prepare_browser.sh
           python3 tests/test_interface.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

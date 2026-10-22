@@ -17,15 +17,6 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
-      - name: Sources exactes pour revue
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: sources-cloture
-          path: |
-            .
-            !.git
-          include-hidden-files: true
-          retention-days: 3
       - name: Tests mathematiques et structurels complets
         run: |
           for f in assets/*.js; do node --check "$f"; done
@@ -41,14 +32,10 @@ jobs:
           node tests/test_parcours.js
           node tests/test_domaines.js
           python3 tests/test_evolution.py
-      - name: Utiliser Chrome sans telecharger les dependances systeme
+          python3 tests/test_cloture.py
+      - name: Preparer le navigateur sans mise a jour systeme
         timeout-minutes: 3
-        run: |
-          python3 -m pip install --quiet --retries 2 --timeout 30 playwright==1.55.0
-          BROWSER="$(command -v google-chrome || command -v chromium || true)"
-          test -n "$BROWSER"
-          echo "PLAYWRIGHT_CHROMIUM_EXECUTABLE=$BROWSER" >> "$GITHUB_ENV"
-          "$BROWSER" --version
+        run: sh tools/prepare_browser.sh
       - name: Non-regression complete dans le navigateur
         run: |
           python3 - <<'PY'
@@ -62,13 +49,10 @@ jobs:
           print('FAILED:',failed,flush=True)
           sys.exit(bool(failed))
           PY
-      - name: Audit complementaire si present
+      - name: Accessibilite et performances mobiles
         run: |
-          if test -f tests/test_cloture.py; then python3 tests/test_cloture.py; fi
-          if test -f tests/browser_cloture.py; then
-            npm install --prefix /tmp/stmg-qa --no-fund --no-audit axe-core@4.10.3
-            AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
-          fi
+          npm install --prefix /tmp/stmg-qa --no-fund --no-audit axe-core@4.10.3
+          AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
       - name: Preuves de reception
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

@@ -15,9 +15,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Installer le navigateur
-        run: |
-          python3 -m pip install playwright==1.55.0
-          python3 -m playwright install --with-deps chromium
+        run: sh tools/prepare_browser.sh
       - name: Verifier le catalogue et les interactions
         run: |
           node --check assets/sujets.js

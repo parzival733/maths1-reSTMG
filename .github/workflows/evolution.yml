@@ -9,7 +9,7 @@ permissions:
 jobs:
   evolution:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -23,8 +23,7 @@ jobs:
           python3 tests/test_evolution.py
       - name: Navigateur reel, stockage, accessibilite et impression
         run: |
-          python3 -m pip install --quiet playwright==1.55.0
-          python3 -m playwright install --with-deps chromium
+          . tools/prepare_browser.sh
           python3 tests/browser_evolution.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

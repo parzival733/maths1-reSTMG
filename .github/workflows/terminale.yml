@@ -24,16 +24,14 @@ jobs:
           node tests/test_terminale.js
           python3 tests/test_terminale.py
       - name: Installer le navigateur de test
-        run: |
-          python3 -m pip install playwright==1.55.0
-          python3 -m playwright install --with-deps chromium
+        run: sh tools/prepare_browser.sh
       - name: Verifier les interactions et les petits ecrans
         run: |
           python3 tests/browser_smoke.py
           python3 tests/browser_terminale.py
       - name: Conserver les captures de controle
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: captures-terminale
           path: .qa-terminale/*.png
