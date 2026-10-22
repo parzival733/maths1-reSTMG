@@ -53,6 +53,12 @@ jobs:
           new = "expect(page.locator('h1')).to_contain_text('Atelier num\u00e9rique : Python et tableur')"
           assert text.count(old) == 1, 'Expected obsolete title assertion not found uniquely'
           path.write_text(text.replace(old, new), encoding='utf-8')
+          path = Path('tests/test_sujets.py')
+          text = path.read_text(encoding='utf-8')
+          old = "page.get_by_role('link',name='Sujets',exact=True).click()\n                        expect(page.locator('.subject-card:visible')).to_have_count(10)"
+          new = "page.get_by_role('link',name='Sujets',exact=True).click()\n                        expected_level = 'terminale' if name.startswith('terminale/') else 'premiere'\n                        expect(page.locator('input[name=level][value=' + expected_level + ']')).to_be_checked()\n                        expect(page.locator('.subject-card:visible')).to_have_count(31 if expected_level == 'terminale' else 10)"
+          assert text.count(old) == 1, 'Expected subject navigation assertion not found uniquely'
+          path.write_text(text.replace(old, new), encoding='utf-8')
           PY
       - name: Sources pour revue de la version complete
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
