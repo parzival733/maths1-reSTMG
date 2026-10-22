@@ -1,0 +1,104 @@
+name: Finaliser et valider la cloture
+on:
+  push:
+    branches: [travail/cloture-20261023]
+permissions:
+  contents: write
+concurrency:
+  group: preparation-cloture
+  cancel-in-progress: true
+jobs:
+  validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Restaurer les corrections avec verification des empreintes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64,hashlib,json,lzma
+          parts=sorted(Path('.github').glob('cloture-part-*.b64'))
+          assert len(parts)==4
+          packed=base64.b64decode(''.join(p.read_text().strip() for p in parts),validate=True)
+          assert hashlib.sha256(packed).hexdigest()=='40d35f04dcc8aa7ee6e639dee34e6b2f80cd961afad2fde696dfe1b1c83a94b2'
+          rows=json.loads(lzma.decompress(packed))
+          assert len(rows)==95
+          for row in rows:
+              path=Path(row['path'])
+              assert not path.is_absolute() and '..' not in path.parts
+              assert not any(p.startswith('.') and p!='.github' for p in path.parts)
+              assert len(path.parts)==1 or path.parts[0] in {'assets','tests','tools','donnees','entrainement','docs','cours','exercices','terminale','annexes','.github'}
+              old=path.read_bytes() if path.exists() else b''
+              assert (hashlib.sha256(old).hexdigest() if path.exists() else None)==row['old'],str(path)
+              text=row.get('text')
+              if text is None:
+                  text=old.decode('utf-8')
+                  for start,end,replacement in reversed(row['edits']):
+                      assert 0<=start<=end<=len(text)
+                      text=text[:start]+replacement+text[end:]
+              data=text.encode('utf-8')
+              assert hashlib.sha256(data).hexdigest()==row['new'],str(path)
+              path.parent.mkdir(parents=True,exist_ok=True)
+              path.write_bytes(data)
+          print('95 corrections restaurees et verifiees.')
+          PY
+      - name: Tous les tests mathematiques et structurels
+        run: |
+          for f in assets/*.js; do node --check "$f"; done
+          python3 tests/validate_site.py
+          node tests/test_variants.js
+          node tests/test_graphiques.js
+          node tests/test_terminale.js
+          python3 tests/test_terminale.py
+          node tests/test_calcul_rapide.js
+          python3 tests/test_calcul_rapide.py
+          node tests/test_countdown.js
+          node tests/test_acquis.js
+          node tests/test_parcours.js
+          node tests/test_domaines.js
+          python3 tests/test_evolution.py
+          python3 tests/test_cloture.py
+      - name: Preparer le navigateur sans mise a jour systeme
+        timeout-minutes: 3
+        run: sh tools/prepare_browser.sh
+      - name: Tous les parcours existants et nouveaux
+        run: |
+          python3 - <<'PY'
+          import subprocess,sys
+          failed=[]
+          for name in ['browser_smoke.py','browser_terminale.py','browser_calcul_rapide.py','test_interface.py','test_sujets.py','browser_evolution.py']:
+              print('::group::'+name,flush=True)
+              result=subprocess.run([sys.executable,'tests/'+name],timeout=300)
+              print('::endgroup::',flush=True)
+              if result.returncode:failed.append(name)
+          print('FAILED:',failed,flush=True)
+          sys.exit(bool(failed))
+          PY
+      - name: Accessibilite, clavier, reflow et performances mobiles
+        run: |
+          npm install --prefix /tmp/stmg-qa --no-fund --no-audit axe-core@4.10.3
+          AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
+      - name: Enregistrer uniquement les sources validees
+        run: |
+          rm .github/cloture-part-*.b64 .github/workflows/prepare-cloture.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -u
+          git add '*.html' assets tests tools docs donnees sitemap.xml
+          git diff --cached --stat
+          git commit -m 'feat: cloture verifiee, couverture des programmes et corrections accessibilite'
+          git push origin HEAD:travail/cloture-20261023
+      - name: Rapports et captures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: cloture-verifiee
+          path: |
+            .qa-cloture/
+            .qa-evolution/
+            .qa-interface/
+            .qa-sujets/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
