@@ -17,7 +17,7 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import base64,hashlib,json,lzma
+          import base64,hashlib,json,lzma,re
           parts=sorted(Path('.github').glob('cloture-part-*.b64'))
           assert len(parts)==4
           packed=base64.b64decode(''.join(p.read_text().strip() for p in parts),validate=True)
@@ -48,6 +48,31 @@ jobs:
           new="                target_page = pages.get(target)\n                if target_page is None:\n                    target_page = Page(target.read_text(encoding='utf-8'))\n                assert unquote(url.fragment) in target_page.ids, (name, 'missing anchor', link)"
           assert text.count(old)==1
           path.write_text(text.replace(old,new),encoding='utf-8')
+          changes=[]
+          for path in list(Path('cours').glob('*.html'))+[Path('exercices/fonctions.html'),Path('assets/exercices-renderer.js')]:
+              text=path.read_text(encoding='utf-8')
+              new=text.replace('<div class="learning-path" aria-label=','<div class="learning-path" role="group" aria-label=')
+              new=new.replace('<div class="lesson-reading-controls" hidden aria-label=','<div class="lesson-reading-controls" role="group" hidden aria-label=')
+              new=re.sub(r'(<p class="correction-legend") aria-label="[^"]*"',r'\1',new)
+              if new!=text:
+                  assert re.sub(r'<[^>]*>','',new)==re.sub(r'<[^>]*>','',text)
+                  path.write_text(new,encoding='utf-8')
+                  changes.append(path.as_posix())
+          assert len(changes)==18
+          path=Path('tests/interface-content.json')
+          manifest=json.loads(path.read_text())
+          for name in changes:
+              if name in manifest:
+                  text=Path(name).read_text()
+                  part=re.search(r'<main\b[\s\S]*?</main>',text).group() if manifest[name]['part']=='main' else text
+                  manifest[name]['sha256']=hashlib.sha256(part.encode()).hexdigest()
+          path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+          path=Path('docs/recette-cloture.md')
+          text=path.read_text()+'\nLes libelles ARIA des groupes de lecture sont portes par un role group explicite. La legende des corrections conserve son texte visible sans aria-label sur un paragraphe generique. Ces modifications de semantique ne changent aucun texte mathematique.\n'
+          path.write_text(text)
+          path=Path('docs/audit-et-arbitrages.md')
+          text=path.read_text().replace('sont les seules empreintes prot\u00e9g\u00e9es renouvel\u00e9es dans ce lot.','et les corrections de r\u00f4les ARIA (sans changement de texte) sont les seules empreintes prot\u00e9g\u00e9es renouvel\u00e9es dans ce lot.')
+          path.write_text(text)
           PY
       - name: Tous les tests mathematiques et structurels
         run: |
