@@ -1,0 +1,23 @@
+name: Controle independant de la publication Cloudflare
+on:
+  push:
+    branches: [verification/publication-20261022]
+permissions:
+  contents: read
+jobs:
+  publication:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Comparer les fichiers publies aux sources validees
+        run: python3 tests/check_publication.py --attempts 2
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: preuve-publication-cloudflare
+          path: .qa-publication/
+          include-hidden-files: true
+          retention-days: 7
