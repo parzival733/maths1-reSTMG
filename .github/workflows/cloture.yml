@@ -1,0 +1,84 @@
+name: Reception complete Maths STMG
+on:
+  push:
+    branches: [main, travail/cloture-20261023]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cloture-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  reception:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Sources exactes pour revue
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: sources-cloture
+          path: |
+            .
+            !.git
+          include-hidden-files: true
+          retention-days: 3
+      - name: Tests mathematiques et structurels complets
+        run: |
+          for f in assets/*.js; do node --check "$f"; done
+          python3 tests/validate_site.py
+          node tests/test_variants.js
+          node tests/test_graphiques.js
+          node tests/test_terminale.js
+          python3 tests/test_terminale.py
+          node tests/test_calcul_rapide.js
+          python3 tests/test_calcul_rapide.py
+          node tests/test_countdown.js
+          node tests/test_acquis.js
+          node tests/test_parcours.js
+          node tests/test_domaines.js
+          python3 tests/test_evolution.py
+      - name: Utiliser Chrome sans telecharger les dependances systeme
+        timeout-minutes: 3
+        run: |
+          python3 -m pip install --quiet --retries 2 --timeout 30 playwright==1.55.0
+          BROWSER="$(command -v google-chrome || command -v chromium || true)"
+          test -n "$BROWSER"
+          echo "PLAYWRIGHT_CHROMIUM_EXECUTABLE=$BROWSER" >> "$GITHUB_ENV"
+          "$BROWSER" --version
+      - name: Non-regression complete dans le navigateur
+        run: |
+          python3 - <<'PY'
+          import subprocess,sys
+          failed=[]
+          for name in ['browser_smoke.py','browser_terminale.py','browser_calcul_rapide.py','test_interface.py','test_sujets.py','browser_evolution.py']:
+              print('::group::'+name,flush=True)
+              result=subprocess.run([sys.executable,'tests/'+name],timeout=300)
+              print('::endgroup::',flush=True)
+              if result.returncode:failed.append(name)
+          print('FAILED:',failed,flush=True)
+          sys.exit(bool(failed))
+          PY
+      - name: Audit complementaire si present
+        run: |
+          if test -f tests/test_cloture.py; then python3 tests/test_cloture.py; fi
+          if test -f tests/browser_cloture.py; then
+            npm install --prefix /tmp/stmg-qa --no-fund --no-audit axe-core@4.10.3
+            AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
+          fi
+      - name: Preuves de reception
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reception-cloture
+          path: |
+            .qa-evolution/
+            .qa-interface/
+            .qa-sujets/
+            .qa-cloture/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
