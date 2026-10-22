@@ -1,0 +1,97 @@
+name: Preparation evolution pedagogique
+on:
+  push:
+    branches: [travail/evolution-20261022]
+permissions:
+  contents: write
+jobs:
+  validation:
+    if: github.ref == 'refs/heads/travail/evolution-20261022'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Reconstruire les fichiers verifies localement
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, json, lzma
+          parts = sorted(Path('.github').glob('evolution-part-*.b64'))
+          assert len(parts) == 5, 'Incomplete transfer'
+          packed = base64.b64decode(''.join(p.read_text().strip() for p in parts), validate=True)
+          assert hashlib.sha256(packed).hexdigest() == 'a26ef87254e88a532f48c5a2679e64b2260be111142b5eb24425a027eea85ff7', 'Transfer checksum mismatch'
+          rows = json.loads(lzma.decompress(packed))
+          assert len(rows) == 45
+          for row in rows:
+              path = Path(row['path'])
+              assert not path.is_absolute() and '..' not in path.parts
+              assert not any(part.startswith('.') for part in path.parts)
+              assert path.parts[0] in {'assets','tests','tools','donnees','entrainement'} or len(path.parts) == 1
+              old = path.read_bytes() if path.exists() else b''
+              assert (hashlib.sha256(old).hexdigest() if path.exists() else None) == row['old'], str(path)
+              text = row.get('text')
+              if text is None:
+                  text = old.decode('utf-8')
+                  for start, end, replacement in reversed(row['edits']):
+                      assert 0 <= start <= end <= len(text)
+                      text = text[:start] + replacement + text[end:]
+              data = text.encode('utf-8')
+              assert hashlib.sha256(data).hexdigest() == row['new'], str(path)
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_bytes(data)
+          print('45 source files restored and verified.')
+          PY
+          python3 tools/migrate_evolution_html.py
+          python3 tools/build_fallbacks.py
+          python3 tools/build_fallbacks.py
+          python3 tools/build_sujets.py
+      - name: Tests mathematiques et structurels
+        run: |
+          for f in assets/*.js; do node --check "$f"; done
+          python3 tests/validate_site.py
+          node tests/test_variants.js
+          node tests/test_graphiques.js
+          node tests/test_terminale.js
+          python3 tests/test_terminale.py
+          node tests/test_calcul_rapide.js
+          python3 tests/test_calcul_rapide.py
+          node tests/test_countdown.js
+          node tests/test_acquis.js
+          node tests/test_parcours.js
+          node tests/test_domaines.js
+          python3 tests/test_evolution.py
+      - name: Installer le navigateur
+        run: |
+          python3 -m pip install --quiet playwright==1.55.0
+          python3 -m playwright install --with-deps chromium > /tmp/browser-install.log 2>&1 || { tail -40 /tmp/browser-install.log; exit 1; }
+      - name: Non-regression des parcours existants
+        run: |
+          python3 tests/browser_smoke.py
+          python3 tests/browser_terminale.py
+          python3 tests/browser_calcul_rapide.py
+          python3 tests/test_interface.py
+          python3 tests/test_sujets.py
+      - name: Diagnostic, stockage reel, CSP, lecture, impression et chrono
+        run: python3 tests/browser_evolution.py
+      - name: Enregistrer uniquement la version validee sur la branche de travail
+        run: |
+          rm .github/evolution-part-*.b64
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -u
+          git add '*.html' _headers robots.txt sitemap.xml assets donnees entrainement tools/*.py tests/*.py tests/*.js tests/*.json README.md
+          git diff --cached --name-only
+          git commit -m 'feat: diagnostic, revisions espacees locales, sujets blancs et fiabilite STMG'
+          git push origin HEAD:travail/evolution-20261022
+      - name: Captures et preuves de validation
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: validation-evolution
+          path: |
+            .qa-evolution/
+            .qa-interface/
+            .qa-sujets/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
