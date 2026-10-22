@@ -1,0 +1,26 @@
+name: Verification des annales pour la cloture
+on:
+  push:
+    branches: [verification/annales-cloture-20261023]
+permissions:
+  contents: read
+jobs:
+  sources:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verifier les empreintes des sujets d'origine
+        run: |
+          python3 -m pip install --quiet --retries 2 --timeout 30 pypdf==5.9.0
+          python3 tests/check_sujets_sources.py
+      - name: Rapport des liens sources
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: controle-annales-cloture
+          path: .qa-sujets/sources.json
+          include-hidden-files: true
+          retention-days: 7
