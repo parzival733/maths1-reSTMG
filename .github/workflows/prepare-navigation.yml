@@ -29,6 +29,11 @@ jobs:
           new="    assert '16 s\u00e9ries avec variantes et corrections.' in exercises_raw\n    assert 'exercices/python-tableur.html' in exercises_raw"
           assert s.count(old)==1
           p.write_text(s.replace(old,new))
+          p=Path('tests/test_navigation_simple.py');s=p.read_text()
+          old='  text=p.read_text();nav=re.search(r\'<nav class="main-nav"[^>]*>[\\s\\S]*?</nav>\',text)[0]\n  assert nav.count(\'<a \')==5 and \'>Progresser</a>\' not in nav,p'
+          new='  text=p.read_text()\n  if p.name==\'404.html\':\n   nav=re.search(r\'<nav[^>]*>[\\s\\S]*?</nav>\',text)[0]\n   assert nav.count(\'<a \')==4 and \'>Progresser</a>\' not in nav,p\n  else:\n   nav=re.search(r\'<nav class="main-nav"[^>]*>[\\s\\S]*?</nav>\',text)[0]\n   assert nav.count(\'<a \')==5 and \'>Progresser</a>\' not in nav,p'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new))
           PY
           python3 tools/finalize_site.py
       - name: Preserver tous les calculs et contenus pedagogiques
