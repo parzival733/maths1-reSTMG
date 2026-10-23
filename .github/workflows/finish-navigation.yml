@@ -1,0 +1,39 @@
+name: Finalisation des pages entrainement
+on:
+  push:
+    branches: [travail/navigation-simple-20261023]
+    paths: [.github/workflows/finish-navigation.yml]
+permissions:
+  contents: write
+jobs:
+  completion:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Finaliser la navigation des trois pages deja testees
+        run: |
+          python3 tools/finalize_site.py
+          python3 tests/validate_site.py
+          python3 tests/test_evolution.py
+          python3 tests/test_cloture.py
+      - name: Recontroler les liens et le suivi dans le navigateur
+        run: |
+          sh tools/prepare_browser.sh
+          python3 tests/test_navigation_simple.py
+      - name: Verifier et enregistrer les pages manquantes uniquement
+        run: |
+          python3 - <<'PY'
+          import hashlib,subprocess
+          from pathlib import Path
+          expected={'entrainement/problemes.html':'0b7ebab4aa98057c53912abd8e4fc70d69a01352753daa79390872d0c91abff3','entrainement/sujet-blanc-1.html':'9ac0088e9b8bdaebd5b7dd009853ec76056fb5693331f1070002e8ba2f171514','entrainement/sujet-blanc-2.html':'8c06d1d10faab285b2f23aaa08991f5dd523f4f63eb88789565fa6afc9397dbb'}
+          changed=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
+          assert changed==set(expected),changed
+          for name,digest in expected.items():assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest,name
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add entrainement
+          git commit -m 'fix: uniformiser la navigation des sujets blancs et des problemes'
+          git diff --exit-code
+          git push origin HEAD:travail/navigation-simple-20261023
