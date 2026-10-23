@@ -1,0 +1,33 @@
+name: Sources navigation et historique du graphique
+on:
+  push:
+    branches: [travail/navigation-simple-20261023]
+    paths: [.github/workflows/navigation-source.yml]
+permissions:
+  contents: read
+jobs:
+  sources:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Sources actuelles et versions anterieures
+        run: |
+          mkdir -p /tmp/navigation-source/current /tmp/navigation-source/history
+          git archive 10db4f8335d401df07c19683763069e13c2136ba | tar -x -C /tmp/navigation-source/current
+          git log -20 --format='%H %s' -- index.html > /tmp/navigation-source/history/commits.txt
+          for sha in $(git log -12 --format='%H' -- index.html); do
+            mkdir -p /tmp/navigation-source/history/$sha
+            git show $sha:index.html > /tmp/navigation-source/history/$sha/index.html
+            git show $sha:assets/styles.css > /tmp/navigation-source/history/$sha/styles.css
+            git show $sha:assets/interface.css > /tmp/navigation-source/history/$sha/interface.css 2>/dev/null || true
+          done
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: sources-navigation
+          path: /tmp/navigation-source/
+          include-hidden-files: true
+          retention-days: 3
