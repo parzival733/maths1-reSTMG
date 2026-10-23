@@ -46,7 +46,7 @@ def main():
         assert len(page.ids)==len(set(page.ids)),p
         if p.name=='404.html':continue
         nav=re.search(r'<nav\b[^>]*class="main-nav"[^>]*>[\s\S]*?</nav>',text).group()
-        assert nav.count('<a ')==6 and nav.count('>Sujets</a>')==1,p
+        assert nav.count('<a ')==5 and nav.count('>Sujets</a>')==1,p
         for link in page.links:
             u=urlsplit(link)
             if u.scheme or u.netloc:continue
@@ -104,7 +104,7 @@ def main():
                 for name in ['sujets.html','index.html','lecons.html','cours/fonctions.html','exercices/fonctions.html','terminale/lecons.html','terminale/cours/t-logarithme.html','annexes/calcul-rapide.html']:
                     page.goto(base+name)
                     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'),(name,width)
-                    links=page.locator('.main-nav a');expect(links).to_have_count(6)
+                    links=page.locator('.main-nav a');expect(links).to_have_count(5)
                     for link in links.all():
                         assert link.bounding_box()['height']>=44
                         assert link.evaluate('e=>e.scrollWidth<=e.clientWidth+1'),('clipped nav',name,width)

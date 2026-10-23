@@ -217,3 +217,26 @@ Retours arriere : commencer par un deploiement de previsualisation. Un retour en
 - `tools/prepare_browser.sh` utilise Chrome/Chromium deja installe, puis verifie son lancement. Tous les workflows de non-regression l'emploient, au lieu d'une installation systeme potentiellement bloquante.
 - Documents de reception : `docs/recette-cloture.md`, `docs/audit-et-arbitrages.md`, `docs/validation-humaine.md`. Les renseignements civils de l'editeur, la validation avec des lecteurs d'ecran et les observations en classe ne sont pas inventes.
 - Sauvegarde avant cloture : `backup/avant-cloture-20261023`, commit `6249d85afe5526a4fa81a71e9d9213101028f8e5`. Retour par deploiement connu ou commit revert, jamais en ecrasant des changements concurrents.
+
+## Navigation simplifiee - 23 octobre 2026
+
+Cinq entrees principales : Accueil, Lecons, Exercices, Sujets, Calcul rapide.
+La page Exercices de chaque niveau est le point de depart : chapitres en acces
+libre, deux raccourcis facultatifs (revision et diagnostic) et panneau Mes progres
+sur place. La cle de stockage et les resultats existants ne sont pas modifies.
+Les sujets blancs et les problemes corriges sont directement accessibles dans Sujets.
+Les anciennes pages-relais progresser.html et preparer-bac.html affichent le catalogue
+utile, sans redirection ; elles sont exclues du sitemap et ont une URL canonique adaptee.
+Les anciennes adresses des outils restent fonctionnelles pour les favoris existants.
+
+Le dessin d'accueil est exactement le HTML/SVG du premier commit dd451763.
+Seules les surcharges de style qui avaient aplati sa presentation sont retirees :
+carte violette inclinee et feuille interne inclinee, sans creation d'une image.
+Le test tests/home-art-baseline.json conserve son empreinte.
+
+Maintenance : tools/navigation_simple.py, appele par le finaliseur, conserve ces
+choix lors d'une regeneration du catalogue. tools/templates/inline-progress.fragment
+reutilise le moteur assets/progres.js, egalement utilise par l'ancienne adresse.
+Validation : python3 tests/test_navigation_simple.py, les suites historiques et
+l'audit automatise d'accessibilite restent actifs. Les attentes de navigation passent
+de six a cinq liens ; aucun test de correction mathematique n'est retire.

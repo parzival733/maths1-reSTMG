@@ -1,0 +1,5 @@
+{
+  "source_commit": "dd451763cd31563c65ee0777b1961a215b1ea45d",
+  "sha256": "6acb296d02c21ae27e8310b2fd5e00eaf84f2a6e37215fa99c5c74797666c060",
+  "note": "Original HTML/SVG reused unchanged; remove the later flattening CSS, do not generate an image."
+}

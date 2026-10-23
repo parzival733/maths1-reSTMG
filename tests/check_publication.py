@@ -17,7 +17,7 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 ORIGIN = 'https://mathstmgdls.pages.dev'
-FILES = ('index.html', 'progresser.html', 'diagnostic.html', 'revisions.html',
+FILES = ('exercices.html', 'terminale/exercices.html', 'sujets.html', 'assets/navigation-simple.js', 'assets/progres.js', 'assets/interface.css', 'assets/evolution.css', 'index.html', 'progresser.html', 'diagnostic.html', 'revisions.html',
          'mes-progres.html', 'preparer-bac.html', 'entrainement/sujet-blanc-1.html',
          'entrainement/sujet-blanc-2.html', 'assets/acquis.js', 'assets/parcours.js',
          'assets/exercices.js', 'assets/parcours-data.js', 'couverture.html', 'robots.txt', 'sitemap.xml')
@@ -39,7 +39,8 @@ def verify():
         assert urlsplit(url).netloc == urlsplit(ORIGIN).netloc, url
         assert hashlib.sha256(body).digest() == hashlib.sha256((ROOT / path).read_bytes()).digest(), (path, 'published version differs')
         if path.endswith('.html'):
-            expected = ORIGIN + ('/' if path == 'index.html' else '/' + path[:-5])
+            target = {'progresser.html':'exercices.html','preparer-bac.html':'sujets.html'}.get(path,path)
+            expected = ORIGIN + ('/' if target == 'index.html' else '/' + target[:-5])
             assert ('rel="canonical" href="' + expected + '"').encode() in body, path
             assert "script-src 'self'" in headers.get('Content-Security-Policy', ''), (path, 'CSP missing')
         if path == 'robots.txt':

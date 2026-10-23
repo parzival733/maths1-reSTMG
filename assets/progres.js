@@ -3,7 +3,9 @@
   'use strict';
   const A=window.MathsAcquis;if(!A)return;
   const $=id=>document.getElementById(id),panel=$('progress-controls');if(!panel)return;
-  const level=$('progress-level');level.value=new URLSearchParams(location.search).get('niveau')==='terminale'?'terminale':'premiere';
+  const embedded=panel.dataset.embedded==='true',base=panel.dataset.base||'';
+  const level=$('progress-level');level.value=panel.dataset.level||(new URLSearchParams(location.search).get('niveau')==='terminale'?'terminale':'premiere');
+  const link=path=>base+path;
   const say=text=>{$('progress-message').textContent=text;};
   const node=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e;};
   function draw(){
@@ -13,9 +15,17 @@
     const list=$('progress-list');list.replaceChildren();
     const items=A.store.all(level.value).filter(s=>s.last).sort((a,b)=>(a.due||Infinity)-(b.due||Infinity));
     const due=items.filter(s=>s.overdue);
-    $('progress-overview').textContent=!active?'Tu peux utiliser toutes les ressources sans activer le suivi.':items.length?`${items.length} notion(s) observ\u00e9e(s), ${due.length} \u00e0 revoir maintenant. Il ne s'agit pas d'une note ni d'un diagnostic d\u00e9finitif.`:'Aucune observation pour le moment. Commence par le diagnostic ou un exercice.';
-    $('progress-review').href='revisions.html?niveau='+level.value;
-    $('progress-diagnostic').href='diagnostic.html?niveau='+level.value;
+    $('progress-overview').textContent=!active?'Tu peux utiliser toutes les ressources sans activer le suivi.':items.length?`${items.length} notion(s) observ\u00e9e(s), ${due.length} \u00e0 revoir maintenant. Il ne s'agit pas d'une note ni d'un diagnostic d\u00e9finitif.`:'Aucun r\u00e9sultat pour le moment. Choisis un chapitre et commence un exercice.';
+    $('progress-review').href=link('revisions.html?niveau='+level.value);
+    if(embedded){
+      $('progress-state').textContent=active?'Mes r\u00e9sultats sur cet appareil':'Garder une trace de mes r\u00e9visions';
+      $('progress-overview').textContent=!active?'Les exercices fonctionnent aussi sans sauvegarde.':items.length?`${items.length} notion(s) travaill\u00e9e(s), ${due.length} \u00e0 revoir.`:'Aucun r\u00e9sultat pour le moment. Choisis un chapitre ci-dessous.';
+      $('progress-review').hidden=!active||!due.length;
+      $('progress-diagnostic').hidden=true;
+      list.hidden=!items.length;
+      const summary=$('progress-summary');if(summary)summary.textContent=active?(items.length?items.length+' notion(s) travaill\u00e9e(s)':'sauvegarde activ\u00e9e'):'facultatif';
+    }
+    $('progress-diagnostic').href=link('diagnostic.html?niveau='+level.value);
     for(const s of items){
       const item=node('article','', 'progress-card');
       item.append(node('h3',A.skills[s.skill].label));
@@ -25,8 +35,8 @@
       const recurrent=Object.entries(s.errors).filter(([,n])=>n>=2).map(([key])=>A.errorLabels[key]);
       if(recurrent.length)item.append(node('p','Point \u00e0 v\u00e9rifier dans les prochains exercices : '+recurrent.join(', ')+'.'));
       const links=node('p','', 'action-row');
-      for(const [label,href] of [['Revoir la le\u00e7on',s.course],['Exercices du chapitre',s.exercises]]){const a=node('a',label);a.href=href;links.append(a);}
-      const review=node('a','R\u00e9vision cibl\u00e9e');review.href='revisions.html?niveau='+level.value+'&notion='+encodeURIComponent(s.skill);links.append(review);item.append(links);list.append(item);
+      for(const [label,href] of [['Revoir la le\u00e7on',s.course],['Exercices du chapitre',s.exercises]]){const a=node('a',label);a.href=link(href);links.append(a);}
+      const review=node('a','R\u00e9vision cibl\u00e9e');review.href=link('revisions.html?niveau='+level.value+'&notion='+encodeURIComponent(s.skill));links.append(review);item.append(links);list.append(item);
     }
     if(!items.length)list.append(node('p','Tes prochains essais appara\u00eetront ici si le suivi est activ\u00e9. Une r\u00e9ponse r\u00e9v\u00e9l\u00e9e ou aid\u00e9e n\u2019est jamais compt\u00e9e comme une r\u00e9ussite autonome.'));
     if(A.store.error)say('Le stockage local est indisponible ou invalide. Les cours et exercices fonctionnent toujours. Tu peux exporter un autre fichier valide ou repartir de z\u00e9ro en activant le suivi.');

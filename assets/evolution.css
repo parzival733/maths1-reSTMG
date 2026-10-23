@@ -27,7 +27,6 @@
 
 /* Closeout: keep primary links legible against their filled background. */
 a.button.button-primary{color:#fff}
-.graph-index,.art-scribble{color:#665477}
 /* Native file inputs have an intrinsic minimum size; allow text-spacing reflow. */
 .progress-data .action-row{min-width:0}
 .progress-data label{min-width:0;max-width:100%;overflow-wrap:anywhere}
@@ -42,3 +41,31 @@ a.button.button-primary{color:#fff}
  #practice-app[hidden]{display:block!important;visibility:hidden}
  #practice-loading{position:absolute;max-width:65ch}
 }
+
+/* Simple revision entry: chapters first; optional tools do not block them. */
+.exercise-shortcuts{display:flex;gap:8px 20px;align-items:center;flex-wrap:wrap;margin:12px 0;color:var(--muted);font-size:14px}
+.exercise-shortcuts a,.return-to-exercises{display:inline-flex;align-items:center;min-height:44px}
+.inline-progress{margin:10px 0 22px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.inline-progress>summary{padding:12px 18px;min-height:48px;cursor:pointer;font-weight:650;color:var(--ink)}
+.optional-label{font-size:13px;font-weight:400;color:var(--muted);margin-left:8px}
+.inline-progress[open]{padding-bottom:18px}
+.inline-progress #progress-controls{padding:0 18px}
+.inline-progress h3{font-size:18px;margin:12px 0}
+.inline-progress .evo-form{margin:0}
+.inline-progress #progress-overview{margin:14px 0}
+.progress-list-compact{display:grid;gap:10px;margin:14px 0}
+.progress-list-compact .progress-card{padding:14px 18px}
+.progress-list-compact .progress-card h3{margin:0 0 5px}
+.inline-progress .progress-data{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+.inline-progress .progress-data>summary{cursor:pointer;min-height:44px;color:var(--muted);font-size:14px}
+.simple-exam-entry{margin:20px 0 28px;padding:20px 24px;background:#fff;border:1px solid var(--line);border-radius:14px}
+.simple-exam-entry h2{font-size:21px;margin:0 0 8px}
+.simple-exam-entry p{font-size:15px;color:var(--muted)}
+.simple-exam-entry .action-row{margin-top:12px}
+.simple-exam-entry .action-row a{min-height:44px;display:inline-flex;align-items:center}
+.return-to-exercises{gap:6px;font-size:14px;margin:12px 0}
+@media(max-width:520px){.exercise-shortcuts{gap:0 16px}.simple-exam-entry{padding:18px}.inline-progress>summary{padding:12px 14px}.inline-progress #progress-controls{padding:0 14px}}
+@media print{.exercise-shortcuts,.inline-progress,.return-to-exercises{display:none!important}}
+
+/* Keep readable labels on the restored original artwork. */
+.graph-index,.art-scribble{color:#665477}

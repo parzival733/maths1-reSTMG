@@ -112,7 +112,7 @@ def main():
                 for width in [320,390,1280]:
                     page=load(name,width)
                     expect(page.locator('h1')).to_be_visible()
-                    expect(page.locator('.main-nav a')).to_have_count(6)
+                    expect(page.locator('.main-nav a')).to_have_count(5)
                     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),('overflow',name,width)
                     if name in representatives and width in [390,1280]:
                         page.screenshot(path=str(output/f'{name.replace("/","-")}-{width}.png'),full_page=False)

@@ -57,10 +57,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .button:hover,.button-primary:hover { transform:none; box-shadow:none; }
 .hero { padding:44px 0 42px; gap:64px; }
 .hero h1 { font-size:clamp(42px,5vw,60px); letter-spacing:-2px; }
-.hero-art { transform:none; background:#f0eef7; border-color:#e3dff0; border-radius:20px; padding:20px; }
-.graph-paper { transform:none; box-shadow:none; border-radius:12px; }
 .accent-word::after { display:none; }
-.art-bottom { margin-top:16px; }
 .pathways { padding-top:26px; }
 .pathway-card { padding:25px; border-radius:16px; transition:border-color .15s; }
 .pathway-card:hover { transform:none; box-shadow:none; }

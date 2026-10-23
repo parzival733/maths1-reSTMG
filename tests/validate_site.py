@@ -137,8 +137,8 @@ def main():
     exercises_raw = (ROOT / 'exercices.html').read_text(encoding='utf-8')
     assert 'data-category="atelier"' in catalog_raw
     assert 'option value="atelier"' in catalog_raw
-    assert '121 exercices de mathématiques dans 15 séries' in exercises_raw
-    assert '8 exercices de programmation transversaux' in exercises_raw
+    assert '16 séries avec variantes et corrections.' in exercises_raw
+    assert 'exercices/python-tableur.html' in exercises_raw
     for slug in COURSES:
         if slug == 'python-tableur':
             continue

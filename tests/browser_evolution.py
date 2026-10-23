@@ -43,7 +43,7 @@ def main():
    for width in [320,390,768,1280]:
     page=load(name,width);expect(page.locator('h1')).to_be_visible()
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'),('overflow',name,width)
-    expect(page.locator('.main-nav a')).to_have_count(6)
+    expect(page.locator('.main-nav a')).to_have_count(5)
     if width in [390,1280] and name in ['progresser.html','preparer-bac.html','mes-progres.html','entrainement/sujet-blanc-1.html']:
      page.screenshot(path=str(out/(name.replace('/','-')+f'-{width}.png')))
     page.context.close()
