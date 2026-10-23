@@ -34,6 +34,8 @@ jobs:
           new='  text=p.read_text()\n  if p.name==\'404.html\':\n   nav=re.search(r\'<nav[^>]*>[\\s\\S]*?</nav>\',text)[0]\n   assert nav.count(\'<a \')==4 and \'>Progresser</a>\' not in nav,p\n  else:\n   nav=re.search(r\'<nav class="main-nav"[^>]*>[\\s\\S]*?</nav>\',text)[0]\n   assert nav.count(\'<a \')==5 and \'>Progresser</a>\' not in nav,p'
           assert s.count(old)==1
           p.write_text(s.replace(old,new))
+          p=Path('assets/evolution.css')
+          p.write_text(p.read_text()+'\n/* Keep readable labels on the restored original artwork. */\n.graph-index,.art-scribble{color:#665477}\n')
           PY
           python3 tools/finalize_site.py
       - name: Preserver tous les calculs et contenus pedagogiques
