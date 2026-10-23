@@ -17,10 +17,10 @@ jobs:
           python3 tests/validate_site.py
           python3 tests/test_evolution.py
           python3 tests/test_cloture.py
+      - name: Preparer le navigateur
+        run: sh tools/prepare_browser.sh
       - name: Recontroler les liens et le suivi dans le navigateur
-        run: |
-          sh tools/prepare_browser.sh
-          python3 tests/test_navigation_simple.py
+        run: python3 tests/test_navigation_simple.py
       - name: Verifier et enregistrer les pages manquantes uniquement
         run: |
           python3 - <<'PY'
