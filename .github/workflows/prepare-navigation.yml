@@ -24,6 +24,11 @@ jobs:
           Path('/tmp/navigation.patch').write_bytes(patch)
           subprocess.run(['git','apply','--check','/tmp/navigation.patch'],check=True)
           subprocess.run(['git','apply','/tmp/navigation.patch'],check=True)
+          p=Path('tests/validate_site.py');s=p.read_text()
+          old="    assert '121 exercices de math\u00e9matiques dans 15 s\u00e9ries' in exercises_raw\n    assert '8 exercices de programmation transversaux' in exercises_raw"
+          new="    assert '16 s\u00e9ries avec variantes et corrections.' in exercises_raw\n    assert 'exercices/python-tableur.html' in exercises_raw"
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new))
           PY
           python3 tools/finalize_site.py
       - name: Preserver tous les calculs et contenus pedagogiques
