@@ -36,6 +36,8 @@ jobs:
       - name: Preparer le navigateur sans mise a jour systeme
         timeout-minutes: 3
         run: sh tools/prepare_browser.sh
+      - name: Navigation directe et graphique original
+        run: python3 tests/test_navigation_simple.py
       - name: Non-regression complete dans le navigateur
         run: |
           python3 - <<'PY'
@@ -59,6 +61,7 @@ jobs:
         with:
           name: reception-cloture
           path: |
+            .qa-navigation/
             .qa-evolution/
             .qa-interface/
             .qa-sujets/
