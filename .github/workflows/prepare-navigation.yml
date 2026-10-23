@@ -1,0 +1,90 @@
+name: Navigation simple et graphique original
+on:
+  push:
+    branches: [travail/navigation-simple-20261023]
+    paths: [.github/navigation.patch.b64, .github/workflows/prepare-navigation.yml]
+permissions:
+  contents: write
+concurrency:
+  group: navigation-simple-validation
+  cancel-in-progress: true
+jobs:
+  validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Appliquer les seules sources preparees et reconstruire la navigation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64,gzip,hashlib,subprocess
+          patch=gzip.decompress(base64.b64decode(Path('.github/navigation.patch.b64').read_text(),validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='53527f16121be943a2ca17ff4239bea386afae97ab5afdbf6c36d622e58417cd'
+          Path('/tmp/navigation.patch').write_bytes(patch)
+          subprocess.run(['git','apply','--check','/tmp/navigation.patch'],check=True)
+          subprocess.run(['git','apply','/tmp/navigation.patch'],check=True)
+          PY
+          python3 tools/finalize_site.py
+      - name: Preserver tous les calculs et contenus pedagogiques
+        run: |
+          for f in assets/*.js; do node --check "$f"; done
+          python3 tests/validate_site.py
+          node tests/test_variants.js
+          node tests/test_graphiques.js
+          node tests/test_terminale.js
+          python3 tests/test_terminale.py
+          node tests/test_calcul_rapide.js
+          python3 tests/test_calcul_rapide.py
+          node tests/test_countdown.js
+          node tests/test_acquis.js
+          node tests/test_parcours.js
+          node tests/test_domaines.js
+          python3 tests/test_evolution.py
+          python3 tests/test_cloture.py
+      - name: Preparer Chrome sans installation systeme
+        run: sh tools/prepare_browser.sh
+      - name: Navigation directe et conservation des resultats
+        run: python3 tests/test_navigation_simple.py
+      - name: Six suites navigateur de non-regression
+        run: |
+          python3 - <<'PY'
+          import subprocess,sys
+          failed=[]
+          for name in ['browser_smoke.py','browser_terminale.py','browser_calcul_rapide.py','test_interface.py','test_sujets.py','browser_evolution.py']:
+              print('::group::'+name,flush=True)
+              r=subprocess.run([sys.executable,'tests/'+name],timeout=360)
+              print('::endgroup::',flush=True)
+              if r.returncode:failed.append(name)
+          assert not failed,failed
+          PY
+      - name: Accessibilite et performance sans supprimer de controle
+        run: |
+          npm install --prefix /tmp/stmg-qa --no-fund --no-audit axe-core@4.10.3
+          AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
+      - name: Enregistrer les fichiers valides sur la branche de travail seulement
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md assets tests tools cours exercices terminale annexes donnees docs *.html sitemap.xml robots.txt
+          python3 - <<'PY'
+          import subprocess
+          files=subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines()
+          assert files and all(not p.startswith('.github/') and '__pycache__' not in p and not p.startswith('.qa') for p in files)
+          print('Validated files:',len(files))
+          PY
+          git commit -m 'fix: navigation directe, progres sur place et graphique original restaure'
+          git push origin HEAD:travail/navigation-simple-20261023
+      - name: Conserver les preuves et captures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: navigation-verifiee
+          path: |
+            .qa-navigation/
+            .qa-cloture/
+            .qa-interface/
+            .qa-evolution/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
