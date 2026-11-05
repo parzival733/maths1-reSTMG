@@ -70,6 +70,9 @@ def main():
                         expect(page.locator('.support-scaffold')).to_have_count(1)
                         expect(page.locator('.study-quiz')).to_have_count(2)
                         expect(page.locator('.study-quiz form:visible')).to_have_count(2)
+                        # Téléphone : les options de lecture sont repliées derrière un bouton.
+                        if page.locator('.lesson-options-toggle').is_visible():
+                            page.locator('.lesson-options-toggle').click()
                         expect(page.locator('.lesson-reading-controls')).to_be_visible()
                         assert page.locator('.lesson-toc nav a').count() >= 6
                         assert page.evaluate("Array.from(document.querySelectorAll('.lesson-toc nav a')).every(a => document.getElementById(decodeURIComponent(a.hash.slice(1))))"), name
@@ -517,6 +520,8 @@ def main():
             # Ajustement de lecture et couleurs qui aident sans remplacer les mots.
             # "Suites" possede les trois types de bloc : formule, exemple, avertissement.
             page.goto(base + 'cours/suites.html')
+            if page.locator('.lesson-options-toggle').is_visible():
+                page.locator('.lesson-options-toggle').click()
             initial_size = page.locator('.lesson-content').evaluate('(el) => parseFloat(getComputedStyle(el).fontSize)')
             page.locator('#reading-large-toggle').click()
             enlarged_size = page.locator('.lesson-content').evaluate('(el) => parseFloat(getComputedStyle(el).fontSize)')

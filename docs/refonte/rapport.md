@@ -117,7 +117,7 @@ Captures complètes dans `docs/refonte/avant/` et `docs/refonte/apres/` (13 gaba
 - **Navigateur** : `browser_cloture`, `browser_smoke`, `browser_terminale`, `browser_evolution` et `browser_calcul_rapide` passent tous les cinq.
 - **Tests adaptés, sans affaiblissement** :
   - le dossier `docs/` n'est plus traité comme une page du site ;
-  - deux tests ouvrent le menu avant de mesurer les cinq liens de navigation ;
+  - deux tests ouvrent le menu avant de mesurer les cinq liens de navigation, et `browser_smoke` ouvre « Options de lecture » avant de vérifier le confort de lecture sur téléphone ;
   - `browser_terminale` compare l'énoncé et les intitulés d'une variante. Il échouait au hasard une fois sur sept, quand une variante gardait la même fonction mais demandait une autre valeur.
 - **Instabilité connue** : dans `browser_smoke`, la vérification « Indice figé pour exercice 3 » compare deux tirages successifs et peut échouer au hasard (une fois en quatre passages). Elle n'a pas de lien avec la refonte.
 - **`check_publication.py`** compare le site en ligne au dépôt : à lancer après la fusion et le déploiement.
