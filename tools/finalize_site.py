@@ -15,6 +15,7 @@ from navigation_simple import apply as simplify_navigation, ALIASES
 from lecons import apply as apply_lessons
 from typographie import apply as apply_typography
 from liens_accessibles import apply as apply_link_names
+from refonte_gabarits import apply as apply_refonte
 # Chaque série de Première ne charge que le générateur de son chapitre : les
 # autres fichiers alourdiraient la page sans servir.
 GENERATOR={'fonctions':'fonctions','second-degre':'fonctions',
@@ -91,6 +92,7 @@ def main():
         text=text.replace('</head>',f'<link rel="canonical" href="{canonical}"></head>',1)
         path.write_text(text)
         if 'name="robots" content="noindex' not in text:urls.append(canonical)
+    apply_refonte(ROOT)
     apply_link_names(ROOT)
     apply_typography(ROOT)
     # Aliases are rendered last so a fresh catalogue build and a simple finalization
