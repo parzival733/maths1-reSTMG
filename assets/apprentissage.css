@@ -139,7 +139,7 @@ body.lesson-immersive[data-domain="reperes"] {
 .lesson-reading-controls button:hover { border-color: var(--learn-accent); }
 .lesson-reading-controls button[aria-pressed="true"] {
   background: var(--learn-accent);
-  color: white;
+  color:var(--color-on-accent);
   border-color: var(--learn-accent);
 }
 .lesson-reading-controls .research-link {
@@ -160,7 +160,7 @@ body.lesson-immersive[data-domain="reperes"] {
 .lesson-immersive .lesson-toc {
   border:1px solid var(--color-learn-line);
   border-radius: 20px;
-  background: white;
+  background:var(--color-surface);
   box-shadow: var(--learn-shadow);
   padding: 24px 16px;
 }
@@ -347,7 +347,7 @@ body.lesson-immersive[data-domain="reperes"] {
 .lesson-immersive .lesson-content th { background:var(--color-learn-soft); color:var(--color-learn-strong); }
 .lesson-immersive .lesson-content tbody tr:nth-child(even) { background:var(--color-bg); }
 .lesson-immersive .course-pagination a {
-  background: white;
+  background:var(--color-surface);
   border-radius: 12px;
 }
 .lesson-immersive .course-pagination a:hover {
@@ -451,7 +451,7 @@ body.lesson-immersive[data-domain="reperes"] {
 .study-choices input { flex: 0 0 auto; margin-top: 4px; accent-color:var(--color-learn); }
 .study-quiz .study-submit {
   background:var(--color-learn);
-  color: white;
+  color:var(--color-on-accent);
   border: none;
   border-radius: 10px;
   min-height: 44px;
@@ -542,7 +542,7 @@ body.reading-focus .lesson-content { max-width: 880px; margin-inline: auto; widt
   .lesson-immersive .site-header, .lesson-immersive .site-footer,
   .lesson-immersive .lesson-toc, .lesson-reading-controls, .learning-path,
   .study-quiz form, .study-review .review-cta { display: none !important; }
-  .lesson-immersive .lesson-heading { padding: 0; border: none; background: white; box-shadow: none; }
+  .lesson-immersive .lesson-heading { padding: 0; border: none; background:var(--color-surface); box-shadow: none; }
   .lesson-immersive .lesson-content { border: 0; box-shadow: none; padding: 0; }
   .lesson-immersive .lesson-content > h2 { background:var(--color-surface-sunken); }
   .lesson-immersive .lesson-content .formula, .study-review,

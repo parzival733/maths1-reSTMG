@@ -10,13 +10,13 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .catalog-tools { display: flex; flex-wrap: wrap; gap: 18px; padding-block: 20px; align-items: end; }
 .catalog-tools label { display: grid; gap: 6px; font-size: var(--text-sm); font-weight: 650; }
 .catalog-tools label:first-child { flex: 1 1 280px; }
-.catalog-tools input, .catalog-tools select, .simulation input { background: white; color: var(--ink); border:1px solid var(--color-line-strong); border-radius: 9px; padding: 12px; min-width: 0; width: 100%; min-height: 46px; }
+.catalog-tools input, .catalog-tools select, .simulation input { background:var(--color-surface); color: var(--ink); border:1px solid var(--color-line-strong); border-radius: 9px; padding: 12px; min-width: 0; width: 100%; min-height: 46px; }
 .result-count { font-size: var(--text-sm); color: var(--muted); margin: 8px 0 20px; }
 .catalog-group { margin-block: 32px 42px; }
 .catalog-group > h2 { font-size: 26px; letter-spacing: -.7px; }
 .catalog-group > p { color: var(--muted); margin: 8px 0 22px; max-width: 760px; }
 .lesson-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-.lesson-card { border: 1px solid var(--line); border-radius: 17px; background: white; padding: 23px; display: flex; flex-direction: column; min-width: 0; transition: border-color .15s, transform .15s; }
+.lesson-card { border: 1px solid var(--line); border-radius: 17px; background:var(--color-surface); padding: 23px; display: flex; flex-direction: column; min-width: 0; transition: border-color .15s, transform .15s; }
 .lesson-card:hover { border-color: var(--purple); transform: translateY(-2px); }
 .lesson-card .course-code { color: var(--purple-dark); font-size: var(--text-caps); font-weight: 750; letter-spacing: 1px; }
 .lesson-card h3 { font-size: 20px; line-height: 1.3; margin: 11px 0; }
@@ -33,8 +33,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .lesson-toc nav { display: grid; gap: 4px; }
 .lesson-toc nav a { font-size: var(--text-sm); padding: 7px 4px; border-radius: 5px; line-height: 1.55; }
 .lesson-toc nav a:hover { color: var(--purple-dark); background: var(--purple-soft); }
-.print-button { border:1px solid var(--color-learn-line); background: white; color: var(--purple-dark); border-radius: 8px; padding: 10px 12px; margin-top: 18px; font-size: var(--text-sm); }
-.lesson-content { background: white; padding: clamp(22px, 3.3vw, 42px); border: 1px solid var(--line); border-radius: 20px; min-width: 0; overflow-wrap: break-word; font-size: 16px; line-height: 1.85; }
+.print-button { border:1px solid var(--color-learn-line); background:var(--color-surface); color: var(--purple-dark); border-radius: 8px; padding: 10px 12px; margin-top: 18px; font-size: var(--text-sm); }
+.lesson-content { background:var(--color-surface); padding: clamp(22px, 3.3vw, 42px); border: 1px solid var(--line); border-radius: 20px; min-width: 0; overflow-wrap: break-word; font-size: 16px; line-height: 1.85; }
 .lesson-content > h2, .lesson-content > section > h2 { font-size: 25px; line-height: 1.3; margin: 38px 0 16px; letter-spacing: -.5px; scroll-margin-top: 28px; }
 .lesson-content h3 { font-size: 18px; line-height: 1.4; margin: 24px 0 10px; }
 .lesson-content p { margin: 12px 0; }
@@ -56,7 +56,7 @@ table { border-collapse: collapse; width: 100%; font-size: 14px; }
 caption { text-align: left; font-weight: 650; margin-bottom: 10px; color: var(--ink); }
 th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: center; }
 th { background:var(--color-learn-soft); font-weight: 650; }
-pre { white-space: pre; overflow: auto; max-width: 100%; background:var(--color-learn-strong); color:var(--color-learn); padding: 20px; border-radius: 12px; font-size: var(--text-sm); line-height: 1.7; margin: 20px 0; }
+pre { white-space: pre; overflow: auto; max-width: 100%; background: var(--color-code-bg); color: var(--color-code-text); padding: 20px; border-radius: 12px; font-size: var(--text-sm); line-height: 1.7; margin: 20px 0; }
 code { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; }
 p code, li code { background:var(--color-surface-sunken); color:var(--color-learn); border-radius: 4px; padding: 2px 4px; font-size: .88em; }
 .check { border:1px solid var(--color-learn-line); border-radius: 12px; margin: 20px 0; padding: 0 18px; }
@@ -68,7 +68,7 @@ p code, li code { background:var(--color-surface-sunken); color:var(--color-lear
 .course-footer { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); font-size: var(--text-sm); color: var(--muted); }
 .course-pagination { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 15px; margin-top: 22px; }
 .course-pagination a { padding: 12px 15px; border: 1px solid var(--line); border-radius: 9px; font-size: var(--text-sm); max-width: 100%; }
-.source-panel { background: white; padding: 28px; border-radius: 18px; border: 1px solid var(--line); margin-block: 26px; }
+.source-panel { background:var(--color-surface); padding: 28px; border-radius: 18px; border: 1px solid var(--line); margin-block: 26px; }
 .source-panel h2 { margin-bottom: 14px; font-size: 24px; }
 .source-panel p { margin-block: 12px; }
 .source-panel li { margin: 10px 0; }
@@ -85,7 +85,7 @@ p code, li code { background:var(--color-surface-sunken); color:var(--color-lear
 @media (max-width: 740px) { .lesson-layout { grid-template-columns: minmax(0, 1fr); } .lesson-toc { position: static; max-height: none; } .lesson-toc nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; } .lesson-heading { margin-top: 20px; } }
 @media (max-width: 520px) { .lesson-cards { grid-template-columns: minmax(0, 1fr); } .lesson-content { padding: 22px 18px; font-size: 15px; } .lesson-content > h2 { font-size: 23px; } .lesson-toc nav { grid-template-columns: minmax(0, 1fr); } .catalog-notice, .source-panel { padding: 20px; } .formula { padding: 12px; font-size: 1.08em; } .callout, .example, .warning, .recap { padding: 16px; } .sim-fields { grid-template-columns: minmax(0, 1fr); } .lesson-heading h1 { letter-spacing: -1px; } }
 @media (prefers-reduced-motion: reduce) { .lesson-card { transition: none; } .lesson-card:hover { transform: none; } }
-@media print { :root { --ink: var(--color-text); --muted: var(--color-text-muted); } body { background: white; font-size: 11pt; } .site-header, .site-footer, .skip-link, .lesson-toc, .catalog-tools, .course-pagination, .breadcrumb, .simulation, .print-button { display: none !important; } .container { width: 100%; } .lesson-layout { display: block; } .lesson-content, .source-panel { border: none; padding: 0; } .lesson-heading h1 { font-size: 26pt; } .lesson-content h2 { break-after: avoid; } .lesson-content h3 { break-after: avoid; } .formula, .example, .warning, .check { break-inside: avoid; } .table-wrap, pre { overflow: visible; } pre { white-space: pre-wrap; color: black; background:var(--color-surface-sunken); } .lesson-content a { color: black; } th, td { padding: 6px; } .figure svg { max-height: 240px; } @page { margin: 18mm; } }
+@media print { :root { --ink: var(--color-text); --muted: var(--color-text-muted); } body { background:var(--color-surface); font-size: 11pt; } .site-header, .site-footer, .skip-link, .lesson-toc, .catalog-tools, .course-pagination, .breadcrumb, .simulation, .print-button { display: none !important; } .container { width: 100%; } .lesson-layout { display: block; } .lesson-content, .source-panel { border: none; padding: 0; } .lesson-heading h1 { font-size: 26pt; } .lesson-content h2 { break-after: avoid; } .lesson-content h3 { break-after: avoid; } .formula, .example, .warning, .check { break-inside: avoid; } .table-wrap, pre { overflow: visible; } pre { white-space: pre-wrap; color:var(--color-text); background:var(--color-surface-sunken); } .lesson-content a { color:var(--color-text); } th, td { padding: 6px; } .figure svg { max-height: 240px; } @page { margin: 18mm; } }
 
 /* Tableaux de signes et de variations des corrigés (leçons, exercices, sujets et problèmes) : vrai tableau accessible,
    défilement horizontal propre sur petit écran, formules non coupées. */

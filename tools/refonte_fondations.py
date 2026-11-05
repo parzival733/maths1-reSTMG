@@ -96,8 +96,10 @@ def replace_declarations(css):
         if prop.startswith('--'):   # anciennes variables : traitées plus bas
             return match.group(0)
         new = re.sub(r'#[0-9a-fA-F]{8}\b|#[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3,4}\b', lambda m: token_for(prop, m.group(0)), value)
+        if 'url(' not in new:   # mots-clés white et black : mêmes jetons que #fff et #000
+            new = re.sub(r'(?<![\w-])(white|black)(?![\w-])', lambda m: token_for(prop, '#ffffff' if m.group(1) == 'white' else '#000000'), new)
         return f'{prop}:{new}' if match.group(0)[len(prop)] == ':' else f'{prop}: {new}'
-    return re.sub(r'([a-z-]+)\s*:\s*([^;{}]*#[0-9a-fA-F]{3,8}\b[^;{}]*)', declaration, css)
+    return re.sub(r'(?<![\w-])((?:background|border|outline|box-shadow|text-decoration|fill|stroke|caret)[a-z-]*|color)\s*:\s*([^;{}]*(?:#[0-9a-fA-F]{3,8}\b|(?<![\w-])(?:white|black)(?![\w-]))[^;{}]*)', declaration, css)
 
 
 LEGACY = {  # anciennes variables, redirigées vers les jetons

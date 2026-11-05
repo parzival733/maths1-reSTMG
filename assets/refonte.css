@@ -9,3 +9,70 @@ h1, h2, h3, .lesson-heading h1, .page-intro h1 { font-family: var(--font-serif);
 .hero h1 { font-family: var(--font-sans); font-weight: 700; }
 :focus-visible { outline-color: var(--color-focus); }
 .score, [id$="-score"], [id$="-time"], .timer, time, td, .sign-table { font-variant-numeric: tabular-nums; }
+
+/* ── Figures et graphiques ──────────────────────────────── */
+/* Les couleurs écrites dans les figures SVG des leçons et des graphiques interactifs
+   suivent les jetons (et donc le mode sombre). L'illustration de l'accueil garde les siennes. */
+[fill="#252436"]:not(.hero-art *) { fill: var(--color-text); }
+[fill="#604bd1"]:not(.hero-art *) { fill: var(--color-learn); }
+[stroke="#604bd1"]:not(.hero-art *) { stroke: var(--color-learn); }
+[fill="#246453"]:not(.hero-art *) { fill: var(--color-practice); }
+[stroke="#246453"]:not(.hero-art *) { stroke: var(--color-practice); }
+[stroke="#656372"]:not(.hero-art *) { stroke: var(--color-text-muted); }
+[stroke="#e5e1ed"]:not(.hero-art *), [stroke="#e3dfeb"]:not(.hero-art *) { stroke: var(--color-line); }
+.math-lab svg [fill="#334155"] { fill: var(--color-text-muted); }
+.math-lab svg [fill="#edf9f3"] { fill: var(--color-practice-faint); }
+.math-lab svg [fill="#fff3ea"] { fill: var(--color-warning-soft); }
+.math-lab svg [stroke="#e2e8f0"] { stroke: var(--color-line); }
+.math-lab svg [stroke="#64748b"] { stroke: var(--color-line-strong); }
+.math-lab svg [stroke="#0b5e96"] { stroke: var(--color-chart-1); }
+.math-lab svg [fill="#0b5e96"] { fill: var(--color-chart-1); }
+.math-lab svg [stroke="#bc570c"] { stroke: var(--color-chart-2); }
+.math-lab svg [fill="#bc570c"] { fill: var(--color-chart-2); }
+.math-lab svg [fill="#0f766e"] { fill: var(--color-chart-3); }
+.math-lab svg [stroke="#fff"] { stroke: var(--color-surface); }
+
+/* Mode sombre : l'illustration de l'accueil reste une « feuille » claire, un peu adoucie. */
+@media screen and (prefers-color-scheme: dark) {
+  .hero-art { filter: brightness(0.92); }
+  img { filter: brightness(0.94); }
+}
+
+/* ── b. Leçon : encadrés typés ───────────────────────────── */
+/* Même structure partout : filet de 3 px en marge, icône et titre en capitales de 13 px.
+   Chaque type a son fond, distinct des autres ; l'ambre est réservé au point de vigilance. */
+.lesson-immersive .lesson-content :is(.formula, .example, .warning, .recap, .callout),
+.lesson-content :is(.formula, .example, .warning, .recap, .callout) {
+  position: relative; margin: var(--space-6) 0; padding: var(--space-4) var(--space-5);
+  border: 0; border-left: var(--rule-width) solid var(--box-rule); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--box-bg); color: var(--color-text); box-shadow: none;
+}
+.lesson-content .formula { --box-rule: var(--color-learn); --box-bg: var(--color-learn-faint); --box-ink: var(--color-learn-strong); font-family: var(--font-serif); }
+.lesson-content .example { --box-rule: var(--color-line-strong); --box-bg: transparent; --box-ink: var(--color-text-muted); }
+.lesson-content .warning { --box-rule: var(--color-warning-line); --box-bg: var(--color-warning-soft); --box-ink: var(--color-warning); }
+.lesson-content .recap { --box-rule: var(--color-learn-strong); --box-bg: var(--color-learn-soft); --box-ink: var(--color-learn-strong); }
+.lesson-content .callout { --box-rule: var(--color-practice); --box-bg: var(--color-practice-faint); --box-ink: var(--color-practice-strong); }
+.lesson-immersive .lesson-content .formula::before { content: "Formule · à retenir"; }
+.lesson-immersive .lesson-content .example::before { content: "Exemple guidé"; }
+.lesson-immersive .lesson-content .warning::before { content: "Point de vigilance"; }
+.lesson-immersive .lesson-content :is(.formula, .example, .warning)::before {
+  display: block; margin: 0 0 var(--space-2); padding-left: 24px; min-height: 18px;
+  font: 700 var(--text-caps)/18px var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--box-ink);
+}
+.lesson-immersive .lesson-content :is(.formula, .example, .warning)::after {
+  content: ""; position: absolute; left: var(--space-5); top: var(--space-4); width: 18px; height: 18px; background: var(--box-ink);
+  -webkit-mask: var(--box-icon) center / contain no-repeat; mask: var(--box-icon) center / contain no-repeat;
+}
+.lesson-content .formula { --box-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4h11l3 3v13H5z'/%3E%3Cpath d='M9 10h7M9 14h7'/%3E%3C/svg%3E"); }
+.lesson-content .example { --box-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Cpath d='M9.5 12.5l2 2 3.5-4'/%3E%3C/svg%3E"); }
+.lesson-content .warning { --box-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4l9 16H3z'/%3E%3Cpath d='M12 10v4M12 17v.5'/%3E%3C/svg%3E"); }
+.lesson-content .recap h2, .lesson-content .callout h3 { color: var(--box-ink); }
+.lesson-content .formula :is(p, li) { font-family: var(--font-sans); }
+.study-quiz { border-left: var(--rule-width) solid var(--color-text-muted); background: var(--color-surface-sunken); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.study-quiz .study-eyebrow { font-size: var(--text-caps); font-weight: 700; letter-spacing: var(--tracking-caps); color: var(--color-text); }
+
+/* Blocs de code sur téléphone : retour à la ligne plutôt qu'une zone qui défile
+   (indentation conservée, aucune zone inaccessible au clavier). */
+@media (max-width: 680px) {
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; overflow-x: visible; }
+}

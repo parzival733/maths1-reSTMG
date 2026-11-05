@@ -29,7 +29,7 @@
 .exercise-progress {
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: white;
+  background:var(--color-surface);
   padding: 18px 20px 16px;
   margin-bottom: 24px;
 }
@@ -80,7 +80,7 @@
   min-height: 44px;
   border:1px solid var(--color-line);
   border-radius: 10px;
-  background: white;
+  background:var(--color-surface);
   color: var(--ink);
   font-weight: 750;
   transition: background .15s, border-color .15s, color .15s;
@@ -93,7 +93,7 @@
 .exercise-stepper button.is-active {
   background: var(--exercise);
   border-color: var(--exercise);
-  color: white;
+  color:var(--color-on-accent);
 }
 
 .exercise-stepper button.is-complete:not(.is-active) {
@@ -115,7 +115,7 @@
   margin: 0;
   border: 1px solid var(--line);
   border-radius: 20px;
-  background: white;
+  background:var(--color-surface);
   overflow: hidden;
 }
 
@@ -256,7 +256,7 @@
   padding: 12px;
   border:1px solid var(--color-line);
   border-radius: 11px;
-  background: white;
+  background:var(--color-surface);
   transition: border-color .15s, background .15s;
 }
 
@@ -273,7 +273,7 @@
   min-height: 44px;
   border:1px solid var(--color-line-strong);
   border-radius: 8px;
-  background: white;
+  background:var(--color-surface);
   color: var(--ink);
   padding: 9px 10px;
   font: inherit;
@@ -426,7 +426,7 @@
 }
 
 .exercise-page .button-secondary {
-  background: white;
+  background:var(--color-surface);
   color: var(--ink);
   border:1px solid var(--color-line-strong);
 }
@@ -450,7 +450,7 @@
 
 .exercise-page .check {
   border-color: var(--exercise-line);
-  background: white;
+  background:var(--color-surface);
   margin: 16px 0 0;
 }
 

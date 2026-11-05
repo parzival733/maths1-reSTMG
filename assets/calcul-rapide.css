@@ -107,7 +107,7 @@
 @media(prefers-reduced-motion:reduce) { .rapid-main * { transition:none !important; scroll-behavior:auto !important; } }
 @media print {
   @page { margin:18mm; }
-  .rapid-page { background:white; font-size:11pt; color:black; }
+  .rapid-page { background:var(--color-surface); font-size:11pt; color:var(--color-text); }
   .rapid-page .site-header, .rapid-page .site-footer, .rapid-page .skip-link, .rapid-shortcuts, .rapid-paper-tools { display:none !important; }
   .rapid-page .container { width:100%; max-width:none; }
   .rapid-page .section-page { padding:0; }
