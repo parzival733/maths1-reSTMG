@@ -52,6 +52,18 @@ def main():
                         expect(page.locator('.coaching-panel')).to_have_count(expected)
                         expect(page.locator('.coaching-hint')).to_have_count(expected * 3)
                         expect(page.locator('.coaching-bridge')).to_have_count(expected)
+                        # Toutes les variantes affichées d'un coup : aucun champ de réponse ne
+                        # doit être écrasé par un intitulé long, même à 320 px.
+                        narrow = page.evaluate('''() => {
+                            const slides = [...document.querySelectorAll('.exercise-block')];
+                            const hidden = slides.filter(s => s.hidden); hidden.forEach(s => { s.hidden = false; });
+                            const found = [...document.querySelectorAll('.answer-row input, .answer-row select')]
+                                .filter(c => c.getBoundingClientRect().width < 120)
+                                .map(c => c.closest('.answer-row').textContent.trim().slice(0, 50));
+                            hidden.forEach(s => { s.hidden = true; });
+                            return found;
+                        }''')
+                        assert not narrow, (name, width, 'champ de réponse trop étroit', narrow)
                     if name.startswith('cours/'):
                         expect(page.locator('.lesson-toc')).to_be_visible()
                         expect(page.locator('.lesson-content')).to_be_visible()

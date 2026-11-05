@@ -221,3 +221,14 @@ Audit visuel à 375, 768 et 1 280 px de l’accueil, des catalogues, d’une sé
 - **Empreinte protégée** : seule celle de `assets/exercices.js` change (déplacement du panneau d’aides, aucun texte modifié).
 - **Captures avant / après** : `docs/captures/` (accueil à 375 et 1 280 px, série à 375 et 1 280 px, leçon à 375 et 1 280 px, leçon de Terminale, catalogue des leçons, calcul rapide et sujet blanc à 375 px).
 - **Test plus parlant** : en cas de débordement horizontal, `tests/browser_terminale.py` nomme désormais les éléments fautifs. Un débordement de 14 px sur le programme de Terminale à 390 px est apparu une fois dans la batterie complète, sans se reproduire en 60 essais (y compris processeur ralenti) ; ce message permettra de l’identifier s’il revient.
+
+## 16. Lot 6 du 5 novembre 2026 : vérification finale
+
+Parcours joués dans le navigateur à 1 280 et 375 px : cinq séries (trois de Première, deux de Terminale) avec une réponse fausse, dix variantes vérifiées avec les bonnes réponses et un corrigé ouvert ; accueil, diagnostic, révision guidée, calcul rapide (pause, corrigé imprimable) et une leçon. Résultats détaillés dans `docs/rapport-ameliorations.md`.
+
+- **Défaut corrigé** : sur téléphone, la mise en ligne de l’intitulé et du champ (Lot 5 bis) écrasait le champ quand l’intitulé était long, jusqu’à 22 px de large. L’intitulé et le champ ne partagent plus une ligne que si la place suffit ; sinon le champ passe dessous, sur toute la largeur. `tests/browser_smoke.py` vérifie désormais, de 320 à 1 440 px et pour toutes les variantes d’origine, qu’aucun champ ne fait moins de 120 px ; ce contrôle échoue sur la version du Lot 5 bis. Les lignes de réponse sont un peu plus hautes quand le champ passe dessous : à 375 px, « Vérifier » arrive à 1 528 px (Première) et 1 605 px (Terminale), contre 2 080 et 2 093 px avant le Lot 5 bis.
+- **Tableaux des corrigés sur téléphone** (`assets/cours.css`) : la grille de maîtrise de la langue des sujets blancs, tableau de texte, passe à la ligne au lieu de déborder de plus de 1 000 px. Les tableaux de signes et de variations sont plus compacts sous 680 px et leur colonne d’intitulés reste visible pendant le défilement ; les formules restent sur une ligne.
+- **Nouveau test** `tests/test_noms_liens.py` : dans une même page, deux liens de même nom mènent à la même destination (9 cas dans la version d’origine, 0 maintenant). Il est lancé par `cloture.yml`.
+- **Mesures reproductibles** : `tools/mesures_variantes.js` produit les tableaux de difficulté et les répartitions de réponses du rapport.
+- **Constat préexistant, non corrigé** : seule la page d’accueil déclare une icône ; les autres pages demandent `/favicon.ico`, absent du site.
+- Aucune empreinte protégée ne change dans ce lot.

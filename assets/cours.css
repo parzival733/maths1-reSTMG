@@ -122,3 +122,18 @@ p code, li code { background: #f2f0f6; color: #46348b; border-radius: 4px; paddi
 @media (min-width: 741px) {
   body .lesson-content p, body .lesson-content li, body.lesson-immersive .lesson-content p, body.lesson-immersive .lesson-content li { max-width: 54ch; }
 }
+
+/* Lot 5 bis : tableaux sur petit écran. La grille de maîtrise de la langue est un tableau
+   de texte : ses cellules passent à la ligne. Les tableaux de signes gardent leurs formules
+   sur une ligne, deviennent plus compacts, et leur colonne d'intitulés reste visible
+   pendant le défilement horizontal. */
+.sign-table.language-grid th, .sign-table.language-grid td { white-space: normal; text-align: left; vertical-align: top; min-width: 7em; }
+@media (max-width: 680px) {
+  .sign-table { font-size: 14px; }
+  .sign-table th, .sign-table td { padding: 5px 7px; }
+  .sign-table:not(.language-grid) tr > :first-child { position: sticky; left: 0; z-index: 1; box-shadow: inset -1px 0 0 var(--line); }
+  .sign-table:not(.language-grid) thead tr > :first-child { background: var(--purple-soft); }
+  .sign-table:not(.language-grid) tbody tr > :first-child { background: #faf9fd; }
+  .sign-table.language-grid { font-size: 13px; }
+  .sign-table.language-grid th, .sign-table.language-grid td { min-width: 0; padding: 5px; hyphens: auto; overflow-wrap: break-word; }
+}
