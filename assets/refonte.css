@@ -1,0 +1,11 @@
+/* Refonte graphique : couche chargée en dernier sur toutes les pages, construite
+   seulement avec les jetons de assets/tokens.css. Voir docs/refonte/direction.md. */
+
+/* ── Base typographique ─────────────────────────────────── */
+html { font-synthesis: style; }
+body { font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-body); }
+h1, h2, h3, .lesson-heading h1, .page-intro h1 { font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em; }
+/* Accueil : le titre garde son dessin actuel (sans-serif très gras). */
+.hero h1 { font-family: var(--font-sans); font-weight: 700; }
+:focus-visible { outline-color: var(--color-focus); }
+.score, [id$="-score"], [id$="-time"], .timer, time, td, .sign-table { font-variant-numeric: tabular-nums; }

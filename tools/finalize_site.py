@@ -8,6 +8,8 @@ ROOT=Path(__file__).resolve().parents[1]
 ORIGIN='https://mathstmgdls.pages.dev'
 VERSION='20261023-simple1'
 ASSET_VERSION='20261105-variantes1'
+# Toutes les feuilles de style partagent une version, changée à chaque refonte visuelle.
+STYLE_VERSION='20261106-refonte1'
 ASSET_NAMES='|'.join(re.escape(n) for n in ['exercices-variants.js','exercices-renderer.js','exercices.js','fonctions-coaching.js','terminale-exercices.js','calcul-rapide-data.js','calcul-rapide.js','parcours-data.js','parcours.js','exercices.css','compte-rebours.js','cours.js','cours.css','interface.js','graphiques-interactifs.js','graphiques-interactifs.css','examen.js','calcul-rapide.css','typographie.js','accueil.js']+[f'variants-{n}.js' for n in ['fonctions','suites','analyse','probabilites','reperes','donnees']]+[f'coaching-{n}.js' for n in ['general','algebre','suites','analyse','probabilites','reperes','donnees']])
 from navigation_simple import apply as simplify_navigation, ALIASES
 from lecons import apply as apply_lessons
@@ -35,7 +37,13 @@ def main():
     urls=[]
     for path in sorted(ROOT.rglob('*.html')):
         if any(p.startswith('.') or p == 'docs' for p in path.relative_to(ROOT).parts):continue
-        if path.name=='404.html':continue
+        if path.name=='404.html':
+            # Page d'erreur : seulement les jetons et la version des feuilles de style.
+            page=path.read_text()
+            if 'assets/tokens.css' not in page:
+                page=re.sub(r'(<link rel="stylesheet" href=")', lambda m: '<link rel="stylesheet" href="/assets/tokens.css">\n'+m.group(1), page, count=1)
+            path.write_text(re.sub(r'(assets/[\w-]+\.css)(?:\?v=[^"\s]*)?(?=")',r'\g<1>?v='+STYLE_VERSION,page))
+            continue
         text=path.read_text();rel=path.relative_to(ROOT).as_posix();base='../'*(len(path.relative_to(ROOT).parts)-1)
         target=ALIASES.get(rel,rel)
         canonical=ORIGIN+('/' if target=='index.html' else '/'+target.removesuffix('.html'))
@@ -49,6 +57,19 @@ def main():
         # ajoutée si besoin, pour qu'aucun navigateur ne mélange ancien et nouveau code.
         text=keep_own_generator(rel,text)
         text=re.sub(r'(assets/(?:'+ASSET_NAMES+r'))(?:\?v=[^"\s]*)?(?=")',r'\g<1>?v='+ASSET_VERSION,text)
+        # Polices du site préchargées : prêtes avant le premier affichage, le texte ne se décale pas.
+        text=re.sub(r'<link rel="preload" href="[^"]*assets/fonts/[^"]*"[^>]*>\n?','',text)
+        fonts=''.join(f'<link rel="preload" href="{base}assets/fonts/{name}.woff2" as="font" type="font/woff2" crossorigin>\n' for name in ('stmg-sans-regular','stmg-sans-bold','stmg-serif-semibold'))
+        text=re.sub(r'(<link rel="stylesheet" href=")', lambda m: fonts+m.group(1), text, count=1)
+        # Jetons de design chargés avant toute autre feuille de style.
+        if 'assets/tokens.css' not in text:
+            text=re.sub(r'(<link rel="stylesheet" href=")', lambda m: f'<link rel="stylesheet" href="{base}assets/tokens.css">\n'+m.group(1), text, count=1)
+        # Couche de la refonte graphique, chargée après toutes les autres feuilles.
+        text=re.sub(r'\s*<link rel="stylesheet" href="[^"]*assets/refonte\.css[^"]*">','',text)
+        last=list(re.finditer(r'<link rel="stylesheet" href="[^"]*">',text))
+        if last:
+            end=last[-1].end(); text=text[:end]+f'\n<link rel="stylesheet" href="{base}assets/refonte.css">'+text[end:]
+        text=re.sub(r'(assets/[\w-]+\.css)(?:\?v=[^"\s]*)?(?=")',r'\g<1>?v='+STYLE_VERSION,text)
         if 'footer-links' not in text and '</footer>' in text:
             text=text.replace('</footer>',f'<div class="container footer-links"><a href="{base}exercices.html#mes-progres">Mes progr\u00e8s</a> \u00b7 <a href="{base}a-propos.html">\u00c0 propos et donn\u00e9es</a> \u00b7 <a href="{base}accessibilite.html">Accessibilit\u00e9</a></div></footer>')
         if '<meta property="og:type"' not in text:

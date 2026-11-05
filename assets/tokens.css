@@ -1,31 +1,46 @@
 /* Jetons de design du site Maths STMG (refonte graphique, proposition à valider).
    Chargé en premier sur toutes les pages ; les autres feuilles n'utilisent que ces jetons.
-   Palette d'origine conservée : papier #f8f7f3, encre #252436, violet #604bd1,
-   vert #246453, rouge #a53c42. Contrastes calculés dans docs/refonte/direction.md. */
+   Palette d'origine conservée : encre #252436, violet #604bd1, vert #246453, rouge
+   #a53c42 ; fond gris clair #f7f8fa (choix validé le 5 novembre 2026, au lieu du papier #f8f7f3). Contrastes calculés dans docs/refonte/direction.md. */
 
 @font-face {
   font-family: "STMG Serif";
   src: url("fonts/stmg-serif-semibold.woff2") format("woff2");
-  font-weight: 600; font-style: normal; font-display: swap;
+  font-weight: 600; font-style: normal; font-display: optional;
 }
 @font-face {
   font-family: "STMG Sans";
   src: url("fonts/stmg-sans-regular.woff2") format("woff2");
-  font-weight: 400; font-style: normal; font-display: swap;
+  font-weight: 400; font-style: normal; font-display: optional;
+  size-adjust: 107%;  /* même hauteur d'x que les polices système à taille égale */
 }
 @font-face {
   font-family: "STMG Sans";
   src: url("fonts/stmg-sans-bold.woff2") format("woff2");
-  font-weight: 700; font-style: normal; font-display: swap;
+  font-weight: 700; font-style: normal; font-display: optional;
+  size-adjust: 107%;
+}
+
+/* Polices de repli aux métriques ajustées (Arial, Times New Roman) : le texte ne se
+   décale pas quand la police du site arrive. Valeurs calculées sur le texte des leçons. */
+@font-face {
+  font-family: "STMG Sans repli";
+  src: local("Arial"), local("Liberation Sans"), local("Helvetica"), local("Roboto");
+  size-adjust: 98.13%; ascent-override: 111.66%; descent-override: 43.62%; line-gap-override: 0%;
+}
+@font-face {
+  font-family: "STMG Serif repli";
+  src: local("Times New Roman"), local("Liberation Serif"), local("Times");
+  size-adjust: 102.29%; ascent-override: 101.28%; descent-override: 32.75%; line-gap-override: 0%;
 }
 
 :root {
   /* Couleurs sémantiques */
-  --color-bg: #f8f7f3;              /* papier */
+  --color-bg: #f7f8fa;              /* fond gris clair (choix validé) */
   --color-surface: #ffffff;
-  --color-surface-sunken: #f2f0ea;  /* zones secondaires sur papier */
-  --color-text: #252436;            /* encre : 14,2:1 sur papier */
-  --color-text-muted: #5f5d6b;      /* 6,0:1 sur papier, 6,4:1 sur blanc */
+  --color-surface-sunken: #eef0f4;  /* zones secondaires */
+  --color-text: #252436;            /* encre : 14,3:1 sur le fond */
+  --color-text-muted: #5f5d6b;      /* 6,1:1 sur le fond, 6,4:1 sur blanc */
   --color-line: #e4e2e9;            /* filets décoratifs */
   --color-line-strong: #857f92;     /* contours de champs : 3,9:1 sur blanc */
 
@@ -33,10 +48,13 @@
   --color-learn-strong: #4f3bb5;
   --color-learn-soft: #efebfc;
   --color-learn-faint: #f7f5fd;
+  --color-learn-line: #d3cbf2;      /* filets et contours décoratifs */
 
   --color-practice: #246453;        /* s'entraîner, réussite : 7,0:1 sur blanc */
   --color-practice-strong: #1b4d40;
   --color-practice-soft: #e8f3ee;
+  --color-practice-faint: #f4faf7;
+  --color-practice-line: #b7d8c7;
 
   --color-success: var(--color-practice);
   --color-success-strong: var(--color-practice-strong);
@@ -45,6 +63,7 @@
   --color-danger: #a53c42;          /* 6,3:1 sur blanc, 5,5:1 sur son fond doux */
   --color-danger-strong: #8a2f35;
   --color-danger-soft: #fbeced;
+  --color-danger-line: #e3a9ac;
 
   --color-warning: #7a4f00;         /* ambre « Attention » : 6,4:1 sur son fond doux */
   --color-warning-line: #a8740f;    /* filet : 4,1:1 sur blanc */
@@ -54,8 +73,8 @@
   --color-on-accent: #ffffff;
 
   /* Typographie */
-  --font-serif: "STMG Serif", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --font-sans: "STMG Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-serif: "STMG Serif", "STMG Serif repli", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-sans: "STMG Sans", "STMG Sans repli", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
 
   /* Échelle de rapport 1,2 autour d'un corps de 17 px (18 px sur ordinateur). */
