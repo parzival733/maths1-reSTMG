@@ -174,6 +174,9 @@ def main():
         if slug == 'fonctions':
             assert page.classes['exercise-block'] == 9
             assert page.classes['check'] == 9
+            static = (ROOT / 'exercices' / 'fonctions.html').read_text(encoding='utf-8')
+            checks = re.findall(r'<details class="check">[\s\S]*?</details>', static)
+            assert len(checks) == 9 and all('Méthode' in c and 'Conclusion' in c for c in checks), 'corrigés Fonctions'
             count_exercises += 9
             continue
 
@@ -187,9 +190,14 @@ def main():
             assert exercise['title'] and exercise['statement'], (slug, number, 'missing text')
             assert len(exercise['tasks']) >= 1, (slug, number, 'missing tasks')
             assert exercise['correction'] and all(exercise['correction']), (slug, number, 'correction')
+            # Corrigé rédigé comme au bac : méthode, calculs, conclusion.
+            assert exercise['correction'][0].startswith('<strong>Méthode'), (slug, number, 'méthode')
+            assert exercise['correction'][-1].startswith('<strong>Conclusion'), (slug, number, 'conclusion')
             assert len(exercise['fields']) >= 2, (slug, number, 'answers')
             for field in exercise['fields']:
                 assert field['label'] and field['answer'], (slug, number, 'empty answer')
+                # Les libellés sont échappés à l'affichage : pas d'entité HTML.
+                assert not re.search(r'&[a-z]+;|&#', field['label']), (slug, number, field['label'])
                 if 'options' in field:
                     assert field['answer'] in field['options'], (slug, number, 'missing select value')
                 else:
@@ -201,6 +209,16 @@ def main():
         count_exercises += len(info['exercises'])
 
     assert count_exercises == 129, count_exercises
+
+    # Sujets blancs, problèmes et série papier : chaque réponse corrigée suit
+    # Méthode → Calcul(s) → Conclusion.
+    for rel, expected in [('entrainement/sujet-blanc-1.html', 24), ('entrainement/sujet-blanc-2.html', 24),
+                          ('entrainement/problemes.html', 32), ('annexes/calcul-rapide.html', 12)]:
+        source = (ROOT / rel).read_text(encoding='utf-8')
+        zone = re.search(r'<section id="serie-papier"[\s\S]*?</section>', source).group() if 'calcul-rapide' in rel else source
+        answers = [li for d in re.findall(r'<details[^>]*>[\s\S]*?</details>', zone) for li in re.findall(r'<li>([\s\S]*?)</li>', d)]
+        structured = [li for li in answers if 'Méthode' in li and 'Calcul' in li and 'Conclusion' in li]
+        assert len(structured) == expected, (rel, len(structured), len(answers))
     print(f'EXERCISES OK: {len(COURSES)} chapters; {count_exercises} exercises validated.')
     print(f'STATIC OK: {len(pages)} HTML pages; 16 lessons; {links_checked} local links; {snippets} Python blocks compiled.')
 

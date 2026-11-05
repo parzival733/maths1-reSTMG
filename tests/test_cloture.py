@@ -19,7 +19,7 @@ def main():
  subprocess.run(['node','tests/test_cloture.js'],cwd=R,check=True)
  papers=json.loads((R/'donnees/entrainements.json').read_text())
  # References written independently from the expression stacks in the source data.
- autos=[[F(3,4)+F(1,8),(-3)**2-8,F(15,100)*80,50*F(6,5),64/F(4,5),5,-7,2,5+4*3,2*2**3,F(7,10),F(8+10+15,3)],
+ autos=[[F(3,4)+F(1,8),(-3)**2-8,F(12,80)*100,50*F(6,5),64/F(4,5),5,-7,2,50+4*30,2*2**3,F(7,10),F(8+10+15,3)],
         [F(2,3)/F(4,9),4-3*(-2),F(100-80,80)*100,(F(11,10)*F(6,5)-1)*100,3,3,F(8-2,3-1),3*2**2,12+4*3,F(3,10)*F(1,2),F(2*10+16,3),8*F(1,4)]]
  expected=[[
  ['-20','[2;10]','6','croissante puis decroissante','1600','0'],
@@ -30,7 +30,8 @@ def main():
   for bi,p in enumerate(s['problems']):
    assert [q['answer'] for q in p['questions']]==expected[si][bi]
    assert p['math_points']==6 and p['language_points']==1
-  text=' '.join(Content((R/'entrainement'/f"{s['id']}.html").read_text()).text)
+  # Le site écrit le signe moins typographique ; les réponses des données restent en ASCII.
+  text=' '.join(Content((R/'entrainement'/f"{s['id']}.html").read_text()).text).replace('\u2212','-')
   assert '20 points' in text and '6 points' in text and '14' in text
   for q in s['autos']:assert q['answer'] in text,('HTML correction drift',s['id'],q['answer'])
  # Domain and optimum of subject 1, and exact interpretation units.

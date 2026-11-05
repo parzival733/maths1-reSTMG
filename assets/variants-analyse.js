@@ -3,7 +3,7 @@
   'use strict';
   const V = window.ExerciseVariants;
   const {register, E, N, S, C, F, score, fmt, productSignTable, variationTable, signTable} = V;
-  const {num: fr, paren: pa, signed: sg, diff, term, poly, affine, eur, MINUS: M} = fmt;
+  const {num: fr, paren: pa, signed: sg, diff, term, times, poly, affine, eur, MINUS: M} = fmt;
   const tasks = (...list) => ({tasks: list});
   const CONTINUOUS = [
     {what: 'x kilogrammes de chocolat', unit: 'kg', one: 'kilogramme'},
@@ -44,7 +44,7 @@
         return E(o, `Pour <strong>f(x) = ${term(a, 'x²', true)}${term(c)}</strong>, on étudie les sécantes issues du point d’abscisse ${fr(x)}, avec un écart h = 0,1 puis h = 0,01.`,
           [N('Taux pour h = 0,1', rate(0.1)), N('Taux pour h = 0,01', rate(0.01)), N(`Nombre dérivé estimé f′(${fr(x)})`, d)],
           C(`le taux de variation entre ${fr(x)} et ${fr(x)} + h vaut [f(${fr(x)} + h) − f(${fr(x)})]/h ; quand h se rapproche de 0, il se rapproche du nombre dérivé.`,
-            [`f(${fr(x)} + h) − f(${fr(x)}) = ${fr(a)} × [(${fr(x)} + h)² − ${pa(x)}²]${c ? ' (la constante ' + fr(c) + ' disparaît)' : ''} = ${fr(a)} × (${fr(2 * x)}h + h²), donc le taux vaut ${fr(a)} × (${fr(2 * x)} + h).`,
+            [`f(${fr(x)} + h) − f(${fr(x)}) = ${times(a, `[(${fr(x)} + h)² − ${pa(x)}²]`, true)}${c ? ' (la constante ' + fr(c) + ' disparaît)' : ''} = ${times(a, `(${fr(2 * x)}h + h²)`, true)}, donc le taux vaut ${a === 1 ? `${fr(2 * x)} + h` : times(a, `(${fr(2 * x)} + h)`, true)}.`,
              `Pour h = 0,1 : ${fr(rate(0.1))} ; pour h = 0,01 : ${fr(rate(0.01))}.`],
             `les taux se rapprochent de ${fr(d)} : on estime f′(${fr(x)}) = ${fr(d)}.`),
           tasks(`Calcule [f(${fr(x)} + 0,1) − f(${fr(x)})]/0,1.`, `Calcule [f(${fr(x)} + 0,01) − f(${fr(x)})]/0,01.`, 'Indique la valeur qui semble approchée.'));
@@ -59,7 +59,7 @@
       build: ({m, p, x}, o) => E(o, `La tangente à la courbe d’une fonction f au point d’abscisse ${fr(x)} a pour équation <strong>y = ${affine(m, p)}</strong>.`,
         [N(`f′(${fr(x)})`, m), N(`f(${fr(x)})`, m * x + p)],
         C('le nombre dérivé f′(a) est le coefficient directeur de la tangente au point d’abscisse a ; ce point appartient à la fois à la courbe et à la tangente.',
-          [`Le coefficient directeur de la tangente est ${fr(m)}, donc f′(${fr(x)}) = ${fr(m)}.`, `Au point de tangence : y = ${fr(m)} × ${pa(x)}${sg(p)} = ${fr(m * x + p)}.`],
+          [`Le coefficient directeur de la tangente est ${fr(m)}, donc f′(${fr(x)}) = ${fr(m)}.`, `Au point de tangence : y = ${times(m, x, true)}${sg(p)} = ${fr(m * x + p)}.`],
           `f′(${fr(x)}) = ${fr(m)} et f(${fr(x)}) = ${fr(m * x + p)}.`),
         tasks(`Donne f′(${fr(x)}), la pente de cette tangente.`, `Donne f(${fr(x)}), l’ordonnée du point de tangence.`))
     },
@@ -75,7 +75,7 @@
         return E(o, `On connaît <strong>f(x) = ${term(a, 'x²', true)}${term(c)}</strong> et <strong>f′(${fr(x0)}) = ${fr(m)}</strong>. On cherche la tangente au point d’abscisse ${fr(x0)}, sous la forme y = mx + p.`,
           [N(`f(${fr(x0)})`, y0), N('Coefficient directeur m', m), N('Ordonnée à l’origine p', p)],
           C('la tangente au point d’abscisse a a pour équation y = f′(a)(x − a) + f(a) ; on développe pour obtenir y = mx + p.',
-            [`f(${fr(x0)}) = ${fr(a)} × ${pa(x0)}²${sg(c)} = ${fr(y0)} et m = f′(${fr(x0)}) = ${fr(m)}.`,
+            [`f(${fr(x0)}) = ${times(a, pa(x0) + '²', true)}${sg(c)} = ${fr(y0)} et m = f′(${fr(x0)}) = ${fr(m)}.`,
              `La tangente passe par (${fr(x0)} ; ${fr(y0)}) : ${fr(y0)} = ${fr(m)} × ${pa(x0)} + p, donc p = ${fr(y0)} − ${pa(m * x0)} = ${fr(p)}.`],
             `la tangente a pour équation y = ${affine(m, p)}.`),
           tasks(`Calcule f(${fr(x0)}).`, `Donne les coefficients m et p de la tangente en x = ${fr(x0)}.`));
@@ -90,7 +90,7 @@
       build: ({a, b, x}, o) => E(o, `Une fonction est <strong>g(x) = ${affine(a, b)}</strong>.`,
         [N(`g′(${fr(x)})`, a), N(`g(${fr(x)})`, a * x + b), S('Variation', a > 0 ? 'Croissante' : 'Décroissante', ['Croissante', 'Décroissante', 'Constante'])],
         C('la dérivée d’une fonction affine x ↦ ax + b est la constante a ; le signe de la dérivée donne le sens de variation.',
-          [`g′(x) = ${fr(a)} pour tout x, donc g′(${fr(x)}) = ${fr(a)}.`, `g(${fr(x)}) = ${fr(a)} × ${pa(x)}${sg(b)} = ${fr(a * x + b)}.`],
+          [`g′(x) = ${fr(a)} pour tout x, donc g′(${fr(x)}) = ${fr(a)}.`, `g(${fr(x)}) = ${times(a, x, true)}${sg(b)} = ${fr(a * x + b)}.`],
           `la dérivée est ${a > 0 ? 'positive' : 'négative'} : g est ${a > 0 ? 'croissante' : 'décroissante'} sur ℝ.`),
         tasks(`Calcule sa dérivée en x = ${fr(x)}.`, `Calcule g(${fr(x)}).`, 'Choisis le sens de variation.'))
     },
@@ -106,7 +106,7 @@
         return E(o, `Le coût de fabrication, en euros, de ${k.what} est <strong>C(x) = ${poly([a, b, c])}</strong>. On admet que C′(x) = ${affine(2 * a, b)}.`,
           [N(`C(${x0}), en €`, C0), N(`C′(${x0}), en € par ${k.unit}`, Cp), N(`Estimation de C(${fr(x0 + 0.1)}), en €`, est)],
           C('près de x₀, la courbe est proche de sa tangente : C(x₀ + h) ≈ C(x₀) + h × C′(x₀) pour un petit écart h.',
-            [`C(${x0}) = ${fr(a)} × ${x0 * x0} + ${b} × ${x0} + ${c} = ${fr(C0)} et C′(${x0}) = ${fr(2 * a)} × ${x0} + ${b} = ${fr(Cp)}.`,
+            [`C(${x0}) = ${times(a, x0 * x0, true)} + ${b} × ${x0} + ${c} = ${fr(C0)} et C′(${x0}) = ${times(2 * a, x0, true)} + ${b} = ${fr(Cp)}.`,
              `C(${fr(x0 + 0.1)}) ≈ ${fr(C0)} + 0,1 × ${fr(Cp)} = ${fr(est)}.`],
             `produire ${x0} ${k.unit} coûte ${eur(C0)} ; à ce niveau, un ${k.one} de plus coûte environ ${eur(Cp)}, donc C(${fr(x0 + 0.1)}) ≈ ${eur(est)}.`),
           {title: 'Interpréter un coût marginal', ...tasks(`Calcule le coût pour x = ${x0}.`, `Calcule C′(${x0}).`, `Estime C(${fr(x0 + 0.1)}) à l’aide de la tangente.`)});
@@ -124,7 +124,7 @@
         return E(o, `Pour <strong>f(x) = ${term(a, 'x²', true)}${term(c)}</strong>, on connaît <strong>f′(${fr(x0)}) = ${fr(s)}</strong>. La tangente au point d’abscisse ${fr(x0)} a pour équation y = ${term(s, 'x', true)} + p.`,
           [N(`f(${fr(x0)})`, y0), N('Ordonnée à l’origine p', p), S('Sens de variation de la tangente', s > 0 ? 'Croissante' : 'Décroissante', ['Croissante', 'Décroissante'])],
           C('la tangente passe par le point (x₀ ; f(x₀)) et a pour coefficient directeur f′(x₀) ; le signe de ce coefficient donne son sens de variation.',
-            [`f(${fr(x0)}) = ${fr(a)} × ${pa(x0)}²${sg(c)} = ${fr(y0)}.`, `${fr(y0)} = ${fr(s)} × ${pa(x0)} + p = ${fr(s * x0)} + p, donc p = ${fr(y0)} − ${pa(s * x0)} = ${fr(p)}.`],
+            [`f(${fr(x0)}) = ${times(a, pa(x0) + '²', true)}${sg(c)} = ${fr(y0)}.`, `${fr(y0)} = ${fr(s)} × ${pa(x0)} + p = ${fr(s * x0)} + p, donc p = ${fr(y0)} − ${pa(s * x0)} = ${fr(p)}.`],
             `la tangente y = ${affine(s, p)} a un coefficient directeur ${s > 0 ? 'positif' : 'négatif'} : elle est ${s > 0 ? 'croissante' : 'décroissante'}.`),
           {title: 'Sens d’une tangente', ...tasks(`Calcule f(${fr(x0)}).`, 'Trouve p dans l’équation de la tangente.', 'Indique son sens de variation.')});
       }
@@ -141,8 +141,8 @@
         return E(o, `Au point <strong>A(${fr(x)} ; ${fr(y)})</strong>, une courbe possède une tangente de pente <strong>${fr(m)}</strong>.`,
           [N(`f(${fr(x)})`, y), N(`f′(${fr(x)})`, m), N('Ordonnée à l’origine b de la tangente', b), N(`Ordonnée de la tangente en x = ${fr(x2)}`, m * x2 + b)],
           C('le point de tangence donne f(x₀) et la pente donne f′(x₀) ; on trouve b en écrivant que A est sur la droite y = mx + b.',
-            [`f(${fr(x)}) = ${fr(y)} et f′(${fr(x)}) = ${fr(m)}.`, `${fr(y)} = ${fr(m)} × ${pa(x)} + b, donc b = ${fr(y)} − ${pa(m * x)} = ${fr(b)}.`,
-             `En x = ${fr(x2)} : y = ${fr(m)} × ${pa(x2)}${sg(b)} = ${fr(m * x2 + b)}.`],
+            [`f(${fr(x)}) = ${fr(y)} et f′(${fr(x)}) = ${fr(m)}.`, `${fr(y)} = ${times(m, x, true)} + b, donc b = ${fr(y)} − ${pa(m * x)} = ${fr(b)}.`,
+             `En x = ${fr(x2)} : y = ${times(m, x2, true)}${sg(b)} = ${fr(m * x2 + b)}.`],
             `la tangente a pour équation y = ${affine(m, b)} ; en x = ${fr(x2)}, son ordonnée vaut ${fr(m * x2 + b)}.`),
           tasks(`Donne f(${fr(x)}) et f′(${fr(x)}).`, 'Détermine b dans l’équation de la tangente.', `Calcule l’ordonnée de cette tangente en x = ${fr(x2)}.`));
       }
@@ -172,7 +172,7 @@
       build: ({a, b, d, x}, o) => E(o, `Soit <strong>g(x) = ${poly([a, b, 0, d])}</strong>.`,
         [N('Coefficient A de g′(x) = Ax² + Bx', 3 * a), N('Coefficient B', 2 * b), N(`g′(${fr(x)})`, 3 * a * x * x + 2 * b * x)],
         C('on dérive terme à terme : (x³)′ = 3x², (x²)′ = 2x et la dérivée d’une constante est nulle.',
-          [`g′(x) = ${poly([3 * a, 2 * b, 0])}.`, `g′(${fr(x)}) = ${fr(3 * a)} × ${x * x} + ${pa(2 * b)} × ${pa(x)} = ${fr(3 * a * x * x)} + ${pa(2 * b * x)} = ${fr(3 * a * x * x + 2 * b * x)}.`],
+          [`g′(x) = ${poly([3 * a, 2 * b, 0])}.`, `g′(${fr(x)}) = ${times(3 * a, x * x, true)}${times(2 * b, x)} = ${fr(3 * a * x * x)}${sg(2 * b * x)} = ${fr(3 * a * x * x + 2 * b * x)}.`],
           `g′(x) = ${poly([3 * a, 2 * b, 0])} et g′(${fr(x)}) = ${fr(3 * a * x * x + 2 * b * x)}.`),
         tasks('Complète g′(x) = Ax² + Bx.', `Calcule g′(${fr(x)}).`))
     },
@@ -188,7 +188,7 @@
           [N('Zéro de la dérivée', h), N('Valeur de l’extremum', k), S(`Variation pour x < ${fr(h)}`, a > 0 ? 'Décroissante' : 'Croissante', ['Croissante', 'Décroissante']),
            S('Nature de l’extremum', a > 0 ? 'Minimum' : 'Maximum', ['Minimum', 'Maximum'])],
           C('on calcule f′(x), on étudie son signe, puis on en déduit les variations de f et la valeur de l’extremum.',
-            [`f′(x) = ${affine(2 * a, b)} = 0 ⇔ x = ${fr(h)}.`, `f(${fr(h)}) = ${fr(a)} × ${pa(h)}² + ${pa(b)} × ${pa(h)}${sg(c)} = ${fr(k)}.`],
+            [`f′(x) = ${affine(2 * a, b)} = 0 ⇔ x = ${fr(h)}.`, `f(${fr(h)}) = ${times(a, pa(h) + '²', true)}${times(b, h)}${sg(c)} = ${fr(a * h * h)}${sg(b * h)}${sg(c)} = ${fr(k)}.`],
             `f est ${a > 0 ? 'décroissante puis croissante' : 'croissante puis décroissante'} : elle admet un ${a > 0 ? 'minimum' : 'maximum'} égal à ${fr(k)}, atteint en x = ${fr(h)}.`,
             variationTable('Signe de f′(x) et variations de f', 'f', [M + '∞', h, '+∞'], [null, k, null], a > 0 ? [-1, 1] : [1, -1])),
           tasks(`Calcule le zéro de f′(x) = ${affine(2 * a, b)}.`, 'Trouve la nature et la valeur de l’extremum de f.', `Indique la variation pour x < ${fr(h)}.`));
@@ -210,7 +210,7 @@
           [N('Coefficient a de B′(x) = ax + b', -2 * m), N('Coefficient b de B′(x)', 2 * m * h), N('x optimal', h), N('Bénéfice maximal, en ' + k2.unit, k)],
           C('on calcule B′(x), on étudie son signe sur [0 ; ' + top + '] ; le maximum est atteint là où B′ passe du positif au négatif.',
             [`B′(x) = ${affine(-2 * m, 2 * m * h)} ; B′(x) = 0 ⇔ x = ${h}. B′(x) > 0 pour x < ${h} et B′(x) < 0 pour x > ${h}.`,
-             `B(${h}) = ${pa(-m)} × ${h * h} + ${2 * m * h} × ${h}${sg(c)} = ${fr(k)}.`],
+             `B(${h}) = ${times(-m, h + '²', true)} + ${2 * m * h} × ${h}${sg(c)} = ${fr(-m * h * h)}${sg(2 * m * h * h)}${sg(c)} = ${fr(k)}.`],
             k2.end + ` (B est exprimé en ${k2.unit}.)`,
             variationTable('Signe de B′(x) et variations de B sur [0 ; ' + top + ']', 'B', [0, h, top], [B(0), k, B(top)], [1, -1])),
           tasks('Écris B′(x) = ax + b.', 'Trouve l’abscisse du maximum et sa valeur.'));
@@ -263,7 +263,7 @@
         return E(o, `Le coût, en euros, de ${k.what} est <strong>C(x) = ${poly([a, b, c])}</strong>, pour x ≥ 0. Sa dérivée est C′(x) = ${affine(2 * a, b)}.`,
           [N(`C(${x0}), en €`, C0), N(`C′(${x0}), en € par ${k.unit}`, Cp), N(`Hausse estimée pour 0,1 ${k.unit} de plus, en €`, rise)],
           C('la dérivée C′(x₀) mesure le coût d’une unité supplémentaire autour de x₀ : pour un petit écart h, la hausse du coût vaut environ h × C′(x₀).',
-            [`C(${x0}) = ${a} × ${x0 * x0} + ${b} × ${x0} + ${c} = ${C0} et C′(${x0}) = ${2 * a} × ${x0} + ${b} = ${Cp}.`, `Hausse ≈ 0,1 × ${Cp} = ${fr(rise)}.`],
+            [`C(${x0}) = ${times(a, x0 * x0, true)} + ${b} × ${x0} + ${c} = ${C0} et C′(${x0}) = ${2 * a} × ${x0} + ${b} = ${Cp}.`, `Hausse ≈ 0,1 × ${Cp} = ${fr(rise)}.`],
             `produire ${x0} ${k.unit} coûte ${eur(C0)} ; produire 0,1 ${k.unit} de plus coûte environ ${eur(rise)} supplémentaires.`),
           tasks(`Calcule C(${x0}).`, `Calcule C′(${x0}).`, `Estime la hausse de coût pour 0,1 ${k.unit} de plus autour de ${x0}.`));
       }
@@ -282,7 +282,7 @@
           [N('Coefficient a de R′(x) = ax + b', -2 * m), N('Coefficient b de R′(x)', 2 * m * h), N('x optimal', h), N('R(0)', c), N(`R(${h})`, max), N(`R(${top})`, c)],
           C('on calcule R′(x), on étudie son signe, on dresse le tableau de variations, puis on compare la valeur au sommet aux valeurs aux bornes.',
             [`R′(x) = ${affine(-2 * m, 2 * m * h)} ; R′(x) = 0 ⇔ x = ${h}, avec R′(x) > 0 avant ${h} et R′(x) < 0 après.`,
-             `R(0) = ${c} ; R(${h}) = ${pa(-m)} × ${h * h} + ${2 * m * h} × ${h} + ${c} = ${max} ; R(${top}) = ${c}.`],
+             `R(0) = ${c} ; R(${h}) = ${times(-m, h + '²', true)} + ${2 * m * h} × ${h} + ${c} = ${fr(-m * h * h)}${sg(2 * m * h * h)}${sg(c)} = ${max} ; R(${top}) = ${c}.`],
             k.end + ' (R est exprimé en centaines d’euros.)',
             variationTable(`Signe de R′(x) et variations de R sur [0 ; ${top}]`, 'R', [0, h, top], [c, max, c], [1, -1])),
           tasks('Calcule R′(x) = ax + b.', 'Trouve la valeur de x pour laquelle R est maximale.', `Calcule R(0), R(${h}) et R(${top}).`));
@@ -321,7 +321,7 @@
         return E(o, `Une droite d’ajustement passe par <strong>A(${x1} ; ${fr(y1)})</strong> et <strong>B(${x2} ; ${fr(y2)})</strong>.`,
           [N('Pente a', a), N('Ordonnée b', b), N(`Estimation pour x = ${xq}`, a * xq + b)],
           C('la pente vaut a = (y<sub>B</sub> − y<sub>A</sub>)/(x<sub>B</sub> − x<sub>A</sub>) ; on obtient b avec les coordonnées de A, puis on utilise y = ax + b.',
-            [`a = (${diff(y2, y1)})/(${diff(x2, x1)}) = ${fr(y2 - y1)}/${dx} = ${fr(a)}.`, `b = ${x1 ? `${fr(y1)} − ${pa(a)} × ${x1}` : fr(y1)} = ${fr(b)}. Pour x = ${xq} : y = ${fr(a)} × ${xq}${sg(b)} = ${fr(a * xq + b)}.`],
+            [`a = (${diff(y2, y1)})/(${diff(x2, x1)}) = ${fr(y2 - y1)}/${dx} = ${fr(a)}.`, `b = ${x1 ? `${fr(y1)}${times(-a, x1)}` : fr(y1)} = ${fr(b)}. Pour x = ${xq} : y = ${times(a, xq, true)}${sg(b)} = ${fr(a * xq + b)}.`],
             `la droite a pour équation y = ${affine(a, b)} ; elle donne y = ${fr(a * xq + b)} pour x = ${xq}.`),
           tasks('Détermine a et b dans y = ax + b.', `Estime y pour x = ${xq}.`));
       }
@@ -350,7 +350,7 @@
         return E(o, k.intro,
           [N('Pente a', s), N('Ordonnée à l’origine b', b), N(`Prévision pour x = ${xq}`, y), N(k.gain, s)],
           C('dans y = ax + b, la pente a est la variation de y quand x augmente de 1 ; b est la valeur de y pour x = 0. On remplace x pour prévoir.',
-            [`a = ${fr(s)} et b = ${fr(b)} ; pour x = ${xq} : y = ${fr(s)} × ${xq} + ${b} = ${fr(y)}.`],
+            [`a = ${fr(s)} et b = ${fr(b)} ; pour x = ${xq} : y = ${times(s, xq, true)} + ${b} = ${fr(y)}.`],
             k.end + ' Une prévision par un modèle reste une estimation.'),
           tasks('Donne la pente et l’ordonnée à l’origine.', `Estime y pour x = ${xq}.`, 'Interprète la pente.'));
       }
@@ -367,7 +367,7 @@
         return E(o, `Un petit nuage est formé des points <strong>${pts.join(', ')}</strong>.`,
           [N('Pente', a), N('Ordonnée à l’origine', b), N('Valeur prévue à x = 5', 5 * a + b)],
           C('les points sont alignés : la pente est la variation de y quand x augmente de 1 ; on trouve l’ordonnée à l’origine avec un point.',
-            [`Quand x augmente de 1, y varie de ${fr(a)} : a = ${fr(a)}.`, `Avec (1 ; ${fr(a + b)}) : ${fr(a + b)} = ${fr(a)} × 1 + b, donc b = ${fr(b)}.`],
+            [`Quand x augmente de 1, y varie de ${fr(a)} : a = ${fr(a)}.`, `Avec (1 ; ${fr(a + b)}) : ${fr(a + b)} = ${times(a, 1, true)} + b, donc b = ${fr(a + b)}${sg(-a)} = ${fr(b)}.`],
             `la droite a pour équation y = ${affine(a, b)} et donne ${fr(5 * a + b)} pour x = 5.`),
           tasks('Donne la pente de la droite qui les relie.', 'Détermine l’ordonnée à l’origine.', 'Prévois y pour x = 5.'));
       }

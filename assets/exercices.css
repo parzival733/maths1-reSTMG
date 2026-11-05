@@ -668,13 +668,4 @@
 .coaching-bridge .is-success { color: #145c40; font-weight: 750; }
 @media print { .coaching-panel { display: none !important; } }
 
-/* Tableaux de signes et de variations des corrigés : vrai tableau accessible,
-   défilement horizontal propre sur petit écran, formules non coupées. */
-.table-scroll { max-width: 100%; overflow-x: auto; margin: 12px 0; -webkit-overflow-scrolling: touch; }
-.table-scroll:focus-visible { outline: 3px solid var(--purple); outline-offset: 3px; }
-.sign-table { border-collapse: collapse; min-width: 100%; font-size: 15px; background: var(--surface); }
-.sign-table caption { text-align: left; font-weight: 700; padding: 0 0 6px; color: var(--ink); }
-.sign-table th, .sign-table td { border: 1px solid var(--line); padding: 6px 10px; text-align: center; white-space: nowrap; }
-.sign-table thead th { background: var(--purple-soft); color: var(--ink); }
-.sign-table tbody th { text-align: left; background: #faf9fd; font-weight: 600; }
 .check p strong:first-child { color: var(--purple-dark); }

@@ -113,7 +113,7 @@
           [N('Moyenne', m), N('Variance', Vr), N('Écart-type, au centième', round2(sd), 0.0049)],
           C('on calcule la moyenne, puis les écarts à la moyenne, leurs carrés et la moyenne de ces carrés (la variance) ; l’écart-type est la racine carrée de la variance.',
             [`Moyenne : (${xs.join(' + ')})/4 = ${m}. Écarts : ${xs.map(x => fr(x - m)).join(' ; ')}.`,
-             `Variance : (${xs.map(x => (x - m) ** 2).filter(Boolean).join(' + ')})/4${e === 0 ? ' (les deux écarts nuls n’ajoutent rien)' : ''} = ${fr(Vr)} ; écart-type : √${fr(Vr)} ${exact ? '= ' + sd : '≈ ' + fr(round2(sd))}.`],
+             `Carrés des écarts : ${xs.map(x => fr((x - m) ** 2)).join(' ; ')}, de somme ${fr(4 * Vr)} ; variance : ${fr(4 * Vr)}/4 = ${fr(Vr)} ; écart-type : √${fr(Vr)} ${exact ? '= ' + sd : '≈ ' + fr(round2(sd))}.`],
             `la moyenne vaut ${m}, la variance ${fr(Vr)} et l’écart-type ${exact ? sd : 'environ ' + fr(round2(sd))}.`),
           {title: 'Écart-type et dispersion', ...tasks('Calcule la moyenne.', 'Calcule la variance.', 'Déduis-en l’écart-type, au centième.')});
       }
@@ -283,7 +283,7 @@
         const s = dir ? -1 : 1, c2 = F(a2 * (1 + s * b2 / 100), 6), c3 = F(a3 * (1 + s * b3 / 100), 6), formula = dir ? '=A2*(1-B2)' : '=A2*(1+B2)';
         return E(o, `Une feuille comporte <strong>A2 = ${a2}</strong>, <strong>B2 = ${b2} %</strong>, <strong>A3 = ${a3}</strong> et <strong>B3 = ${b3} %</strong>. En C2, on calcule le prix ${dir ? 'diminué' : 'augmenté'} du taux de la colonne B, puis on recopie la formule en C3.`,
           [S('Formule à écrire en C2', formula, ['=A2*(1+B2)', '=A2*(1-B2)', '=A2+B2', '=A2*(1+B3)'], {shuffle: true}), N('C2', c2), N('C3', c3)],
-          C(`${dir ? 'diminuer' : 'augmenter'} de t % revient à multiplier par 1 ${dir ? M : '+'} t ; des références relatives se décalent lors de la recopie vers le bas.`,
+          C(`${dir ? 'diminuer' : 'augmenter'} de t % revient à multiplier par 1 ${dir ? M : '+'} t/100 ; dans le tableur, une cellule affichée en pourcentage contient déjà t/100 (15 % vaut 0,15), d’où le facteur (1 ${dir ? M : '+'} B2). Des références relatives se décalent lors de la recopie vers le bas.`,
             [`En C2 : ${formula} donne ${a2} × ${fr(1 + s * b2 / 100)} = ${fr(c2)}.`, `Recopiée en C3, la formule devient ${formula.replace(/2/g, '3')}, soit ${a3} × ${fr(1 + s * b3 / 100)} = ${fr(c3)}.`],
             `on écrit ${formula} en C2 ; C2 vaut ${fr(c2)} et C3 vaut ${fr(c3)}.`),
           tasks('Choisis la formule à mettre en C2 pour une recopie simple.', 'Donne les valeurs de C2 et de C3 après recopie.'));

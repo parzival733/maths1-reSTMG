@@ -107,8 +107,9 @@
            S(`Solutions de g(x) ${sym} 0`, answer, [`[${fr(lo)} ; ${fr(hi)}]`, inner, outer, `[${fr(a)} ; ${fr(lo)}] ∪ [${fr(hi)} ; ${fr(b)}]`], {shuffle: true})],
           C('une image se lit sur l’axe vertical à partir d’une abscisse ; les antécédents de 0 sont les abscisses des points d’intersection avec l’axe horizontal ; le signe de g se lit selon que la courbe est au-dessus ou au-dessous de cet axe.',
             [`g(${fr(a)}) = ${dir > 0 ? '' : M}(${M}2)² ${dir > 0 ? M + ' 1' : '+ 1'} = ${fr(3 * dir)} et g(${fr(h)}) = ${fr(-dir)}.`,
-             `g(x) = 0 ⇔ ${fact(h)}² = 1 ⇔ x = ${fr(lo)} ou x = ${fr(hi)}. La courbe est ${dir > 0 ? 'sous' : 'au-dessus de'} l’axe entre ces deux valeurs, et ${dir > 0 ? 'au-dessus' : 'au-dessous'} à l’extérieur.`],
-            `le ${ext} de g vaut ${fr(-dir)}, atteint en x = ${fr(h)}. L’inégalité stricte exclut les zéros : l’ensemble des solutions de g(x) ${sym} 0 est ${answer}.`)),
+             `g(x) = 0 ⇔ ${fact(h)}² = 1 ⇔ x = ${fr(lo)} ou x = ${fr(hi)}. On le confirme en factorisant : g(x) = ${coefText(dir)}${fact(lo)}${fact(hi)}. La courbe est ${dir > 0 ? 'sous' : 'au-dessus de'} l’axe entre ces deux valeurs, et ${dir > 0 ? 'au-dessus' : 'au-dessous'} à l’extérieur.`],
+            `le ${ext} de g vaut ${fr(-dir)}, atteint en x = ${fr(h)}. L’inégalité stricte exclut les zéros : l’ensemble des solutions de g(x) ${sym} 0 est ${answer}.`,
+            productSignTable(`Signe de g(x) sur [${fr(a)} ; ${fr(b)}]`, dir, lo, hi, a, b, 'g(x)'))),
           coachingContext: {h, lo, hi, dir, q}};
       }
     },
@@ -152,8 +153,10 @@
             [`A(${t0}) = ${fr(fixed)} + ${fr(rA)} × ${t0} = ${fr(A)} et B(${t0}) = ${fr(rB)} × ${t0} = ${fr(B)}.`,
              `A(t) = B(t) ⇔ ${fr(fixed)} + ${fr(rA)}t = ${fr(rB)}t ⇔ ${fr(fixed)} = ${fr(diff)}t ⇔ t = ${k}.`,
              q ? `B(t) ≤ A(t) ⇔ ${fr(rB)}t ≤ ${fr(fixed)} + ${fr(rA)}t ⇔ ${fr(diff)}t ≤ ${fr(fixed)} ⇔ t ≤ ${k}.`
-               : `A(t) ≤ B(t) ⇔ ${fr(fixed)} + ${fr(rA)}t ≤ ${fr(rB)}t ⇔ ${fr(fixed)} ≤ ${fr(diff)}t ⇔ t ≥ ${k}.`],
-            `pour ${when}, A coûte ${eur(A)} et B ${eur(B)}. Les deux prix sont égaux pour t = ${k} ; ${q ? `la formule B est au plus aussi chère que A lorsque t ≤ ${k}` : `la formule A est au plus aussi chère que B lorsque t ≥ ${k}`}.`)),
+               : `A(t) ≤ B(t) ⇔ ${fr(fixed)} + ${fr(rA)}t ≤ ${fr(rB)}t ⇔ ${fr(fixed)} ≤ ${fr(diff)}t ⇔ t ≥ ${k}.`,
+             `Autre lecture : B(t) − A(t) = ${fr(diff)}t − ${fr(fixed)} s’annule pour t = ${k} et son coefficient ${fr(diff)} est positif.`],
+            `pour ${when}, A coûte ${eur(A)} et B ${eur(B)}. Les deux prix sont égaux pour ${ctx ? `${k} séances` : `${k} heures`} (t = ${k}) ; ${q ? `la formule B est au plus aussi chère que A lorsque t ≤ ${k}` : `la formule A est au plus aussi chère que B lorsque t ≥ ${k}`}.`,
+            affineSignTable('Signe de B(t) − A(t) pour t ≥ 0', 'B(t) − A(t)', diff, k, 0, null, 't'))),
           coachingContext: {fixed, rateA: rA, rateB: rB, k, t0, q}};
       }
     },
@@ -319,7 +322,8 @@
           C('dans une forme canonique, le carré est positif ou nul et ne s’annule qu’en un point : l’abscisse du sommet. Pour les racines, on isole le carré.',
             [dir > 0 ? `${fact(h)}² ≥ 0, donc p(x) ≥ ${M}${d * d}, avec égalité pour x = ${fr(h)}.` : `${fact(h)}² ≥ 0, donc p(x) ≤ ${d * d}, avec égalité pour x = ${fr(h)}.`,
              `p(x) = 0 ⇔ ${fact(h)}² = ${d * d} ⇔ ${bare(h)} = ${M}${d} ou ${bare(h)} = ${d} ⇔ x = ${fr(h - d)} ou x = ${fr(h + d)}.`],
-            `l’axe de symétrie est la droite x = ${fr(h)} ; le ${dir > 0 ? 'minimum' : 'maximum'} de p vaut ${fr(ext)} ; les racines sont ${fr(h - d)} et ${fr(h + d)}.`));
+            `l’axe de symétrie est la droite x = ${fr(h)} ; le ${dir > 0 ? 'minimum' : 'maximum'} de p vaut ${fr(ext)}, atteint en x = ${fr(h)} ; les racines sont ${fr(h - d)} et ${fr(h + d)}.`,
+            variationTable('Variations de p', 'p', [M + '∞', h, '+∞'], [null, ext, null], dir > 0 ? [-1, 1] : [1, -1], {derivative: false})));
       }
     },
     { // 5. Dresser un signe avec un coefficient
@@ -387,8 +391,9 @@
            S('Nature de l’extremum', dir > 0 ? 'Minimum' : 'Maximum', ['Minimum', 'Maximum'])],
           C(`on cherche deux entiers r et s tels que q(x) = ${dir > 0 ? '' : M}(x − r)(x − s) ; la parabole étant symétrique, le sommet est au milieu des racines.`,
             [`q(0) = ${fr(dir * r * s)}. On vérifie que q(x) = ${coefText(dir)}${fact(r)}${fact(s)} en développant : on retrouve ${poly(coefs)}.`,
-             `Les racines sont ${fr(r)} et ${fr(s)}, donc x<sub>S</sub> = (${fr(r)} + ${pa(s)})/2 = ${fr(v)} et q(${fr(v)}) = ${dir > 0 ? '' : M + '('}${pa(v - r)} × ${pa(v - s)}${dir > 0 ? '' : ')'} = ${fr(ext)}.`],
-            `les racines sont ${fr(r)} et ${fr(s)} ; le sommet a pour abscisse ${fr(v)} et q admet un ${dir > 0 ? 'minimum' : 'maximum'} égal à ${fr(ext)}.`));
+             `Les racines sont ${fr(r)} et ${fr(s)}, donc x<sub>S</sub> = (${fr(r)}${sg(s)})/2 = ${fr(v)} et q(${fr(v)}) = ${dir > 0 ? '' : M + '('}${pa(v - r)} × ${pa(v - s)}${dir > 0 ? '' : ')'} = ${fr(ext)}.`],
+            `les racines sont ${fr(r)} et ${fr(s)} ; le sommet a pour abscisse ${fr(v)} et q admet un ${dir > 0 ? 'minimum' : 'maximum'} égal à ${fr(ext)}, atteint en x = ${fr(v)}.`,
+            variationTable('Variations de q', 'q', [M + '∞', v, '+∞'], [null, ext, null], dir > 0 ? [-1, 1] : [1, -1], {derivative: false})));
       }
     },
     { // 8. Résoudre une inéquation-produit

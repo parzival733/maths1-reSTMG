@@ -6,13 +6,15 @@
   const V = window.ExerciseVariants;
   if (!V) throw new Error('Le moteur de variantes doit être chargé avant Terminale.');
   const {N, S, C, F, score, fmt, productSignTable, variationTable, signTable} = V;
-  const {num: fr, paren: pa, signed: sg, diff, term, poly, affine, frac, pct, eur, MINUS: M} = fmt;
+  const {num: fr, paren: pa, signed: sg, diff, term, times, poly, affine, frac, pct, eur, MINUS: M} = fmt;
   // Valeur exacte, ou arrondie au millième (ou à `digits` décimales).
   const Q = (label, value, digits = 3) => N(label, F(value, 9), 1e-8, digits);
   const choice = (label, answer, options, settings) => S(label, answer, options, settings);
   const r3 = (x, d = 3) => Math.round(x * 10 ** d + (x >= 0 ? 1e-9 : -1e-9)) / 10 ** d;
   const eq = (x, d = 3) => (Math.abs(x * 10 ** d - Math.round(x * 10 ** d)) < 1e-7 ? '= ' + fr(x) : '≈ ' + fr(r3(x, d)));
   const sub = k => String(k).replace(/\d/g, d => '₀₁₂₃₄₅₆₇₈₉'[d]);
+  // Quotient n/d écrit sans « /1 ».
+  const over = (n, d) => (d === 1 ? fr(n) : fr(n) + '/' + d);
   const tenth = r => r.int(1, 9) / 10;
   const code = text => '<code>' + text + '</code>';
   // Somme écrite sans « + − » : addAll([3, −2, 5]) → « 3 − 2 + 5 ».
@@ -45,7 +47,7 @@
         build: ({a, r}) => { const b = a + 2 * r, m = a + r; return item('Moyenne arithmétique', `Les nombres ${fr(a)}, m et ${fr(b)} sont trois termes consécutifs d’une suite arithmétique.`,
           [Q('m', m), Q('Raison', r)],
           C('dans une suite arithmétique, le terme du milieu est la moyenne arithmétique de ses deux voisins : m = (a + b)/2.',
-            [`m = (${fr(a)} + ${pa(b)})/2 = ${fr(m)} ; la raison vaut ${diff(m, a)} = ${fr(r)}.`],
+            [`m = (${fr(a)}${sg(b)})/2 = ${fr(m)} ; la raison vaut ${diff(m, a)} = ${fr(r)}.`],
             `m = ${fr(m)} et la raison vaut ${fr(r)} : on passe de ${fr(a)} à ${fr(m)} puis à ${fr(b)} en ajoutant ${fr(r)}.`),
           'Les deux augmentations doivent être égales. Calcule le milieu des deux nombres connus.'); }
       }),
@@ -71,7 +73,7 @@
         build: ({a, r, n}) => { const last = a + n * r, sum = (n + 1) * (a + last) / 2; return item('Somme arithmétique et rangs', `u₀ = ${a} et uₙ₊₁ = uₙ${sg(r)}. On additionne les termes du rang 0 au rang ${n}, bornes comprises.`,
           [Q(`u${sub(n)}`, last), Q('Nombre de termes', n + 1), Q('Somme', sum)],
           C('pour une suite arithmétique, uₙ = u₀ + nr, et la somme de termes consécutifs vaut nombre de termes × (premier + dernier)/2.',
-            [`u${sub(n)} = ${a} + ${n} × ${pa(r)} = ${fr(last)}. Du rang 0 au rang ${n}, il y a ${n + 1} termes.`, `S = ${n + 1} × (${a} + ${pa(last)})/2 = ${fr(sum)}.`],
+            [`u${sub(n)} = ${a} + ${n} × ${pa(r)} = ${fr(last)}. Du rang 0 au rang ${n}, il y a ${n + 1} termes.`, `S = ${last ? `${n + 1} × (${a}${sg(last)})/2` : `${n + 1} × ${a}/2`} = ${fr(sum)}.`],
             `u${sub(n)} = ${fr(last)}, il y a ${n + 1} termes et leur somme vaut ${fr(sum)}.`),
           'Compte les termes avant de choisir la formule : de 0 à n, il y en a n + 1.'); }
       }),
@@ -316,7 +318,7 @@
         build: ({k, a}) => item('Dériver une somme', `f(x) = x + ${k}/x pour x > 0. Calcule l’image et le nombre dérivé en x = ${a}.`,
           [Q(`f(${a})`, a + k / a), Q(`f′(${a})`, 1 - k / (a * a))],
           C(`la dérivée de x est 1 et celle de k/x est −k/x² : f′(x) = 1 − ${k}/x².`,
-            [`f(${a}) = ${a} + ${k}/${a} ${eq(a + k / a)}.`, `f′(${a}) = 1 − ${k}/${a * a} ${eq(1 - k / (a * a))}.`],
+            [`f(${a}) = ${a} + ${over(k, a)} ${eq(a + k / a)}.`, `f′(${a}) = 1 − ${over(k, a * a)} ${eq(1 - k / (a * a))}.`],
             `f(${a}) ${eq(a + k / a)} et f′(${a}) ${eq(1 - k / (a * a))}.`),
           'La dérivée de 1/x est −1/x², puis on multiplie par le coefficient.')
       }),
@@ -357,8 +359,10 @@
         build: ({a, k}) => { const m = -k / (a * a), p = 2 * k / a; return item('Tangente à une fonction inverse', `f(x) = ${k}/x pour x > 0. Écris la tangente à la courbe de f en x = ${a} sous la forme y = mx + p.`,
           [Q('m', m), Q('p', p)],
           C('la tangente en a a pour équation y = f′(a)(x − a) + f(a), avec f′(x) = −k/x².',
-            [`m = f′(${a}) = −${k}/${a * a} ${eq(m)} ; f(${a}) = ${k}/${a} ${eq(k / a)}.`, `p = f(${a}) − m × ${a} = ${k}/${a} + ${k}/${a} = ${2 * k}/${a} ${eq(p)}.`],
-            `la tangente a pour équation y ${Number.isInteger(m) && Number.isInteger(p) ? '=' : '≈'} ${affine(r3(m), r3(p))} (valeurs exactes : m = −${k}/${a * a} et p = ${2 * k}/${a}).`),
+            [a === 1 ? `m = f′(1) = −${k} ; f(1) = ${k}.` : `m = f′(${a}) = −${k}/${a * a} ${eq(m)} ; f(${a}) = ${k}/${a} ${eq(k / a)}.`,
+             a === 1 ? `p = f(1) − m × 1 = ${k} + ${k} = ${2 * k}.` : `p = f(${a}) − m × ${a} = ${k}/${a} + ${k}/${a} = ${2 * k}/${a} ${eq(p)}.`],
+            Number.isInteger(m) && Number.isInteger(p) ? `la tangente a pour équation y = ${affine(m, p)}.`
+              : `la tangente a pour équation y ≈ ${affine(r3(m), r3(p))} (valeurs exactes : m = −${k}/${a * a} et p = ${over(2 * k, a)}).`),
           'Utilise y = f(a) + f′(a)(x − a), puis développe.'); }
       }),
       T({ // Polynôme et inverse
@@ -425,8 +429,8 @@
         build: ({a, b, x}) => item('Changement de variable carré', `On pose z = x². Dans le nouveau repère, le modèle ajusté est y = ${affine(a, b, 'z')}. On prend x = ${x}.`,
           [Q('z', x * x), Q('y estimé', a * x * x + b)],
           C('on calcule d’abord la nouvelle variable z, puis on applique la droite d’ajustement en z.',
-            [`z = ${x}² = ${x * x} ; y = ${fr(a)} × ${x * x}${sg(b)} = ${fr(a * x * x + b)}.`],
-            `y ≈ ${fr(a * x * x + b)} ; dans les variables initiales, le modèle est y = ${poly([a, 0, b])}, qui n’est pas une droite.`),
+            [`z = ${x}² = ${x * x} ; y = ${times(a, x * x, true)}${sg(b)} = ${fr(a * x * x + b)}.`],
+            `le modèle donne y = ${fr(a * x * x + b)} ; dans les variables initiales, le modèle est y = ${poly([a, 0, b])}, qui n’est pas une droite.`),
           'Calcule d’abord la nouvelle variable, puis applique la droite ajustée.')
       }),
       T({ // Ajustement logarithmique

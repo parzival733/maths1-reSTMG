@@ -5,14 +5,17 @@
   'use strict';
   const V = window.ExerciseVariants;
   const {register, E, N, S, C, F, score, fmt, signTable} = V;
-  const {num: fr, paren: pa, signed: sg, eur, MINUS: M} = fmt;
+  const {num: fr, paren: pa, signed: sg, eur, frac, MINUS: M} = fmt;
   const tasks = (...list) => ({tasks: list});
   // Valeur exacte, ou arrondie au millième (une saisie plus précise est acceptée).
   const approx = (label, value) => N(label, F(value, 6), 0.0001, 3);
   const r3 = x => fr(Math.round(x * 1000 + 1e-9) / 1000);
-  const exactOrApprox = x => (Math.abs(x * 1000 - Math.round(x * 1000)) < 1e-9 ? '= ' + fr(x) : '≈ ' + r3(x));
+  // Valeur exacte si elle s'écrit avec au plus quatre décimales (0,0625), sinon arrondi au millième.
+  const exactOrApprox = x => (Math.abs(x * 10000 - Math.round(x * 10000)) < 1e-9 ? '= ' + fr(x) : '≈ ' + r3(x));
   const about = x => (Math.abs(x * 1000 - Math.round(x * 1000)) < 1e-9 ? 'vaut ' + fr(x) : 'vaut environ ' + r3(x));
   const tenth = r => r.int(1, 9) / 10;
+  // « 3/6 = 1/2 » quand la fraction se simplifie, « 1/6 » sinon.
+  const simplified = (n, d) => (fmt.gcd(n, d) > 1 ? `${n}/${d} = ${fmt.frac(n, d)}` : `${n}/${d}`);
   const effectifs = (caption, cols, rows) => signTable(caption, cols, rows, 'Effectifs');
 
   register('probabilites-conditionnelles', [
@@ -56,7 +59,7 @@
           C('sachant un événement, on se restreint à cette sous-population : le dénominateur est son effectif et non l’effectif total.',
             [`P(${k.B} | ${k.A}) = ${a1}/${m} ${exactOrApprox(a1 / m)} ; P(${k.B} | ${k.nA}) = ${a2}/${T - m} ${exactOrApprox(a2 / (T - m))}.`,
              `P(${k.B}) = (${a1} + ${a2})/${T} = ${tot}/${T} ${exactOrApprox(tot / T)}.`],
-            `les deux probabilités conditionnelles n’ont pas le même dénominateur ; au millième, P(${k.B}) ${exactOrApprox(tot / T)}.`,
+            `P(${k.B} | ${k.A}) ${exactOrApprox(a1 / m)} et P(${k.B} | ${k.nA}) ${exactOrApprox(a2 / (T - m))} : ces deux probabilités conditionnelles n’ont pas le même dénominateur. Sur toute la population, P(${k.B}) ${exactOrApprox(tot / T)}.`,
             effectifs('Tableau des effectifs', [k.colB, k.colN, 'Total'], [
               {label: k.rowA, cells: [a1, m - a1, m]}, {label: k.rowN, cells: [a2, T - m - a2, T - m]}, {label: 'Total', cells: [tot, T - tot, T]}])),
           tasks('Calcule les deux probabilités conditionnelles.', 'Calcule la probabilité sur toute la population.'));
@@ -151,7 +154,7 @@
           [N(`P(${k.ev} | ${k.g1})`, p1), N(`P(${k.ev} | ${k.g2})`, p2), approx(`P(${k.ev}), au millième`, tot / T)],
           C('pour une probabilité sachant un groupe, on divise par l’effectif de ce groupe ; pour la probabilité globale, on divise le nombre total de cas favorables par l’effectif total.',
             [`P(${k.ev} | ${k.g1}) = ${b1}/${n1} = ${fr(p1)} ; P(${k.ev} | ${k.g2}) = ${b2}/${n2} = ${fr(p2)}.`, `P(${k.ev}) = (${b1} + ${b2})/${T} = ${tot}/${T} ${exactOrApprox(tot / T)}.`],
-            `la probabilité globale ${exactOrApprox(tot / T)} est comprise entre les deux probabilités conditionnelles : c’est une moyenne pondérée par la taille des groupes.`,
+            `la probabilité globale, P(${k.ev}) ${exactOrApprox(tot / T)}, est comprise entre les deux probabilités conditionnelles : c’est une moyenne pondérée par la taille des groupes.`,
             effectifs('Tableau des effectifs', [k.c1, k.c2, 'Total'], [
               {label: k.r1, cells: [b1, n1 - b1, n1]}, {label: k.r2, cells: [b2, n2 - b2, n2]}, {label: 'Total', cells: [tot, T - tot, T]}])),
           tasks('Calcule la probabilité dans chacun des deux groupes.', 'Calcule la probabilité sur toute la population.'));
@@ -172,7 +175,7 @@
         ][ctx];
         return E(o, k.intro,
           [N('P(D ∩ T)', j), N('P(T)', t), approx('P(D | T), au millième', j / t)],
-          C('on lit l’arbre (D puis T) ; la formule des probabilités totales donne P(T), puis l’inversion du conditionnement donne P<sub>T</sub>(D) = P(D ∩ T)/P(T).',
+          C('on lit l’arbre (D puis T) ; la formule des probabilités totales donne P(T), puis l’inversion du conditionnement donne P(D | T) = P(D ∩ T)/P(T).',
             [`P(D ∩ T) = ${fr(d)} × ${fr(se)} = ${fr(j)} ; P(non D ∩ T) = ${fr(1 - d)} × ${fr(fp)} = ${fr(other)}.`, `P(T) = ${fr(j)} + ${fr(other)} = ${fr(t)} ; P(D | T) = ${fr(j)}/${fr(t)} ≈ ${r3(j / t)}.`],
             `la probabilité ${k.end} ${about(j / t)} : elle dépend aussi de la proportion initiale ${fr(d)}, pas seulement de la fiabilité du test.`),
           {title: 'Inverser une probabilité conditionnelle', ...tasks('Calcule P(D ∩ T).', 'Calcule P(T) avec la formule des probabilités totales.', 'Calcule P(D | T).')});
@@ -317,9 +320,9 @@
         return E(o, `On lance un dé équilibré à ${faces} faces numérotées de 1 à ${faces}. <strong>X vaut 1 si le résultat est ${name}</strong>, et 0 sinon.`,
           [approx('P(X = 1)', p), approx('P(X = 0)', 1 - p), approx('E(X)', p)],
           C('les issues sont équiprobables : P(X = 1) = nombre d’issues favorables / nombre d’issues. X suit une loi de Bernoulli, donc E(X) = P(X = 1).',
-            [`Issues favorables : ${c} sur ${faces}, donc P(X = 1) = ${c}/${faces} ${exactOrApprox(p)} et P(X = 0) = ${faces - c}/${faces} ${exactOrApprox(1 - p)}.`,
-             `E(X) = 0 × P(X = 0) + 1 × P(X = 1) = ${c}/${faces}.`],
-            `P(X = 1) = ${c}/${faces}, P(X = 0) = ${faces - c}/${faces} et E(X) = ${c}/${faces} (${fair(p)}).`),
+            [`Issues favorables : ${c} sur ${faces}, donc P(X = 1) = ${simplified(c, faces)} ${exactOrApprox(p)} et P(X = 0) = ${simplified(faces - c, faces)} ${exactOrApprox(1 - p)}.`,
+             `E(X) = 0 × P(X = 0) + 1 × P(X = 1) = ${frac(c, faces)}.`],
+            `P(X = 1) = ${frac(c, faces)}, P(X = 0) = ${frac(faces - c, faces)} et E(X) = ${frac(c, faces)} (${fair(p)}).`),
           {title: 'Variable de Bernoulli', ...tasks('Calcule P(X = 1) et P(X = 0).', 'Calcule E(X).')});
       }
     },
@@ -410,7 +413,7 @@
           [N('Fréquence observée', f), N('Effectif moyen attendu', F(100 * p, 6)), N('Écart f − p', F(f - p, 6))],
           C('la fréquence observée est le nombre de succès divisé par le nombre d’essais ; l’effectif attendu vaut n × p.',
             [`f = ${c}/100 = ${fr(f)} ; 100 × ${fr(p)} = ${fr(100 * p)}.`, `f − p = ${fr(f)} − ${fr(p)} = ${fr(f - p)}.`],
-            `la fréquence observée ${fr(f)} est ${f > p ? 'supérieure' : 'inférieure'} à p ; un écart de ${fr(Math.abs(f - p))} relève de la fluctuation d’échantillonnage.`),
+            `la fréquence observée ${fr(f)} est ${f > p ? 'supérieure' : 'inférieure'} à p ; un écart de ${fr(Math.abs(f - p))} peut s’expliquer par la fluctuation d’échantillonnage.`),
           tasks('Calcule la fréquence observée.', 'Calcule l’effectif moyen attendu.', 'Calcule l’écart f − p.'));
       }
     },

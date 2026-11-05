@@ -5,7 +5,7 @@
   'use strict';
   const V = window.ExerciseVariants;
   const {register, E, N, S, C, F, score, fmt} = V;
-  const {num: fr, paren: pa, signed: sg, term, pct, eur, MINUS: M} = fmt;
+  const {num: fr, paren: pa, signed: sg, term, times, pct, eur, MINUS: M} = fmt;
   const sub = k => String(k).replace(/\d/g, d => '₀₁₂₃₄₅₆₇₈₉'[d]);
   const u = (k, name = 'u') => name + sub(k);
   const places = x => { const t = String(F(x, 9)); return t.includes('.') ? t.split('.')[1].length : 0; };
@@ -38,7 +38,7 @@
         const terms = Array.from({length: k3 + 1}, (_, i) => start + i * r);
         return E(o, `On donne <strong>u₀ = ${fr(start)}</strong> et <strong>uₙ₊₁ = uₙ${sg(r)}</strong>.`,
           [N('u₁', start + r), N(u(k2), start + k2 * r), N(u(k3), start + k3 * r)],
-          C(`chaque terme s’obtient en ${r > 0 ? 'ajoutant' : 'retranchant'} ${fr(Math.abs(r))} au précédent : la suite est arithmétique de raison ${fr(r)}, donc uₙ = u₀ + n × (${fr(r)}).`,
+          C(`chaque terme s’obtient en ${r > 0 ? 'ajoutant' : 'retranchant'} ${fr(Math.abs(r))} au précédent : la suite est arithmétique de raison ${fr(r)}, donc uₙ = u₀ + n × ${pa(r)}.`,
             [`Termes successifs : ${terms.map(fr).join(' ; ')}.`, `Par exemple ${u(k3)} = ${fr(start)} + ${k3} × ${pa(r)} = ${fr(start + k3 * r)}.`],
             `u₁ = ${fr(start + r)}, ${u(k2)} = ${fr(start + k2 * r)} et ${u(k3)} = ${fr(start + k3 * r)}.`),
           tasks(`Trouve u₁, ${u(k2)} et ${u(k3)}.`));
@@ -84,7 +84,7 @@
       build: ({a, b}, o) => E(o, `On considère <strong>uₙ = ${term(a, 'n²', true)}${term(b)}</strong>.`,
         [N('u₁', a + b), N('u₂', 4 * a + b), N('u₃', 9 * a + b), N('Premier écart u₂ − u₁', 3 * a), N('Deuxième écart u₃ − u₂', 5 * a)],
         C('on calcule les termes en remplaçant n, puis les différences entre termes consécutifs : une suite arithmétique a des écarts constants.',
-          [`u₁ = ${fr(a)} × 1${sg(b)} = ${fr(a + b)} ; u₂ = ${fr(a)} × 4${sg(b)} = ${fr(4 * a + b)} ; u₃ = ${fr(a)} × 9${sg(b)} = ${fr(9 * a + b)}.`,
+          [`u₁ = ${times(a, 1, true)}${sg(b)} = ${fr(a + b)} ; u₂ = ${times(a, 4, true)}${sg(b)} = ${fr(4 * a + b)} ; u₃ = ${times(a, 9, true)}${sg(b)} = ${fr(9 * a + b)}.`,
            `u₂ − u₁ = ${fr(3 * a)} et u₃ − u₂ = ${fr(5 * a)}.`],
           `les écarts ${fr(3 * a)} et ${fr(5 * a)} ne sont pas égaux : la suite n’est pas arithmétique.`),
         tasks('Calcule u₁, u₂ et u₃.', 'Calcule les écarts u₂ − u₁ et u₃ − u₂.'))
@@ -109,7 +109,7 @@
         return E(o, c.intro,
           [N('Raison r', r), N(`Valeur au rang ${k}`, start + r * k), N(`Premier rang avec au moins ${target} ${c.unit}`, m)],
           C(`la quantité augmente de ${r} ${c.unit} à chaque rang : c’est une suite arithmétique de premier terme u₀ = ${start} et de raison ${r}, donc uₙ = ${start} + ${r}n. On résout ensuite une inéquation.`,
-            [`${u(k)} = ${start} + ${r} × ${k} = ${start + r * k}.`,
+            [`${u(k)} = ${start}${times(r, k)} = ${start + r * k}.`,
              `${start} + ${r}n ≥ ${target} ⇔ ${r}n ≥ ${target - start} ⇔ n ≥ ${target - start}/${r}${Number.isInteger(quotient) ? ` = ${quotient}` : ` ≈ ${fr(quotient, {digits: 2})}`}. Vérification : ${u(m - 1)} = ${start + r * (m - 1)} < ${target} et ${u(m)} = ${start + r * m} ≥ ${target}.`],
             `il y a ${start + r * k} ${c.unit} au rang ${k}, et on atteint au moins ${target} ${c.unit} à partir du rang ${m}, c’est-à-dire après ${m} ${c.per}.`),
           tasks(`Complète uₙ = ${start} + r × n.`, `Calcule la valeur au rang ${k}.`, `Trouve le premier rang avec au moins ${target} ${c.unit}.`));
@@ -125,7 +125,7 @@
         [N('À n = 0', b), N('À n = 2', 2 * a + b), N('À n = 4', 4 * a + b),
          S(q ? 'Relie-t-on ces points par une courbe continue ?' : 'Représente-t-on la suite par des points isolés ?', q ? 'Non' : 'Oui', ['Oui', 'Non'])],
         C('une suite n’est définie que pour des rangs entiers : chaque rang n donne un point (n ; uₙ), sans tracer de courbe entre eux.',
-          [`u₀ = ${fr(b)}, u₂ = ${fr(a)} × 2${sg(b)} = ${fr(2 * a + b)} et u₄ = ${fr(a)} × 4${sg(b)} = ${fr(4 * a + b)}.`],
+          [`u₀ = ${fr(b)}, u₂ = ${times(a, 2, true)}${sg(b)} = ${fr(2 * a + b)} et u₄ = ${times(a, 4, true)}${sg(b)} = ${fr(4 * a + b)}.`],
           `les points sont (0 ; ${fr(b)}), (2 ; ${fr(2 * a + b)}) et (4 ; ${fr(4 * a + b)}). On représente la suite par des points isolés, que l’on ne relie pas par une courbe continue.`),
         tasks('Donne les ordonnées des points de rangs 0, 2 et 4.', 'Explique comment on représente une suite.'))
     },
@@ -148,8 +148,8 @@
         return E(o, `Deux suites modélisent une croissance : <strong>uₙ = ${a} + ${r}n</strong> et <strong>vₙ = ${a} × ${fr(q)}ⁿ</strong>. On donne ${fr(q)}¹⁰ ≈ ${fr(POW10[q])}.`,
           [N('u₂', a + 2 * r), N('v₂', F(a * q * q, 6)), N('u₁₀', u10), N('v₁₀ (au centième)', round2(v10), 0.0049), S('Au rang 10, la plus grande est', uBig ? 'uₙ' : 'vₙ', ['uₙ', 'vₙ'])],
           C('pour uₙ, on ajoute la même quantité à chaque rang (formule affine) ; pour vₙ, on multiplie par le même coefficient (puissance de ' + fr(q) + ').',
-            [`u₂ = ${a} + ${r} × 2 = ${a + 2 * r} et v₂ = ${a} × ${fr(q)}² = ${a} × ${fr(q * q)} = ${fr(a * q * q)}.`,
-             `u₁₀ = ${a} + ${r} × 10 = ${u10} et v₁₀ = ${a} × ${fr(q)}¹⁰ ≈ ${a} × ${fr(POW10[q])} ≈ ${fr(round2(v10))}.`],
+            [`u₂ = ${a}${times(r, 2)} = ${a + 2 * r} et v₂ = ${a} × ${fr(q)}² = ${a} × ${fr(q * q)} = ${fr(a * q * q)}.`,
+             `u₁₀ = ${a}${times(r, 10)} = ${u10} et v₁₀ = ${a} × ${fr(q)}¹⁰ ≈ ${a} × ${fr(POW10[q])} ≈ ${fr(round2(v10))}.`],
             uBig ? `au rang 10, uₙ est encore la plus grande : ${u10} > ${fr(round2(v10))}.`
               : `au rang 10, la suite géométrique a dépassé l’autre : ${fr(round2(v10))} > ${u10}.`),
           tasks('Calcule u₂ et v₂.', 'Calcule u₁₀ et v₁₀ (au centième).', 'Indique quel modèle est le plus grand au rang 10.'));
@@ -189,7 +189,7 @@
       build: ({start, r}, o) => E(o, `La suite vérifie <strong>u₀ = ${start}</strong> et <strong>uₙ₊₁ = uₙ${sg(r)}</strong>.`,
         [N('u₁', start + r), N('u₄', start + 4 * r), N('u₆', start + 6 * r), S('Variation', r > 0 ? 'Croissante' : 'Décroissante', ['Croissante', 'Décroissante'])],
         C(`la suite est arithmétique de raison ${fr(r)} : uₙ = u₀ + n × r. Le signe de la raison donne le sens de variation.`,
-          [`uₙ = ${start}${sg(r)}n, donc u₁ = ${fr(start + r)}, u₄ = ${start}${sg(r)} × 4 = ${fr(start + 4 * r)} et u₆ = ${start}${sg(r)} × 6 = ${fr(start + 6 * r)}.`],
+          [`uₙ = ${start}${sg(r)}n, donc u₁ = ${fr(start + r)}, u₄ = ${start}${times(r, 4)} = ${fr(start + 4 * r)} et u₆ = ${start}${times(r, 6)} = ${fr(start + 6 * r)}.`],
           `la raison ${fr(r)} est ${r > 0 ? 'positive' : 'négative'} : la suite est ${r > 0 ? 'croissante' : 'décroissante'}.`),
         {title: 'Raison et sens de variation', ...tasks('Donne u₁, u₄ et u₆.', 'Détermine son sens de variation.')})
     },
@@ -244,7 +244,7 @@
         return E(o, `Une suite arithmétique commence par <strong>${t.map(fr).join(' ; ')}</strong>.`,
           [N('Premier terme', a), N('Cinquième terme', t[4]), N('Somme des cinq termes', S5)],
           C('pour une suite arithmétique, la somme de termes consécutifs vaut : nombre de termes × (premier terme + dernier terme)/2.',
-            [`S = 5 × (${fr(a)} + ${pa(t[4])})/2 = 5 × ${fr(a + t[4])}/2 = ${fr(S5)}.`, `Contrôle : ${t.map(fr).join(' + ').replace(/\+ −/g, '− ')} = ${fr(S5)}.`],
+            [`S = ${t[4] ? `5 × (${fr(a)}${sg(t[4])})/2 = 5 × ${pa(a + t[4])}/2` : `5 × ${pa(a)}/2`} = ${fr(S5)}.`, `Contrôle : ${t.map(fr).join(' + ').replace(/\+ −/g, '− ')} = ${fr(S5)}.`],
             `la somme des cinq premiers termes vaut ${fr(S5)}.`),
           tasks('Donne le premier et le cinquième terme.', 'Calcule la somme de ces cinq termes.'));
       }
@@ -261,7 +261,7 @@
         return E(o, `Une suite arithmétique a pour premier terme <strong>u₁ = ${fr(u1)}</strong> et pour raison <strong>r = ${fr(r)}</strong>.`,
           [N('u₁₀', u10), N('Somme u₁ + … + u₁₀', sum)],
           C('le premier rang est 1 : pour aller de u₁ à u₁₀, on ajoute 9 fois la raison. Il y a 10 termes à additionner.',
-            [`u₁₀ = u₁ + 9r = ${fr(u1)} + 9 × ${pa(r)} = ${fr(u10)}.`, `S = 10 × (u₁ + u₁₀)/2 = 10 × (${fr(u1)} + ${pa(u10)})/2 = ${fr(sum)}.`],
+            [`u₁₀ = u₁ + 9r = ${fr(u1)} + 9 × ${pa(r)} = ${fr(u10)}.`, `S = 10 × (u₁ + u₁₀)/2 = ${u10 ? `10 × (${fr(u1)}${sg(u10)})/2` : `10 × ${pa(u1)}/2`} = ${fr(sum)}.`],
             `u₁₀ = ${fr(u10)} et la somme des dix termes vaut ${fr(sum)}.`),
           tasks('Calcule u₁₀.', 'Calcule la somme u₁ + … + u₁₀.'));
       }

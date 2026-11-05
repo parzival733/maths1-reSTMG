@@ -4,7 +4,7 @@
   'use strict';
   const V = window.ExerciseVariants;
   const {register, E, N, S, C, F, score, fmt, productSignTable} = V;
-  const {num: fr, paren: pa, signed: sg, diff, term, poly, fact, affine, frac, gcd, pct, eur, MINUS: M} = fmt;
+  const {num: fr, paren: pa, signed: sg, diff, term, times, poly, fact, affine, frac, gcd, pct, eur, MINUS: M} = fmt;
   const tasks = (...list) => ({tasks: list});
   const SUP = {'-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹'};
   const sup = n => String(n).split('').map(c => SUP[c]).join('');
@@ -111,7 +111,7 @@
           [N(`${fr(h)} h en minutes`, F(60 * h, 6)), N(`${fr(km)} km en mètres`, F(1000 * km, 6)), N(l3, F(conv, 6))],
           C('1 h = 60 min et 1 km = 1 000 m ; 1 m/s = 3 600 m/h = 3,6 km/h, donc on multiplie par 3,6 pour passer des m/s aux km/h et on divise par 3,6 pour l’inverse.',
             [`${fr(h)} × 60 = ${fr(60 * h)} min ; ${fr(km)} × 1 000 = ${fr(1000 * km)} m.`, dir ? `${v} ÷ 3,6 = ${fr(conv)} m/s.` : `${v} × 3,6 = ${fr(conv)} km/h.`],
-            `${fr(h)} h = ${fr(60 * h)} min, ${fr(km)} km = ${fr(1000 * km)} m et ${l3.replace(' en ', ' = ')} : ${fr(conv)} ${dir ? 'm/s' : 'km/h'}.`),
+            `${fr(h)} h = ${fr(60 * h)} min, ${fr(km)} km = ${fr(1000 * km)} m et ${dir ? `${v} km/h = ${fr(conv)} m/s` : `${v} m/s = ${fr(conv)} km/h`}.`),
           tasks(`Convertis ${fr(h)} h en minutes.`, `Convertis ${fr(km)} km en mètres.`, `Convertis ${l3}.`));
       }
     },
@@ -129,7 +129,7 @@
           [N('Coefficient a de A(x) = ax + b', c), N('Constante b', d), N(`A(${fr(x)})`, c * x + d)],
           C('on distribue chaque facteur (attention au signe placé devant la deuxième parenthèse), puis on regroupe les termes en x et les constantes.',
             [`${a}${fact(-p)} = ${affine(a, a * p)} et ${s > 0 ? '' : M}${b}${fact(-q)} = ${affine(s * b, s * b * q)}.`,
-             `A(x) = ${affine(a, a * p)}${term(s * b, 'x')}${sg(s * b * q)} = ${affine(c, d)} ; A(${fr(x)}) = ${fr(c)} × ${pa(x)}${sg(d)} = ${fr(c * x + d)}.`],
+             `A(x) = ${affine(a, a * p)}${term(s * b, 'x')}${sg(s * b * q)} = ${affine(c, d)} ; A(${fr(x)}) = ${times(c, x, true)}${sg(d)} = ${fr(c * x + d)}.`],
             `A(x) = ${affine(c, d)} et A(${fr(x)}) = ${fr(c * x + d)}.`),
           tasks('Complète la forme A(x) = ax + b.', `Calcule A(${fr(x)}).`));
       }

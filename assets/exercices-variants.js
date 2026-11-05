@@ -102,6 +102,18 @@
     if (first) return (coef < 0 ? MINUS : '') + body;
     return (coef < 0 ? ' ' + MINUS + ' ' : ' + ') + body;
   }
+  // Produit d'un coefficient par une valeur substituée, sans « 1 × » ni « + (−a) » :
+  // times(−1, '6²', true) → « −6² » ; times(−12, 2) → « − 12 × 2 » ; times(1, −4, true)
+  // → « −4 ». Un facteur numérique négatif n'est parenthésé qu'après un signe ou un ×.
+  function times(coef, factor, first = false, options) {
+    if (!coef) return first ? '0' : '';
+    const abs = Math.abs(coef), zero = factor === 0;
+    if (typeof factor === 'number') factor = first && coef === 1 ? num(factor, options) : paren(factor, options);
+    // Un facteur nul garde le produit explicite (« −1 × 0 ») plutôt que « −0 ».
+    const body = abs === 1 && !zero ? factor : num(abs, options) + ' × ' + factor;
+    if (first) return (coef < 0 ? MINUS : '') + body;
+    return (coef < 0 ? ' ' + MINUS + ' ' : ' + ') + body;
+  }
   const POWERS = ['', '', '²', '³', '⁴', '⁵', '⁶'];
   // poly([1, −3, 2]) → « x² − 3x + 2 ». Coefficients du plus haut degré au constant.
   function poly(coefs, variable = 'x', options) {
@@ -146,7 +158,8 @@
   // Méthode → Calculs → Conclusion rédigée. Les tableaux s'insèrent après les calculs.
   // Après les deux-points, une phrase commence par une minuscule (« Le » → « le »),
   // sauf s'il s'agit d'une formule (« A(2) », « Q₁ »).
-  const afterColon = text => String(text).replace(/^([A-ZÀ-Ý])(?=[a-zà-ÿ’'])/, c => c.toLowerCase());
+  // Minuscule après « Méthode : », sauf pour une notation comme Card(A).
+  const afterColon = text => String(text).replace(/^([A-ZÀ-Ý])(?=[a-zà-ÿ’'])(?![a-zà-ÿ’']*\()/, c => c.toLowerCase());
   function C(method, calculations, conclusion, extras = []) {
     const out = ['<strong>Méthode' + NBSP + ':</strong> ' + afterColon(method)];
     (Array.isArray(calculations) ? calculations : [calculations]).forEach((line, i) => {
@@ -172,8 +185,9 @@
     L: lo == null ? MINUS + '∞' : num(lo), H: hi == null ? '+∞' : num(hi),
     lb: lo == null ? ']' : '[', rb: hi == null ? '[' : ']'
   });
-  // Signe de k(x − r)(x − s), avec r < s, sur ℝ ou sur [lo ; hi].
-  function productSignTable(caption, k, r, s, lo, hi) {
+  // Signe de k(x − r)(x − s), avec r < s, sur ℝ ou sur [lo ; hi] ; name nomme la
+  // dernière ligne (le produit ou la fonction étudiée).
+  function productSignTable(caption, k, r, s, lo, hi, name = 'Produit') {
     const {L, H, lb, rb} = bounds(lo, hi);
     const cols = [lb + L + ' ; ' + num(r) + '[', num(r), ']' + num(r) + ' ; ' + num(s) + '[', num(s), ']' + num(s) + ' ; ' + H + rb];
     const at = [r - 1, r, (r + s) / 2, s, s + 1];
@@ -181,14 +195,15 @@
     if (k !== 1) rows.push({label: num(k), cells: at.map(() => signOf(k))});
     rows.push({label: bare(r), cells: at.map(x => signOf(x - r))});
     rows.push({label: bare(s), cells: at.map(x => signOf(x - s))});
-    rows.push({label: 'Produit', cells: at.map(x => signOf(k * (x - r) * (x - s)))});
+    rows.push({label: name, cells: at.map(x => signOf(k * (x - r) * (x - s)))});
     return signTable(caption, cols, rows);
   }
-  // Signe de ax + b sur ℝ ou sur [lo ; hi] (racine r = −b/a dans l'intervalle).
-  function affineSignTable(caption, label, a, root, lo, hi) {
+  // Signe de ax + b sur ℝ ou sur [lo ; hi] (racine r = −b/a dans l'intervalle) ;
+  // variable nomme la première colonne (x par défaut).
+  function affineSignTable(caption, label, a, root, lo, hi, variable = 'x') {
     const {L, H, lb, rb} = bounds(lo, hi);
     return signTable(caption, [lb + L + ' ; ' + num(root) + '[', num(root), ']' + num(root) + ' ; ' + H + rb],
-      [{label, cells: [signOf(-a), '0', signOf(a)]}]);
+      [{label, cells: [signOf(-a), '0', signOf(a)]}], variable);
   }
   // Tableau de variations : points = abscisses (bornes et points critiques),
   // values = images affichées (null pour une borne infinie), signs = signe de la
@@ -499,7 +514,7 @@
   const count = slug => (factories.get(slug) || []).length;
   const slugs = () => Array.from(factories.keys());
 
-  const fmt = {num, FR, paren, signed, diff, term, poly, fact, bare, affine, frac, pct, eur, interval, gcd, signOf, MINUS, NBSP, NNBSP};
+  const fmt = {num, FR, paren, signed, diff, term, times, poly, fact, bare, affine, frac, pct, eur, interval, gcd, signOf, MINUS, NBSP, NNBSP};
   window.ExerciseVariants = {
     register, generate, original: originalOf, nextVariant, remember, memoryFor, randomSeed, rng,
     describe, count, slugs, signature, score, lint, visible, FORBIDDEN, BAND, MAX_TRIES,
