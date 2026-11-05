@@ -113,3 +113,6 @@ p code, li code { background: #f2f0f6; color: #46348b; border-radius: 4px; paddi
   .lesson-toc .ui-toc > summary { padding: 12px 14px; border-radius: 10px; background: var(--purple-soft); color: var(--purple-dark); font-weight: 700; }
 }
 @media print { .lesson-corrections-toggle { display: none; } }
+
+/* Les textes masqués visuellement (sr-only) restent contenus dans les tableaux défilants. */
+.table-wrap, .table-scroll { position: relative; }

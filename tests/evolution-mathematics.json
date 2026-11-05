@@ -1,63 +1,63 @@
 {
   "exercices/evolutions.html": {
     "kind": "exercise-json",
-    "sha256": "fd319aa633f836c22de800cb33b2e69e5308a444a985dec5c6f2b72dfce4a557"
+    "sha256": "2ee3f45c2a915a23fd61f0657eebfdd974933a9543474441b42c4ad69e758967"
   },
   "exercices/suites-arithmetiques.html": {
     "kind": "exercise-json",
-    "sha256": "33a62a6f289262e3f293cb9907d85dc159b98025d24761ffbbbd35d4df9a58a3"
+    "sha256": "048ec1732f3495eec7559eb295da092948681046a416dcddb0f0f13c3ac55792"
   },
   "exercices/statistiques-descriptives.html": {
     "kind": "exercise-json",
-    "sha256": "7d6a4d95714dd9783de184e5b14db6cf58625dd0896956565215d6c92a173d7e"
+    "sha256": "7f0a20b7101bb721087c85c0012edf55567a3c6e4826673548922f30ba5727ec"
   },
   "exercices/logique.html": {
     "kind": "exercise-json",
-    "sha256": "eabed59c0c538f0c4708c57177a522070076eedebbf802e677e383fa86f0c77f"
+    "sha256": "1e6c9afcdcecc9665daaee7d5a67e153485e1ac0181a50947d8c1a7dff2d01dc"
   },
   "exercices/suites-geometriques.html": {
     "kind": "exercise-json",
-    "sha256": "22301fa528ed03d0df260130fcc04d2ecb5046c6009f31af6261f85630e2b8ff"
+    "sha256": "c85cc42b839dd15285a5a637f7620627b0db6e295d18d238d7111f9a4d1cc06d"
   },
   "exercices/variations.html": {
     "kind": "exercise-json",
-    "sha256": "509c8534845ea5118711b0d669f80c50f579904b1de08e08f1baa5a5216f761d"
+    "sha256": "cb1ee67954103161fd199afeb8f54ca80497ba52a87eeb4ae12f20a528bfc5ad"
   },
   "exercices/probabilites-conditionnelles.html": {
     "kind": "exercise-json",
-    "sha256": "6fda3da3f59d78d2bfc7d88c51cfe364a12eba5f59f0e8a2052667c8711263f0"
+    "sha256": "cdd59131dbb40c7a34f2022b440b3bc8a4e74c5e7aa013827ff41f8450513492"
   },
   "exercices/derivees.html": {
     "kind": "exercise-json",
-    "sha256": "35f72bb9e0cea1c04af80d840132fc584868d49af9410c40ba4f2eaba20be612"
+    "sha256": "c28078af43428696147444c65620f140a41f597dd41e38c4274326a1423d598a"
   },
   "exercices/python-tableur.html": {
     "kind": "exercise-json",
-    "sha256": "d32049d676661739f40b9e74d1fb8b32e35961f70e163a0952e2be85830ac729"
+    "sha256": "20392c07178e200925f6a301866d48757a2b400ee7aee7c76d6b8722b2ec07e4"
   },
   "exercices/variables-aleatoires.html": {
     "kind": "exercise-json",
-    "sha256": "639588c17443856592c838b572ba67bd71af62bc3d9935d726f36021f97ae4b4"
+    "sha256": "a7135153e3fbe633cead2d3c20689e661fe82f9fd696f8c6318f376c6390c8b1"
   },
   "exercices/second-degre.html": {
     "kind": "exercise-json",
-    "sha256": "68262403fae52fa81e31a23f3b4aa3e504cc5237de9848f3029802b0b70c7d68"
+    "sha256": "66a121aa8a94be7d8dafed24c9406c5ba2ee0ddaaebb49963575eeab0f814387"
   },
   "exercices/bernoulli.html": {
     "kind": "exercise-json",
-    "sha256": "0657858da5aa9b7793137c063300fb459a0a79d5716be3cde5ae36c7d489981b"
+    "sha256": "56b513b2c354755beb86e4330e09e25ab26b09afeab5c160110b3e8b6120c5d3"
   },
   "exercices/statistiques-deux-variables.html": {
     "kind": "exercise-json",
-    "sha256": "54fb03e328fdaf723d90d70564a1fcd9acc641b2d387b2f84bbaee7dee80921e"
+    "sha256": "8ec9497a20b9a5629c1a5a31a30ddec9e640ec5c6e36a55b60d5e6ceee098e7b"
   },
   "exercices/calcul.html": {
     "kind": "exercise-json",
-    "sha256": "2eb749e4c2931bda02644a9c0cdf886acad2e8992799d855a043c2b12e001cbc"
+    "sha256": "7e34fbae0837f532515aa5c53eefa2d8d74fb83b81409ef626a0764f4711d45c"
   },
   "exercices/suites.html": {
     "kind": "exercise-json",
-    "sha256": "1abb5db79ae8c7f749bc9d3f10be321a95f81d8a4b6cc315b8e50727cb996f82"
+    "sha256": "ba7e4e4ee4b78d5107470d74320f237488e31e471c0ebe51913af39e9a4ccf8d"
   },
   "assets/variants-donnees.js": {
     "kind": "file",

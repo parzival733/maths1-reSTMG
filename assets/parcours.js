@@ -83,7 +83,7 @@
       if(evaluated<indices.length)card.append(node('p','Bilan partiel : les questions non renseign\u00e9es ne sont pas compt\u00e9es comme des erreurs.'));
       card.append(node('p',!evaluated?'Aucune conclusion sur ta ma\u00eetrise : reprends ces questions quand tu le souhaites.':right===evaluated?'Bien engag\u00e9 : \u00e0 v\u00e9rifier avec d\u2019autres questions, un autre jour.':right?'Une m\u00e9thode \u00e0 reprendre, sans repartir de z\u00e9ro.':'Revois l\u2019exemple guid\u00e9 avant une nouvelle s\u00e9rie.'));
       const links=node('p','');links.className='action-row';
-      for(const [label,href]of[['Le\u00e7on',A.skills[skill].course],['Exercices',A.skills[skill].exercises],['Reprise cibl\u00e9e','revisions.html?niveau='+level.value+'&notion='+skill]]){const a=node('a',label);a.href=href;links.append(a);}card.append(links);results.append(card);
+      for(const [label,href]of[['Le\u00e7on',A.skills[skill].course],['Exercices',A.skills[skill].exercises],['Reprise cibl\u00e9e','revisions.html?niveau='+level.value+'&notion='+skill]]){const a=node('a',label);a.href=href;const more=node('span',' : '+A.skills[skill].label);more.className='sr-only';a.append(more);links.append(a);}card.append(links);results.append(card);
     });
     const details=$('practice-corrections');details.replaceChildren();
     questions.forEach((q,i)=>{const d=node('details',''),sum=node('summary',`${i+1}. ${q.prompt}`);d.append(sum,node('p',states[i].value?'Ta r\u00e9ponse : '+states[i].value:'Question sans r\u00e9ponse.'),node('p','R\u00e9ponse : '+(window.QuickMath&&window.QuickMath.display?window.QuickMath.display(q.expected):q.expected)+(q.unit?' '+q.unit:'')),node('p',q.solution));details.append(d);});

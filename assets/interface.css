@@ -246,3 +246,16 @@ body.reading-large .lesson-content { font-size:20px; }
 .rapid-pause-screen button { margin-top: 10px; }
 .catalog-variant-note { max-width: 70ch; }
 .exam-autopause { display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; font-size: 15px; }
+
+/* Lot 5 : question d’accueil (une seule question, réponse dépliable sans JavaScript). */
+.home-try { display: grid; gap: 16px 32px; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; margin: 8px 0 40px; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+.home-try:focus { outline: none; }
+.home-try h2 { margin: 4px 0 8px; }
+.home-try__form label { display: block; font-weight: 650; margin-bottom: 6px; }
+.home-try__line { display: flex; gap: 10px; flex-wrap: wrap; }
+.home-try__line input { min-height: 44px; width: 8em; padding: 8px 12px; border: 1px solid #b9b3cc; border-radius: 10px; font: inherit; }
+.home-try__feedback { min-height: 1.5em; margin: 10px 0 0; }
+.home-try__feedback[data-result="correct"] { color: #146c43; font-weight: 600; }
+.home-try__answer { grid-column: 1 / -1; }
+.home-try__answer summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+@media (max-width: 740px) { .home-try { grid-template-columns: minmax(0, 1fr); padding: 18px; } }

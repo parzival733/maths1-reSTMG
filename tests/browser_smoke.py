@@ -654,6 +654,32 @@ def main():
                 expect(page.locator('[data-level-link="terminale"]')).to_be_visible()
             print('ERGONOMIE BROWSER OK : décomptes chapitres / repères / atelier, liens du niveau choisi.')
 
+            # Typographie du texte produit par JavaScript : variantes, aides, retours, bilans.
+            scan = '''() => {
+              const skip = 'script, style, pre, code, textarea, svg, select, input';
+              const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT);
+              const parts = [];
+              while (walker.nextNode()) { const n = walker.currentNode; if (!n.parentElement.closest(skip)) parts.push(n.nodeValue); }
+              const text = parts.join('');
+              const checks = [/[A-Za-zÀ-ÿ]'[A-Za-zÀ-ÿ]/, /\\S [:;!?](?:\\s|$)/, /«(?!\\u00a0)/, /(?<!\\u00a0)»/];
+              return checks.map(r => { const m = text.match(r); return m ? text.slice(Math.max(0, m.index - 30), m.index + 20) : null; }).filter(Boolean);
+            }'''
+            for target in ['exercices/second-degre.html', 'exercices/fonctions.html', 'terminale/exercices/t-logarithme.html', 'cours/probabilites-conditionnelles.html']:
+                page.goto(base + target, wait_until='networkidle')
+                for summary in page.locator('main details summary').all()[:6]:
+                    if summary.is_visible():
+                        summary.click()
+                variant = page.locator('#exercice-1 [data-action="new-variant"]')
+                if variant.count():
+                    block = page.locator('#exercice-1')
+                    block.locator('button[type="submit"]').click()
+                    if variant.is_visible():
+                        variant.click()
+                page.wait_for_timeout(100)
+                issues = page.evaluate(scan)
+                assert not issues, (target, issues)
+            print('TYPOGRAPHIE BROWSER OK : texte généré par JavaScript (variantes, aides, retours) conforme.')
+
             browser.close()
             print(f'BROWSER OK: {checks} page/width combinations (320, 390, 768, 1440 px); search, filters, TOCs, corrections, print events, navigation, simulation and no-JavaScript fallback.')
             print('No JavaScript exceptions, no HTTP errors, no global horizontal overflow.')

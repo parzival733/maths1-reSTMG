@@ -116,6 +116,7 @@ Contrôles structurels et numériques :
 ```sh
 python3 tests/validate_site.py
 python3 tests/test_notation.py
+python3 tests/test_typographie.py
 for f in assets/*.js; do node --check "$f"; done
 node tests/test_variants.js
 node tests/test_graphiques.js

@@ -19,7 +19,7 @@ def card(row):
         note=f'<p class="subject-note">\u00c9preuve de {row["year"]}, class\u00e9e dans les archives {row["archive_year"]} de l\u2019APMEP.</p>'
     return f'''<article class="subject-card" id="{row['id']}" data-level="{row['level']}" data-year="{row['year']}" data-kind="{row['kind']}">
 <div class="subject-body"><p class="subject-label">{H(kinds[row['kind']])}</p><h3>{H(row['title'])}</h3><p class="subject-date">{H(row['date'])}</p><p class="subject-origin">{H(level)}<br>Source : {H(row['source'])}</p>{note}</div>
-<div class="subject-footer"><a href="{H(row['url'],quote=True)}" target="_blank" rel="noopener noreferrer" aria-label="{H('Ouvrir le PDF : '+row['title']+', '+row['date']+' \u2014 source '+row['source']+' (nouvel onglet)',quote=True)}">Ouvrir le PDF <span aria-hidden="true">\u2197</span></a><span class="subject-pages">PDF \u00b7 {row['pages']} pages</span></div>
+<div class="subject-footer"><a href="{H(row['url'],quote=True)}" target="_blank" rel="noopener noreferrer" aria-label="{H('Ouvrir le PDF : '+kinds[row['kind']]+', '+row['title']+', '+row['date']+' \u2014 source '+row['source']+' (nouvel onglet)',quote=True)}">Ouvrir le PDF <span aria-hidden="true">\u2197</span></a><span class="subject-pages">PDF \u00b7 {row['pages']} pages</span></div>
 </article>'''
 
 def build():

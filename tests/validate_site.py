@@ -229,7 +229,22 @@ def main():
         assert article.startswith('<article class="lesson-content"><aside class="lesson-prerequisites"'), path.name
         review = re.search(r'<section class="study-review"[\s\S]*?</section>', source).group()
         assert all(day in review for day in ('J+1', 'J+7', 'J+21')), path.name
+        # Les consignes propres aux leçons de Terminale restent dans la routine.
+        assert 'terminale' not in path.parts or 'Pour cette leçon' in review, path.name
         assert not re.search(r'Appuis? :', source), path.name
+    # Métadonnées : une description propre à chaque page indexable, reprise par og:description.
+    seen = {}
+    for path in sorted(ROOT.rglob('*.html')):
+        if any(part.startswith('.') for part in path.relative_to(ROOT).parts):
+            continue
+        source = path.read_text(encoding='utf-8')
+        if 'noindex' in source:
+            continue
+        description = re.search(r'<meta name="description" content="([^"]+)"', source).group(1)
+        og = re.search(r'<meta property="og:description" content="([^"]+)"', source).group(1)
+        assert og == description and len(description) >= 60, path.name
+        assert description not in seen, (path.name, seen.get(description))
+        seen[description] = path.name
     conditional = (ROOT / 'cours/probabilites-conditionnelles.html').read_text(encoding='utf-8')
     assert 'formule des probabilités totales' in conditional and 'inversion du conditionnement' in conditional
     assert 'une intersection n’est pas une probabilité conditionnelle' not in conditional

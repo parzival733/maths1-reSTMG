@@ -131,13 +131,15 @@ def apply(root: Path):
         text = re.sub(r'(<div class="lesson-reading-controls"[^>]*?) hidden', r'\1', text, count=1)
         if NOSCRIPT not in text:
             text = text.replace('</head>', NOSCRIPT + '</head>', 1)
+        # Lien en double : « Pourquoi ces méthodes ? » figure déjà en haut de la leçon.
+        text = re.sub(r'(<a href="\.\./programme\.html">Programme et sources</a>)\s*·\s*<a href="\.\./\.\./pedagogie\.html">Méthodes d’apprentissage</a>', r'\1', text)
         # 2. Routine de révision concrète, avec le lien vers la série du chapitre.
         match = REVIEW.search(text)
         inner = match.group(1)
         heading = re.search(r'<(h[23])>', inner).group(1)
         specific = ''
         if rel.startswith('terminale/'):
-            kept = re.search(r'<p><strong>Pour cette leçon :</strong> ([\s\S]*?)</p>', inner)
+            kept = re.search(r'<p><strong>Pour cette leçon\s*:</strong>\s*([\s\S]*?)</p>', inner)
             if kept:
                 specific = kept.group(1)
             elif 'J+21' not in inner:

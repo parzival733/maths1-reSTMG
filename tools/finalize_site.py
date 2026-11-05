@@ -8,9 +8,11 @@ ROOT=Path(__file__).resolve().parents[1]
 ORIGIN='https://mathstmgdls.pages.dev'
 VERSION='20261023-simple1'
 ASSET_VERSION='20261105-variantes1'
-ASSET_NAMES='|'.join(re.escape(n) for n in ['exercices-variants.js','exercices-renderer.js','exercices.js','fonctions-coaching.js','terminale-exercices.js','calcul-rapide-data.js','calcul-rapide.js','parcours-data.js','parcours.js','exercices.css','compte-rebours.js','cours.js','cours.css','interface.js','graphiques-interactifs.js','graphiques-interactifs.css','examen.js','calcul-rapide.css']+[f'variants-{n}.js' for n in ['fonctions','suites','analyse','probabilites','reperes','donnees']]+[f'coaching-{n}.js' for n in ['general','algebre','suites','analyse','probabilites','reperes','donnees']])
+ASSET_NAMES='|'.join(re.escape(n) for n in ['exercices-variants.js','exercices-renderer.js','exercices.js','fonctions-coaching.js','terminale-exercices.js','calcul-rapide-data.js','calcul-rapide.js','parcours-data.js','parcours.js','exercices.css','compte-rebours.js','cours.js','cours.css','interface.js','graphiques-interactifs.js','graphiques-interactifs.css','examen.js','calcul-rapide.css','typographie.js','accueil.js']+[f'variants-{n}.js' for n in ['fonctions','suites','analyse','probabilites','reperes','donnees']]+[f'coaching-{n}.js' for n in ['general','algebre','suites','analyse','probabilites','reperes','donnees']])
 from navigation_simple import apply as simplify_navigation, ALIASES
 from lecons import apply as apply_lessons
+from typographie import apply as apply_typography
+from liens_accessibles import apply as apply_link_names
 # Chaque série de Première ne charge que le générateur de son chapitre : les
 # autres fichiers alourdiraient la page sans servir.
 GENERATOR={'fonctions':'fonctions','second-degre':'fonctions',
@@ -39,6 +41,8 @@ def main():
         canonical=ORIGIN+('/' if target=='index.html' else '/'+target.removesuffix('.html'))
         nav=re.search(r'<nav class="main-nav"[^>]*>(.*?)</nav>',text,re.S)
         if 'assets/evolution.css' not in text:text=text.replace('</head>',f'<link rel="stylesheet" href="{base}assets/evolution.css?v={VERSION}"></head>',1)
+        # Typographie française du texte produit par JavaScript (tools/typographie.py pour le HTML).
+        if 'assets/typographie.js' not in text:text=text.replace('</head>',f'<script src="{base}assets/typographie.js" defer></script></head>',1)
         text=re.sub(r'(assets/(?:interface|evolution)\.css\?v=)[^"\s]+',r'\g<1>'+VERSION,text)
         text=re.sub(r'(assets/(?:acquis|progres)\.js\?v=)[^"\s]+',r'\g<1>'+VERSION,text)
         # Moteur de variantes, générateurs, aides et banques : une version commune,
@@ -55,6 +59,8 @@ def main():
         text=text.replace('</head>',f'<link rel="canonical" href="{canonical}"></head>',1)
         path.write_text(text)
         if 'name="robots" content="noindex' not in text:urls.append(canonical)
+    apply_link_names(ROOT)
+    apply_typography(ROOT)
     # Aliases are rendered last so a fresh catalogue build and a simple finalization
     # produce identical output. No redirect or new navigation step is introduced.
     for old,new in ALIASES.items():
