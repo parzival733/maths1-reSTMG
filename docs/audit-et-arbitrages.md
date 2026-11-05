@@ -232,3 +232,15 @@ Parcours joués dans le navigateur à 1 280 et 375 px : cinq séries (trois de P
 - **Mesures reproductibles** : `tools/mesures_variantes.js` produit les tableaux de difficulté et les répartitions de réponses du rapport.
 - **Constat préexistant, non corrigé** : seule la page d’accueil déclare une icône ; les autres pages demandent `/favicon.ico`, absent du site.
 - Aucune empreinte protégée ne change dans ce lot.
+
+## 17. Refonte graphique (novembre 2026)
+
+Démarche, constats et décisions : `docs/refonte/audit.md`, `docs/refonte/direction.md` et `docs/refonte/rapport.md`.
+
+### Empreintes de contenu protégé mises à jour (après relecture)
+
+- `tests/interface-content.json` : `assets/exercices.js`. Ajouts liés à l'affichage seulement :
+  - les numéros d'exercice indiquent aussi « à revoir » et « correction consultée » (classe et nom accessible) ;
+  - un récapitulatif de fin de série recense, à partir des mêmes vérifications, les exercices réussis du premier essai, ceux réussis avec aide et ceux à revoir ; il ne mémorise rien en dehors de la page ;
+  - les retours perdent leur signe ✓ / ✗ écrit en texte, remplacé par une icône de la feuille de style ; leurs mots ne changent pas.
+- `tests/interface-content.json` : `assets/exercices-renderer.js` et la zone `<main>` de `exercices/fonctions.html`. La légende reçoit une ligne qui explique les icônes des numéros (« Sur les numéros : validé, à revoir, correction vue. »). Aucun énoncé, réponse ou corrigé ne change ; la relecture des différences du `<main>` ne montre que cette ligne.

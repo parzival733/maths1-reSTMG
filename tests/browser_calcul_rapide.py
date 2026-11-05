@@ -116,6 +116,8 @@ def main():
                     link=page.locator('.main-nav a').filter(has_text='Calcul rapide')
                     expect(link).to_have_count(1)
                     if width==390:
+                        # Téléphone : le lien est dans le menu, ouvert d'abord.
+                        if page.locator('.menu-toggle').is_visible():page.locator('.menu-toggle').click()
                         link.click();expect(page.locator('#rapid-app')).to_be_visible()
             assert not errors,errors
             nojs=browser.new_context(java_script_enabled=False,viewport={'width':390,'height':850})

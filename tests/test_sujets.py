@@ -105,6 +105,9 @@ def main():
                     page.goto(base+name)
                     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'),(name,width)
                     links=page.locator('.main-nav a');expect(links).to_have_count(5)
+                    # Téléphone : les cinq liens sont dans le menu ; on l'ouvre avant de les mesurer.
+                    if page.locator('.menu-toggle').is_visible():
+                        page.locator('.menu-toggle').click();expect(page.locator('.main-nav')).to_be_visible()
                     for link in links.all():
                         assert link.bounding_box()['height']>=44
                         assert link.evaluate('e=>e.scrollWidth<=e.clientWidth+1'),('clipped nav',name,width)

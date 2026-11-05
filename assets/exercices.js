@@ -30,6 +30,9 @@
     }
   })();
   const completed = new Set();
+  // Parcours de la série, pour les numéros d'exercice et le récapitulatif de fin :
+  // tentatives, aide consultée, corrigé ouvert. Variable JS seulement, rien n'est stocké.
+  const journey = slides.map(() => ({attempts: 0, helped: false, revealed: false, firstTry: false}));
   // Chaque exercice garde en mémoire (variable JS, sans stockage) les signatures
   // de ses dernières variantes, à partir de celle de l'exercice d'origine.
   const memoryOf = index => {
@@ -93,12 +96,12 @@
       const status = row.querySelector('.answer-status');
       if (status) {
         status.textContent = allRight
-          ? '✓ Tu avais juste. Solution affichée.'
+          ? 'Tu avais juste. Solution affichée.'
           : answered === 0
-            ? '✗ Non répondu. Solution affichée.'
+            ? 'Non répondu. Solution affichée.'
             : controls.length > 1
-              ? '✗ ' + right + '/' + controls.length + ' juste(s) avant correction. Solutions affichées.'
-              : '✗ Ta réponse était fausse. Solution affichée.';
+              ? right + '/' + controls.length + ' juste(s) avant correction. Solutions affichées.'
+              : 'Ta réponse était fausse. Solution affichée.';
       }
     });
   }
@@ -111,7 +114,7 @@
     row.classList.toggle('is-correct', correct);
     row.classList.toggle('is-wrong', !correct && !hasEmpty);
     const status = row.querySelector('.answer-status');
-    if (status) status.textContent = correct ? 'Correct ✓'
+    if (status) status.textContent = correct ? 'Correct'
       : hasEmpty ? 'Réponse à compléter.' : 'À revoir. Essaie encore.';
     return correct;
   }
@@ -122,8 +125,60 @@
     if (progressLabel) progressLabel.textContent = done + ' / ' + total + ' exercices validés';
     if (scoreText) scoreText.textContent = done + '/' + total;
     steps.forEach((button, index) => {
-      button.classList.toggle('is-complete', completed.has(index));
-      button.setAttribute('aria-label', 'Exercice ' + (index + 1) + (completed.has(index) ? ', validé' : ''));
+      const done = completed.has(index), j = journey[index];
+      const wrong = !done && !j.revealed && j.attempts > 0;
+      const revealed = !done && j.revealed;
+      button.classList.toggle('is-complete', done);
+      button.classList.toggle('is-wrong', wrong);
+      button.classList.toggle('is-revealed', revealed);
+      button.setAttribute('aria-label', 'Exercice ' + (index + 1)
+        + (done ? ', validé' : wrong ? ', à revoir' : revealed ? ', correction consultée' : ''));
+    });
+    updateRecap();
+  }
+
+  // Récapitulatif de fin de série : affiché quand chaque exercice a été vérifié ou corrigé.
+  const recap = (() => {
+    const stage = root.querySelector('.exercise-stage');
+    if (!stage) return null;
+    const section = document.createElement('section');
+    section.className = 'series-recap';
+    section.hidden = true;
+    section.setAttribute('aria-labelledby', 'series-recap-title');
+    section.innerHTML = '<h2 id="series-recap-title">Bilan de la série</h2><ul></ul>';
+    const nav = root.querySelector('.exercise-linear-nav');
+    (nav || stage).after(section);
+    return section;
+  })();
+
+  function updateRecap() {
+    if (!recap) return;
+    const seen = journey.every((j, i) => completed.has(i) || j.attempts > 0 || j.revealed);
+    recap.hidden = !seen;
+    if (!seen) return;
+    const groups = [
+      ['Réussis du premier essai', i => completed.has(i) && journey[i].firstTry],
+      ['Réussis avec une aide ou après plusieurs essais', i => completed.has(i) && !journey[i].firstTry],
+      ['À revoir', i => !completed.has(i)]
+    ];
+    const list = recap.querySelector('ul');
+    list.textContent = '';
+    groups.forEach(([label, test]) => {
+      const items = slides.map((_, i) => i).filter(test);
+      const li = document.createElement('li');
+      const count = document.createElement('span');
+      count.className = 'recap-count';
+      count.textContent = items.length;
+      li.append(count, ' ' + label + (items.length ? ' :' : ''));
+      items.forEach(i => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = String(i + 1);
+        button.setAttribute('aria-label', 'Revoir l’exercice ' + (i + 1));
+        button.addEventListener('click', () => showSlide(i, true));
+        li.append(button);
+      });
+      list.append(li);
     });
   }
 
@@ -204,6 +259,7 @@
     state.variantsShown++;
     state.pending = null;
     completed.delete(index);
+    journey[index] = {attempts: 0, helped: false, revealed: false, firstTry: false};
     updateProgress();
     wireSlide(slide, index, coachingContext);
     showSlide(index, true);
@@ -353,7 +409,9 @@
       correction.addEventListener('toggle', () => {
         if (!correction.open || form.dataset.revealed === 'true') return;
         form.dataset.revealed = 'true';
+        journey[index].revealed = true;
         revealAnswers(form);
+        updateProgress();
         const ready = variant && queueVariant(index, form, variant);
         const summary = form.querySelector('.exercise-feedback');
         if (summary) summary.textContent = 'Les solutions sont affichées en vert ou rouge selon ta réponse. '
@@ -372,6 +430,9 @@
       const results = rows.map(markRow);
       const correctCount = results.filter(Boolean).length;
       const allCorrect = results.length > 0 && correctCount === rows.length;
+      const j = journey[index];
+      j.attempts++;
+      if (allCorrect && !completed.has(index)) j.firstTry = j.attempts === 1 && !j.helped && !j.revealed;
       if (allCorrect) completed.add(index);
       else completed.delete(index);
       updateProgress();
@@ -420,6 +481,13 @@
     }
   }
 
+  root.addEventListener('toggle', event => {
+    const target = event.target;
+    if (!target.open || !target.matches('.coaching-hint, .coaching-bridge, details.hint')) return;
+    const slide = target.closest('.exercise-block');
+    const index = slide ? slides.indexOf(slide) : -1;
+    if (index >= 0) journey[index].helped = true;
+  }, true);
   slides.forEach((slide, index) => wireSlide(slide, index));
   steps.forEach((button, index) => button.addEventListener('click', () => showSlide(index, true)));
   if (prev) prev.addEventListener('click', () => showSlide(current - 1, true));

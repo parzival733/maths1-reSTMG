@@ -109,7 +109,7 @@
   },
   "exercices/fonctions.html": {
     "part": "main",
-    "sha256": "29563c87f3aa82cc0e42e6daef9103bf14425ee6e403d4552281ea2a27ba8c64"
+    "sha256": "cf419f1163b60aeb9c1d4231c42885a3ef26701cf9ceb0e3420a443b115020a5"
   },
   "exercices/bernoulli.html": {
     "part": "main",
@@ -273,11 +273,11 @@
   },
   "assets/exercices.js": {
     "part": "file",
-    "sha256": "21b0b798275086381d1b8663643200e306801a05194e9ad454fb69f7ce0b6c12"
+    "sha256": "8ce7e9bcfc37058299cb00746b25e91e2e8ead946b9659cbc884bd1f8f0cf0de"
   },
   "assets/exercices-renderer.js": {
     "part": "file",
-    "sha256": "8cf9b8762bd971760ce013b60663d6901942905dcd5f97332cd1a55d2814812b"
+    "sha256": "efb635314769b07a2f1325eb0cc3e727593f8bec3c53c82458aaec731232cf26"
   },
   "assets/coaching-general.js": {
     "part": "file",

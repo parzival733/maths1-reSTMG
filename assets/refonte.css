@@ -76,3 +76,123 @@ h1, h2, h3, .lesson-heading h1, .page-intro h1 { font-family: var(--font-serif);
 @media (max-width: 680px) {
   pre { white-space: pre-wrap; overflow-wrap: anywhere; overflow-x: visible; }
 }
+
+/* ── a. Série d'exercices ───────────────────────────────── */
+/* Une seule carte par exercice : l'énoncé, puis la liste des réponses, sans cadre
+   autour de chaque champ. Ordre et libellés inchangés. */
+.exercise-block { border-radius: var(--radius-lg); border-color: var(--color-line); box-shadow: var(--shadow-1); }
+.exercise-statement { font-size: var(--text-base); line-height: var(--leading-body); }
+.exercise-statement > p, .exercise-statement > ol {
+  margin: 0; padding-left: var(--space-4); border-left: var(--rule-width) solid var(--color-learn);
+}
+.exercise-statement > p { padding-top: var(--space-1); padding-bottom: var(--space-2); }
+.exercise-statement > ol { padding: 0 0 var(--space-1) calc(var(--space-4) + 1.3em); }
+.exercise-statement > ol + *, .exercise-statement > p:last-of-type + :not(ol) { margin-top: var(--space-4); }
+.exercise-head { gap: var(--space-3); margin-bottom: var(--space-4); }
+.exercise-number { width: auto; height: auto; padding: 5px 8px; border: 1px solid currentColor; border-radius: var(--radius-sm); background: transparent; color: var(--color-practice-strong); font-variant-numeric: tabular-nums; }
+.exercise-head h2 { font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em; }
+.exercise-form { background: var(--color-surface); }
+.exercise-form > h3 { font-family: var(--font-sans); font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3); }
+.answer-grid, .answer-grid.two, .answer-grid.three { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+.answer-row, .answer-row.is-correct, .answer-row.is-wrong, .answer-row.is-revealed,
+.answer-row.is-revealed.was-correct, .answer-row.is-revealed.was-wrong {
+  padding: 0; margin: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none;
+}
+.answer-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-3); }
+.answer-row > span:first-child { flex: 1 1 7.5em; min-width: 0; font-size: var(--text-base); font-weight: 600; color: var(--color-text); }
+.answer-row > input { flex: 1 1 8em; min-width: 8em; width: auto; }
+.answer-row > select { flex: 1 1 12em; min-width: 12em; width: auto; }
+.answer-row input, .answer-row select { min-height: var(--target-min); border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); font-size: var(--text-base); font-variant-numeric: tabular-nums; }
+.answer-row > .answer-status { flex: 1 0 100%; display: flex; align-items: center; gap: var(--space-2); min-height: 0; font-size: var(--text-sm); font-weight: 700; }
+.answer-row > .answer-status:empty { display: none; }
+.answer-row.is-correct input, .answer-row.is-correct select,
+.answer-row.is-revealed input.answer-was-correct, .answer-row.is-revealed select.answer-was-correct { border: 2px solid var(--color-success); }
+.answer-row.is-wrong input, .answer-row.is-wrong select,
+.answer-row.is-revealed input.answer-was-wrong, .answer-row.is-revealed select.answer-was-wrong { border: 2px solid var(--color-danger); }
+.answer-row.is-correct .answer-status, .answer-row.was-correct .answer-status { color: var(--color-success-strong); }
+.answer-row.is-wrong .answer-status, .answer-row.was-wrong .answer-status { color: var(--color-danger-strong); }
+/* Icône en plus du texte et de la couleur. */
+.answer-row.is-correct .answer-status::before, .answer-row.was-correct .answer-status::before,
+.answer-row.is-wrong .answer-status::before, .answer-row.was-wrong .answer-status::before {
+  content: ""; flex: none; width: 18px; height: 18px; background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
+.answer-row.is-correct .answer-status, .answer-row.was-correct .answer-status { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E"); }
+.answer-row.is-wrong .answer-status, .answer-row.was-wrong .answer-status { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E"); }
+.exercise-feedback { font-size: var(--text-sm); }
+
+/* Numéros d'exercice : 4 × 2 sur téléphone, état lisible sans la couleur. */
+.exercise-stepper button { font-size: var(--text-base); font-variant-numeric: tabular-nums; border-color: var(--color-line-strong); display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+.exercise-stepper button.is-active { background: var(--color-text); border-color: var(--color-text); color: var(--color-on-accent); }
+.exercise-stepper button.is-complete:not(.is-active) { background: var(--color-practice-soft); border-color: var(--color-practice); color: var(--color-practice-strong); }
+.exercise-stepper button.is-complete::after { content: none; }
+.exercise-stepper button.is-wrong:not(.is-active) { background: var(--color-danger-soft); border: 1px dashed var(--color-danger); color: var(--color-danger-strong); }
+.exercise-stepper button.is-revealed:not(.is-active):not(.is-complete) { background: var(--color-learn-faint); border-color: var(--color-learn); color: var(--color-learn-strong); }
+.exercise-stepper button.is-complete::before, .exercise-stepper button.is-wrong::before, .exercise-stepper button.is-revealed:not(.is-complete)::before {
+  content: ""; width: 14px; height: 14px; background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
+.exercise-stepper button.is-complete { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E"); }
+.exercise-stepper button.is-wrong { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E"); }
+.exercise-stepper button.is-revealed { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5'%3E%3Cpath d='M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='2.5'/%3E%3C/svg%3E"); }
+@media (max-width: 680px) {
+  .exercise-stepper { display: grid; overflow: visible; grid-template-columns: repeat(min(var(--exercise-steps, 8), 8), minmax(0, 1fr)); gap: var(--space-2); }
+  .exercise-stepper button { flex: none; min-width: 0; }
+}
+@media (max-width: 440px) {
+  .exercise-stepper { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.correction-legend { font-size: var(--text-sm); gap: var(--space-1) var(--space-4); }
+
+/* Correction et changement d'exercice : apparition brève, coupée si le mouvement est réduit. */
+@keyframes refonte-apparition { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.exercise-block.is-active, details.check[open] > :not(summary) { animation: refonte-apparition var(--duration-base) var(--ease-out); }
+@media (prefers-reduced-motion: reduce) { .exercise-block.is-active, details.check[open] > :not(summary) { animation: none; } }
+
+/* Récapitulatif de fin de série */
+.series-recap { margin: var(--space-6) 0; padding: var(--space-5); background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-lg); }
+.series-recap h2 { font-size: var(--text-lg); margin: 0 0 var(--space-3); }
+.series-recap ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.series-recap li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.series-recap .recap-count { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 2ch; }
+.series-recap button { min-height: var(--target-min); min-width: var(--target-min); padding: 0 var(--space-3); border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); background: var(--color-surface); font: 700 var(--text-base)/1 var(--font-sans); cursor: pointer; }
+.correction-legend .legend-steps { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+.legend-mark { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
+.legend-mark.is-complete { color: var(--color-practice-strong); --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E"); }
+.legend-mark.is-wrong { color: var(--color-danger-strong); --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E"); }
+.legend-mark.is-revealed { color: var(--color-learn-strong); --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5'%3E%3Cpath d='M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='2.5'/%3E%3C/svg%3E"); }
+
+/* ── c. En-tête et navigation ───────────────────────────── */
+.site-header .header-inner { min-height: 64px; padding-block: var(--space-2); position: relative; }
+.site-header .main-nav a { min-height: var(--target-min); font-size: 1rem; }
+.site-header .main-nav a[aria-current] { box-shadow: inset 0 -2px 0 var(--color-learn); }
+.menu-toggle { display: none; }
+/* Téléphone et tablette : une seule ligne (logo, « maths. », bouton Menu) ;
+   les cinq destinations s'ouvrent dans un panneau, dans le même ordre. */
+@media (max-width: 899px) {
+  .site-header .header-inner { min-height: 56px; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center !important; justify-content: space-between; gap: var(--space-3); padding-block: 6px; }
+  .site-header .brand-mark { display: grid !important; width: 30px; height: 30px; font-size: 22px; }
+  .site-header .brand { font-size: 1.25rem; }
+  .site-header .level-badge { display: none; }
+  .js-menu .menu-toggle { display: inline-flex; align-items: center; justify-content: center; min-height: var(--target-min); min-width: 88px; padding: 0 var(--space-4); margin-left: auto;
+    border: 1px solid var(--color-line-strong); border-radius: 999px; background: var(--color-surface); color: var(--color-text); font: 700 1rem/1 var(--font-sans); cursor: pointer; }
+  .site-header.menu-open .menu-toggle { background: var(--color-text); color: var(--color-bg); border-color: var(--color-text); }
+  .js-menu .site-header .main-nav { display: none !important; }
+  .js-menu .site-header.menu-open .main-nav {
+    display: flex !important; flex-direction: column; position: absolute; z-index: var(--z-menu); top: calc(100% + var(--space-1)); right: 0; left: auto;
+    width: min(86vw, 320px); padding: var(--space-2); gap: 2px; background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-lg); box-shadow: var(--shadow-2);
+  }
+  .site-header.menu-open .main-nav a { justify-content: space-between; min-height: 48px; padding: 0 var(--space-3); font-size: var(--text-base); color: var(--color-text); white-space: normal; text-align: left; border-radius: var(--radius-md); }
+  .site-header.menu-open .main-nav a[aria-current] { background: var(--color-learn-soft); color: var(--color-learn-strong); box-shadow: none; }
+  .site-header.menu-open .main-nav a[aria-current]::after { content: "Page actuelle"; font-size: var(--text-sm); font-weight: 400; }
+}
+
+/* Série : numéro et niveau sur une ligne, titre dessous sur toute la largeur ; légende resserrée. */
+.exercise-head { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: var(--space-3); row-gap: var(--space-1); }
+.exercise-head > div { display: contents; }
+.exercise-head > .exercise-number { grid-column: 1; grid-row: 1; }
+.exercise-head .exercise-kicker { grid-column: 2; grid-row: 1; }
+.exercise-head h2 { grid-column: 1 / -1; grid-row: 2; margin: 0 !important; }
+.correction-legend { display: flex; flex-wrap: wrap; column-gap: var(--space-3); row-gap: 2px; margin-top: var(--space-3); color: var(--color-text-muted); line-height: 1.45; }
+.correction-legend > span { display: inline-flex; align-items: center; gap: 6px; }

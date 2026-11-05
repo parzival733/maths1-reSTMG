@@ -7,10 +7,10 @@ import re
 ROOT=Path(__file__).resolve().parents[1]
 ORIGIN='https://mathstmgdls.pages.dev'
 VERSION='20261023-simple1'
-ASSET_VERSION='20261105-variantes1'
+ASSET_VERSION='20261106-refonte1'
 # Toutes les feuilles de style partagent une version, changée à chaque refonte visuelle.
 STYLE_VERSION='20261106-refonte1'
-ASSET_NAMES='|'.join(re.escape(n) for n in ['exercices-variants.js','exercices-renderer.js','exercices.js','fonctions-coaching.js','terminale-exercices.js','calcul-rapide-data.js','calcul-rapide.js','parcours-data.js','parcours.js','exercices.css','compte-rebours.js','cours.js','cours.css','interface.js','graphiques-interactifs.js','graphiques-interactifs.css','examen.js','calcul-rapide.css','typographie.js','accueil.js']+[f'variants-{n}.js' for n in ['fonctions','suites','analyse','probabilites','reperes','donnees']]+[f'coaching-{n}.js' for n in ['general','algebre','suites','analyse','probabilites','reperes','donnees']])
+ASSET_NAMES='|'.join(re.escape(n) for n in ['exercices-variants.js','exercices-renderer.js','exercices.js','fonctions-coaching.js','terminale-exercices.js','calcul-rapide-data.js','calcul-rapide.js','parcours-data.js','parcours.js','exercices.css','compte-rebours.js','cours.js','cours.css','interface.js','graphiques-interactifs.js','graphiques-interactifs.css','examen.js','calcul-rapide.css','typographie.js','accueil.js','menu.js']+[f'variants-{n}.js' for n in ['fonctions','suites','analyse','probabilites','reperes','donnees']]+[f'coaching-{n}.js' for n in ['general','algebre','suites','analyse','probabilites','reperes','donnees']])
 from navigation_simple import apply as simplify_navigation, ALIASES
 from lecons import apply as apply_lessons
 from typographie import apply as apply_typography
@@ -49,6 +49,17 @@ def main():
         canonical=ORIGIN+('/' if target=='index.html' else '/'+target.removesuffix('.html'))
         nav=re.search(r'<nav class="main-nav"[^>]*>(.*?)</nav>',text,re.S)
         if 'assets/evolution.css' not in text:text=text.replace('</head>',f'<link rel="stylesheet" href="{base}assets/evolution.css?v={VERSION}"></head>',1)
+        # En-tête mobile : bouton « Menu » après la navigation, script dédié et règle sans JavaScript.
+        if 'class="main-nav"' in text and 'class="menu-toggle"' not in text:
+            text=re.sub(r'(<nav class="main-nav")([^>]*>[\s\S]*?</nav>)', r'\1 id="navigation-principale"\2<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation-principale">Menu</button>', text, count=1)
+        if 'class="menu-toggle"' in text:
+            text=re.sub(r'<nav class="main-nav"(?![^>]*\bid=)', '<nav class="main-nav" id="navigation-principale"', text, count=1)
+        # menu.js est chargé tôt, sans defer : il marque la page avant le premier affichage
+        # (pas de décalage) ; sans JavaScript, la navigation complète reste visible.
+        text=re.sub(r'<noscript><style data-menu-noscript>[\s\S]*?</noscript>','',text)
+        text=re.sub(r'<script src="[^"]*assets/menu\.js[^"]*"( defer)?></script>\n?','',text)
+        if 'class="menu-toggle"' in text:
+            text=text.replace('</title>',f'</title><script src="{base}assets/menu.js"></script>',1)
         # Typographie française du texte produit par JavaScript (tools/typographie.py pour le HTML).
         if 'assets/typographie.js' not in text:text=text.replace('</head>',f'<script src="{base}assets/typographie.js" defer></script></head>',1)
         text=re.sub(r'(assets/(?:interface|evolution)\.css\?v=)[^"\s]+',r'\g<1>'+VERSION,text)
