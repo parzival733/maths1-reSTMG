@@ -108,7 +108,10 @@ def main():
                 assert page.locator('main').get_attribute('data-chapter') == slug
                 assert page.locator('main').get_attribute('aria-busy') is None
                 assert page.locator('.coaching-hint').count() == 18
-                initial = page.locator('#exercice-1 .exercise-statement > p').first.inner_text()
+                # Une variante change l'énoncé ou ce qui est demandé (f(4) au lieu de f(3)) :
+                # on compare donc l'énoncé et les intitulés des réponses.
+                shown = lambda s: s.evaluate("e => e.querySelector('.exercise-statement > p').innerText + ' | ' + [...e.querySelectorAll('.answer-row > span:first-child')].map(x => x.innerText).join(' ; ')")
+                initial = shown(page.locator('#exercice-1'))
                 for index in range(6):
                     page.locator(f'[data-step="{index}"]').click()
                     slide = page.locator(f'#exercice-{index+1}')
@@ -119,7 +122,7 @@ def main():
                 page.locator('#exercice-1 [data-action="new-variant"]').click()
                 expect(page.locator('#exercise-score')).to_have_text('5/6')
                 slide = page.locator('#exercice-1')
-                assert slide.locator('.exercise-statement > p').first.inner_text() != initial
+                assert shown(slide) != initial
                 slide.locator('[data-expect]').evaluate_all('''els=>els.forEach(el=>{
                     if(el.tagName==='SELECT') el.value=Array.from(el.options).find(o=>o.value && o.value!==el.dataset.expect).value;
                     else el.value='999999';
