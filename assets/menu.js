@@ -5,6 +5,32 @@
 document.documentElement.classList.add('js-menu');
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
+  // Leçon, sur téléphone : « Options de lecture » déplie les étapes et le confort de lecture.
+  const optionsButton = document.querySelector('.lesson-options-toggle');
+  const page = optionsButton && optionsButton.closest('main');
+  if (optionsButton && page) {
+    optionsButton.addEventListener('click', () => {
+      const open = optionsButton.getAttribute('aria-expanded') !== 'true';
+      optionsButton.setAttribute('aria-expanded', String(open));
+      page.classList.toggle('options-open', open);
+    });
+  }
+  // Lien fixe « Sommaire » : visible une fois le sommaire sorti de l'écran ; il l'ouvre.
+  const fab = document.querySelector('.toc-fab');
+  const toc = document.getElementById('sommaire-lecon');
+  if (fab && toc) {
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(entries => entries.forEach(entry => {
+        fab.classList.toggle('is-visible', !entry.isIntersecting && entry.boundingClientRect.top < 0);
+      })).observe(toc);
+    }
+    fab.addEventListener('click', () => {
+      const details = toc.querySelector('details');
+      if (details) details.open = true;
+      const summary = toc.querySelector('summary');
+      if (summary) setTimeout(() => summary.focus(), 0);
+    });
+  }
   const header = document.querySelector('.site-header');
   const button = header && header.querySelector('.menu-toggle');
   const nav = header && header.querySelector('.main-nav');

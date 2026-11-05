@@ -63,8 +63,10 @@ TOGGLE = re.compile(r'<div class="lesson-corrections-toggle">[\s\S]*?</div>(?:<n
 TOC = re.compile(r'<aside class="lesson-toc"[^>]*>[\s\S]*?</aside>')
 # Sans JavaScript, le sommaire, les options de lecture et le bouton des corrections
 # n'ont pas d'effet : ils sont masqués et la leçon occupe toute la largeur.
-NOSCRIPT = ('<noscript><style>.lesson-toc,.lesson-reading-controls,.lesson-corrections-toggle{display:none!important}'
+NOSCRIPT = ('<noscript><style>.lesson-toc,.lesson-reading-controls,.lesson-corrections-toggle,.lesson-options-toggle,.toc-fab{display:none!important}'
             '.lesson-layout{grid-template-columns:minmax(0,1fr)!important}</style></noscript>')
+OPTIONS = '<button class="lesson-options-toggle" type="button" aria-expanded="false" aria-controls="options-lecture">Options de lecture</button>'
+FAB = '<a class="toc-fab" href="#sommaire-lecon">Sommaire</a>'
 CORRECTIONS = re.compile(r'<details class="(?:study-solution|check)"')
 
 
@@ -79,7 +81,7 @@ def corrections_toggle(count):
 def table_of_contents(parts):
     # Sommaire écrit dans la page, replié par défaut : assets/cours.js remplit les liens
     # et l'ouvre sur ordinateur, sans décaler la leçon au chargement.
-    return (f'<aside class="lesson-toc"><details class="ui-toc"><summary>Sommaire de la leçon · {parts} parties</summary>'
+    return (f'<aside class="lesson-toc" id="sommaire-lecon"><details class="ui-toc"><summary>Sommaire de la leçon · {parts} parties</summary>'
             '<h2>Dans cette leçon</h2><nav aria-label="Sommaire de la leçon"></nav>'
             '<button class="print-button" type="button">Imprimer le cours</button></details></aside>')
 
@@ -129,6 +131,16 @@ def apply(root: Path):
         article = text.split('<article class="lesson-content">', 1)[1].split('</article>', 1)[0]
         text = TOC.sub(lambda _: table_of_contents(len(re.findall(r'<h2[ >]', article))), text, count=1)
         text = re.sub(r'(<div class="lesson-reading-controls"[^>]*?) hidden', r'\1', text, count=1)
+        # Téléphone : un bouton « Options de lecture » replie les étapes et le confort de lecture ;
+        # un lien fixe « Sommaire » ramène au sommaire (assets/menu.js, docs/refonte/direction.md).
+        text = re.sub(r'<button class="lesson-options-toggle"[^>]*>[^<]*</button>', '', text)
+        text = re.sub(r'<div class="lesson-reading-controls"(?![^>]*\bid=)', '<div class="lesson-reading-controls" id="options-lecture"', text, count=1)
+        text = text.replace('<div class="lesson-reading-controls"', OPTIONS + '<div class="lesson-reading-controls"', 1)
+        text = re.sub(r'<a class="toc-fab"[^>]*>[\s\S]*?</a>', '', text)
+        text = text.replace('</article>', '</article>' + FAB, 1) if '<article class="lesson-content">' in text else text
+        for old in re.findall(r'<noscript><style>\.lesson-toc,[\s\S]*?</noscript>', text):
+            if old != NOSCRIPT:
+                text = text.replace(old, '')
         if NOSCRIPT not in text:
             text = text.replace('</head>', NOSCRIPT + '</head>', 1)
         # Lien en double : « Pourquoi ces méthodes ? » figure déjà en haut de la leçon.
