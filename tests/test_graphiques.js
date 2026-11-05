@@ -59,6 +59,11 @@ for(let t=-3;t<=5;t+=.25) {
 }
 assert.equal(g.slope(1),0);
 assert.equal(g.fmt(2.5),'2,5');
+assert.equal(g.fmt(-2),'\u22122');
+// Courbe du logarithme décimal (leçon de Terminale) : valeurs exactes et domaine.
+assert.equal(g.logarithm({},100),2);
+assert.ok(Math.abs(g.logarithm({},2)-0.30103)<1e-5);
+assert.ok(Number.isNaN(g.logarithm({},0)) && Number.isNaN(g.logarithm({},-1)));
 for (const [slug,type] of [
  ['fonctions','affine'],['second-degre','second'],['suites','suites'],
  ['derivees','derivee'],['variations','variations']

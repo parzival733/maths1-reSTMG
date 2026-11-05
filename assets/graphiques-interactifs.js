@@ -1,4 +1,4 @@
-/* Graphiques interactifs pour les cours de Première STMG.
+/* Graphiques interactifs pour les cours de Première et de Terminale STMG.
    SVG et JavaScript natifs ; aucune dépendance ni collecte de données.
    Fonctions de calcul exposées pour les tests de régression mathématique. */
 (() => {
@@ -6,13 +6,14 @@
 
   const svgNS = 'http://www.w3.org/2000/svg';
   const fmt = value => Number.isFinite(value)
-    ? String(Math.round((value + Number.EPSILON) * 100) / 100).replace('.', ',')
+    ? String(Math.round((value + Number.EPSILON) * 100) / 100).replace('.', ',').replace('-', '−')
     : 'non défini';
   const sign = value => value < 0 ? '− ' + fmt(-value) : '+ ' + fmt(value);
   const affine = (p, x) => p.a * x + p.b;
   const quadratic = (p, x) => p.a * (x - p.h) ** 2 + p.k;
   const arithmetic = (p, n) => p.u0 + p.r * n;
   const geometric = (p, n) => p.v0 * p.q ** n;
+  const logarithm = (_p, x) => (x > 0 ? Math.log10(x) : NaN);
   const curve = x => (x - 1) ** 2 - 2;
   const slope = t => 2 * (t - 1);
   const tangent = (t, x) => curve(t) + slope(t) * (x - t);
@@ -103,6 +104,23 @@
         {text: 'Calcule v₂ pour la suite géométrique (au centième si nécessaire).', answer: geometric(p, 2)},
         {text: 'Calcule u₄ pour la suite arithmétique.', answer: arithmetic(p, 4)}
       ]
+    },
+    log: {
+      title: 'Lire la courbe de log', description: 'Choisis une abscisse x₀ : le point A(x₀ ; log(x₀)) se déplace sur la courbe, définie seulement pour x > 0.',
+      parameters: [{key: 'x0', label: 'Abscisse x₀ du point A', type: 'select', options: [0.01, 0.1, 0.5, 1, 2, 5, 10], value: 2}],
+      domain: [0, 12], extent: [-2, 1.5], calculate: logarithm,
+      explanation: p => {
+        const y = Math.log10(p.x0);
+        const position = p.x0 < 1 ? 'Comme 0 < x₀ < 1, log(x₀) est négatif.' : p.x0 === 1 ? 'log(1) = 0 : la courbe coupe l’axe des abscisses en 1.' : 'Comme x₀ > 1, log(x₀) est positif.';
+        return 'A(' + fmt(p.x0) + ' ; ' + fmt(y) + ') : log(' + fmt(p.x0) + ') ≈ ' + fmt(y) + ', car 10 exposant ' + fmt(y) + ' ≈ ' + fmt(p.x0) + '. ' + position +
+          ' La fonction log est croissante sur ]0 ; +∞[ et passe par (10 ; 1).';
+      },
+      questions: p => [
+        {text: 'Quelle est la valeur exacte de log(10) ?', answer: 1},
+        {text: 'Lis log(x₀) au centième pour la valeur choisie.', answer: Math.log10(p.x0)},
+        {text: 'Avec la règle du produit, calcule log(10 × x₀) au centième.', answer: 1 + Math.log10(p.x0)}
+      ],
+      markers: p => [{x: p.x0, y: Math.log10(p.x0), label: 'A'}, {x: 1, y: 0, label: '(1 ; 0)'}, {x: 10, y: 1, label: '(10 ; 1)'}]
     },
     derivee: {
       title: 'Faire glisser une tangente', description: 'Sur f(x) = (x − 1)² − 2, déplace le point A. La droite orange touche la courbe en A.',
@@ -266,9 +284,13 @@
       affine: 'Courbe bleue : droite de la fonction. Le point vert indique une image ou une racine.',
       second: 'Courbe bleue : parabole. Fond vert : y positif ; fond orange clair : y négatif. Les racines sont sur l’axe horizontal.',
       suites: 'Points bleus : suite arithmétique. Points orange : suite géométrique. Les points restent séparés.',
-      derivee: 'Courbe bleue : fonction. Droite orange : tangente au point vert.'
+      derivee: 'Courbe bleue : fonction. Droite orange : tangente au point vert.',
+      log: 'Courbe bleue : y = log(x). Les points verts sont A, (1 ; 0) et (10 ; 1).'
     };
-    const note = el('p', 'math-lab__note', legends[key] + (key==='suites'?'':' La fenêtre du graphique n’est pas une restriction du domaine : les fonctions affichées ici sont définies sur les réels.'));
+    const domainNote = key === 'suites' ? '' : key === 'log'
+      ? ' La fonction log n’est définie que pour x > 0 : la courbe ne coupe jamais l’axe des ordonnées.'
+      : ' La fenêtre du graphique n’est pas une restriction du domaine : les fonctions affichées ici sont définies sur les réels.';
+    const note = el('p', 'math-lab__note', legends[key] + domainNote);
     visual.append(note);
     const controls = el('div', 'math-lab__controls');
     const values = el('div', 'math-lab__readout');
@@ -376,10 +398,10 @@
       const table = el('table', 'math-lab__values-table');
       table.append(el('caption', '', 'Valeurs avec les paramètres actuels (arrondies au centième si nécessaire)'));
       const tr = el('tr');
-      (key === 'suites' ? ['Rang n', 'u(n)', 'v(n)'] : ['x', 'f(x)']).forEach(t => { const th=el('th','',t); th.scope='col'; tr.append(th); });
+      (key === 'suites' ? ['Rang n', 'u(n)', 'v(n)'] : key === 'log' ? ['x', 'log(x)'] : ['x', 'f(x)']).forEach(t => { const th=el('th','',t); th.scope='col'; tr.append(th); });
       const head=el('thead'); head.append(tr); table.append(head); const body=el('tbody');
-      const xs=key==='suites'?[0,1,2,3,4,5,6]:[-2,-1,0,1,2];
-      xs.forEach(x => { const row=el('tr'); const th=el('th','',String(x)); th.scope='row'; row.append(th);
+      const xs=key==='suites'?[0,1,2,3,4,5,6]:key==='log'?[0.01,0.1,0.5,1,2,5,10]:[-2,-1,0,1,2];
+      xs.forEach(x => { const row=el('tr'); const th=el('th','',fmt(x)); th.scope='row'; row.append(th);
         (key==='suites'?[arithmetic(p,x),geometric(p,x)]:[config.calculate(p,x)]).forEach(v=>row.append(el('td','',fmt(v)))); body.append(row); });
       table.append(body); dataWrap.replaceChildren(table);
       question.textContent = 'Question ' + (questionIndex + 1) + '/' +
@@ -406,7 +428,7 @@
     document.querySelectorAll('.math-lab[data-lab]').forEach(initLab);
   }
 
-  window.GraphiquesInteractifs = {affine, quadratic, arithmetic, geometric, curve, slope, tangent, roots, fmt, init};
+  window.GraphiquesInteractifs = {affine, quadratic, arithmetic, geometric, logarithm, curve, slope, tangent, roots, fmt, init};
   if (typeof document !== 'undefined') {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();

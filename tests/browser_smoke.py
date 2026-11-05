@@ -614,6 +614,26 @@ def main():
             assert not errors, errors
             print('VARIANTES BROWSER OK : 3 séries × 15 nouvelles variantes, énoncé renouvelé à chaque clic, vérification juste, console sans erreur.')
 
+            # Leçons : bouton unique pour toutes les corrections, sommaire mobile, courbe de log.
+            for lesson in ['cours/probabilites-conditionnelles.html', 'terminale/cours/t-logarithme.html']:
+                page.goto(base + lesson, wait_until='networkidle')
+                toggle = page.locator('.lesson-corrections-toggle button')
+                expect(toggle).to_contain_text('Afficher toutes les corrections')
+                toggle.click()
+                assert page.evaluate("[...document.querySelectorAll('.lesson-content details.study-solution, .lesson-content details.check')].every(d => d.open)"), lesson
+                expect(toggle).to_contain_text('Masquer toutes les corrections')
+                toggle.click()
+                assert page.evaluate("[...document.querySelectorAll('.lesson-content details.study-solution, .lesson-content details.check')].every(d => !d.open)"), lesson
+                summary = page.locator('.ui-toc > summary')
+                expect(summary).to_contain_text('Sommaire de la leçon')
+                assert page.locator('.ui-toc').evaluate('d => !d.open'), lesson
+                expect(page.locator('.lesson-prerequisites')).to_be_visible()
+            expect(page.locator('.math-lab[data-lab="log"] svg.math-lab__plot')).to_have_count(1)
+            page.locator('.math-lab[data-lab="log"] select').select_option('0.1')
+            expect(page.locator('.math-lab[data-lab="log"] .math-lab__readout')).to_contain_text('log(0,1)')
+            assert not console_errors, console_errors
+            print('LEÇONS BROWSER OK : corrections affichées puis masquées d’un clic, sommaire mobile replié, prérequis, courbe de log.')
+
             browser.close()
             print(f'BROWSER OK: {checks} page/width combinations (320, 390, 768, 1440 px); search, filters, TOCs, corrections, print events, navigation, simulation and no-JavaScript fallback.')
             print('No JavaScript exceptions, no HTTP errors, no global horizontal overflow.')

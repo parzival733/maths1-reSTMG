@@ -156,3 +156,35 @@ Relecture faite en comparant, pour chaque exercice d’origine, l’ancien et le
 
 - `tests/evolution-mathematics.json` : les 15 pages `exercices/*.html` en JSON (corrigés structurés, trois valeurs données, trois libellés) et les sept générateurs (`variants-*.js`, `terminale-exercices.js`) pour les tableaux et les écritures corrigées.
 - `tests/interface-content.json` : les mêmes pages et générateurs, `assets/exercices-variants.js` (utilitaire `times`, options des tableaux), la page `exercices/fonctions.html` (9 corrigés) et la zone `<main>` de `terminale/exercices/t-inverse.html` et `t-statistiques.html`, dont la version sans JavaScript est régénérée avec les corrigés réécrits.
+
+## 12. Lot 3 du 5 novembre 2026 : contenu des leçons
+
+### Écriture des formules
+
+- Nouveau test `tests/test_notation.py` : il refuse dans le texte visible, les attributs lus par les aides et les données JSON les exposants perdus (« log(Ax) = x log(A) », « xa = b », « 10k+1 »), le caractère ^ hors code et les puissances écrites en toutes lettres. Il est lancé par `cloture.yml`.
+- Deux explications de pause mémoire écrivaient les puissances en toutes lettres (« 2 puissance −2 », « 10 puissance −3 ») : elles utilisent maintenant 2⁻², 1/2² et 10⁻³. Les autres pages n’avaient pas d’exposant perdu.
+- Les graphiques interactifs affichaient le tiret ASCII pour les nombres négatifs : `fmt` écrit désormais le signe moins.
+
+### Logarithme (Terminale)
+
+- Lettres harmonisées : A et B pour les règles de calcul (comme dans les exercices), a, b et x dans les équations a<sup>x</sup> = b ; une phrase « Notations du chapitre » le précise et la méthode en trois étapes reprend log(A<sup>n</sup>) = n log(A).
+- Mise en garde « l’inconnue a changé de place » au début de la partie 4 (exposant inconnu : log ; base inconnue : puissance 1/a).
+- Tableau de valeurs de log(x) et graphique interactif `data-lab="log"` (configuration ajoutée à `graphiques-interactifs.js`, avec résumé textuel, tableau des valeurs et questions) ; le texte de repli sans JavaScript décrit la courbe.
+- Nombre de chiffres : trois étapes (encadrer, appliquer log, conclure), un exemple pas à pas (3 570, puis 2<sup>50</sup>) et une mise en garde chiffrée près d’une puissance de 10 (10 000 et 9 999).
+
+### Probabilités conditionnelles (Première)
+
+- « Une intersection n’est pas une probabilité conditionnelle » est remplacée par une formulation exacte : même numérateur, dénominateurs différents, lien P(A ∩ B) = P(A) × P<sub>A</sub>(B), égalité seulement si P(A) = 1 ou si elles sont nulles.
+- La « formule des probabilités totales » est nommée dans l’encadré de formule, et l’exemple de l’article défectueux est présenté comme une « inversion du conditionnement ».
+- Terminale, conditionnement : « leur intersection nulle » devient « la probabilité de leur intersection, nulle ».
+
+### Toutes les leçons (16 de Première, 9 de Terminale)
+
+- `tools/lecons.py`, appelé par `tools/finalize_site.py` : encadré « Prérequis » en tête de chaque leçon (les anciennes lignes « Appui(s) » y sont reprises avec leurs liens et remarques ; trois leçons de Première et trois de Terminale qui n’en avaient pas en reçoivent un) et routine de révision datée J+1 / J+7 / J+21 ; les consignes propres aux leçons de Terminale sont conservées sous « Pour cette leçon ».
+- `assets/cours.js` : bouton « Afficher / Masquer toutes les corrections (n) », avec annonce pour les lecteurs d’écran ; sans JavaScript, chaque correction reste dépliable séparément.
+- Sommaire : il est désormais écrit dans la page (élément `details`, replié par défaut) et `assets/cours.js` le remplit, l’ouvre sur ordinateur et le referme sur téléphone après le choix d’une partie. Il s’intitule « Sommaire de la leçon · n parties » et il est mis en évidence sur téléphone. Les options de lecture et le bouton des corrections sont aussi écrits dans la page ; une règle `noscript` les masque sans JavaScript, la leçon gardant alors toute la largeur.
+- Effet mesuré : le sommaire s’affichait d’abord déplié (461 px) puis se repliait sur téléphone, ce qui décalait la leçon. Avec réseau et processeur ralentis, le décalage cumulé (CLS) de `cours/fonctions.html` passe de 0,06 avant le lot et 0,17 pendant le lot à 0 ; le budget de `tests/browser_cloture.py` (≤ 0,1) est respecté.
+
+### Empreintes de contenu protégé mises à jour (après relecture)
+
+`tests/interface-content.json` : la zone `<main>` des 25 leçons (prérequis, routine, contenus listés ci-dessus) et `assets/cours.js`, `assets/graphiques-interactifs.js`. Relecture faite par comparaison de l’ancien et du nouveau `<main>` : seuls changent l’encadré des prérequis (qui remplace la ligne « Appui(s) »), le bloc de routine et, pour les trois leçons citées, les passages listés.

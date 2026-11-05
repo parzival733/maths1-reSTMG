@@ -1,67 +1,67 @@
 {
   "cours/evolutions.html": {
     "part": "main",
-    "sha256": "2cf3aa17b2c6b298e6623756a55e3b380fc81def9b926eb7dd0867d9c1f67781"
+    "sha256": "a90e29bef90fc0a23c62d91fa2b211441090b13e781bbd33034eb70c90e316dc"
   },
   "cours/suites-arithmetiques.html": {
     "part": "main",
-    "sha256": "53fff77b524c30ef95c6dbdd8e2e7caaa414dedfb2b3d347549362744d31d9fc"
+    "sha256": "b12c05fb5b6703ea94a02f0b91b876314bf01295b8d83f83bfd1e18b5da8a16a"
   },
   "cours/variables-aleatoires.html": {
     "part": "main",
-    "sha256": "d73beebc0b62aa097f97c7dc09085ab8e1b6a77335f44f6a1d2ded976610ce8a"
+    "sha256": "da00ef35437456e0d938be044b0631dff2c0a1694d13f98d1a52b47aa220630e"
   },
   "cours/logique.html": {
     "part": "main",
-    "sha256": "1ef02eef06fac74a2be3469f89e3c640e02411cfedba2d33f2890349279a75aa"
+    "sha256": "b14645dc8216f34945f4994f86a20beec522c20e4feaa8310e2f19e11c696e45"
   },
   "cours/suites.html": {
     "part": "main",
-    "sha256": "8a0b715a16779bb787ef940b6a169b3e6f8f3c940a931c6c37fe9b78de89190a"
+    "sha256": "a014c75f367fb0c3d8627b3505c862896483d493481a169fd76644694b26e78a"
   },
   "cours/calcul.html": {
     "part": "main",
-    "sha256": "241ec5724dbcf0dc9823b6e4cd10211e8c63c7ca1a7c792a85457f60520fe47d"
+    "sha256": "d12fe5557126201406a719d25d26f7ed72be3c37c4db81bb13b6c4f84ce0ad16"
   },
   "cours/variations.html": {
     "part": "main",
-    "sha256": "43492e7fef4516cc319cef32875dbf05caadd5cbc19125ca15d47e049dbb9f54"
+    "sha256": "eff71c14fcdb9fcc21dee700725b3f84156cf69fc645c63bc2d2566b69e90fc7"
   },
   "cours/python-tableur.html": {
     "part": "main",
-    "sha256": "9ab0caedd2ec8d4becfdae7b9afa54a7f7e41911a0eea08a4a20b77c69200441"
+    "sha256": "f83b9218f65cd1a25cc28d14778093f5035fc2c3b2d14ce5c6151b64311c41b3"
   },
   "cours/derivees.html": {
     "part": "main",
-    "sha256": "8affcd56a9de370d83528f7c217c2d30a6a9f4f3895e7307d240e0d832584426"
+    "sha256": "c2c0d35c518366bff6b2c7e78bf167009f1aa7ce2582099b9aa4ee795da67ac0"
   },
   "cours/statistiques-deux-variables.html": {
     "part": "main",
-    "sha256": "611d3ea7b42e916c3c80e1363bb848dd3a138a5052d27b0fea281267d8bc1d5b"
+    "sha256": "bc8f2ff0a6ea602a72c4b27e7f241f9be347f312a83a3235e9f6db77ba368ca5"
   },
   "cours/second-degre.html": {
     "part": "main",
-    "sha256": "087fd70f7d2f7e4b2bb5dad4ebe55ad2185b4ee4b204f49a8c63c9bc35abd9e5"
+    "sha256": "80de2e2627b15c50bd897f91d9fef4deabef08bfccf9746638a99b6c8b98bb65"
   },
   "cours/fonctions.html": {
     "part": "main",
-    "sha256": "4a0d2b4ba5e224085aa2ed074804eb6c92f412a3161bc259d452674fe25717a3"
+    "sha256": "528258cc7e0d1e908557e980dcc6651aa68463435dd6cd6db7f594b0ef3cb55d"
   },
   "cours/bernoulli.html": {
     "part": "main",
-    "sha256": "1f4da2692044277a19670acdecc13c18596ff815be838eff1a54b682b4b63bf9"
+    "sha256": "f6910e6d0e6f830613089eb3ff2c1c08878ded04fce5069b286520996813db08"
   },
   "cours/statistiques-descriptives.html": {
     "part": "main",
-    "sha256": "6639586d02a73dcdb02248f2c3d0d0ca21f856dd4b74efce161c71e136caf65b"
+    "sha256": "04370a6ac407e723da6af919b04cabaaf55b30b6a5cdeaef9e32a881a32a6b25"
   },
   "cours/suites-geometriques.html": {
     "part": "main",
-    "sha256": "33882271c969dbf8da469a8dfdbac7819fc02af366e5ff9bba011fafa9adecfe"
+    "sha256": "d701775126966a0a6ab6d1489c7a284f2fb7eb94348ac83d0b70b7906d266872"
   },
   "cours/probabilites-conditionnelles.html": {
     "part": "main",
-    "sha256": "c57c1f9344928b506b2ba0ef44e468eb20672771f0e070de215fb2b8362baccd"
+    "sha256": "9c92f6ac10136a38d6f0b10e489653144e8e2c8cb02351eab2e209853a6a30f5"
   },
   "exercices/evolutions.html": {
     "part": "main",
@@ -129,39 +129,39 @@
   },
   "terminale/cours/t-binomiale.html": {
     "part": "main",
-    "sha256": "f4c62cd286f5132ca49a3f97b33b4c150bf81cb4e968b9fafb56a13882e430f3"
+    "sha256": "62458b40bd1df807fbebc335b382c0c914e7c078bc4a71636d990816fdab1d12"
   },
   "terminale/cours/t-statistiques.html": {
     "part": "main",
-    "sha256": "c9481cf803f18c5887a4dc1224a55cad537f2098a024f2c1c6cdade2a632862a"
+    "sha256": "5d234e3d75194ad5574d168c5ef2ab15fc3e775d4f8599c417716c4bde8ce93d"
   },
   "terminale/cours/t-variables.html": {
     "part": "main",
-    "sha256": "df5061597622c7b113071dda64ca423d046f33e68901066eaf27becfb33d4fba"
+    "sha256": "31a2d95359b8ba98880e0ecd290170c74548285b537c0872abed8eab0e84ebff"
   },
   "terminale/cours/t-logarithme.html": {
     "part": "main",
-    "sha256": "c16487f21ca9c8b2550d20303603f8735fff318eb6a9cd5bbd842b930166ca01"
+    "sha256": "f880e36f2a0e1705a6a04ff3fc701cdfa66f1cfa2da7edfc9f2f36e456e5d249"
   },
   "terminale/cours/t-outils.html": {
     "part": "main",
-    "sha256": "fa95f2dba87899ce9d2fd21407f2cbfcdcab98e6d4d2d9b2b73e00aa8549e0ed"
+    "sha256": "9045634861091b130eb93070f036a6f9aac29f607514591c13d50fa0de5791f5"
   },
   "terminale/cours/t-conditionnelles.html": {
     "part": "main",
-    "sha256": "896d607e904a4d1aeb9f044c56153d1dfd63ec12502565b99866070a3659630c"
+    "sha256": "45852b97fac367f2678cb2dad37260f621648980dea493965ffd6ae6595d24d2"
   },
   "terminale/cours/t-exponentielles.html": {
     "part": "main",
-    "sha256": "854a8aa33d3eb8a7ed78421dfc7eb7612306e42270bfc181a6a22d99e7d9663b"
+    "sha256": "e432e042320b304265aaa6b39e5a4a44fbb38510f468d4607591f20735280b1f"
   },
   "terminale/cours/t-inverse.html": {
     "part": "main",
-    "sha256": "fa9b43a5d8fa066984fb32657f86e2ba72add367e3c4151bc38e050ddc900c7a"
+    "sha256": "372974d84c6cfb9861d1ced4781a4582dc1a490db66ed14d3c4b337af01a4b0f"
   },
   "terminale/cours/t-suites.html": {
     "part": "main",
-    "sha256": "85698650e1e88c00e2713c93ee63e768f2bcc84a0efe85268487e72a2932e95a"
+    "sha256": "5c1f525827ed9de9aee044c9219797d25e2b72b98a36e410d75626d21bc2b8d9"
   },
   "terminale/exercices/t-binomiale.html": {
     "part": "main",
@@ -201,7 +201,7 @@
   },
   "assets/cours.js": {
     "part": "file",
-    "sha256": "403760050cdaa7bc0252b7653368dbe6c1e23ea04bcad5858080028a82c6b05c"
+    "sha256": "12b04b6deae052839afe1ca309fd8b8943233ef3c452ef707d8ecb8a8d34ae31"
   },
   "assets/exercices-variants.js": {
     "part": "file",
@@ -213,7 +213,7 @@
   },
   "assets/graphiques-interactifs.js": {
     "part": "file",
-    "sha256": "82e9eb9f8412c3789ff8de7eb128b1feb743f721a9c9b6152ca410e4f0f44967"
+    "sha256": "7dfb6e157761f01fe9f0e97207bac04924b51d59ae0457236a30385f81082143"
   },
   "assets/coaching-suites.js": {
     "part": "file",

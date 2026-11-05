@@ -96,3 +96,20 @@ p code, li code { background: #f2f0f6; color: #46348b; border-radius: 4px; paddi
 .sign-table th, .sign-table td { border: 1px solid var(--line); padding: 6px 10px; text-align: center; white-space: nowrap; }
 .sign-table thead th { background: var(--purple-soft); color: var(--ink); }
 .sign-table tbody th { text-align: left; background: #faf9fd; font-weight: 600; }
+
+/* Lot 3 : encadré des prérequis, bouton des corrections et sommaire mobile. */
+.lesson-prerequisites { margin: 0 0 22px; padding: 14px 18px; border: 1px solid #ddd5fb; border-left: 4px solid var(--purple); border-radius: 12px; background: var(--purple-soft); }
+.lesson-prerequisites__title { margin: 0 0 6px; font-weight: 700; color: var(--purple-dark); }
+.lesson-prerequisites p, .lesson-prerequisites ul { margin: 4px 0; }
+.lesson-prerequisites ul { padding-left: 20px; }
+.lesson-prerequisites a { font-weight: 600; }
+.lesson-notation { font-size: 15px; color: var(--muted); }
+.lesson-corrections-toggle { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 0 0 22px; }
+.lesson-corrections-toggle button { min-height: 44px; padding: 9px 16px; border: 1px solid var(--purple); border-radius: 999px; background: var(--surface); color: var(--purple-dark); font: inherit; font-weight: 650; cursor: pointer; }
+.lesson-corrections-toggle button:hover { background: var(--purple-soft); }
+.lesson-corrections-toggle button:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+.lesson-corrections-toggle__hint { margin: 0; font-size: 14px; color: var(--muted); }
+@media (max-width: 740px) {
+  .lesson-toc .ui-toc > summary { padding: 12px 14px; border-radius: 10px; background: var(--purple-soft); color: var(--purple-dark); font-weight: 700; }
+}
+@media print { .lesson-corrections-toggle { display: none; } }

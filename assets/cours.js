@@ -23,6 +23,21 @@ if (toc && content) {
     a.textContent = heading.textContent;
     nav.append(a);
   });
+  // Sommaire écrit dans la page (tools/lecons.py) : ouvert sur ordinateur, replié sur
+  // téléphone, refermé après le choix d'une partie.
+  const details = toc.querySelector('details.ui-toc');
+  if (details) {
+    const summary = details.querySelector('summary');
+    const parts = nav.querySelectorAll('a').length;
+    if (summary) summary.textContent = 'Sommaire de la leçon · ' + parts + ' parties';
+    const desktop = window.matchMedia('(min-width: 741px)');
+    const adapt = () => { details.open = desktop.matches; };
+    adapt();
+    desktop.addEventListener('change', adapt);
+    details.addEventListener('click', event => {
+      if (event.target.closest('nav a') && !desktop.matches) details.open = false;
+    });
+  }
   toc.hidden = false;
   const printButton = toc.querySelector('button');
   if (printButton) printButton.addEventListener('click', () => window.print());
@@ -42,6 +57,25 @@ if (toc && content) {
       pagination.append(a);
     }
   }
+}
+// Un seul bouton ouvre ou referme toutes les corrections de la leçon. Il est écrit
+// dans la page (tools/lecons.py) et reste masqué sans JavaScript.
+const correctionsButton = document.querySelector('[data-corrections-toggle]');
+if (content && correctionsButton) {
+  const corrections = Array.from(content.querySelectorAll('details.study-solution, details.check'));
+  const status = correctionsButton.parentElement.querySelector('[role="status"]');
+  const allOpen = () => corrections.length > 0 && corrections.every(item => item.open);
+  const label = () => {
+    correctionsButton.textContent = (allOpen() ? 'Masquer' : 'Afficher') + ' toutes les corrections (' + corrections.length + ')';
+  };
+  correctionsButton.addEventListener('click', () => {
+    const open = !allOpen();
+    corrections.forEach(item => { item.open = open; });
+    label();
+    if (status) status.textContent = open ? 'Toutes les corrections sont affichées.' : 'Toutes les corrections sont masquées.';
+  });
+  corrections.forEach(item => item.addEventListener('toggle', label));
+  label();
 }
 // Include all corrections in the browser's print output, then restore the reader's state.
 let printClosedDetails = [];

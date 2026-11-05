@@ -219,6 +219,23 @@ def main():
         answers = [li for d in re.findall(r'<details[^>]*>[\s\S]*?</details>', zone) for li in re.findall(r'<li>([\s\S]*?)</li>', d)]
         structured = [li for li in answers if 'Méthode' in li and 'Calcul' in li and 'Conclusion' in li]
         assert len(structured) == expected, (rel, len(structured), len(answers))
+
+    # Leçons : prérequis en tête, routine de révision datée, contenus précisés.
+    lessons = sorted((ROOT / 'cours').glob('*.html')) + sorted((ROOT / 'terminale/cours').glob('*.html'))
+    assert len(lessons) == 25
+    for path in lessons:
+        source = path.read_text(encoding='utf-8')
+        article = source[source.index('<article class="lesson-content">'):]
+        assert article.startswith('<article class="lesson-content"><aside class="lesson-prerequisites"'), path.name
+        review = re.search(r'<section class="study-review"[\s\S]*?</section>', source).group()
+        assert all(day in review for day in ('J+1', 'J+7', 'J+21')), path.name
+        assert not re.search(r'Appuis? :', source), path.name
+    conditional = (ROOT / 'cours/probabilites-conditionnelles.html').read_text(encoding='utf-8')
+    assert 'formule des probabilités totales' in conditional and 'inversion du conditionnement' in conditional
+    assert 'une intersection n’est pas une probabilité conditionnelle' not in conditional
+    logarithm = (ROOT / 'terminale/cours/t-logarithme.html').read_text(encoding='utf-8')
+    assert 'data-lab="log"' in logarithm and 'graphiques-interactifs.js' in logarithm
+    assert 'l’inconnue a changé de place' in logarithm and '9 999' in logarithm
     print(f'EXERCISES OK: {len(COURSES)} chapters; {count_exercises} exercises validated.')
     print(f'STATIC OK: {len(pages)} HTML pages; 16 lessons; {links_checked} local links; {snippets} Python blocks compiled.')
 

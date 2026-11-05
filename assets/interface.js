@@ -2,7 +2,8 @@
 (() => {
   'use strict';
   const toc = document.querySelector('.lesson-toc');
-  if (!toc || toc.hidden) return;
+  // Les leçons écrivent déjà leur sommaire repliable (tools/lecons.py, assets/cours.js).
+  if (!toc || toc.hidden || toc.querySelector('.ui-toc')) return;
   const details = document.createElement('details');
   details.className = 'ui-toc';
   const summary = document.createElement('summary');
