@@ -89,8 +89,13 @@ def main():
             page.locator('#rapid-configure').click();page.clock.fast_forward(120000)
             page.locator('#rapid-cancel-setup').click();expect(page.locator('#rapid-time')).to_have_text('00:25')
             page.evaluate("Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'))")
+            expect(page.locator('#rapid-app')).to_have_attribute('data-phase','paused')
             page.clock.fast_forward(26000)
             page.evaluate("Object.defineProperty(document,'hidden',{configurable:true,value:false});document.dispatchEvent(new Event('visibilitychange'))")
+            expect(page.locator('#rapid-pause-title')).to_have_text('Pause automatique : tu as quitté l’onglet')
+            expect(page.locator('#rapid-time')).to_have_text('00:25')
+            page.locator('#rapid-pause-resume').click();expect(page.locator('#rapid-app')).to_have_attribute('data-phase','running')
+            page.clock.fast_forward(26000)
             expect(page.locator('#rapid-result-title')).to_contain_text('Temps écoulé')
             # Imprimer met en pause, sans effacer une pause manuelle ni reprendre un bilan termine.
             page.locator('#rapid-configure').click();page.locator('[data-minutes="2"]').click();page.locator('#rapid-start').click()

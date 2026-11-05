@@ -247,7 +247,13 @@ def main():
                 new_panel = page.locator('#exercice-1 .coaching-panel')
                 expect(new_panel).to_be_visible()
                 updated_method = new_panel.locator('.coaching-hint').nth(2).text_content()
-                assert updated_method != original_method, slug + ' : dernier indice non actualisé'
+                # L'indice reprend les données en gras de la variante affichée. Deux variantes
+                # peuvent partager ces données (seul un autre paramètre change) : on vérifie
+                # donc que l'indice cite celles de la nouvelle variante.
+                facts = [' '.join(s.split()) for s in page.locator('#exercice-1 .exercise-statement strong, #exercice-1 .exercise-statement code').all_text_contents() if s.strip()]
+                compact = ' '.join(updated_method.split())
+                expected = ' ; '.join(facts[:5])[:230].strip()
+                assert facts and expected in compact, (slug, 'dernier indice non actualisé', expected, compact[:200])
                 expect(new_panel.locator('.coaching-bridge')).to_be_hidden()
                 expect(page.locator('#exercice-1 .coaching-hint')).to_have_count(3)
             print('COACHING BROWSER OK : 15 chapitres, aides et tremplins vérifiés.')
@@ -633,6 +639,20 @@ def main():
             expect(page.locator('.math-lab[data-lab="log"] .math-lab__readout')).to_contain_text('log(0,1)')
             assert not console_errors, console_errors
             print('LEÇONS BROWSER OK : corrections affichées puis masquées d’un clic, sommaire mobile replié, prérequis, courbe de log.')
+
+            # Décomptes par nature et liens du seul niveau choisi (révision guidée, diagnostic).
+            page.goto(base + 'lecons.html', wait_until='networkidle')
+            expect(page.locator('#result-count')).to_have_text('11 chapitres · 4 repères · 1 atelier')
+            page.goto(base + 'terminale/lecons.html', wait_until='networkidle')
+            expect(page.locator('#result-count')).to_have_text('8 chapitres · 1 repère')
+            for target in ['revisions.html', 'diagnostic.html']:
+                page.goto(base + target + '?niveau=premiere', wait_until='networkidle')
+                expect(page.locator('[data-level-link="premiere"]')).to_be_visible()
+                expect(page.locator('[data-level-link="terminale"]')).to_be_hidden()
+                page.goto(base + target + '?niveau=terminale', wait_until='networkidle')
+                expect(page.locator('[data-level-link="premiere"]')).to_be_hidden()
+                expect(page.locator('[data-level-link="terminale"]')).to_be_visible()
+            print('ERGONOMIE BROWSER OK : décomptes chapitres / repères / atelier, liens du niveau choisi.')
 
             browser.close()
             print(f'BROWSER OK: {checks} page/width combinations (320, 390, 768, 1440 px); search, filters, TOCs, corrections, print events, navigation, simulation and no-JavaScript fallback.')

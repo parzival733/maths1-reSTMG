@@ -99,5 +99,8 @@
   $('practice-equivalent').addEventListener('click',()=>{const old=questions[current];let q;for(let n=0;n<40;n++){q=B.generate(old.id,seed());if(q.prompt!==old.prompt)break;}questions[current]=q;states[current]=fresh();render();});
   $('practice-again').addEventListener('click',()=>{$('practice-setup').hidden=false;$('practice-result').hidden=true;$('practice-start').focus();});
   $('practice-stop').addEventListener('click',()=>{if(window.confirm('Terminer maintenant et consulter le bilan des r\u00e9ponses saisies ?'))finish();});
+  // Seul le lien vers les leçons du niveau choisi reste affiché (les deux sans JavaScript).
+  const levelLinks=()=>document.querySelectorAll('[data-level-link]').forEach(a=>{a.hidden=a.dataset.levelLink!==level.value;});
+  level.addEventListener('change',levelLinks);levelLinks();
   level.addEventListener('change',options);options();app.hidden=false;$('practice-loading').hidden=true;
 })();

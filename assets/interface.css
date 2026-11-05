@@ -239,3 +239,10 @@ body.reading-large .lesson-content { font-size:20px; }
   .site-header .main-nav { grid-template-columns:.95fr .9fr 1.15fr .85fr 1.5fr; }
   .site-header .main-nav a,.rapid-page .main-nav a,.has-rapid-link .main-nav a { white-space:normal; text-align:center; line-height:1.35; padding-inline:3px; }
 }
+
+/* Lot 4 : confirmation avant d'imprimer le corrigé, reprise après une pause. */
+.rapid-print-confirm { margin: 12px 0; padding: 14px 16px; border: 1px solid #e3b5a0; border-left: 4px solid #b4532a; border-radius: 10px; background: #fff7f2; }
+.rapid-print-confirm p { margin: 0 0 10px; }
+.rapid-pause-screen button { margin-top: 10px; }
+.catalog-variant-note { max-width: 70ch; }
+.exam-autopause { display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; font-size: 15px; }

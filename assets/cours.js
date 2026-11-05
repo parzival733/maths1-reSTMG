@@ -105,7 +105,16 @@ if (tools) {
     document.querySelectorAll('.catalog-group').forEach(group => {
       group.hidden = !Array.from(group.querySelectorAll('.lesson-card')).some(card => !card.hidden);
     });
-    document.querySelector('#result-count').textContent = `${visible} leçon${visible > 1 ? 's' : ''} affichée${visible > 1 ? 's' : ''} sur ${cards.length}`;
+    // Décompte par nature : chapitres, repères et atelier, comme dans le catalogue.
+    const kinds = {chapitre: ['chapitre', 'chapitres'], reperes: ['repère', 'repères'], atelier: ['atelier', 'ateliers']};
+    const tally = list => {
+      const counts = new Map();
+      list.forEach(card => { const kind = kinds[card.dataset.category] || kinds.chapitre; counts.set(kind, (counts.get(kind) || 0) + 1); });
+      return [...counts].map(([[one, many], n]) => n + ' ' + (n > 1 ? many : one)).join(' · ');
+    };
+    const shown = cards.filter(card => !card.hidden);
+    document.querySelector('#result-count').textContent = visible === cards.length ? tally(cards)
+      : `${visible} leçon${visible > 1 ? 's' : ''} affichée${visible > 1 ? 's' : ''} sur ${cards.length}${visible ? ' : ' + tally(shown) : ''}`;
     document.querySelector('#no-results').hidden = visible !== 0;
   };
   search.addEventListener('input', filter);

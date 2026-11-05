@@ -12,7 +12,7 @@
   const timer = new window.QuickCountdown();
   let questions = [], states = [], current = 0, options = {}, series = 0;
   let phase = 'ready', timed = false, clock = null, warned = false, reason = '';
-  let configWasRunning = false, printing = false, printWasRunning = false;
+  let configWasRunning = false, printing = false, printWasRunning = false, answersUnlocked = false;
   const urlSeed = new URLSearchParams(location.search).get('seed');
   const initialSeed = urlSeed && /^\d{1,10}$/.test(urlSeed) ? Number(urlSeed) >>> 0 :
     (window.crypto && window.crypto.getRandomValues ? window.crypto.getRandomValues(new Uint32Array(1))[0] : Date.now() >>> 0);
@@ -34,12 +34,13 @@
     }
   }
   function startTicking() { stopTicking(); if (timed && phase === 'running') clock = setInterval(tick, 250); tick(); }
-  function pause() {
+  function pause(auto = false) {
     if (phase !== 'running' || !timed) return;
     tick(); if (phase !== 'running') return;
     save(); timer.pause(); stopTicking(); setPhase('paused');
     $('rapid-pause').textContent = 'Reprendre'; $('rapid-pause').setAttribute('aria-label','Reprendre le compte à rebours');
-    $('rapid-timer-message').textContent = 'Le compte à rebours est en pause.';
+    $('rapid-pause-title').textContent = auto === true ? 'Pause automatique : tu as quitté l’onglet' : 'Une pause.';
+    $('rapid-timer-message').textContent = auto === true ? 'Pause automatique : tu as quitté l’onglet. Clique sur Reprendre pour continuer.' : 'Le compte à rebours est en pause.';
     render(); paintTime();
   }
   function resume() {
@@ -115,6 +116,7 @@
       $('rapid-error').hidden = true; $('rapid-setup').hidden = true; $('rapid-work').hidden = false;
       $('rapid-session').hidden = false; $('rapid-result').hidden = true;
       $('rapid-worksheet').hidden = true; $('rapid-preview').setAttribute('aria-expanded','false'); $('rapid-print-answers').checked = false;
+      answersUnlocked = false; $('rapid-print-confirm').hidden = true; $('rapid-print-status').textContent = '';
       $('rapid-paper-tools').open = false;
       $('rapid-session-label').textContent = `${names[options.level]} · ${questions.length} questions`;
       $('rapid-session-description').textContent = timed ? `Durée choisie : ${timeText(duration)} pour toute la série.` : 'Sans limite de temps.';
@@ -207,11 +209,14 @@
     printing = true; tick(); save(); printWasRunning = phase === 'running' && timed;
     if (printWasRunning) pause();
     buildSheet(); document.body.classList.add('rapid-printing');
-    const answers = $('rapid-print-answers').checked; document.body.classList.toggle('rapid-print-answers', answers);
-    if (answers) {
-      states.forEach((s,i) => { if (phase !== 'finished' && s.first === null) { s.first = false; remember(questions[i],s,'revealed'); } s.revealed = true; s.message = s.first ? 'Corrigé imprimé après une réponse juste.' : 'Corrigé imprimé : aucun point ajouté.'; });
-      render();
-    }
+    // L'impression ne modifie jamais le score : le corrigé n'est inclus qu'après la fin de
+    // la série, ou après la confirmation dans la page qui a déjà figé les points.
+    const answers = $('rapid-print-answers').checked && (phase === 'finished' || answersUnlocked);
+    document.body.classList.toggle('rapid-print-answers', answers);
+  }
+  function freezePoints() {
+    states.forEach((s,i) => { if (s.first === null) { s.first = false; remember(questions[i],s,'revealed'); } s.revealed = true; s.message = s.first ? 'Corrigé débloqué après une réponse juste.' : 'Corrigé débloqué : aucun point ajouté pour cette question.'; });
+    render();
   }
   $('rapid-settings').addEventListener('submit', event => { event.preventDefault(); prepare(); });
   document.querySelectorAll('input[name="level"]').forEach(input => input.addEventListener('change', refreshTopics));
@@ -233,6 +238,25 @@
   document.addEventListener('visibilitychange', tick); window.addEventListener('pageshow', tick);
   $('rapid-preview').addEventListener('click', () => { save(); buildSheet(); const sheet = $('rapid-worksheet'); sheet.hidden = !sheet.hidden; $('rapid-preview').setAttribute('aria-expanded',String(!sheet.hidden)); if (!sheet.hidden) sheet.scrollIntoView({block:'start',behavior:'auto'}); });
   $('rapid-print').addEventListener('click', () => { beforePrint(); window.print(); });
+  // Corrigé imprimable : libre après « Terminer la série » ; avant, une confirmation dans
+  // la page explique la conséquence et fige les points au moment du clic.
+  $('rapid-print-answers').addEventListener('change', event => {
+    const box = event.target;
+    if (!box.checked) { $('rapid-print-confirm').hidden = true; return; }
+    if (!questions.length || phase === 'finished' || answersUnlocked) return;
+    box.checked = false; $('rapid-print-confirm').hidden = false; $('rapid-print-confirm-yes').focus();
+  });
+  $('rapid-print-confirm-yes').addEventListener('click', () => {
+    tick(); save(); freezePoints(); answersUnlocked = true;
+    $('rapid-print-answers').checked = true; $('rapid-print-confirm').hidden = true;
+    $('rapid-print-status').textContent = 'Points figés : le corrigé sera imprimé sur des pages séparées.';
+    $('rapid-print-answers').focus();
+  });
+  $('rapid-print-confirm-no').addEventListener('click', () => {
+    $('rapid-print-confirm').hidden = true; $('rapid-print-status').textContent = 'Corrigé non inclus : ton score ne change pas.'; $('rapid-print-answers').focus();
+  });
+  $('rapid-pause-resume').addEventListener('click', () => { if (phase === 'paused') resume(); });
+  window.QuickCountdown.autoPause({isRunning: () => phase === 'running' && timed, pause: () => pause(true)});
   window.addEventListener('beforeprint', beforePrint);
   window.addEventListener('afterprint', () => { document.body.classList.remove('rapid-printing','rapid-print-answers'); printing = false; if (printWasRunning && phase === 'paused') resume(); printWasRunning = false; });
   refreshTopics(); durationControls(); setPhase('ready'); app.hidden = false; loading.hidden = true;

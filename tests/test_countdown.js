@@ -13,4 +13,17 @@ c.pause(); c.resume(); c.resume(); now += 5000; assert.equal(c.left(), 15000);
 now += 180000; assert.equal(c.left(), 0); assert.equal(c.elapsed(), 30000);
 c.stop(); c.resume(); assert.equal(c.left(), 0);
 c.start(120000); now += 9000; c.stop(); now += 9000; assert.equal(c.left(), 111000);
+{
+  const listeners = [];
+  const doc = {hidden: false, addEventListener: (type, fn) => listeners.push([type, fn]), removeEventListener: (type, fn) => { const i = listeners.findIndex(l => l[1] === fn); if (i >= 0) listeners.splice(i, 1); }};
+  let running = true, enabled = true, paused = 0;
+  const stop = Countdown.autoPause({isRunning: () => running, enabled: () => enabled, pause: () => { paused++; running = false; }}, doc);
+  const fire = () => listeners.forEach(([type, fn]) => type === 'visibilitychange' && fn());
+  fire(); assert.equal(paused, 0, 'onglet visible : pas de pause');
+  doc.hidden = true; fire(); assert.equal(paused, 1, 'onglet masqué : pause');
+  fire(); assert.equal(paused, 1, 'déjà en pause');
+  running = true; enabled = false; fire(); assert.equal(paused, 1, 'simulation stricte : pas de pause');
+  stop(); assert.equal(listeners.length, 0);
+  assert.equal(typeof Countdown.autoPause({isRunning: () => true, pause: () => {}}, null), 'function');
+}
 console.log('CHRONO OK: bornes, pause, reprise, retard des intervalles, expiration et remise a zero.');

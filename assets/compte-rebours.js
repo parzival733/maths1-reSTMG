@@ -12,6 +12,14 @@
     resume() { if (this.deadline === null && this.remaining > 0) this.deadline = this.now() + this.remaining; }
     elapsed() { return this.duration - this.left(); }
     stop() { this.pause(); }
+    // Pause automatique quand l'onglet est masqué (visibilitychange), si le chrono
+    // tourne et si la page l'autorise. Renvoie une fonction qui retire l'écouteur.
+    static autoPause({isRunning, pause, enabled = () => true}, doc = typeof document !== 'undefined' ? document : null) {
+      if (!doc) return () => {};
+      const listener = () => { if (doc.hidden && enabled() && isRunning()) pause(); };
+      doc.addEventListener('visibilitychange', listener);
+      return () => doc.removeEventListener('visibilitychange', listener);
+    }
   }
   if (typeof module !== 'undefined' && module.exports) module.exports = Countdown;
   else root.QuickCountdown = Countdown;

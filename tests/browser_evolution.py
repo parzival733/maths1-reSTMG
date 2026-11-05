@@ -107,7 +107,7 @@ def main():
   q=page.evaluate("()=>{const d=document.getElementById('rapid-app').dataset;return QuickMath.session({level:d.level,method:d.method,topic:d.topic,count:+d.count,seed:+d.seed})[0]}")
   page.locator('#rapid-hint-button').click();page.locator('#rapid-answer').fill(q['expected']);page.locator('#rapid-check').click()
   assert page.evaluate('MathsAcquis.store.read().events[0].outcome')=='assisted'
-  page.locator('#rapid-paper-tools > summary').click();page.locator('#rapid-print-answers').check();page.evaluate("dispatchEvent(new Event('beforeprint'))")
+  page.locator('#rapid-paper-tools > summary').click();page.locator('#rapid-print-answers').click();page.locator('#rapid-print-confirm-yes').click();page.evaluate("dispatchEvent(new Event('beforeprint'))")
   events=page.evaluate('MathsAcquis.store.read().events');assert len({e['variant'] for e in events})>1;assert all(e['outcome'] in ['assisted','revealed'] for e in events)
   page.evaluate("dispatchEvent(new Event('afterprint'))");page.context.close()
   # Optional exam timer, print without correction by default, deliberate inclusion and restoration.
