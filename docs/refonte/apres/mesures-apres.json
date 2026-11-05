@@ -1,0 +1,92 @@
+{
+ "min_text": {
+  "accueil": [
+   6,
+   "div.art-heading « CHAQUE NOTION A SON DÉCLIC »"
+  ],
+  "lecons": [
+   13,
+   "p.eyebrow « PREMIÈRE STMG · COMPRENDRE & R »"
+  ],
+  "exercices": [
+   13,
+   "p.eyebrow « PREMIÈRE STMG · S’ENTRAÎNER ·  »"
+  ],
+  "lecon": [
+   13,
+   "p.eyebrow « 02 / ANALYSE »"
+  ],
+  "lecon-terminale": [
+   9.1,
+   "sup. « x »"
+  ],
+  "serie": [
+   13,
+   "p.eyebrow « 02 / PARCOURS INTERACTIF »"
+  ],
+  "serie-terminale": [
+   14,
+   "a. « Exercices de Terminale »"
+  ],
+  "diagnostic": [
+   13,
+   "p.eyebrow « REPÈRES FACULTATIFS »"
+  ],
+  "revision": [
+   13,
+   "p.eyebrow « RETROUVER LA MÉTHODE »"
+  ],
+  "calcul-rapide": [
+   13,
+   "p.eyebrow « ANNEXE / LES BONS RÉFLEXES »"
+  ],
+  "sujets": [
+   13,
+   "p.eyebrow « PREMIÈRE & TERMINALE STMG »"
+  ],
+  "sujet-blanc": [
+   13,
+   "p.eyebrow « ENTRAÎNEMENT ORIGINAL · NON OF »"
+  ],
+  "problemes": [
+   13,
+   "p.eyebrow « RAISONNER · MODÉLISER · COMMUN »"
+  ]
+ },
+ "verifier_px": {
+  "exercices/second-degre.html": 1346,
+  "exercices/probabilites-conditionnelles.html": 1341,
+  "terminale/exercices/t-binomiale.html": 1447
+ },
+ "premiere_partie_px": {
+  "cours/second-degre.html": {
+   "debut_contenu": 510,
+   "objectifs": 956,
+   "partie_1": 1299
+  },
+  "cours/probabilites-conditionnelles.html": {
+   "debut_contenu": 546,
+   "objectifs": 1021,
+   "partie_1": 1366
+  },
+  "terminale/cours/t-logarithme.html": {
+   "debut_contenu": 502,
+   "objectifs": 977,
+   "partie_1": 1378
+  }
+ },
+ "perf_375": {
+  "index.html": {
+   "lcp": 72,
+   "cls": 0
+  },
+  "cours/second-degre.html": {
+   "lcp": 96,
+   "cls": 0
+  },
+  "exercices/second-degre.html": {
+   "lcp": 64,
+   "cls": 0
+  }
+ }
+}
