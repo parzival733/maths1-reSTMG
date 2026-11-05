@@ -669,3 +669,24 @@
 @media print { .coaching-panel { display: none !important; } }
 
 .check p strong:first-child { color: var(--purple-dark); }
+
+/* Lot 5 bis : série sur une colonne. Les aides suivent les réponses ; les champs et la
+   progression sont plus compacts pour garder l'énoncé, les réponses et Vérifier proches. */
+@media (max-width: 900px) {
+  .exercise-workspace > .coaching-panel { margin: 0 24px 24px; }
+}
+@media (max-width: 680px) {
+  .exercise-workspace > .coaching-panel { margin: 0 16px 20px; }
+  .answer-row { padding: 9px 11px; margin-bottom: 10px; gap: 5px; }
+  .exercise-stepper { gap: 5px; }
+  .exercise-stepper button { flex: 1 0 32px; min-width: 32px; }
+  .exercise-progress { padding: 12px 14px; }
+}
+@media (max-width: 680px) {
+  /* Libellé et champ sur une ligne ; le message de vérification passe dessous. */
+  .answer-row { grid-template-columns: minmax(6.5em, auto) minmax(0, 1fr); align-items: center; column-gap: 10px; row-gap: 3px; }
+  .answer-row > .answer-status { grid-column: 1 / -1; min-height: 0; }
+  .answer-row > span:first-child { font-size: 13px; }
+  .correction-legend { margin-top: 9px; gap: 4px 12px; font-size: 11.5px; }
+  .interactive-exercise-page .page-intro p, .exercise-page-intro p { font-size: 16px; }
+}

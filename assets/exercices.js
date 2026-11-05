@@ -286,7 +286,15 @@
     // Il reste dans le HTML si JavaScript est désactivé.
     const oldHint = statement.querySelector('details.hint');
     if (oldHint) oldHint.hidden = true;
-    statement.append(panel);
+    // Sur une seule colonne (téléphone, tablette), les aides passent sous les réponses
+    // et le bouton Vérifier : énoncé, réponses puis aides, sans défilement inutile.
+    const singleColumn = window.matchMedia('(max-width: 900px)');
+    const place = () => {
+      if (singleColumn.matches) form.after(panel);
+      else statement.append(panel);
+    };
+    place();
+    singleColumn.addEventListener('change', place);
     let failures = 0;
     form.addEventListener('submit', () => {
       if (form.dataset.revealed === 'true') return;

@@ -116,3 +116,9 @@ p code, li code { background: #f2f0f6; color: #46348b; border-radius: 4px; paddi
 
 /* Les textes masqués visuellement (sr-only) restent contenus dans les tableaux défilants. */
 .table-wrap, .table-scroll { position: relative; }
+
+/* Lot 5 bis : longueur de ligne confortable dans les leçons (environ 70 caractères).
+   Les tableaux et graphiques gardent toute la largeur disponible. */
+@media (min-width: 741px) {
+  body .lesson-content p, body .lesson-content li, body.lesson-immersive .lesson-content p, body.lesson-immersive .lesson-content li { max-width: 54ch; }
+}

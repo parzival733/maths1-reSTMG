@@ -17,10 +17,19 @@ class QuietHandler(SimpleHTTPRequestHandler):
 
 
 def no_overflow(page):
-    dimensions = page.evaluate('''() => ({
-        client: document.documentElement.clientWidth,
-        scroll: document.documentElement.scrollWidth
-    })''')
+    # En cas d'échec, le message nomme les éléments qui dépassent hors de toute zone défilante.
+    dimensions = page.evaluate('''() => {
+        const client = document.documentElement.clientWidth, culprits = [];
+        for (const el of document.querySelectorAll('body *')) {
+            const box = el.getBoundingClientRect();
+            if (box.right <= client + 1) continue;
+            let clipped = false;
+            for (let a = el.parentElement; a && a !== document.body; a = a.parentElement)
+                if (getComputedStyle(a).overflowX !== 'visible') { clipped = true; break; }
+            if (!clipped) culprits.push(el.tagName + '.' + el.className + ' → ' + Math.round(box.right) + ' px');
+        }
+        return {client, scroll: document.documentElement.scrollWidth, culprits: culprits.slice(0, 8)};
+    }''')
     assert dimensions['scroll'] <= dimensions['client'] + 1, (page.url, dimensions)
 
 
