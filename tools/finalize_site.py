@@ -34,7 +34,7 @@ def main():
     apply_lessons(ROOT)
     urls=[]
     for path in sorted(ROOT.rglob('*.html')):
-        if any(p.startswith('.') for p in path.relative_to(ROOT).parts):continue
+        if any(p.startswith('.') or p == 'docs' for p in path.relative_to(ROOT).parts):continue
         if path.name=='404.html':continue
         text=path.read_text();rel=path.relative_to(ROOT).as_posix();base='../'*(len(path.relative_to(ROOT).parts)-1)
         target=ALIASES.get(rel,rel)

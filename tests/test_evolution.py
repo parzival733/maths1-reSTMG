@@ -33,7 +33,7 @@ def main():
   assert sum(p['math_points']+p['language_points'] for p in subject['problems'])==14
   html=(ROOT/'entrainement'/f"{subject['id']}.html").read_text()
   assert 'exam-include-answers' in html and 'exam-correction' in html
- pages={p:Page(p.read_text()) for p in ROOT.rglob('*.html') if not any(x.startswith('.') for x in p.relative_to(ROOT).parts)}
+ pages={p:Page(p.read_text()) for p in ROOT.rglob('*.html') if not any(x.startswith('.') or x == 'docs' for x in p.relative_to(ROOT).parts)}
  indexed=set()
  for path,page in pages.items():
   html=path.read_text();name=path.relative_to(ROOT).as_posix()

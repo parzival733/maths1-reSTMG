@@ -38,7 +38,7 @@ def main():
         text=(ROOT/name).read_text()
         value=re.search(r'<main\b[\s\S]*?</main>',text).group() if expected['part']=='main' else text
         assert hashlib.sha256(value.encode()).hexdigest()==expected['sha256'],name
-    paths=[p for p in ROOT.rglob('*.html') if not any(x.startswith('.') for x in p.relative_to(ROOT).parts)]
+    paths=[p for p in ROOT.rglob('*.html') if not any(x.startswith('.') or x == 'docs' for x in p.relative_to(ROOT).parts)]
     pages={p.resolve():Page(p.read_text()) for p in paths}
     for p in paths:
         text=p.read_text();page=pages[p.resolve()]

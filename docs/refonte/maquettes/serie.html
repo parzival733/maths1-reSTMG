@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette · Série d’exercices</title>
+<link rel="stylesheet" href="../../../assets/tokens.css">
+<link rel="stylesheet" href="composants.css">
+</head>
+<body id="filet">
+<div class="mock-note"><div class="wrap">Maquette statique : exercice 1 de la série « Second degré », après une première vérification. Variante de l’énoncé : <a href="#filet">filet</a> · <a href="#quadrillage">quadrillage 5 mm</a>.</div></div>
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true">m</span><span>maths<span class="brand-dot">.</span></span></a>
+    <nav class="main-nav" aria-label="Navigation principale">
+      <a href="#">Accueil</a><a href="#">Leçons</a><a href="#" aria-current="page">Exercices</a><a href="#">Sujets</a><a href="#">Calcul rapide</a>
+    </nav>
+    <details class="menu">
+      <summary aria-label="Menu de navigation">Menu</summary>
+      <div class="menu-panel"><ul>
+        <li><a href="#">Accueil</a></li><li><a href="#">Leçons</a></li><li><a href="#" aria-current="page">Exercices</a></li><li><a href="#">Sujets</a></li><li><a href="#">Calcul rapide</a></li>
+      </ul></div>
+    </details>
+  </div>
+</header>
+
+<main class="wrap" id="quadrillage">
+  <p class="breadcrumb"><a href="#">Tous les exercices</a> / 02</p>
+  <p class="eyebrow is-practice">02 · Parcours interactif</p>
+  <h1>Polynômes du second degré</h1>
+  <p class="lead">8 exercices progressifs. Réponds, vérifie, consulte l’indice ou la correction.</p>
+
+  <section class="series-progress" aria-label="Progression de la série">
+    <div class="progress-top"><strong>1 / 8 exercices validés</strong><span class="score">Score 1/8</span></div>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="8" aria-valuenow="1" aria-label="Exercices validés"><span style="width:12.5%"></span></div>
+    <ol class="stepper">
+      <li><button class="step is-active" aria-current="step" aria-label="Exercice 1, en cours">1</button></li>
+      <li><button class="step is-correct" aria-label="Exercice 2, juste"><svg class="icon mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>2</button></li>
+      <li><button class="step is-wrong" aria-label="Exercice 3, à revoir"><svg class="icon mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>3</button></li>
+      <li><button class="step is-revealed" aria-label="Exercice 4, correction consultée"><svg class="icon mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg>4</button></li>
+      <li><button class="step" aria-label="Exercice 5, à faire">5</button></li>
+      <li><button class="step" aria-label="Exercice 6, à faire">6</button></li>
+      <li><button class="step" aria-label="Exercice 7, à faire">7</button></li>
+      <li><button class="step" aria-label="Exercice 8, à faire">8</button></li>
+    </ol>
+    <ul class="step-legend" aria-hidden="true"><li><svg class="icon mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg> juste</li><li><svg class="icon mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg> à revoir</li><li><svg class="icon mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg> correction vue</li></ul>
+  </section>
+
+  <article class="exercise" aria-labelledby="ex1-title">
+    <div class="exercise-head"><p class="eyebrow"><span class="exercise-number">01</span>Bases</p><h2 id="ex1-title">Identifier une parabole</h2></div>
+    <div class="statement">
+      <p>On considère <span class="math">f(x) = 2x² − 3x + 1</span>.</p>
+      <ol><li>Donner les coefficients a, b et c.</li><li>Déterminer le sens d’ouverture de la parabole.</li></ol>
+    </div>
+    <form onsubmit="return false">
+      <h3 class="answers-title">Tes réponses</h3>
+      <ul class="answers">
+        <li class="answer is-correct"><label for="a">Coefficient a</label><input id="a" value="2" inputmode="decimal"><span class="status"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Correct</span></li>
+        <li class="answer is-wrong"><label for="b">Coefficient b</label><input id="b" value="3" inputmode="decimal" aria-invalid="true"><span class="status"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>À revoir. Essaie encore.</span></li>
+        <li class="answer"><label for="c">Coefficient c</label><input id="c" placeholder="Ta réponse" inputmode="decimal"><span class="status"></span></li>
+        <li class="answer"><label for="o">Ouverture</label><select id="o"><option>Choisir…</option><option>Vers le haut</option><option>Vers le bas</option></select><span class="status"></span></li>
+      </ul>
+      <div class="actions"><button class="button button-primary">Vérifier</button><button class="button button-secondary" type="reset">Effacer</button></div>
+      <p class="feedback" role="status">1 réponse correcte sur 4. Tu peux corriger ton essai.</p>
+      <details class="correction"><summary>Voir la correction détaillée</summary>
+        <p><strong>Méthode :</strong> on lit les coefficients devant x², x et la constante.</p>
+        <p><strong>Calculs :</strong> <span class="math">a = 2</span>, <span class="math">b = −3</span>, <span class="math">c = 1</span>.</p>
+        <p><strong>Conclusion :</strong> a &gt; 0, donc la parabole est tournée vers le haut.</p>
+      </details>
+    </form>
+    <section class="coaching" aria-labelledby="coach">
+      <h3 id="coach">Besoin d’un coup de pouce ?</h3>
+      <p>Choisis une aide à ton rythme, sans afficher la correction.</p>
+      <details class="hint"><summary><span class="num">Indice 1</span> · Comprendre</summary><p>Une fonction du second degré s’écrit ax² + bx + c avec a ≠ 0.</p></details>
+      <details class="hint"><summary><span class="num">Indice 2</span> · Commencer</summary><p>Repère le nombre devant x², puis devant x.</p></details>
+      <details class="hint"><summary><span class="num">Indice 3</span> · Méthode</summary><p>Le signe fait partie du coefficient.</p></details>
+    </section>
+  </article>
+  <nav class="series-nav" aria-label="Exercices"><a class="button button-secondary" href="#">← Exercice précédent</a><a class="button button-primary" href="#">Exercice suivant →</a></nav>
+</main>
+<style>main:target .statement { border-left: 0; padding: var(--space-4); border-radius: var(--radius-md); background-color: var(--color-learn-faint); background-image: linear-gradient(rgba(96,75,209,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(96,75,209,.07) 1px, transparent 1px); background-size: 5mm 5mm; }</style>
+</body>
+</html>

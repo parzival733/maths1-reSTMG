@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette · Leçon</title>
+<link rel="stylesheet" href="../../../assets/tokens.css">
+<link rel="stylesheet" href="composants.css">
+</head>
+<body>
+<div class="mock-note"><div class="wrap">Maquette statique : début de la leçon « Polynômes du second degré ». Les six encadrés typés montrent le style ; leurs exemples sont des textes de démonstration, le contenu réel des leçons ne change pas.</div></div>
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true">m</span><span>maths<span class="brand-dot">.</span></span></a>
+    <nav class="main-nav" aria-label="Navigation principale">
+      <a href="#">Accueil</a><a href="#" aria-current="page">Leçons</a><a href="#">Exercices</a><a href="#">Sujets</a><a href="#">Calcul rapide</a>
+    </nav>
+    <details class="menu"><summary aria-label="Menu de navigation">Menu</summary>
+      <div class="menu-panel"><ul><li><a href="#">Accueil</a></li><li><a href="#" aria-current="page">Leçons</a></li><li><a href="#">Exercices</a></li><li><a href="#">Sujets</a></li><li><a href="#">Calcul rapide</a></li></ul></div>
+    </details>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="breadcrumb"><a href="#">Toutes les leçons</a> / Chapitre 02</p>
+  <p class="eyebrow is-learn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16"/><path d="M6 17c3-9 7-11 12-12"/></svg>02 · Analyse</p>
+  <h1>Polynômes du second degré</h1>
+  <p class="lead">Reconnaître une parabole, utiliser une forme factorisée et déterminer un sommet sans réciter une formule.</p>
+
+  <div class="lesson-tools">
+    <details class="tool"><summary>Options de lecture</summary>
+      <div class="tool-panel">
+        <ol class="steps" aria-label="Parcours de la leçon"><li><b>1</b>Je comprends</li><li><b>2</b>Je vérifie</li><li><b>3</b>Je m’entraîne</li></ol>
+        <div class="row"><button class="chip" aria-pressed="false">Agrandir le texte</button><button class="chip" aria-pressed="false">Lecture concentrée</button></div>
+        <a href="#">Pourquoi ces méthodes ?</a>
+      </div>
+    </details>
+    <details class="tool toc" id="sommaire"><summary>Sommaire · 8 parties</summary>
+      <nav class="tool-panel" aria-label="Sommaire de la leçon"><ol>
+        <li><a href="#p1">Reconnaître un polynôme de degré 2</a></li><li><a href="#">Racines et factorisation</a></li><li><a href="#">Étudier le signe d’une forme factorisée</a></li><li><a href="#">Trouver l’axe et le sommet</a></li><li><a href="#">Modéliser un bénéfice</a></li><li><a href="#">Vérifier sa compréhension</a></li>
+      </ol></nav>
+    </details>
+  </div>
+
+  <article class="lesson">
+    <section class="prereq" aria-labelledby="pre"><h2 id="pre">Prérequis</h2>
+      <ul><li><a href="#">Fonctions et droites</a> : calculer une image et lire un graphique.</li><li><a href="#">Calcul et proportions</a> : développer et utiliser la règle du produit nul.</li></ul>
+    </section>
+    <h2>Ce que tu vas savoir faire</h2>
+    <p>Associer une expression à sa courbe, vérifier une racine, factoriser un cas simple, dresser un tableau de signes et trouver un extremum par symétrie.</p>
+
+    <h2 id="p1">1. Reconnaître un polynôme de degré 2</h2>
+    <div class="box definition"><p class="box-title"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M9 10h7M9 14h7"/></svg>Définition</p>
+      <p class="formula"><span class="math">f(x) = ax² + bx + c</span>, avec <span class="math">a ≠ 0</span>.</p></div>
+    <p>Si <span class="math">a &gt; 0</span>, la parabole est ouverte vers le haut et possède un minimum. Si <span class="math">a &lt; 0</span>, elle est ouverte vers le bas et possède un maximum.</p>
+    <div class="box method"><p class="box-title"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9"/></svg>Méthode</p>
+      <ol><li>Repérer a, le nombre devant x².</li><li>Lire son signe.</li><li>Conclure sur le sens d’ouverture.</li></ol></div>
+    <div class="box example"><p class="box-title"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>Exemple</p>
+      <p><span class="math">g(x) = −x² + 4x</span> : a = −1 &lt; 0, la parabole est tournée vers le bas.</p></div>
+    <div class="box remember"><p class="box-title"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v16l-5-3-5 3z"/></svg>À retenir</p>
+      <p>Le signe de a donne le sens d’ouverture, avant tout calcul.</p></div>
+    <div class="box warning"><p class="box-title"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>Attention</p>
+      <p>Dans <span class="math">3 − 2x²</span>, a vaut −2, pas 3 : on lit le coefficient de x², où qu’il soit écrit.</p></div>
+    <table class="sign-table"><caption>Variations de f(x) = x² − 4x + 3 sur ℝ</caption>
+      <thead><tr><th scope="col">x</th><th scope="col">−∞</th><th scope="col">2</th><th scope="col">+∞</th></tr></thead>
+      <tbody><tr><th scope="row">f</th><td class="down">↘</td><td>−1</td><td class="up">↗</td></tr></tbody></table>
+    <div class="box pause"><p class="box-title"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>Pause mémoire</p>
+      <p>Sans regarder plus haut : que vaut a dans <span class="math">5x − x² + 2</span> ?</p></div>
+  </article>
+</main>
+<a class="fab" href="#sommaire"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>Sommaire</a>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette · En-tête mobile</title>
+<link rel="stylesheet" href="../../../assets/tokens.css">
+<link rel="stylesheet" href="composants.css">
+<style>.phone .menu{display:block}.phone .main-nav{display:none}.phone .wrap{width:calc(100% - 32px)}
+.desk .menu{display:none}.desk .main-nav{display:flex;gap:4px}.desk .main-nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-radius:999px;color:var(--color-text);text-decoration:none;font-weight:600;font-size:1rem}
+.desk .main-nav a[aria-current="page"]{background:var(--color-learn-soft);color:var(--color-learn-strong);box-shadow:inset 0 -2px 0 var(--color-learn)}
+.desk{border:1px solid var(--color-line-strong);border-radius:12px;overflow:hidden;background:var(--color-bg)}
+.page-start{padding:16px}.page-start h1{font-size:29px}</style>
+</head>
+<body>
+<div class="mock-note"><div class="wrap">Maquette statique de l’en-tête : téléphone fermé, téléphone avec le menu ouvert, puis ordinateur. Sur le site, le menu reste utilisable sans JavaScript (élément <code>details</code>) ; avec JavaScript, il gagne Échap, le piège du focus et la fermeture au clic extérieur.</div></div>
+<main class="wrap">
+  <h1 style="margin:24px 0 8px">En-tête et navigation</h1>
+  <p class="lead">Une seule ligne de 56 px sur téléphone, contre 172 px aujourd’hui. Les cinq destinations restent les mêmes, dans le même ordre.</p>
+  <div class="demo-grid">
+    <div><p class="demo-label">Téléphone, menu fermé</p>
+      <div class="phone"><header class="site-header"><div class="wrap header-row"><a class="brand" href="#"><span class="brand-mark" aria-hidden="true">m</span><span>maths<span class="brand-dot">.</span></span></a>
+        <details class="menu"><summary aria-label="Menu de navigation">Menu</summary><div class="menu-panel"><ul><li><a href="#">Accueil</a></li><li><a href="#" aria-current="page">Leçons</a></li><li><a href="#">Exercices</a></li><li><a href="#">Sujets</a></li><li><a href="#">Calcul rapide</a></li></ul></div></details></div></header>
+        <div class="page-start"><p class="breadcrumb">Toutes les leçons / Chapitre 02</p><p class="eyebrow is-learn">02 · Analyse</p><h1>Polynômes du second degré</h1><p class="lead">Reconnaître une parabole, utiliser une forme factorisée et déterminer un sommet sans réciter une formule.</p></div></div></div>
+    <div><p class="demo-label">Téléphone, menu ouvert</p>
+      <div class="phone"><header class="site-header"><div class="wrap header-row"><a class="brand" href="#"><span class="brand-mark" aria-hidden="true">m</span><span>maths<span class="brand-dot">.</span></span></a>
+        <details class="menu" open><summary aria-label="Menu de navigation">Fermer</summary><div class="menu-panel"><ul><li><a href="#">Accueil</a></li><li><a href="#" aria-current="page">Leçons</a></li><li><a href="#">Exercices</a></li><li><a href="#">Sujets</a></li><li><a href="#">Calcul rapide</a></li></ul></div></details></div></header>
+        <div class="page-start"><p class="breadcrumb">Toutes les leçons / Chapitre 02</p><p class="eyebrow is-learn">02 · Analyse</p><h1>Polynômes du second degré</h1></div></div></div>
+  </div>
+  <p class="demo-label">Ordinateur (1 280 px) : barre actuelle conservée, affinée</p>
+  <div class="desk"><header class="site-header" style="position:relative"><div class="header-row" style="padding:0 24px"><a class="brand" href="#"><span class="brand-mark" aria-hidden="true">m</span><span>maths<span class="brand-dot">.</span></span></a>
+    <nav class="main-nav" aria-label="Navigation principale"><a href="#">Accueil</a><a href="#" aria-current="page">Leçons</a><a href="#">Exercices</a><a href="#">Sujets</a><a href="#">Calcul rapide</a></nav></div></header></div>
+</main>
+</body>
+</html>

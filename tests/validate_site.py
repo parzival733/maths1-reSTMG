@@ -235,7 +235,7 @@ def main():
     # Métadonnées : une description propre à chaque page indexable, reprise par og:description.
     seen = {}
     for path in sorted(ROOT.rglob('*.html')):
-        if any(part.startswith('.') for part in path.relative_to(ROOT).parts):
+        if any(part.startswith('.') or part == 'docs' for part in path.relative_to(ROOT).parts):
             continue
         source = path.read_text(encoding='utf-8')
         if 'noindex' in source:

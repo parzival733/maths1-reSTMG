@@ -61,7 +61,7 @@ def main():
         if q['id']=='p-successives':assert value<0
         assert q['level'] in ['bases','premiere','terminale']
         assert (ROOT/(q['course']+'.html')).is_file()
-    pages={p.resolve():Page(p.read_text(encoding='utf-8')) for p in ROOT.rglob('*.html') if '.git' not in p.parts}
+    pages={p.resolve():Page(p.read_text(encoding='utf-8')) for p in ROOT.rglob('*.html') if '.git' not in p.parts and 'docs' not in p.parts}
     targets=['annexes/calcul-rapide.html','index.html','lecons.html','exercices.html','terminale/lecons.html','terminale/exercices.html']
     links=0
     for name in targets:

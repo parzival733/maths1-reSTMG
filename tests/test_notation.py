@@ -31,7 +31,7 @@ def main():
     problems, pages = [], 0
     for path in sorted(ROOT.rglob('*.html')):
         rel = path.relative_to(ROOT)
-        if any(part.startswith('.') for part in rel.parts):
+        if any(part.startswith('.') or part == 'docs' for part in rel.parts):
             continue
         pages += 1
         source = path.read_text(encoding='utf-8')
