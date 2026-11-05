@@ -30,11 +30,16 @@
     }
   })();
   const completed = new Set();
-  const states = slides.map(slide => ({
-    cycle: 0,
+  // Chaque exercice garde en mémoire (variable JS, sans stockage) les signatures
+  // de ses dernières variantes, à partir de celle de l'exercice d'origine.
+  const memoryOf = index => {
+    try { return generator ? generator.memoryFor(slug, index) : {sigs: [], choices: []}; }
+    catch (error) { return {sigs: [], choices: []}; }
+  };
+  const states = slides.map((slide, index) => ({
     variantsShown: 0,
     shown: null,
-    offset: Math.floor(Math.random() * 24),
+    memory: memoryOf(index),
     pending: null,
     original: {
       title: slide.querySelector('.exercise-head h2')?.textContent || 'Exercice',
@@ -70,9 +75,10 @@
           if (match) control.value = match.value;
           control.disabled = true;
         } else {
-          control.value = control.dataset.type === 'number'
+          // Affichage à la française : virgule décimale et vrai signe moins.
+          control.value = (control.dataset.type === 'number'
             ? answer.replace(/\./g, ',')
-            : answer.replace(/;/g, ' ; ');
+            : answer.replace(/;/g, ' ; ').replace(/(\d)\.(\d)/g, '$1,$2')).replace(/-/g, '\u2212');
           control.readOnly = true;
         }
         control.classList.toggle('answer-was-correct', wasCorrect);
@@ -151,32 +157,25 @@
     }
   }
 
-  // Compare les données réellement montrées à l'élève, pas seulement
-  // le numéro du tirage : un premier tirage peut recopier l'énoncé initial.
+  // Signature pédagogique : celle des paramètres réellement montrés (la même que
+  // la signature anti-répétition du moteur) ; l'exercice d'origine a celle de
+  // ses paramètres de référence.
   function pedagogicalSignature(index, exercise) {
-    if (slug === 'fonctions' && window.FonctionsCoaching) {
-      const c = (exercise && exercise.coachingContext)
-        || window.FonctionsCoaching.originals[index];
-      return window.FonctionsCoaching.build(index, c)?.hints?.[2] || '';
-    }
-    return window.ExerciseCoaching && exercise
-      ? window.ExerciseCoaching.context(exercise) : '';
+    if (exercise && exercise.signature) return exercise.signature;
+    return states[index].memory.sigs[0] || '';
   }
 
   function queueVariant(index, form, button, force = false) {
     if (!generator || !renderer) return false;
     const state = states[index];
     if (force || !state.pending) {
-      const shown = state.shown || originalExercises[index];
-      const previous = pedagogicalSignature(index, shown);
-      let candidate, attempts = 0;
-      do {
-        state.cycle++;
-        candidate = generator.generate(slug, index,
-          state.cycle + state.offset, state.original);
-        attempts++;
-      } while (attempts < 24 && previous
-        && pedagogicalSignature(index, candidate) === previous);
+      // Graine aléatoire (crypto.getRandomValues) ; le rang de la variante
+      // n'intervient jamais dans le tirage ni dans la difficulté.
+      const shown = pedagogicalSignature(index, state.shown);
+      let candidate = null;
+      for (let attempt = 0; attempt < 5 && (!candidate || candidate.signature === shown); attempt++) {
+        candidate = generator.nextVariant(slug, index, state.memory, state.original);
+      }
       state.pending = candidate;
     }
     button.hidden = false;
@@ -201,6 +200,7 @@
     slides[index].replaceWith(slide);
     slides[index] = slide;
     state.shown = state.pending;
+    if (generator && generator.remember) generator.remember(state.memory, state.pending);
     state.variantsShown++;
     state.pending = null;
     completed.delete(index);

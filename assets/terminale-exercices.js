@@ -1,135 +1,840 @@
-/* Terminale STMG : 54 modeles, calculs et corrections issus des memes donnees.
-   Le moteur, le score et la revelation des reponses sont ceux de Premiere. */
+/* Terminale STMG : 54 modèles déclaratifs. Calculs et corrections issus des mêmes
+   paramètres ; la calculatrice est autorisée, avec des valeurs raisonnables.
+   Le moteur, le score et la révélation des réponses sont ceux de Première. */
 (() => {
   'use strict';
   const V = window.ExerciseVariants;
-  if (!V) throw new Error('Le moteur de variantes doit etre charge avant Terminale.');
-  const {N, S, FR} = V;
-  const Q = (label, value, digits = 3) => N(label, value, 1e-8, digits);
-  const choice = (label, answer, options) => S(label, answer, options);
-  const f = value => FR(value, 6);
+  if (!V) throw new Error('Le moteur de variantes doit être chargé avant Terminale.');
+  const {N, S, C, F, score, fmt, productSignTable, variationTable, signTable} = V;
+  const {num: fr, paren: pa, signed: sg, diff, term, poly, affine, frac, pct, eur, MINUS: M} = fmt;
+  // Valeur exacte, ou arrondie au millième (ou à `digits` décimales).
+  const Q = (label, value, digits = 3) => N(label, F(value, 9), 1e-8, digits);
+  const choice = (label, answer, options, settings) => S(label, answer, options, settings);
+  const r3 = (x, d = 3) => Math.round(x * 10 ** d + (x >= 0 ? 1e-9 : -1e-9)) / 10 ** d;
+  const eq = (x, d = 3) => (Math.abs(x * 10 ** d - Math.round(x * 10 ** d)) < 1e-7 ? '= ' + fr(x) : '≈ ' + fr(r3(x, d)));
+  const sub = k => String(k).replace(/\d/g, d => '₀₁₂₃₄₅₆₇₈₉'[d]);
+  const tenth = r => r.int(1, 9) / 10;
+  const code = text => '<code>' + text + '</code>';
+  // Somme écrite sans « + − » : addAll([3, −2, 5]) → « 3 − 2 + 5 ».
+  const addAll = list => list.map((x, i) => (i ? sg(x) : fr(x))).join('');
   const binom = (n, k) => {
     if (k < 0 || k > n) return 0;
     let v = 1;
-    for (let j = 1; j <= Math.min(k, n-k); j++) v = v * (n-j+1) / j;
+    for (let j = 1; j <= Math.min(k, n - k); j++) v = v * (n - j + 1) / j;
     return Math.round(v);
   };
-  const mass = (n,p,k) => binom(n,k) * p**k * (1-p)**(n-k);
-  const cumulative = (n,p,k) => {
-    let s = 0; for (let j=0; j<=k; j++) s += mass(n,p,j); return s;
-  };
+  const mass = (n, p, k) => binom(n, k) * p ** k * (1 - p) ** (n - k);
+  const cumulative = (n, p, k) => { let s = 0; for (let j = 0; j <= k; j++) s += mass(n, p, j); return s; };
+  const TASKS = ['Renseigne chaque champ. Pour un résultat non exact, arrondis au millième, sauf indication contraire. La calculatrice peut servir à contrôler les calculs.'];
   const item = (title, statement, fields, correction, hint) => ({
     title, statement, fields, correction: Array.isArray(correction) ? correction : [correction],
-    hint, level: 'Terminale STMG',
-    tasks: ['Renseigne chaque champ. Pour un r\u00e9sultat non exact, arrondis au milli\u00e8me, sauf indication contraire. La calculatrice peut servir \u00e0 contr\u00f4ler les calculs.']
+    hint, level: 'Terminale STMG', tasks: TASKS
   });
+  // Les nombres de Terminale restent raisonnables : au plus 100 000 en valeur absolue.
+  const T = model => ({limit: 100000, decimals: 6, ...model});
+  const close = (a, b, eps = 1e-7) => Math.abs(a - b) <= eps * Math.max(1, Math.abs(b));
+
   const models = {
     't-suites': [
-      c => { const a=2+c, r=2+c%4, b=a+2*r; return item('Moyenne arithm\u00e9tique',`Les nombres ${a}, m, ${b} sont trois termes cons\u00e9cutifs d'une suite arithm\u00e9tique.`,[Q('m',a+r),Q('Raison',r)],`m = (${a} + ${b})/2 = ${a+r}. La raison vaut ${a+r} - ${a} = ${r}.`,'Les deux augmentations doivent \u00eatre \u00e9gales. Calcule le milieu des deux nombres connus.'); },
-      c => { const a=2+c,q=2+c%2,b=a*q*q; return item('Moyenne g\u00e9om\u00e9trique',`Les nombres positifs ${a}, m, ${b} sont trois termes cons\u00e9cutifs d'une suite g\u00e9om\u00e9trique.`,[Q('m positif',a*q),Q('Raison positive',q)],`m = \u221a(${a} \u00d7 ${b}) = ${a*q}. Puis q = ${a*q}/${a} = ${q}.`,'Le terme du milieu v\u00e9rifie m\u00b2 = premier \u00d7 dernier.'); },
-      c => { const a=20+5*c,r=2+c%4,n=5+c%4,last=a+n*r,sum=(n+1)*(a+last)/2; return item('Somme arithm\u00e9tique et rangs',`u\u2080 = ${a} et u(n+1) = u(n) + ${r}. On additionne du rang 0 au rang ${n}, bornes comprises.`,[Q(`u(${n})`,last),Q('Nombre de termes',n+1),Q('Somme',sum)],`u(${n}) = ${a} + ${n} \u00d7 ${r} = ${last}. Il y a ${n+1} termes. S = ${n+1} \u00d7 (${a} + ${last})/2 = ${sum}.`,'Compte les termes avant de choisir la formule : de 0 \u00e0 n, il y en a n+1.'); },
-      c => { const a=2+c,q=2,n=3+c%4,last=a*q**(n-1),sum=a*(q**n-1)/(q-1); return item('Somme g\u00e9om\u00e9trique',`u\u2080 = ${a}, q = ${q}. On veut les ${n} premiers termes : de u\u2080 \u00e0 u(${n-1}).`,[Q('Dernier terme additionn\u00e9',last),Q('Somme',sum)],`Le dernier terme est ${a} \u00d7 ${q}<sup>${n-1}</sup> = ${last}. S = ${a} \u00d7 (${q}<sup>${n}</sup> - 1)/(${q}-1) = ${sum}.`,'Avec n termes, la puissance de la formule de somme est n ; celle du dernier terme est n-1.'); },
-      c => { const n=3+c%6; return item('Lire le symbole somme',`S = \u03a3 k\u00b2, pour k allant de 1 \u00e0 ${n}.`,[Q('Dernier nombre additionn\u00e9',n*n),Q('Somme S',n*(n+1)*(2*n+1)/6)],`On additionne les carr\u00e9s 1\u00b2, 2\u00b2, ..., ${n}\u00b2. Le dernier vaut ${n*n} et leur somme vaut ${n*(n+1)*(2*n+1)/6}.`,'D\u00e9veloppe la notation en une addition. Il ne s\u2019agit pas du carr\u00e9 de la somme.'); },
-      c => { const d=100+10*c,q=1.02+.01*(c%3),n=3+c%3; let v=0; for(let j=0;j<n;j++) v=q*v+d; return item('Versements en fin de p\u00e9riode',`Mod\u00e8le fictif sans frais : capital initial nul, coefficient annuel ${f(q)}, puis versement de ${d} euros en fin de chaque ann\u00e9e, pendant ${n} ans.`,[Q('Total des versements',n*d,2),Q('Capital juste apr\u00e8s le dernier versement (centime)',v,2)],`Les versements cumul\u00e9s valent ${n} \u00d7 ${d} = ${n*d}. Le capital vaut ${d}(1 + ${f(q)} + ... + ${f(q)}<sup>${n-1}</sup>) = ${FR(v,2)} euros. Le dernier versement ne rapporte pas encore d'int\u00e9r\u00eats.`,'Place les versements sur une frise : celui de la derni\u00e8re ann\u00e9e est multipli\u00e9 par 1.'); }
+      T({ // Moyenne arithmétique
+        base: {a: 3, r: 3},
+        params: r => ({a: r.int(-10, 30), r: r.nonZero(2, 15)}),
+        accept: ({a, r}) => a !== 0 && a + 2 * r !== 0 && a + r !== 0,
+        difficulty: ({a, r}) => score({steps: 2, values: [a, a + 2 * r, a + r, r]}),
+        verify: ({a, r}, v) => v[0] - a === (a + 2 * r) - v[0] && v[1] === v[0] - a,
+        build: ({a, r}) => { const b = a + 2 * r, m = a + r; return item('Moyenne arithmétique', `Les nombres ${fr(a)}, m et ${fr(b)} sont trois termes consécutifs d’une suite arithmétique.`,
+          [Q('m', m), Q('Raison', r)],
+          C('dans une suite arithmétique, le terme du milieu est la moyenne arithmétique de ses deux voisins : m = (a + b)/2.',
+            [`m = (${fr(a)} + ${pa(b)})/2 = ${fr(m)} ; la raison vaut ${diff(m, a)} = ${fr(r)}.`],
+            `m = ${fr(m)} et la raison vaut ${fr(r)} : on passe de ${fr(a)} à ${fr(m)} puis à ${fr(b)} en ajoutant ${fr(r)}.`),
+          'Les deux augmentations doivent être égales. Calcule le milieu des deux nombres connus.'); }
+      }),
+      T({ // Moyenne géométrique
+        base: {a: 3, q: 3},
+        params: r => ({a: r.int(2, 20), q: r.pick([1.5, 2, 2.5, 3, 4, 5])}),
+        accept: ({a, q}) => a * q * q <= 1000 && Number.isInteger(a * q) && Number.isInteger(a * q * q),
+        difficulty: ({q}) => score({steps: 2, values: [q]}),
+        verify: ({a, q}, v) => v[0] * v[0] === a * a * q * q && v[0] > 0 && v[1] * a === v[0],
+        build: ({a, q}) => { const b = a * q * q, m = a * q; return item('Moyenne géométrique', `Les nombres positifs ${a}, m et ${b} sont trois termes consécutifs d’une suite géométrique.`,
+          [Q('m positif', m), Q('Raison positive', q)],
+          C('dans une suite géométrique à termes positifs, le terme du milieu est la moyenne géométrique de ses voisins : m² = a × b.',
+            [`m² = ${a} × ${fr(b)} = ${fr(a * b)}, donc m = √${fr(a * b)} = ${fr(m)} ; puis q = ${fr(m)}/${a} = ${fr(q)}.`],
+            `m = ${fr(m)} et la raison vaut ${fr(q)}.`),
+          'Le terme du milieu vérifie m² = premier × dernier.'); }
+      }),
+      T({ // Somme arithmétique et rangs
+        base: {a: 25, r: 3, n: 6},
+        params: r => ({a: r.int(5, 60), r: r.nonZero(2, 9), n: r.int(5, 12)}),
+        accept: ({a, r, n}) => a + n * r > 0,
+        difficulty: ({a, r, n}) => score({steps: 3, values: [a, r, n, a + n * r, (n + 1) * (2 * a + n * r) / 2]}),
+        verify: ({a, r, n}, v) => v[0] === a + n * r && v[1] === n + 1 && v[2] === Array.from({length: n + 1}, (_, k) => a + k * r).reduce((x, y) => x + y, 0),
+        build: ({a, r, n}) => { const last = a + n * r, sum = (n + 1) * (a + last) / 2; return item('Somme arithmétique et rangs', `u₀ = ${a} et uₙ₊₁ = uₙ${sg(r)}. On additionne les termes du rang 0 au rang ${n}, bornes comprises.`,
+          [Q(`u${sub(n)}`, last), Q('Nombre de termes', n + 1), Q('Somme', sum)],
+          C('pour une suite arithmétique, uₙ = u₀ + nr, et la somme de termes consécutifs vaut nombre de termes × (premier + dernier)/2.',
+            [`u${sub(n)} = ${a} + ${n} × ${pa(r)} = ${fr(last)}. Du rang 0 au rang ${n}, il y a ${n + 1} termes.`, `S = ${n + 1} × (${a} + ${pa(last)})/2 = ${fr(sum)}.`],
+            `u${sub(n)} = ${fr(last)}, il y a ${n + 1} termes et leur somme vaut ${fr(sum)}.`),
+          'Compte les termes avant de choisir la formule : de 0 à n, il y en a n + 1.'); }
+      }),
+      T({ // Somme géométrique
+        base: {a: 3, q: 2, n: 4},
+        params: r => ({a: r.int(2, 15), q: r.pick([2, 3]), n: r.int(3, 6)}),
+        accept: ({a, q, n}) => a * q ** (n - 1) <= 2000,
+        difficulty: ({a, q, n}) => score({steps: 3, values: [a, q, n, a * q ** (n - 1), a * (q ** n - 1) / (q - 1)]}),
+        verify: ({a, q, n}, v) => v[0] === a * q ** (n - 1) && v[1] === Array.from({length: n}, (_, k) => a * q ** k).reduce((x, y) => x + y, 0),
+        build: ({a, q, n}) => { const last = a * q ** (n - 1), sum = a * (q ** n - 1) / (q - 1); return item('Somme géométrique', `u₀ = ${a} et la suite est géométrique de raison q = ${q}. On additionne les ${n} premiers termes, de u₀ à u${sub(n - 1)}.`,
+          [Q('Dernier terme additionné', last), Q('Somme', sum)],
+          C('le terme de rang k vaut u₀ × q<sup>k</sup> ; la somme des n premiers termes vaut u₀ × (q<sup>n</sup> − 1)/(q − 1).',
+            [`Dernier terme : ${a} × ${q}<sup>${n - 1}</sup> = ${fr(last)}.`, `S = ${a} × (${q}<sup>${n}</sup> − 1)/(${q} − 1) = ${a} × ${q ** n - 1}/${q - 1} = ${fr(sum)}.`],
+            `le dernier terme additionné est ${fr(last)} et la somme vaut ${fr(sum)}.`),
+          'Avec n termes, la puissance de la formule de somme est n ; celle du dernier terme est n − 1.'); }
+      }),
+      T({ // Lire le symbole somme
+        base: {kind: 0, m: 1, n: 4},
+        params: r => { const m = r.int(1, 3); return {kind: r.int(0, 2), m, n: r.int(m + 3, 12)}; },
+        difficulty: ({kind, m, n}) => { const f = [k => k * k, k => k, k => 2 * k - 1][kind]; let s = 0; for (let k = m; k <= n; k++) s += f(k); return score({steps: 2, values: [n, f(n), s]}); },
+        verify: ({kind, m, n}, v) => { const f = [k => k * k, k => k, k => 2 * k - 1][kind]; let s = 0; for (let k = m; k <= n; k++) s += f(k); return v[0] === f(n) && v[1] === s; },
+        build: ({kind, m, n}) => {
+          const f = [k => k * k, k => k, k => 2 * k - 1][kind], txt = ['k²', 'k', '(2k − 1)'][kind];
+          const terms = []; let s = 0; for (let k = m; k <= n; k++) { terms.push(f(k)); s += f(k); }
+          return item('Lire le symbole somme', `S = ∑<sub>k = ${m}</sub><sup>${n}</sup> ${txt}, c’est-à-dire la somme des nombres ${txt} pour k allant de ${m} à ${n}.`,
+            [Q('Dernier nombre additionné', f(n)), Q('Somme S', s)],
+            C('on remplace k par chaque entier de ' + m + ' à ' + n + ' et on additionne les nombres obtenus.',
+              [`S = ${terms.join(' + ')} = ${fr(s)}.`],
+              `le dernier nombre additionné est ${f(n)} (pour k = ${n}) et S = ${fr(s)}.`),
+            kind === 0 ? 'Développe la notation en une addition. Il ne s’agit pas du carré de la somme.' : 'Développe la notation en une addition, en commençant à la borne inférieure.');
+        }
+      }),
+      T({ // Versements en fin de période
+        base: {d: 110, t: 3, n: 4},
+        params: r => ({d: 10 * r.int(5, 50), t: r.int(1, 5), n: r.int(3, 6)}),
+        difficulty: ({d, t, n}) => { const q = 1 + t / 100; return score({steps: 4, values: [d, q, n * d, d * (q ** n - 1) / (q - 1)]}); },
+        verify: ({d, t, n}, v) => { let c = 0; for (let j = 0; j < n; j++) c = c * (1 + t / 100) + d; return v[0] === n * d && close(v[1], c); },
+        build: ({d, t, n}) => {
+          const q = 1 + t / 100, cap = d * (q ** n - 1) / (q - 1);
+          return item('Versements en fin de période', `Modèle fictif sans frais : capital initial nul, taux annuel de ${t} %, puis versement de ${eur(d)} en fin de chaque année, pendant ${n} ans.`,
+            [Q('Total des versements, en €', n * d, 2), Q('Capital juste après le dernier versement, au centime', cap, 2)],
+            C(`chaque versement rapporte ${t} % par année complète de placement ; le premier est multiplié par ${fr(q)}<sup>${n - 1}</sup>, le dernier n’a pas encore rapporté d’intérêts. On reconnaît une somme géométrique.`,
+              [`Total versé : ${n} × ${d} = ${fr(n * d)} €.`, `Capital : ${d} × (1 + ${fr(q)} + … + ${fr(q)}<sup>${n - 1}</sup>) = ${d} × (${fr(q)}<sup>${n}</sup> − 1)/(${fr(q)} − 1) ≈ ${fr(r3(cap, 2))} €.`],
+              `après le dernier versement, le capital vaut environ ${eur(r3(cap, 2))}, dont ${eur(r3(cap - n * d, 2))} d’intérêts.`),
+            'Place les versements sur une frise : celui de la dernière année est multiplié par 1.');
+        }
+      })
     ],
     't-exponentielles': [
-      c => { const k=3+c,a=2+c%2,x=2+c%3; return item('Du discret au continu',`f(x) = ${k} \u00d7 ${a}<sup>x</sup> pour tout r\u00e9el x.`,[Q(`f(${x})`,k*a**x),Q('f(-1)',k/a)],`f(${x}) = ${k} \u00d7 ${a}<sup>${x}</sup> = ${k*a**x}. L'exposant -1 donne f(-1) = ${k}/${a} = ${f(k/a)}.`,'Un exposant n\u00e9gatif donne un inverse, pas un nombre n\u00e9gatif.'); },
-      c => { const a=2+c%2,m=2+c%3,n=1+c%2; return item('Propri\u00e9t\u00e9s des puissances',`Calcule A = ${a}<sup>${m}</sup> \u00d7 ${a}<sup>${n}</sup> et B = ${a}<sup>${m}</sup> / ${a}<sup>${n}</sup>.`,[Q('A',a**(m+n)),Q('B',a**(m-n))],`Pour un produit, on additionne les exposants : A = ${a}<sup>${m+n}</sup> = ${a**(m+n)}. Pour un quotient, on les soustrait : B = ${a}<sup>${m-n}</sup> = ${a**(m-n)}.`,'Les bases doivent \u00eatre identiques pour additionner ou soustraire les exposants.'); },
-      c => { const k=(c%2 ? -1:1)*(2+c),a=c%6===0 ? 1 : (c%3===0?.5:2),direction=a===1?'constante':k*(a-1)>0?'croissante':'d\u00e9croissante'; return item('Signe du coefficient et variation',`f(x) = (${k}) \u00d7 ${f(a)}<sup>x</sup>. \u00c9tudie f sur les r\u00e9els.`,[Q('f(0)',k),choice('Variation',direction,['croissante','d\u00e9croissante','constante'])],`a\u2070 = 1, donc f(0) = ${k}. Si a=1, la fonction est constante. Sinon a<sup>x</sup> cro\u00eet pour a>1 et d\u00e9cro\u00eet pour 0<a<1 ; multiplier par un coefficient n\u00e9gatif inverse la variation. Ici f est ${direction}.`,'Examine s\u00e9par\u00e9ment la base a et le signe du coefficient k.'); },
-      c => { const q=(11+c%4)/10,v0=1000,vf=Math.round(v0*q*q); return item('Taux annuel moyen',`Une quantit\u00e9 passe de ${v0} \u00e0 ${vf} en deux ans. On cherche un m\u00eame taux appliqu\u00e9 chaque ann\u00e9e.`,[Q('Coefficient annuel moyen',Math.sqrt(vf/v0)),Q('Taux annuel moyen en %',100*(Math.sqrt(vf/v0)-1))],`Le coefficient global vaut ${vf}/${v0}. Le coefficient annuel vaut \u221a(${vf}/${v0}) = ${f(Math.sqrt(vf/v0))}. On retranche 1 puis multiplie par 100 : ${FR(100*(Math.sqrt(vf/v0)-1),3)} %.`,'La moyenne des coefficients est g\u00e9om\u00e9trique : le coefficient recherch\u00e9 au carr\u00e9 doit redonner le coefficient global.'); },
-      c => { const a=5+c,b=2+c%5,g=(1+a/100)*(1-b/100); return item('Deux taux successifs diff\u00e9rents',`Une valeur augmente de ${a} %, puis diminue de ${b} % sur deux p\u00e9riodes de m\u00eame dur\u00e9e.`,[Q('Taux global en %',100*(g-1)),Q('Taux moyen par p\u00e9riode en %',100*(Math.sqrt(g)-1))],`Le coefficient global est (1+${a}/100)(1-${b}/100) = ${f(g)}. Le taux global est ${FR(100*(g-1),3)} %. Le taux moyen vaut (\u221a${f(g)}-1) \u00d7 100 = ${FR(100*(Math.sqrt(g)-1),3)} %.`,'Multiplie les coefficients multiplicateurs ; ne fais pas la moyenne arithm\u00e9tique des taux.'); },
-      c => { const k=4+c,q=2+c%2; return item('Intercaler un point exponentiel',`Une courbe y = K a<sup>x</sup>, K>0 et a>0, passe par A(0 ; ${k}) et B(2 ; ${k*q*q}). Cherche le point de la courbe \u00e0 mi-chemin des abscisses.`,[Q('Abscisse du point',1),Q('Ordonn\u00e9e du point',k*q)],`L'abscisse vaut (0+2)/2 = 1. L'ordonn\u00e9e est la moyenne g\u00e9om\u00e9trique \u221a(${k} \u00d7 ${k*q*q}) = ${k*q}, et non la moyenne arithm\u00e9tique.`,'Pour un mod\u00e8le exponentiel positif, utilise la moyenne arithm\u00e9tique des abscisses et g\u00e9om\u00e9trique des ordonn\u00e9es.'); }
+      T({ // Du discret au continu
+        base: {k: 4, a: 3, x: 3},
+        params: r => ({k: r.int(2, 10), a: r.int(2, 5), x: r.int(2, 4)}),
+        accept: ({k, a, x}) => k * a ** x <= 5000 && k % a !== 0,
+        difficulty: ({k, a, x}) => score({steps: 2, values: [k, a, x, k * a ** x, k / a]}),
+        verify: ({k, a, x}, v) => v[0] === k * a ** x && close(v[1] * a, k),
+        build: ({k, a, x}) => item('Du discret au continu', `f(x) = ${k} × ${a}<sup>x</sup> pour tout réel x.`,
+          [Q(`f(${x})`, k * a ** x), Q(`f(${M}1)`, k / a)],
+          C('on remplace x par la valeur demandée ; un exposant négatif donne un inverse : a<sup>−1</sup> = 1/a.',
+            [`f(${x}) = ${k} × ${a}<sup>${x}</sup> = ${k} × ${a ** x} = ${fr(k * a ** x)}.`, `f(${M}1) = ${k} × ${a}<sup>${M}1</sup> = ${k}/${a} ${eq(k / a)}.`],
+            `f(${x}) = ${fr(k * a ** x)} et f(${M}1) = ${k}/${a} ${eq(k / a)} : un exposant négatif ne rend pas l’image négative.`),
+          'Un exposant négatif donne un inverse, pas un nombre négatif.')
+      }),
+      T({ // Propriétés des puissances
+        base: {a: 3, m: 3, n: 2},
+        params: r => { const m = r.int(2, 8); return {a: r.int(2, 10), m, n: r.int(1, m + 2)}; },
+        accept: ({a, m, n}) => n !== m && a ** (m + n) <= 50000,
+        difficulty: ({a, m, n}) => score({steps: 2, values: [a, m, n]}),
+        verify: ({a, m, n}, v) => v[0] === a ** m * a ** n && close(v[1], a ** m / a ** n, 1e-6),
+        build: ({a, m, n}) => item('Propriétés des puissances', `Calcule A = ${a}<sup>${m}</sup> × ${a}<sup>${n}</sup> et B = ${a}<sup>${m}</sup> ÷ ${a}<sup>${n}</sup>.`,
+          [Q('A', a ** (m + n)), Q('B', a ** (m - n))],
+          C('pour une même base, a<sup>m</sup> × a<sup>n</sup> = a<sup>m+n</sup> et a<sup>m</sup> ÷ a<sup>n</sup> = a<sup>m−n</sup>.',
+            [`A = ${a}<sup>${m}+${n}</sup> = ${a}<sup>${m + n}</sup> = ${fr(a ** (m + n))} ; B = ${a}<sup>${m}−${n}</sup> = ${a}<sup>${fr(m - n)}</sup> ${m - n < 0 ? `= 1/${a ** (n - m)} ` : ''}${eq(a ** (m - n))}.`],
+            `A = ${fr(a ** (m + n))} et B ${eq(a ** (m - n))}${m - n < 0 ? ' : un exposant négatif donne un inverse' : ''}.`),
+          'Les bases doivent être identiques pour additionner ou soustraire les exposants.')
+      }),
+      T({ // Signe du coefficient et variation
+        base: {want: 1, sk: -1, k: 3, a: 2},
+        params: r => {
+          const want = r.int(0, 2), sk = r.sign(), k = r.int(2, 9);
+          // want : 0 croissante, 1 décroissante, 2 constante ; la base est choisie en conséquence.
+          const up = want === 2 ? null : (want === 0) === (sk > 0);
+          return {want, sk, k, a: want === 2 ? 1 : up ? r.pick([1.5, 2, 3]) : r.pick([0.25, 0.5, 0.8])};
+        },
+        difficulty: ({k, a}) => score({steps: 2, values: [k, a], decimals: false}),
+        verify: ({sk, k, a}, v) => v[0] === sk * k && v[1] === (a === 1 ? 'constante' : sk * (a - 1) > 0 ? 'croissante' : 'décroissante'),
+        build: ({sk, k, a}) => {
+          const kk = sk * k, dir = a === 1 ? 'constante' : kk * (a - 1) > 0 ? 'croissante' : 'décroissante';
+          return item('Signe du coefficient et variation', `f(x) = ${pa(kk)} × ${fr(a)}<sup>x</sup>. Étudie f sur ℝ.`,
+            [Q('f(0)', kk), choice('Variation', dir, ['croissante', 'décroissante', 'constante'])],
+            C('a<sup>0</sup> = 1 donne f(0) = k ; x ↦ a<sup>x</sup> est croissante si a > 1, décroissante si 0 < a < 1, constante si a = 1 ; un coefficient négatif inverse le sens de variation.',
+              [`f(0) = ${pa(kk)} × 1 = ${fr(kk)}. La base ${fr(a)} est ${a === 1 ? 'égale à 1' : a > 1 ? 'supérieure à 1' : 'comprise entre 0 et 1'} et le coefficient ${fr(kk)} est ${kk > 0 ? 'positif' : 'négatif'}.`],
+              `f est ${dir} sur ℝ.`),
+            'Examine séparément la base a et le signe du coefficient k.');
+        }
+      }),
+      T({ // Taux annuel moyen
+        base: {v0: 1000, q: 1.2},
+        params: r => ({v0: r.pick([400, 500, 800, 1000, 2000, 2500, 5000, 10000]), q: r.pick([0.8, 0.9, 1.05, 1.1, 1.2, 1.3, 1.5])}),
+        accept: ({v0, q}) => Number.isInteger(F(v0 * q * q, 6)),
+        difficulty: ({v0, q}) => score({steps: 3, values: [v0, v0 * q * q, q, (q - 1) * 100]}),
+        verify: ({v0, q}, v) => close(v[0] * v[0], q * q) && close(v[1], (v[0] - 1) * 100),
+        build: ({v0, q}) => { const vf = F(v0 * q * q, 6); return item('Taux annuel moyen', `Une quantité passe de ${fr(v0)} à ${fr(vf)} en deux ans. On cherche le taux qui, appliqué chaque année, donne la même évolution.`,
+          [Q('Coefficient annuel moyen', q), Q('Taux annuel moyen en %', (q - 1) * 100)],
+          C('le coefficient global sur deux ans est le carré du coefficient annuel moyen : on prend sa racine carrée (moyenne géométrique), puis on retranche 1.',
+            [`Coefficient global : ${fr(vf)}/${fr(v0)} = ${fr(q * q)} ; coefficient annuel : √${fr(q * q)} = ${fr(q)}.`, `Taux : (${fr(q)} − 1) × 100 = ${fr((q - 1) * 100)}.`],
+            `le taux annuel moyen est de ${q > 1 ? '+' : ''}${pct((q - 1) * 100)}.`),
+          'La moyenne des coefficients est géométrique : le coefficient recherché au carré doit redonner le coefficient global.'); }
+      }),
+      T({ // Deux taux successifs différents
+        base: {a: 6, b: 3, order: 0},
+        params: r => ({a: r.int(2, 20), b: r.int(2, 20), order: r.int(0, 1)}),
+        accept: ({a, b}) => a !== b,
+        difficulty: ({a, b}) => { const g = (1 + a / 100) * (1 - b / 100); return score({steps: 3, values: [a, b, g, 100 * (g - 1), 100 * (Math.sqrt(g) - 1)]}); },
+        verify: ({a, b}, v) => { const g = (1 + a / 100) * (1 - b / 100); return close(v[0], 100 * (g - 1)) && close((1 + v[1] / 100) ** 2, g); },
+        build: ({a, b, order}) => {
+          const g = (1 + a / 100) * (1 - b / 100);
+          return item('Deux taux successifs différents', `Une valeur ${order ? `diminue de ${b} %, puis augmente de ${a} %` : `augmente de ${a} %, puis diminue de ${b} %`} sur deux périodes de même durée.`,
+            [Q('Taux global en %', 100 * (g - 1)), Q('Taux moyen par période en %', 100 * (Math.sqrt(g) - 1))],
+            C('on multiplie les coefficients multiplicateurs ; le taux moyen correspond à la racine carrée du coefficient global (et non à la moyenne des taux).',
+              [`Coefficient global : (1 + ${fr(a / 100)}) × (1 − ${fr(b / 100)}) = ${fr(F(g, 6))} ; taux global : ${eq(100 * (g - 1))} %.`, `Taux moyen : (√${fr(F(g, 6))} − 1) × 100 ${eq(100 * (Math.sqrt(g) - 1))} %.`],
+              `l’évolution globale est d’environ ${fr(r3(100 * (g - 1)))} %, soit environ ${fr(r3(100 * (Math.sqrt(g) - 1)))} % par période en moyenne.`),
+            'Multiplie les coefficients multiplicateurs ; ne fais pas la moyenne arithmétique des taux.');
+        }
+      }),
+      T({ // Intercaler un point exponentiel
+        base: {k: 5, q: 3, x0: 0},
+        params: r => ({k: r.int(2, 20), q: r.int(2, 5), x0: r.int(0, 3)}),
+        difficulty: ({k, q, x0}) => score({steps: 3, values: [x0, x0 + 2, k, k * q * q, k * q]}),
+        verify: ({k, q, x0}, v) => v[0] === x0 + 1 && v[1] * v[1] === k * k * q * q,
+        build: ({k, q, x0}) => item('Intercaler un point exponentiel', `Une courbe d’équation y = K × a<sup>x</sup>, avec K > 0 et a > 0, passe par A(${x0} ; ${k}) et B(${x0 + 2} ; ${k * q * q}). Cherche le point de la courbe d’abscisse située à mi-chemin.`,
+          [Q('Abscisse du point', x0 + 1), Q('Ordonnée du point', k * q)],
+          C('pour un modèle exponentiel, l’abscisse du point intermédiaire est la moyenne arithmétique des abscisses, et son ordonnée la moyenne géométrique des ordonnées.',
+            [`Abscisse : (${x0} + ${x0 + 2})/2 = ${x0 + 1}. Ordonnée : √(${k} × ${k * q * q}) = √${k * k * q * q} = ${k * q}.`],
+            `le point cherché est (${x0 + 1} ; ${k * q}) ; la moyenne arithmétique ${fr((k + k * q * q) / 2)} des ordonnées ne convient pas.`),
+          'Pour un modèle exponentiel positif, utilise la moyenne arithmétique des abscisses et géométrique des ordonnées.')
+      })
     ],
     't-logarithme': [
-      c => { const h=1+c%5,j=-1-c%3; return item('Logarithmes de puissances de dix',`Calcule log(${10**h}) et log(${f(10**j)}). log d\u00e9signe le logarithme d\u00e9cimal.`,[Q('Premier logarithme',h),Q('Second logarithme',j)],`log(10<sup>${h}</sup>) = ${h} et log(10<sup>${j}</sup>) = ${j}. Un logarithme peut \u00eatre n\u00e9gatif lorsque son argument est entre 0 et 1.`,'Demande-toi \u00e0 quelle puissance de 10 correspond chaque nombre.'); },
-      c => { const a=(2+c)/10,b=(1+c%4)/10; return item('Transformer produit et quotient',`A et B sont positifs, log(A) = ${f(a)} et log(B) = ${f(b)}.`,[Q('log(A \u00d7 B)',a+b),Q('log(A / B)',a-b)],`log(AB) = log(A)+log(B) = ${f(a+b)}. log(A/B) = log(A)-log(B) = ${f(a-b)}. Il n'existe pas de r\u00e8gle analogue transformant log(A+B) en somme de logarithmes.`,'Produit devient somme ; quotient devient diff\u00e9rence.'); },
-      c => { const a=2+c%2,x=3+c%4,b=a**x; return item('\u00c9quation et seuil strict',`R\u00e9sous ${a}<sup>x</sup> = ${b}, puis cherche le premier entier naturel n tel que ${a}<sup>n</sup> > ${b}.`,[Q('Solution r\u00e9elle x',x),Q('Premier entier n',x+1)],`x = log(${b})/log(${a}) = ${x}. La base est sup\u00e9rieure \u00e0 1 : l'in\u00e9galit\u00e9 stricte impose n > ${x}. Le premier entier est ${x+1}.`,'R\u00e9sous d\u2019abord pour un r\u00e9el, puis tiens compte du caract\u00e8re strict du seuil entier.'); },
-      c => { const m=2+c%5,v0=1000+100*c,b=v0/2**m; return item('Seuil d\u2019une d\u00e9croissance',`v(n) = ${v0} \u00d7 0,5<sup>n</sup>. Quand atteint-on exactement ${f(b)} ? Quel est le premier rang strictement en dessous ?`,[Q('Rang d\u2019\u00e9galit\u00e9',m),Q('Premier rang strictement en dessous',m+1)],`L'\u00e9galit\u00e9 a lieu en n=${m}. Comme log(0,5)<0, diviser une in\u00e9galit\u00e9 par log(0,5) en change le sens. Pour passer strictement sous ${f(b)}, il faut n>${m}, donc ${m+1}.`,'La suite d\u00e9cro\u00eet. Contr\u00f4le le rang trouv\u00e9 et le rang pr\u00e9c\u00e9dent.'); },
-      c => { const a=2+c%3,x=2+c%6,b=x**a; return item('L\u2019inconnue est la base',`R\u00e9sous x<sup>${a}</sup> = ${b} avec x strictement positif, puis donne log(x).`,[Q('x positif',x),Q('log(x)',Math.log10(x))],`x = ${b}<sup>1/${a}</sup> = ${x}. On peut aussi \u00e9crire ${a}log(x)=log(${b}), donc log(x) = ${FR(Math.log10(x),3)}.`,'Distingue a puissance x de x puissance a ; ici l\u2019exposant est connu.'); },
-      c => { const h=2+c%4,n=3*10**h+c; return item('Ordre de grandeur et chiffres',`On consid\u00e8re l'entier N = ${n}. D\u00e9termine k tel que 10<sup>k</sup> \u2264 N < 10<sup>k+1</sup>, puis le nombre de chiffres de N.`,[Q('k',h),Q('Nombre de chiffres',h+1)],`${10**h} \u2264 ${n} < ${10**(h+1)}. Ainsi k=${h} est la partie enti\u00e8re de log(N), et N a ${h+1} chiffres.`,'Un entier entre 10 puissance k et 10 puissance k+1 (exclue) a k+1 chiffres.'); }
+      T({ // Logarithmes de puissances de dix
+        base: {h: 2, j: -2, form: 0},
+        params: r => ({h: r.int(1, 6), j: r.int(-4, -1), form: r.int(0, 1)}),
+        space: 48,
+        difficulty: ({h, j}) => score({steps: 2, values: [h, j]}),
+        verify: ({h, j}, v) => v[0] === h && v[1] === j,
+        build: ({h, j, form}) => item('Logarithmes de puissances de dix', form
+          ? `Calcule log(10<sup>${h}</sup>) et log(1/10<sup>${-j}</sup>). log désigne le logarithme décimal.`
+          : `Calcule log(${fr(10 ** h)}) et log(${fr(10 ** j)}). log désigne le logarithme décimal.`,
+          [Q('Premier logarithme', h), Q('Second logarithme', j)],
+          C('le logarithme décimal d’une puissance de 10 est son exposant : log(10<sup>n</sup>) = n pour tout entier n.',
+            [`${form ? `10<sup>${h}</sup>` : fr(10 ** h)} = 10<sup>${h}</sup>, donc son logarithme vaut ${h}.`, `${form ? `1/10<sup>${-j}</sup>` : fr(10 ** j)} = 10<sup>${M}${-j}</sup>, donc son logarithme vaut ${fr(j)}.`],
+            `les logarithmes valent ${h} et ${fr(j)} ; un logarithme est négatif lorsque le nombre est compris entre 0 et 1.`),
+          'Demande-toi à quelle puissance de 10 correspond chaque nombre.')
+      }),
+      T({ // Transformer produit, quotient et puissance
+        base: {a: 3, b: 2},
+        params: r => ({a: r.int(1, 20), b: r.int(1, 15)}),
+        accept: ({a, b}) => a !== b,
+        difficulty: ({a, b}) => score({steps: 3, values: [a / 10, b / 10, (a + b) / 10, (a - b) / 10, 3 * a / 10]}),
+        verify: ({a, b}, v) => close(v[0], (a + b) / 10) && close(v[1], (a - b) / 10) && close(v[2], 3 * a / 10),
+        build: ({a, b}) => { const la = a / 10, lb = b / 10; return item('Transformer produit, quotient et puissance', `A et B sont deux nombres strictement positifs, avec log(A) = ${fr(la)} et log(B) = ${fr(lb)}.`,
+          [Q('log(A × B)', la + lb), Q('log(A / B)', la - lb), Q('log(A³)', 3 * la)],
+          C('log(AB) = log(A) + log(B), log(A/B) = log(A) − log(B) et log(A<sup>n</sup>) = n × log(A).',
+            [`log(AB) = ${fr(la)} + ${fr(lb)} = ${fr(F(la + lb, 6))} ; log(A/B) = ${fr(la)} − ${fr(lb)} = ${fr(F(la - lb, 6))} ; log(A<sup>3</sup>) = 3 × ${fr(la)} = ${fr(F(3 * la, 6))}.`],
+            `log(AB) = ${fr(F(la + lb, 6))}, log(A/B) = ${fr(F(la - lb, 6))} et log(A<sup>3</sup>) = ${fr(F(3 * la, 6))}. Il n’existe pas de règle analogue pour log(A + B).`),
+          'Produit devient somme ; quotient devient différence ; puissance devient multiplication.'); }
+      }),
+      T({ // Équation et seuil
+        base: {a: 3, x: 4, strict: 1},
+        params: r => ({a: r.int(2, 9), x: r.int(2, 15), strict: r.int(0, 1)}),
+        accept: ({a, x}) => a ** x <= 6000,
+        difficulty: ({a, x}) => score({steps: 3, values: [a, x]}),
+        verify: ({a, x, strict}, v) => a ** v[0] === a ** x && (strict ? a ** v[1] > a ** x && !(a ** (v[1] - 1) > a ** x) : a ** v[1] >= a ** x && !(a ** (v[1] - 1) >= a ** x)),
+        build: ({a, x, strict}) => { const b = a ** x, sym = strict ? '>' : '≥'; return item('Équation et seuil', `Résous ${a}<sup>x</sup> = ${fr(b)}, puis cherche le premier entier naturel n tel que ${a}<sup>n</sup> ${sym} ${fr(b)}.`,
+          [Q('Solution réelle x', x), Q('Premier entier n', strict ? x + 1 : x)],
+          C('on applique log aux deux membres : log(a<sup>x</sup>) = x × log(a), donc x = log(b)/log(a). Pour le seuil, a > 1 : n ↦ a<sup>n</sup> est croissante.',
+            [`x = log(${fr(b)})/log(${a}) = ${x}.`, strict ? `L’inégalité stricte impose n > ${x} : le premier entier est ${x + 1}.` : `L’inégalité large est vérifiée dès n = ${x}.`],
+            `la solution réelle est ${x} et le premier entier n tel que ${a}<sup>n</sup> ${sym} ${fr(b)} est ${strict ? x + 1 : x}.`),
+          'Résous d’abord pour un réel, puis tiens compte du caractère strict ou large du seuil.'); }
+      }),
+      T({ // Seuil d'une décroissance
+        base: {m: 3, v0: 1100},
+        params: r => ({m: r.int(2, 7), v0: 100 * r.int(5, 30)}),
+        difficulty: ({m, v0}) => score({steps: 3, values: [v0, v0 / 2 ** m, m]}),
+        verify: ({m, v0}, v) => close(v0 * 0.5 ** v[0], v0 / 2 ** m) && v[1] === v[0] + 1,
+        build: ({m, v0}) => { const b = v0 / 2 ** m; return item('Seuil d’une décroissance', `v(n) = ${fr(v0)} × 0,5<sup>n</sup>. Pour quel rang atteint-on exactement ${fr(b)} ? Quel est le premier rang strictement en dessous ?`,
+          [Q('Rang d’égalité', m), Q('Premier rang strictement en dessous', m + 1)],
+          C('on résout l’équation avec le logarithme ; comme log(0,5) < 0, diviser une inégalité par log(0,5) en change le sens.',
+            [`${fr(v0)} × 0,5<sup>n</sup> = ${fr(b)} ⇔ 0,5<sup>n</sup> = ${fr(b / v0)} ⇔ n = log(${fr(b / v0)})/log(0,5) = ${m}.`, `v(n) < ${fr(b)} ⇔ n > ${m}, car la suite est strictement décroissante.`],
+            `l’égalité a lieu au rang ${m} ; le premier rang strictement en dessous de ${fr(b)} est ${m + 1}.`),
+          'La suite décroît. Contrôle le rang trouvé et le rang précédent.'); }
+      }),
+      T({ // L'inconnue est la base
+        base: {a: 3, x: 3},
+        params: r => ({a: r.int(2, 5), x: r.int(2, 14)}),
+        accept: ({a, x}) => x ** a <= 100000,
+        difficulty: ({a}) => score({steps: 2, values: [a]}),
+        verify: ({a, x}, v) => v[0] ** a === x ** a && v[0] > 0 && close(v[1], Math.log10(x)),
+        build: ({a, x}) => { const b = x ** a; return item('L’inconnue est la base', `Résous x<sup>${a}</sup> = ${fr(b)} avec x strictement positif, puis donne log(x). Attention : ici, l’inconnue est la base et l’exposant ${a} est connu.`,
+          [Q('x positif', x), Q('log(x)', Math.log10(x))],
+          C(`quand l’inconnue est la base, on prend la racine d’ordre ${a} : x = b<sup>1/${a}</sup>. On peut aussi écrire ${a} log(x) = log(b).`,
+            [`x = ${fr(b)}<sup>1/${a}</sup> = ${x}, car ${x}<sup>${a}</sup> = ${fr(b)}.`, `log(x) = log(${fr(b)})/${a} = log(${x}) ≈ ${fr(r3(Math.log10(x)))}.`],
+            `x = ${x} et log(x) ≈ ${fr(r3(Math.log10(x)))}.`),
+          'Distingue a<sup>x</sup> (inconnue en exposant) et x<sup>a</sup> (inconnue en base) ; ici l’exposant est connu.'); }
+      }),
+      T({ // Ordre de grandeur et nombre de chiffres
+        base: {kind: 0, h: 3, lead: 3, tail: 1},
+        params: r => { const kind = r.int(0, 2), h = r.int(2, 6); return {kind, h, lead: kind ? 0 : r.int(1, 9), tail: kind === 1 ? r.int(1, 9) : kind ? 0 : r.int(0, 99)}; },
+        difficulty: ({h}) => score({steps: 3, values: [h, h + 1]}),
+        verify: ({kind, h, lead, tail}, v) => { const n = kind === 0 ? lead * 10 ** h + tail : kind === 1 ? 10 ** (h + 1) - tail : 10 ** h; return 10 ** v[0] <= n && n < 10 ** (v[0] + 1) && v[1] === String(n).length; },
+        build: ({kind, h, lead, tail}) => {
+          const n = kind === 0 ? lead * 10 ** h + tail : kind === 1 ? 10 ** (h + 1) - tail : 10 ** h, k = h;
+          const warn = kind === 1 ? ` Attention : ${fr(n)} est juste en dessous de 10<sup>${h + 1}</sup> ; log(N) ≈ ${fr(r3(Math.log10(n), 4))} est très proche de ${h + 1} mais lui reste inférieur.`
+            : kind === 2 ? ` Ici N est exactement une puissance de 10 : log(N) = ${h}, et N a ${h + 1} chiffres.` : '';
+          return item('Ordre de grandeur et nombre de chiffres', `On considère l’entier N = ${fr(n)}. Détermine l’entier k tel que 10<sup>k</sup> ≤ N < 10<sup>k+1</sup>, puis le nombre de chiffres de N.`,
+            [Q('k', k), Q('Nombre de chiffres', k + 1)],
+            C('k est la partie entière de log(N) ; un entier N tel que 10<sup>k</sup> ≤ N < 10<sup>k+1</sup> s’écrit avec k + 1 chiffres.',
+              [`${fr(10 ** k)} ≤ ${fr(n)} < ${fr(10 ** (k + 1))}, donc ${k} ≤ log(N) < ${k + 1}.${warn}`],
+              `k = ${k} et N a ${k + 1} chiffres.`),
+            'Un entier compris entre 10 puissance k (inclus) et 10 puissance k + 1 (exclu) a k + 1 chiffres.');
+        }
+      })
     ],
     't-inverse': [
-      c => { const a=2+c%8; return item('Images par la fonction inverse',`f(x)=1/x pour x non nul. Calcule f(${a}) et f(-${a}).`,[Q(`f(${a})`,1/a),Q(`f(-${a})`,-1/a)],`Les images sont 1/${a} et -1/${a}. Z\u00e9ro est exclu du domaine. Une fraction exacte est accept\u00e9e.`,'Garde le signe du nombre dans le d\u00e9nominateur.'); },
-      c => { const k=(2+c%4)**2,a=2+c%3; return item('D\u00e9river une somme',`f(x)=x+${k}/x pour x>0. Calcule l'image et la d\u00e9riv\u00e9e en x=${a}.`,[Q(`f(${a})`,a+k/a),Q(`f\u2032(${a})`,1-k/a**2)],`f(${a})=${FR(a+k/a,3)}. La d\u00e9riv\u00e9e est f\u2032(x)=1-${k}/x\u00b2, donc f\u2032(${a})=${FR(1-k/a**2,3)}.`,'La d\u00e9riv\u00e9e de 1/x est -1/x\u00b2, puis on multiplie par le coefficient.'); },
-      c => { const b=2+c,k=3+c%5; return item('Lire les asymptotes',`f(x)=${b}+${k}/x pour x non nul. Donne les constantes des droites asymptotes x=A et y=B.`,[Q('A (asymptote verticale)',0),Q('B (asymptote horizontale)',b)],`Au voisinage de 0, le terme ${k}/x devient tr\u00e8s grand en valeur absolue : x=0 est asymptote verticale. Pour x de tr\u00e8s grande valeur absolue, ${k}/x se rapproche de 0 : y=${b} est asymptote horizontale.`,'S\u00e9pare le terme constant de la fraction qui tend vers z\u00e9ro pour les grandes valeurs absolues de x.'); },
-      c => { const m=2+c%6,b=5+c; return item('Minimiser un co\u00fbt moyen',`Mod\u00e8le fictif : C(x)=x+${m*m}/x+${b}, pour x>0. Cherche le minimum.`,[Q('Valeur de x au minimum',m),Q('Co\u00fbt minimal',2*m+b)],`C\u2032(x)=1-${m*m}/x\u00b2=(x-${m})(x+${m})/x\u00b2. Sur x>0, le signe est celui de x-${m}. C d\u00e9cro\u00eet puis cro\u00eet : minimum en x=${m}, de valeur ${2*m+b}.`,'D\u00e9rive, mets au m\u00eame d\u00e9nominateur et \u00e9tudie le signe sur le domaine positif.'); },
-      c => { const a=2+c%3,k=a*a*(1+c%4),s=-k/a**2,b=2*k/a; return item('Tangente \u00e0 une fonction inverse',`f(x)=${k}/x. \u00c9cris la tangente en x=${a} sous la forme y=mx+b.`,[Q('m',s),Q('b',b)],`m=f\u2032(${a})=-${k}/${a*a}=${s}. Avec f(${a})=${k/a}, b=f(${a})-m\u00d7${a}=${b}.`,'Utilise y=f(a)+f\u2032(a)(x-a), puis d\u00e9veloppe.'); },
-      c => { const a=1+c%3,b=2+c%4,k=3+c,x=1+c%2; return item('Polyn\u00f4me et inverse',`f(x)=${a}x\u00b3+${b}x\u00b2-2x+${k}/x, avec x>0.`,[Q(`f(${x})`,a*x**3+b*x*x-2*x+k/x),Q(`f\u2032(${x})`,3*a*x*x+2*b*x-2-k/x**2)],`f\u2032(x)=${3*a}x\u00b2+${2*b}x-2-${k}/x\u00b2. En rempla\u00e7ant x par ${x}, f(${x})=${f(a*x**3+b*x*x-2*x+k/x)} et f\u2032(${x})=${f(3*a*x*x+2*b*x-2-k/x**2)}.`,'D\u00e9rive chaque terme s\u00e9par\u00e9ment avant l\u2019application num\u00e9rique.'); }
+      T({ // Images par la fonction inverse
+        base: {x1: 3, x2: -3},
+        params: r => ({x1: r.pick([2, 3, 4, 5, 8, 10, 0.5, 0.25]), x2: -r.pick([2, 3, 4, 5, 8, 10, 0.5, 0.25])}),
+        space: 64,
+        difficulty: ({x1, x2}) => score({steps: 2, values: [x1, x2, 1 / x1, 1 / x2]}),
+        verify: ({x1, x2}, v) => close(v[0] * x1, 1) && close(v[1] * x2, 1),
+        build: ({x1, x2}) => item('Images par la fonction inverse', `f(x) = 1/x pour x non nul. Calcule f(${fr(x1)}) et f(${fr(x2)}).`,
+          [Q(`f(${fr(x1)})`, 1 / x1), Q(`f(${fr(x2)})`, 1 / x2)],
+          C('l’image de x par la fonction inverse est 1/x ; l’inverse d’un nombre a le même signe que lui, et 0 n’a pas d’image.',
+            [`f(${fr(x1)}) = 1/${fr(x1)} ${eq(1 / x1)} ; f(${fr(x2)}) = 1/(${fr(x2)}) ${eq(1 / x2)}.`],
+            `f(${fr(x1)}) ${eq(1 / x1)} et f(${fr(x2)}) ${eq(1 / x2)}. Une fraction exacte est acceptée.`),
+          'Garde le signe du nombre dans le dénominateur.')
+      }),
+      T({ // Dériver une somme
+        base: {k: 9, a: 3},
+        params: r => ({k: r.int(2, 20), a: r.int(1, 6)}),
+        difficulty: ({k, a}) => score({steps: 3, values: [k, a, a + k / a, 1 - k / (a * a)]}),
+        verify: ({k, a}, v) => close(v[0], a + k / a) && close(v[1], 1 - k / (a * a)),
+        build: ({k, a}) => item('Dériver une somme', `f(x) = x + ${k}/x pour x > 0. Calcule l’image et le nombre dérivé en x = ${a}.`,
+          [Q(`f(${a})`, a + k / a), Q(`f′(${a})`, 1 - k / (a * a))],
+          C(`la dérivée de x est 1 et celle de k/x est −k/x² : f′(x) = 1 − ${k}/x².`,
+            [`f(${a}) = ${a} + ${k}/${a} ${eq(a + k / a)}.`, `f′(${a}) = 1 − ${k}/${a * a} ${eq(1 - k / (a * a))}.`],
+            `f(${a}) ${eq(a + k / a)} et f′(${a}) ${eq(1 - k / (a * a))}.`),
+          'La dérivée de 1/x est −1/x², puis on multiplie par le coefficient.')
+      }),
+      T({ // Lire les asymptotes
+        base: {b: 3, k: 4, c: 0},
+        params: r => ({b: r.nonZero(1, 9), k: r.nonZero(1, 9), c: r.int(-4, 4)}),
+        difficulty: ({b, k, c}) => score({steps: 2, values: [b, k, c]}),
+        verify: ({b, c}, v) => v[0] === c && v[1] === b,
+        build: ({b, k, c}) => {
+          const den = c === 0 ? 'x' : `(x ${c > 0 ? M : '+'} ${Math.abs(c)})`, expr = `${fr(b)} ${k > 0 ? '+' : M} ${Math.abs(k)}/${den}`;
+          return item('Lire les asymptotes', `f(x) = ${expr} pour x ≠ ${fr(c)}. Donne les équations des asymptotes x = A et y = B à la courbe de f.`,
+            [Q('A (asymptote verticale)', c), Q('B (asymptote horizontale)', b)],
+            C('le quotient devient très grand en valeur absolue quand son dénominateur s’annule (asymptote verticale) ; il se rapproche de 0 quand x devient très grand en valeur absolue (asymptote horizontale).',
+              [`Le dénominateur s’annule pour x = ${fr(c)} : la droite x = ${fr(c)} est asymptote verticale.`, `Quand x devient très grand en valeur absolue, ${Math.abs(k)}/${den} se rapproche de 0 et f(x) de ${fr(b)}.`],
+              `les asymptotes sont x = ${fr(c)} et y = ${fr(b)}.`),
+            'Sépare le terme constant de la fraction qui tend vers zéro pour les grandes valeurs absolues de x.');
+        }
+      }),
+      T({ // Minimiser un coût moyen
+        base: {m: 3, b: 6},
+        params: r => ({m: r.int(2, 12), b: r.int(1, 30)}),
+        difficulty: ({m, b}) => score({steps: 4, values: [m * m, b, m, 2 * m + b]}),
+        verify: ({m, b}, v) => { const Cx = x => x + m * m / x + b; return close(1 - m * m / (v[0] * v[0]), 0) && close(v[1], Cx(v[0])) && Cx(v[0] - 0.5) > v[1] && Cx(v[0] + 0.5) > v[1]; },
+        build: ({m, b}) => item('Minimiser un coût moyen', `Modèle fictif : le coût moyen est C(x) = x + ${m * m}/x + ${b}, pour x > 0. Cherche son minimum.`,
+          [Q('Valeur de x au minimum', m), Q('Coût minimal', 2 * m + b)],
+          C('on calcule C′(x), on met au même dénominateur, on étudie son signe sur ]0 ; +∞[ puis on dresse le tableau de variations.',
+            [`C′(x) = 1 − ${m * m}/x² = (x² − ${m * m})/x² = (x − ${m})(x + ${m})/x². Sur ]0 ; +∞[, x + ${m} > 0 et x² > 0 : C′(x) a le signe de x − ${m}.`,
+             `C(${m}) = ${m} + ${m * m}/${m} + ${b} = ${2 * m + b}.`],
+            `C est décroissante sur ]0 ; ${m}] puis croissante : le coût minimal vaut ${2 * m + b}, atteint pour x = ${m}.`,
+            variationTable('Signe de C′(x) et variations de C', 'C', ['0', m, '+∞'], [null, 2 * m + b, null], [-1, 1])),
+          'Dérive, mets au même dénominateur et étudie le signe sur le domaine positif.')
+      }),
+      T({ // Tangente à une fonction inverse
+        base: {a: 3, k: 18},
+        params: r => ({a: r.int(1, 5), k: r.int(1, 30)}),
+        difficulty: ({a, k}) => score({steps: 3, values: [a, k, k / a, -k / (a * a), 2 * k / a]}),
+        verify: ({a, k}, v) => close(v[0], -k / (a * a)) && close(v[0] * a + v[1], k / a),
+        build: ({a, k}) => { const m = -k / (a * a), p = 2 * k / a; return item('Tangente à une fonction inverse', `f(x) = ${k}/x pour x > 0. Écris la tangente à la courbe de f en x = ${a} sous la forme y = mx + p.`,
+          [Q('m', m), Q('p', p)],
+          C('la tangente en a a pour équation y = f′(a)(x − a) + f(a), avec f′(x) = −k/x².',
+            [`m = f′(${a}) = −${k}/${a * a} ${eq(m)} ; f(${a}) = ${k}/${a} ${eq(k / a)}.`, `p = f(${a}) − m × ${a} = ${k}/${a} + ${k}/${a} = ${2 * k}/${a} ${eq(p)}.`],
+            `la tangente a pour équation y ${Number.isInteger(m) && Number.isInteger(p) ? '=' : '≈'} ${affine(r3(m), r3(p))} (valeurs exactes : m = −${k}/${a * a} et p = ${2 * k}/${a}).`),
+          'Utilise y = f(a) + f′(a)(x − a), puis développe.'); }
+      }),
+      T({ // Polynôme et inverse
+        base: {a: 2, b: 3, k: 4, x: 2},
+        params: r => ({a: r.int(1, 4), b: r.int(-4, 5), k: r.int(1, 12), x: r.int(1, 3)}),
+        difficulty: ({a, b, k, x}) => score({steps: 4, values: [a, b, k, a * x ** 3 + b * x * x - 2 * x + k / x, 3 * a * x * x + 2 * b * x - 2 - k / (x * x)]}),
+        verify: ({a, b, k, x}, v) => close(v[0], a * x ** 3 + b * x * x - 2 * x + k / x) && close(v[1], 3 * a * x * x + 2 * b * x - 2 - k / (x * x)),
+        build: ({a, b, k, x}) => {
+          const fx = a * x ** 3 + b * x * x - 2 * x + k / x, dx = 3 * a * x * x + 2 * b * x - 2 - k / (x * x);
+          return item('Polynôme et inverse', `f(x) = ${poly([a, b, -2, 0])} + ${k}/x, avec x > 0.`,
+            [Q(`f(${x})`, fx), Q(`f′(${x})`, dx)],
+            C('on dérive terme à terme : (x³)′ = 3x², (x²)′ = 2x, (x)′ = 1 et (k/x)′ = −k/x².',
+              [`f′(x) = ${poly([3 * a, 2 * b, -2])} − ${k}/x².`, `f(${x}) ${eq(fx)} et f′(${x}) ${eq(dx)}.`],
+              `f(${x}) ${eq(fx)} et f′(${x}) ${eq(dx)}.`),
+            'Dérive chaque terme séparément avant l’application numérique.');
+        }
+      })
     ],
     't-statistiques': [
-      c => { const a=2+c%3,b=5+c,s=c%4,x=[1+s,2+s,3+s,4+s],y=x.map((v,i)=>a*v+b+[1,-1,-1,1][i]); return item('Point moyen',`Quatre observations fictives : ${x.map((v,i)=>`(${v} ; ${y[i]})`).join(', ')}. Donne les coordonn\u00e9es du point moyen G.`,[Q('Abscisse moyenne',s+2.5),Q('Ordonn\u00e9e moyenne',a*(s+2.5)+b)],`On moyenne s\u00e9par\u00e9ment les abscisses et les ordonn\u00e9es : G(${f(s+2.5)} ; ${f(a*(s+2.5)+b)}).`,'Ne m\u00e9lange pas les deux colonnes de donn\u00e9es.'); },
-      c => { const a=2+c%4,b=3+c,x1=1+c%3,x2=x1+2; return item('Droite passant par deux points moyens',`Une droite d'ajustement passe par G\u2081(${x1} ; ${a*x1+b}) et G\u2082(${x2} ; ${a*x2+b}). \u00c9cris y=ax+b.`,[Q('a',a),Q('b',b)],`a=(${a*x2+b}-${a*x1+b})/(${x2}-${x1})=${a}. Puis b=${a*x1+b}-${a}\u00d7${x1}=${b}.`,'Calcule une pente, puis utilise un des points pour retrouver l\u2019ordonn\u00e9e \u00e0 l\u2019origine.'); },
-      c => { const a=2+c%5,b=10+c,x=c%2?12:5,kind=x>10?'extrapolation':'interpolation'; return item('Pr\u00e9voir et qualifier',`Le mod\u00e8le y=${a}x+${b} a \u00e9t\u00e9 ajust\u00e9 pour des valeurs de x de 1 \u00e0 10. On l'utilise en x=${x}.`,[Q('Valeur estim\u00e9e',a*x+b),choice('Nature de l\u2019estimation',kind,['interpolation','extrapolation'])],`Le mod\u00e8le donne ${a}\u00d7${x}+${b}=${a*x+b}. Il s'agit d'une ${kind}. Une estimation ne prouve pas la valeur future et devient plus fragile hors de la plage observ\u00e9e.`,'Compare l\u2019abscisse demand\u00e9e \u00e0 l\u2019intervalle des observations.'); },
-      c => { const a=2+c%4,b=3+c,x=2+c%3; return item('Changement de variable carr\u00e9',`On pose z=x\u00b2. Dans le nouveau rep\u00e8re, le mod\u00e8le ajust\u00e9 est y=${a}z+${b}. On prend x=${x}.`,[Q('z',x*x),Q('y estim\u00e9',a*x*x+b)],`z=${x}\u00b2=${x*x}, puis y=${a}\u00d7${x*x}+${b}=${a*x*x+b}. Dans les variables initiales, le mod\u00e8le est y=${a}x\u00b2+${b}, pas une droite.`,'Calcule d\u2019abord la nouvelle variable, puis applique la droite ajust\u00e9e.'); },
-      c => { const a=(1+c%3)/10,b=1+c%2,x=2+c%3,z=a*x+b; return item('Ajustement logarithmique',`Pour y>0, on pose z=log(y). La droite ajust\u00e9e est z=${f(a)}x+${b}.`,[Q(`y estim\u00e9 pour x=${x}`,10**z),Q('Coefficient multiplicateur quand x augmente de 1',10**a)],`log(y)=${f(z)} pour x=${x}, donc y=10<sup>${f(z)}</sup> \u2248 ${FR(10**z,3)}. Le mod\u00e8le initial est y=10<sup>${b}</sup>(10<sup>${f(a)}</sup>)<sup>x</sup> ; son coefficient est ${FR(10**a,3)}.`,'Le retour de log(y) \u00e0 y se fait par une puissance de dix, pas par une multiplication par dix.'); },
-      c => { const a=2+c%3,b=3+c,e=1+c%3,y=[a+b+e,2*a+b-2*e,3*a+b+e]; return item('Comparer deux ajustements',`Donn\u00e9es : (1 ; ${y[0]}), (2 ; ${y[1]}), (3 ; ${y[2]}). Mod\u00e8le A : y=${a}x+${b}. Mod\u00e8le B : y=${a}x+${b+e}. Calcule la somme des carr\u00e9s des \u00e9carts pour chacun.`,[Q('Somme pour A',6*e*e),Q('Somme pour B',9*e*e)],`Pour A, les \u00e9carts observ\u00e9-mo\u00e8le sont ${e}, ${-2*e}, ${e} : somme ${6*e*e}. Pour B, ils sont 0, ${-3*e}, 0 : somme ${9*e*e}. A est pr\u00e9f\u00e9rable selon ce crit\u00e8re, parmi ces deux candidats seulement.`,'Calcule les \u00e9carts verticaux, \u00e9l\u00e8ve chacun au carr\u00e9, puis additionne.'); }
+      T({ // Point moyen
+        base: {a: 3, b: 6, s: 1, pat: 0},
+        params: r => ({a: r.nonZero(1, 5), b: r.int(-5, 20), s: r.int(0, 5), pat: r.int(0, 3)}),
+        difficulty: ({a, b, s}) => score({steps: 3, values: [s + 1, s + 4, a * (s + 4) + b + 2, s + 2.5, a * (s + 2.5) + b]}),
+        verify: ({a, b, s, pat}, v) => { const x = [1, 2, 3, 4].map(i => s + i), e = PATTERNS[pat], y = x.map((t, i) => a * t + b + e[i]); return close(v[0], (x[0] + x[1] + x[2] + x[3]) / 4) && close(v[1], (y[0] + y[1] + y[2] + y[3]) / 4); },
+        build: ({a, b, s, pat}) => {
+          const x = [1, 2, 3, 4].map(i => s + i), e = PATTERNS[pat], y = x.map((t, i) => a * t + b + e[i]);
+          return item('Point moyen', `Quatre observations fictives : ${x.map((t, i) => `(${t} ; ${fr(y[i])})`).join(', ')}. Donne les coordonnées du point moyen G.`,
+            [Q('Abscisse moyenne', s + 2.5), Q('Ordonnée moyenne', a * (s + 2.5) + b)],
+            C('le point moyen a pour coordonnées la moyenne des abscisses et la moyenne des ordonnées, calculées séparément.',
+              [`x̄ = (${x.join(' + ')})/4 = ${fr(s + 2.5)} ; ȳ = (${addAll(y)})/4 = ${fr(a * (s + 2.5) + b)}.`],
+              `G(${fr(s + 2.5)} ; ${fr(a * (s + 2.5) + b)}).`),
+            'Ne mélange pas les deux colonnes de données.');
+        }
+      }),
+      T({ // Droite passant par deux points moyens
+        base: {a: 3, b: 4, x1: 2, dx: 2},
+        params: r => ({a: r.nonZero(1, 6), b: r.int(-9, 12), x1: r.int(1, 4), dx: r.int(2, 5)}),
+        difficulty: ({a, b, x1, dx}) => score({steps: 3, values: [x1, x1 + dx, a * x1 + b, a * (x1 + dx) + b, a, b]}),
+        verify: ({a, b, x1, dx}, v) => v[0] * x1 + v[1] === a * x1 + b && v[0] * (x1 + dx) + v[1] === a * (x1 + dx) + b,
+        build: ({a, b, x1, dx}) => { const x2 = x1 + dx, y1 = a * x1 + b, y2 = a * x2 + b; return item('Droite passant par deux points moyens', `Une droite d’ajustement passe par G₁(${x1} ; ${fr(y1)}) et G₂(${x2} ; ${fr(y2)}). Écris son équation y = ax + b.`,
+          [Q('a', a), Q('b', b)],
+          C('le coefficient directeur vaut (y₂ − y₁)/(x₂ − x₁) ; on obtient b en utilisant l’un des deux points.',
+            [`a = (${diff(y2, y1)})/(${x2} − ${x1}) = ${fr(y2 - y1)}/${dx} = ${fr(a)}.`, `b = ${fr(y1)} − ${pa(a)} × ${x1} = ${fr(b)}.`],
+            `la droite a pour équation y = ${affine(a, b)}.`),
+          'Calcule une pente, puis utilise un des points pour retrouver l’ordonnée à l’origine.'); }
+      }),
+      T({ // Prévoir et qualifier
+        base: {a: 3, b: 11, inside: 0, x: 12},
+        params: r => { const inside = r.int(0, 1); return {a: r.int(2, 8), b: r.int(5, 30), inside, x: inside ? r.int(2, 9) : r.pick([0, 11, 12, 13, 15])}; },
+        difficulty: ({a, b, x}) => score({steps: 2, values: [a, b, x, a * x + b]}),
+        verify: ({a, b, x}, v) => v[0] === a * x + b && v[1] === (x >= 1 && x <= 10 ? 'interpolation' : 'extrapolation'),
+        build: ({a, b, x}) => { const kind = x >= 1 && x <= 10 ? 'interpolation' : 'extrapolation'; return item('Prévoir et qualifier', `Le modèle y = ${affine(a, b)} a été ajusté pour des valeurs de x de 1 à 10. On l’utilise en x = ${x}.`,
+          [Q('Valeur estimée', a * x + b), choice('Nature de l’estimation', kind, ['interpolation', 'extrapolation'])],
+          C('on remplace x dans le modèle ; une estimation dans la plage observée est une interpolation, en dehors c’est une extrapolation.',
+            [`y = ${a} × ${x} + ${b} = ${a * x + b}.`],
+            `l’estimation vaut ${a * x + b} ; c’est une ${kind}${kind === 'extrapolation' ? ', plus fragile car hors de la plage observée' : ''}. Une estimation ne prouve pas la valeur réelle.`),
+          'Compare l’abscisse demandée à l’intervalle des observations.'); }
+      }),
+      T({ // Changement de variable carré
+        base: {a: 3, b: 4, x: 3},
+        params: r => ({a: r.nonZero(1, 6), b: r.int(-5, 15), x: r.int(2, 6)}),
+        difficulty: ({a, b, x}) => score({steps: 2, values: [a, b, x * x, a * x * x + b]}),
+        verify: ({a, b, x}, v) => v[0] === x * x && v[1] === a * v[0] + b,
+        build: ({a, b, x}) => item('Changement de variable carré', `On pose z = x². Dans le nouveau repère, le modèle ajusté est y = ${affine(a, b, 'z')}. On prend x = ${x}.`,
+          [Q('z', x * x), Q('y estimé', a * x * x + b)],
+          C('on calcule d’abord la nouvelle variable z, puis on applique la droite d’ajustement en z.',
+            [`z = ${x}² = ${x * x} ; y = ${fr(a)} × ${x * x}${sg(b)} = ${fr(a * x * x + b)}.`],
+            `y ≈ ${fr(a * x * x + b)} ; dans les variables initiales, le modèle est y = ${poly([a, 0, b])}, qui n’est pas une droite.`),
+          'Calcule d’abord la nouvelle variable, puis applique la droite ajustée.')
+      }),
+      T({ // Ajustement logarithmique
+        base: {a: 0.2, b: 2, x: 3},
+        params: r => ({a: r.pick([0.05, 0.1, 0.2, 0.3, -0.1, -0.2]), b: r.pick([1, 2, 3]), x: r.int(1, 5)}),
+        difficulty: ({a, b, x}) => score({steps: 3, values: [a, b, x, 10 ** (a * x + b), 10 ** a]}),
+        verify: ({a, b, x}, v) => close(Math.log10(v[0]), a * x + b) && close(Math.log10(v[1]), a),
+        build: ({a, b, x}) => { const z = F(a * x + b, 6); return item('Ajustement logarithmique', `Pour y > 0, on pose z = log(y). La droite ajustée est z = ${affine(a, b)}.`,
+          [Q(`y estimé pour x = ${x}`, 10 ** z), Q('Coefficient multiplicateur quand x augmente de 1', 10 ** a)],
+          C('on calcule z, puis on revient à y avec y = 10<sup>z</sup> ; le modèle initial est exponentiel : y = 10<sup>b</sup> × (10<sup>a</sup>)<sup>x</sup>.',
+            [`z = ${fr(a)} × ${x} + ${b} = ${fr(z)}, donc y = 10<sup>${fr(z)}</sup> ≈ ${fr(r3(10 ** z))}.`, `Quand x augmente de 1, y est multiplié par 10<sup>${fr(a)}</sup> ≈ ${fr(r3(10 ** a))}.`],
+            `y ≈ ${fr(r3(10 ** z))} pour x = ${x} ; le coefficient multiplicateur est d’environ ${fr(r3(10 ** a))}.`),
+          'Le retour de log(y) à y se fait par une puissance de dix, pas par une multiplication par dix.'); }
+      }),
+      T({ // Comparer deux ajustements
+        base: {a: 3, b: 4, e: 2},
+        params: r => ({a: r.nonZero(1, 5), b: r.int(-5, 10), e: r.nonZero(1, 4)}),
+        difficulty: ({a, b, e}) => score({steps: 4, values: [a + b + e, 2 * a + b - 2 * e, 3 * a + b + e, 6 * e * e, 9 * e * e]}),
+        verify: ({a, b, e}, v) => { const y = [a + b + e, 2 * a + b - 2 * e, 3 * a + b + e], ss = c => y.reduce((s, t, i) => s + (t - (a * (i + 1) + c)) ** 2, 0); return v[0] === ss(b) && v[1] === ss(b + e); },
+        build: ({a, b, e}) => {
+          const y = [a + b + e, 2 * a + b - 2 * e, 3 * a + b + e], rA = [e, -2 * e, e], rB = [0, -3 * e, 0];
+          return item('Comparer deux ajustements', `Données : (1 ; ${fr(y[0])}), (2 ; ${fr(y[1])}), (3 ; ${fr(y[2])}). Modèle A : y = ${affine(a, b)}. Modèle B : y = ${affine(a, b + e)}. Calcule la somme des carrés des écarts pour chacun.`,
+            [Q('Somme pour A', 6 * e * e), Q('Somme pour B', 9 * e * e)],
+            C('pour chaque point, on calcule l’écart vertical « observé − modèle », on l’élève au carré, puis on additionne ; le meilleur des deux modèles est celui dont la somme est la plus petite.',
+              [`Écarts pour A : ${rA.map(fr).join(' ; ')}, somme des carrés : ${rA.map(t => t * t).join(' + ')} = ${6 * e * e}.`, `Écarts pour B : ${rB.map(fr).join(' ; ')}, somme des carrés : ${9 * e * e}.`],
+              `selon ce critère, le modèle A est préférable (${6 * e * e} < ${9 * e * e}), parmi ces deux candidats seulement.`),
+            'Calcule les écarts verticaux, élève chacun au carré, puis additionne.');
+        }
+      })
     ],
     't-conditionnelles': [
-      c => { const n=100+5*c,a=40+c,b=10+c,t=30+c; return item('Choisir la population de r\u00e9f\u00e9rence',`Une enqu\u00eate fictive porte sur ${n} clients. A contient ${a} abonn\u00e9s, dont ${b} satisfaits. Au total, ${t} clients sont satisfaits (\u00e9v\u00e9nement B).`,[Q('P_A(B)',b/a),Q('P(B)',t/n)],`Parmi les abonn\u00e9s, P_A(B)=${b}/${a}\u2248${FR(b/a,3)}. Pour toute la population, P(B)=${t}/${n}\u2248${FR(t/n,3)}.`,'Apr\u00e8s \u00ab sachant A \u00bb, le d\u00e9nominateur est l\u2019effectif de A.'); },
-      c => { const a=(2+c%5)/10,p=.1,q=.2,t=a*p+(1-a)*q; return item('Deux branches et probabilit\u00e9 totale',`P(A)=${f(a)}, P_A(D)=0,1 et P_nonA(D)=0,2. A et non A forment une partition.`,[Q('P(A intersection D)',a*p),Q('P(D)',t)],`P(A\u2229D)=${f(a)}\u00d70,1=${f(a*p)}. P(D)=${f(a)}\u00d70,1+${f(1-a)}\u00d70,2=${f(t)}.`,'Multiplie le long de chaque chemin, puis additionne les chemins menant \u00e0 D.'); },
-      c => { const a=(1+c%3)/10,b=.2,d=1-a-b,t=a*.1+b*.2+d*.3; return item('Partition en trois groupes',`A, B et C forment une partition : P(A)=${f(a)}, P(B)=0,2. Les probabilit\u00e9s de D dans A, B et C sont respectivement 0,1 ; 0,2 ; 0,3.`,[Q('P(C)',d),Q('P(D)',t)],`P(C)=1-${f(a)}-0,2=${f(d)}. P(D)=${f(a)}\u00d70,1+0,2\u00d70,2+${f(d)}\u00d70,3=${f(t)}.`,'V\u00e9rifie que les poids des groupes totalisent 1. La moyenne des taux doit \u00eatre pond\u00e9r\u00e9e.'); },
-      c => { const a=(2+c%5)/10,t=a*.8+(1-a)*.1; return item('Inverser une condition',`P(A)=${f(a)}, P_A(B)=0,8 et P_nonA(B)=0,1.`,[Q('P(B)',t),Q('P_B(A)',a*.8/t)],`P(B)=${f(a)}\u00d70,8+${f(1-a)}\u00d70,1=${f(t)}. P_B(A)=P(A\u2229B)/P(B)=${f(a*.8)}/${f(t)}\u2248${FR(a*.8/t,3)}.`,'Calcule la probabilit\u00e9 totale avant de changer la condition.'); },
-      c => { const a=(2+c%5)/10,b=.4,ind=c%2===0,j=a*b*(ind?1:.5); return item('V\u00e9rifier une ind\u00e9pendance',`P(A)=${f(a)}, P(B)=0,4 et P(A\u2229B)=${f(j)}.`,[Q('P(A)P(B)',a*b),choice('A et B sont-ils ind\u00e9pendants ?',ind?'oui':'non',['oui','non'])],`Le produit vaut ${f(a*b)}. Il ${ind?'est':'n\u2019est pas'} \u00e9gal \u00e0 ${f(j)}, donc les \u00e9v\u00e9nements ${ind?'sont':'ne sont pas'} ind\u00e9pendants.`,'Compare l\u2019intersection au produit ; \u00ab ind\u00e9pendant \u00bb ne signifie pas \u00ab incompatible \u00bb.'); },
-      c => { const d=(1+c%3)/100,t=d*.9+(1-d)*.1; return item('Interpr\u00e9ter un contr\u00f4le de qualit\u00e9',`Dans un mod\u00e8le fictif, ${100*d} % des articles sont d\u00e9fectueux (D). Le contr\u00f4le signale 90 % des d\u00e9fectueux et 10 % des non-d\u00e9fectueux (signal S).`,[Q('P(S)',t),Q('P_S(D)',d*.9/t)],`P(S)=${f(d)}\u00d70,9+${f(1-d)}\u00d70,1=${f(t)}. P_S(D)=${f(d*.9)}/${f(t)}\u2248${FR(d*.9/t,3)}. La fiabilit\u00e9 parmi les articles signal\u00e9s d\u00e9pend aussi de la proportion initiale de d\u00e9fauts.`,'Un taux de d\u00e9tection de 90 % n\u2019est pas la probabilit\u00e9 d\u2019un d\u00e9faut sachant un signal.'); }
+      T({ // Choisir la population de référence
+        base: {n: 105, a: 41, b: 11, t: 31},
+        params: r => { const n = r.int(80, 200), a = r.int(20, Math.floor(n / 2)), b = r.int(5, a - 5); return {n, a, b, t: r.int(b + 5, n - (a - b) - 5)}; },
+        difficulty: ({n, a, b, t}) => score({steps: 2, values: [n, a, b, t, b / a, t / n]}),
+        verify: ({n, a, b, t}, v) => close(v[0], b / a) && close(v[1], t / n),
+        build: ({n, a, b, t}) => item('Choisir la population de référence', `Une enquête fictive porte sur ${n} clients. L’événement A (« être abonné ») concerne ${a} clients, dont ${b} sont satisfaits. Au total, ${t} clients sont satisfaits (événement B).`,
+          [Q('P(B | A)', b / a), Q('P(B)', t / n)],
+          C('P<sub>A</sub>(B), aussi notée P(B | A), est la probabilité de B sachant A : la population de référence est celle de A, donc le dénominateur est l’effectif de A ; pour P(B), c’est l’effectif total.',
+            [`P<sub>A</sub>(B) = ${b}/${a} ${eq(b / a)} ; P(B) = ${t}/${n} ${eq(t / n)}.`],
+            `parmi les abonnés, la proportion de satisfaits est d’environ ${fr(r3(b / a))} ; sur toute la population, elle est d’environ ${fr(r3(t / n))}.`),
+          'Après « sachant A », le dénominateur est l’effectif de A.')
+      }),
+      T({ // Deux branches et probabilités totales
+        base: {a: 0.3, p: 0.1, q: 0.2},
+        params: r => ({a: tenth(r), p: tenth(r), q: tenth(r)}),
+        accept: ({p, q}) => p !== q,
+        difficulty: ({a, p, q}) => score({steps: 3, values: [a, p, q, a * p, a * p + (1 - a) * q]}),
+        verify: ({a, p, q}, v) => close(v[0], a * p) && close(v[1], v[0] + (1 - a) * q),
+        build: ({a, p, q}) => { const j = F(a * p, 6), t = F(a * p + (1 - a) * q, 6); return item('Deux branches et probabilités totales', `P(A) = ${fr(a)}, P<sub>A</sub>(D) = ${fr(p)} et P<sub>non A</sub>(D) = ${fr(q)}. A et non A forment une partition.`,
+          [Q('P(A ∩ D)', j), Q('P(D)', t)],
+          C('on multiplie les probabilités le long d’un chemin de l’arbre ; la formule des probabilités totales additionne les chemins qui mènent à D.',
+            [`P(A ∩ D) = ${fr(a)} × ${fr(p)} = ${fr(j)}.`, `P(D) = ${fr(a)} × ${fr(p)} + ${fr(1 - a)} × ${fr(q)} = ${fr(j)} + ${fr(F((1 - a) * q, 6))} = ${fr(t)}.`],
+            `P(A ∩ D) = ${fr(j)} et P(D) = ${fr(t)}.`),
+          'Multiplie le long de chaque chemin, puis additionne les chemins menant à D.'); }
+      }),
+      T({ // Partition en trois groupes
+        base: {a: 0.2, b: 0.2, pa: 0.1, pb: 0.2, pc: 0.3},
+        params: r => ({a: r.int(1, 5) / 10, b: r.int(1, 4) / 10, pa: tenth(r), pb: tenth(r), pc: tenth(r)}),
+        accept: ({a, b, pa, pb, pc}) => a + b < 0.95 && new Set([pa, pb, pc]).size === 3,
+        difficulty: ({a, b, pa, pb, pc}) => score({steps: 4, values: [a, b, 1 - a - b, pa, pb, pc, a * pa + b * pb + (1 - a - b) * pc]}),
+        verify: ({a, b, pa, pb, pc}, v) => close(v[0], 1 - a - b) && close(v[1], a * pa + b * pb + v[0] * pc),
+        build: ({a, b, pa, pb, pc}) => { const c = F(1 - a - b, 6), t = F(a * pa + b * pb + c * pc, 6); return item('Partition en trois groupes', `A, B et C forment une partition : P(A) = ${fr(a)} et P(B) = ${fr(b)}. Les probabilités de l’événement D dans A, B et C sont respectivement ${fr(pa)} ; ${fr(pb)} ; ${fr(pc)}.`,
+          [Q('P(C)', c), Q('P(D)', t)],
+          C('les probabilités des groupes d’une partition ont pour somme 1 ; la formule des probabilités totales pondère chaque probabilité conditionnelle par le poids de son groupe.',
+            [`P(C) = 1 − ${fr(a)} − ${fr(b)} = ${fr(c)}.`, `P(D) = ${fr(a)} × ${fr(pa)} + ${fr(b)} × ${fr(pb)} + ${fr(c)} × ${fr(pc)} = ${fr(t)}.`],
+            `P(C) = ${fr(c)} et P(D) = ${fr(t)} ; ce n’est pas la moyenne simple des trois probabilités.`),
+          'Vérifie que les poids des groupes totalisent 1. La moyenne des taux doit être pondérée.'); }
+      }),
+      T({ // Inverser une condition
+        base: {a: 0.3, p: 0.8, q: 0.1},
+        params: r => ({a: tenth(r), p: tenth(r), q: tenth(r)}),
+        accept: ({p, q}) => p !== q,
+        difficulty: ({a, p, q}) => { const t = a * p + (1 - a) * q; return score({steps: 4, values: [a, p, q, t, a * p / t]}); },
+        verify: ({a, p, q}, v) => close(v[0], a * p + (1 - a) * q) && close(v[1], a * p / v[0]),
+        build: ({a, p, q}) => { const j = F(a * p, 6), t = F(a * p + (1 - a) * q, 6); return item('Inverser une condition', `P(A) = ${fr(a)}, P<sub>A</sub>(B) = ${fr(p)} et P<sub>non A</sub>(B) = ${fr(q)}.`,
+          [Q('P(B)', t), Q('P(A | B)', j / t)],
+          C('on calcule P(B) avec la formule des probabilités totales, puis on inverse le conditionnement : P<sub>B</sub>(A) = P(A ∩ B)/P(B).',
+            [`P(B) = ${fr(a)} × ${fr(p)} + ${fr(1 - a)} × ${fr(q)} = ${fr(t)}.`, `P<sub>B</sub>(A) = ${fr(j)}/${fr(t)} ${eq(j / t)}.`],
+            `P(B) = ${fr(t)} et P<sub>B</sub>(A) ${eq(j / t)} : ce n’est pas P<sub>A</sub>(B) = ${fr(p)}.`),
+          'Calcule la probabilité totale avant de changer la condition.'); }
+      }),
+      T({ // Vérifier une indépendance
+        base: {a: 0.3, b: 0.4, ind: 0, d: -0.06},
+        params: r => { const ind = r.int(0, 1); return {a: r.int(2, 7) / 10, b: r.int(2, 7) / 10, ind, d: ind ? 0 : r.pick([-0.06, -0.04, -0.02, 0.02, 0.04, 0.06])}; },
+        accept: ({a, b, d}) => { const j = F(a * b + d, 6); return j > Math.max(0, a + b - 1) && j < Math.min(a, b); },
+        difficulty: ({a, b}) => score({steps: 2, values: [a, b, a * b]}),
+        verify: ({a, b, d}, v) => close(v[0], a * b) && v[1] === (d === 0 ? 'oui' : 'non'),
+        build: ({a, b, ind, d}) => { const j = F(a * b + d, 6); return item('Vérifier une indépendance', `P(A) = ${fr(a)}, P(B) = ${fr(b)} et P(A ∩ B) = ${fr(j)}.`,
+          [Q('P(A) × P(B)', a * b), choice('A et B sont-ils indépendants ?', ind ? 'oui' : 'non', ['oui', 'non'])],
+          C('A et B sont indépendants si et seulement si P(A ∩ B) = P(A) × P(B).',
+            [`P(A) × P(B) = ${fr(a)} × ${fr(b)} = ${fr(F(a * b, 6))}, ${ind ? 'égal à' : 'différent de'} P(A ∩ B) = ${fr(j)}.`],
+            `A et B ${ind ? 'sont' : 'ne sont pas'} indépendants. « Indépendants » ne veut pas dire « incompatibles ».`),
+          'Compare l’intersection au produit ; « indépendant » ne signifie pas « incompatible ».'); }
+      }),
+      T({ // Interpréter un contrôle de qualité
+        base: {d: 0.02, se: 0.9, fp: 0.1},
+        params: r => ({d: r.pick([0.01, 0.02, 0.05, 0.1]), se: r.pick([0.8, 0.9, 0.95, 0.99]), fp: r.pick([0.02, 0.05, 0.1])}),
+        difficulty: ({d, se, fp}) => score({steps: 4, values: [d, se, fp, d * se + (1 - d) * fp, d * se / (d * se + (1 - d) * fp)]}),
+        verify: ({d, se, fp}, v) => close(v[0], d * se + (1 - d) * fp) && close(v[1], d * se / v[0]),
+        build: ({d, se, fp}) => { const j = F(d * se, 6), t = F(d * se + (1 - d) * fp, 6); return item('Interpréter un contrôle de qualité', `Dans un modèle fictif, ${fr(100 * d)} % des articles sont défectueux (D). Le contrôle signale (S) ${fr(100 * se)} % des articles défectueux et ${fr(100 * fp)} % des articles non défectueux.`,
+          [Q('P(S)', t), Q('P(D | S)', j / t)],
+          C('probabilités totales pour P(S), puis inversion du conditionnement : P<sub>S</sub>(D) = P(D ∩ S)/P(S).',
+            [`P(S) = ${fr(d)} × ${fr(se)} + ${fr(1 - d)} × ${fr(fp)} = ${fr(t)}.`, `P<sub>S</sub>(D) = ${fr(j)}/${fr(t)} ${eq(j / t)}.`],
+            `parmi les articles signalés, la proportion de défectueux est d’environ ${fr(r3(j / t))} : elle dépend aussi de la proportion initiale de défauts, pas seulement du taux de détection.`),
+          'Un taux de détection n’est pas la probabilité d’un défaut sachant un signal.'); }
+      })
     ],
     't-binomiale': [
-      c => { const n=4+c%7,p=(1+c%4)/10; return item('Identifier une loi binomiale',`On r\u00e9p\u00e8te ${n} essais ind\u00e9pendants, de m\u00eame probabilit\u00e9 de succ\u00e8s ${f(p)}. X compte les succ\u00e8s.`,[Q('n',n),Q('p',p),Q('E(X)',n*p)],`Le nombre d'essais est n=${n}, la probabilit\u00e9 reste p=${f(p)} et les essais sont ind\u00e9pendants. X suit B(${n} ; ${f(p)}), avec E(X)=np=${f(n*p)}.`,'V\u00e9rifie les trois conditions : nombre fix\u00e9, ind\u00e9pendance, probabilit\u00e9 constante.'); },
-      c => { const n=5+c%6,k=2+c%3; return item('Triangle de Pascal',`Dans la ligne n=${n} du triangle de Pascal (la premi\u00e8re est n=0), cherche C(${n},${k}) et la somme des coefficients de cette ligne.`,[Q(`C(${n},${k})`,binom(n,k)),Q('Somme de la ligne',2**n)],`Les extr\u00e9mit\u00e9s valent 1 et chaque nombre int\u00e9rieur est la somme des deux au-dessus. On obtient C(${n},${k})=${binom(n,k)}. La somme vaut 2<sup>${n}</sup>=${2**n}, nombre de chemins succ\u00e8s/\u00e9chec.`,'Construis les lignes successives ; les positions sont num\u00e9rot\u00e9es \u00e0 partir de 0.'); },
-      c => { const n=3+c%5,p=(2+c%4)/10; return item('Aucun succ\u00e8s ou tous les succ\u00e8s',`X suit B(${n} ; ${f(p)}).`,[Q('P(X=0)',(1-p)**n),Q(`P(X=${n})`,p**n)],`Aucun succ\u00e8s : (1-p)<sup>n</sup>=${FR((1-p)**n,3)}. Tous les succ\u00e8s : p<sup>n</sup>=${FR(p**n,3)}. Chacun de ces \u00e9v\u00e9nements correspond \u00e0 un seul chemin.`,'Ne multiplie pas par n pour un \u00e9v\u00e9nement qui correspond \u00e0 un seul chemin.'); },
-      c => { const n=4+c%5,p=(2+c%3)/10; return item('Un succ\u00e8s ou un seul \u00e9chec',`X suit B(${n} ; ${f(p)}).`,[Q('P(X=1)',mass(n,p,1)),Q(`P(X=${n-1})`,mass(n,p,n-1))],`P(X=1)=n p(1-p)<sup>n-1</sup>=${FR(mass(n,p,1),3)}. P(X=n-1)=n p<sup>n-1</sup>(1-p)=${FR(mass(n,p,n-1),3)}. Dans chaque cas, n chemins sont possibles.`,'Choisis la place du succ\u00e8s unique ou de l\u2019\u00e9chec unique : il y a n choix.'); },
-      c => { const n=5+c%4,k=2+c%2,p=(2+c%3)/10; return item('Exactement k et au moins un',`X suit B(${n} ; ${f(p)}).`,[Q(`P(X=${k})`,mass(n,p,k)),Q('P(X au moins 1)',1-(1-p)**n)],`P(X=${k})=C(${n},${k}) p<sup>${k}</sup>(1-p)<sup>${n-k}</sup>=${FR(mass(n,p,k),3)}. Au moins un est le contraire de z\u00e9ro : 1-(1-p)<sup>${n}</sup>=${FR(1-(1-p)**n,3)}.`,'Pour exactement k, compte les chemins. Pour au moins un, passe par l\u2019\u00e9v\u00e9nement contraire.'); },
-      c => { const n=4+c%5,k=2,p=(2+c%3)/10; return item('Probabilit\u00e9s cumul\u00e9es',`X suit B(${n} ; ${f(p)}). Calcule \u00ab au plus ${k} \u00bb et \u00ab au moins ${k} \u00bb.`,[Q(`P(X <= ${k})`,cumulative(n,p,k)),Q(`P(X >= ${k})`,1-cumulative(n,p,k-1))],`Au plus ${k} : on additionne les probabilit\u00e9s de 0 \u00e0 ${k}, soit ${FR(cumulative(n,p,k),3)}. Au moins ${k} : 1-P(X\u2264${k-1})=${FR(1-cumulative(n,p,k-1),3)}. La borne ${k} est incluse dans les deux \u00e9v\u00e9nements.`,'Le contraire de X au moins k est X au plus k-1, et non X au plus k.'); }
+      T({ // Identifier une loi binomiale
+        base: {ctx: 0, n: 5, p: 0.2},
+        params: r => ({ctx: r.int(0, 2), n: r.int(4, 20), p: tenth(r)}),
+        difficulty: ({n, p}) => score({steps: 2, values: [n, p, n * p]}),
+        verify: ({n, p}, v) => v[0] === n && close(v[1], p) && close(v[2], v[0] * v[1]),
+        build: ({ctx, n, p}) => {
+          const k = [`On répète ${n} essais indépendants, de même probabilité de succès ${fr(p)}. X compte les succès.`,
+            `Un joueur tire ${n} fois au but ; chaque tir est réussi avec la probabilité ${fr(p)}, indépendamment des autres. X compte les tirs réussis.`,
+            `On prélève ${n} pièces dans une très grande production ; chacune est défectueuse avec la probabilité ${fr(p)}, indépendamment des autres. X compte les pièces défectueuses.`][ctx];
+          return item('Identifier une loi binomiale', k, [Q('n', n), Q('p', p), Q('E(X)', n * p)],
+            C('X compte les succès dans n épreuves de Bernoulli identiques et indépendantes : X suit la loi binomiale B(n ; p), d’espérance np.',
+              [`n = ${n}, p = ${fr(p)} ; E(X) = ${n} × ${fr(p)} = ${fr(F(n * p, 6))}.`],
+              `X suit B(${n} ; ${fr(p)}) et E(X) = ${fr(F(n * p, 6))} : c’est le nombre moyen de succès sur un grand nombre de répétitions de l’expérience.`),
+            'Vérifie les trois conditions : nombre fixé, indépendance, probabilité constante.');
+        }
+      }),
+      T({ // Triangle de Pascal
+        base: {n: 6, k: 3},
+        params: r => { const n = r.int(4, 10); return {n, k: r.int(1, n - 1)}; },
+        difficulty: ({n, k}) => score({steps: 3, values: [n, k]}),
+        verify: ({n, k}, v) => v[0] === binom(n - 1, k - 1) + binom(n - 1, k) && v[1] === Array.from({length: n + 1}, (_, j) => binom(n, j)).reduce((a, b) => a + b, 0),
+        build: ({n, k}) => {
+          const row = Array.from({length: n + 1}, (_, j) => binom(n, j));
+          return item('Triangle de Pascal', `Dans la ligne n = ${n} du triangle de Pascal (la première ligne est n = 0), cherche C(${n}, ${k}) et la somme des coefficients de cette ligne.`,
+            [Q(`C(${n}, ${k})`, binom(n, k)), Q('Somme de la ligne', 2 ** n)],
+            C('chaque coefficient intérieur est la somme des deux coefficients situés au-dessus de lui ; la ligne n compte les chemins à n épreuves et sa somme vaut 2<sup>n</sup>.',
+              [`Ligne ${n} : ${row.join(' ; ')} (positions numérotées à partir de 0).`, `C(${n}, ${k}) = C(${n - 1}, ${k - 1}) + C(${n - 1}, ${k}) = ${binom(n - 1, k - 1)} + ${binom(n - 1, k)} = ${binom(n, k)}.`],
+              `C(${n}, ${k}) = ${binom(n, k)} et la somme de la ligne vaut 2<sup>${n}</sup> = ${2 ** n}.`),
+            'Construis les lignes successives ; les positions sont numérotées à partir de 0.');
+        }
+      }),
+      T({ // Aucun succès ou tous les succès
+        base: {n: 4, p: 0.3},
+        params: r => ({n: r.int(3, 8), p: tenth(r)}),
+        difficulty: ({n, p}) => score({steps: 2, values: [n, p, (1 - p) ** n, p ** n]}),
+        verify: ({n, p}, v) => close(v[0], mass(n, p, 0)) && close(v[1], mass(n, p, n)),
+        build: ({n, p}) => item('Aucun succès ou tous les succès', `X suit la loi binomiale B(${n} ; ${fr(p)}).`,
+          [Q('P(X = 0)', (1 - p) ** n), Q(`P(X = ${n})`, p ** n)],
+          C('« aucun succès » et « tous les succès » correspondent chacun à un seul chemin de l’arbre : P(X = 0) = (1 − p)<sup>n</sup> et P(X = n) = p<sup>n</sup>.',
+            [`P(X = 0) = ${fr(1 - p)}<sup>${n}</sup> ${eq((1 - p) ** n)} ; P(X = ${n}) = ${fr(p)}<sup>${n}</sup> ${eq(p ** n)}.`],
+            `P(X = 0) ${eq((1 - p) ** n)} et P(X = ${n}) ${eq(p ** n)}.`),
+          'Ne multiplie pas par n pour un événement qui correspond à un seul chemin.')
+      }),
+      T({ // Un succès ou un seul échec
+        base: {n: 5, p: 0.3},
+        params: r => ({n: r.int(4, 8), p: tenth(r)}),
+        difficulty: ({n, p}) => score({steps: 3, values: [n, p, mass(n, p, 1), mass(n, p, n - 1)]}),
+        verify: ({n, p}, v) => close(v[0], n * p * (1 - p) ** (n - 1)) && close(v[1], n * p ** (n - 1) * (1 - p)),
+        build: ({n, p}) => item('Un succès ou un seul échec', `X suit la loi binomiale B(${n} ; ${fr(p)}).`,
+          [Q('P(X = 1)', mass(n, p, 1)), Q(`P(X = ${n - 1})`, mass(n, p, n - 1))],
+          C('un seul succès (ou un seul échec) peut être placé à n positions : il y a n chemins de même probabilité.',
+            [`P(X = 1) = ${n} × ${fr(p)} × ${fr(1 - p)}<sup>${n - 1}</sup> ${eq(mass(n, p, 1))}.`, `P(X = ${n - 1}) = ${n} × ${fr(p)}<sup>${n - 1}</sup> × ${fr(1 - p)} ${eq(mass(n, p, n - 1))}.`],
+            `P(X = 1) ${eq(mass(n, p, 1))} et P(X = ${n - 1}) ${eq(mass(n, p, n - 1))}.`),
+          'Choisis la place du succès unique ou de l’échec unique : il y a n choix.')
+      }),
+      T({ // Exactement k et au moins un
+        base: {n: 6, k: 3, p: 0.3},
+        params: r => { const n = r.int(5, 10); return {n, k: r.int(2, n - 2), p: tenth(r)}; },
+        difficulty: ({n, k, p}) => score({steps: 4, values: [n, k, binom(n, k), mass(n, p, k), 1 - (1 - p) ** n]}),
+        verify: ({n, k, p}, v) => close(v[0], binom(n, k) * p ** k * (1 - p) ** (n - k)) && close(v[1], 1 - mass(n, p, 0)),
+        build: ({n, k, p}) => item('Exactement k et au moins un', `X suit la loi binomiale B(${n} ; ${fr(p)}).`,
+          [Q(`P(X = ${k})`, mass(n, p, k)), Q('P(X ≥ 1)', 1 - (1 - p) ** n)],
+          C('P(X = k) = C(n, k) p<sup>k</sup>(1 − p)<sup>n−k</sup> ; « au moins un » est l’événement contraire de « aucun ».',
+            [`P(X = ${k}) = ${binom(n, k)} × ${fr(p)}<sup>${k}</sup> × ${fr(1 - p)}<sup>${n - k}</sup> ${eq(mass(n, p, k))}.`, `P(X ≥ 1) = 1 − ${fr(1 - p)}<sup>${n}</sup> ${eq(1 - (1 - p) ** n)}.`],
+            `P(X = ${k}) ${eq(mass(n, p, k))} et P(X ≥ 1) ${eq(1 - (1 - p) ** n)}.`),
+          'Pour exactement k, compte les chemins. Pour au moins un, passe par l’événement contraire.')
+      }),
+      T({ // Probabilités cumulées
+        base: {n: 5, k: 2, p: 0.3},
+        params: r => { const n = r.int(4, 8); return {n, k: r.int(1, n - 1), p: tenth(r)}; },
+        difficulty: ({n, k, p}) => score({steps: 4, values: [n, k, cumulative(n, p, k), 1 - cumulative(n, p, k - 1)]}),
+        verify: ({n, k, p}, v) => close(v[0], cumulative(n, p, k)) && close(v[1], Array.from({length: n - k + 1}, (_, j) => mass(n, p, k + j)).reduce((a, b) => a + b, 0)),
+        build: ({n, k, p}) => item('Probabilités cumulées', `X suit la loi binomiale B(${n} ; ${fr(p)}). Calcule « au plus ${k} » et « au moins ${k} ».`,
+          [Q(`P(X ≤ ${k})`, cumulative(n, p, k)), Q(`P(X ≥ ${k})`, 1 - cumulative(n, p, k - 1))],
+          C(`« au plus ${k} » regroupe les valeurs de 0 à ${k} ; « au moins ${k} » est le contraire de « au plus ${k - 1} ». La valeur ${k} est incluse dans les deux événements.`,
+            [`P(X ≤ ${k}) = P(X = 0) + … + P(X = ${k}) ${eq(cumulative(n, p, k))}.`, `P(X ≥ ${k}) = 1 − P(X ≤ ${k - 1}) ${eq(1 - cumulative(n, p, k - 1))}.`],
+            `P(X ≤ ${k}) ${eq(cumulative(n, p, k))} et P(X ≥ ${k}) ${eq(1 - cumulative(n, p, k - 1))}.`),
+          'Le contraire de « X au moins k » est « X au plus k − 1 », et non « X au plus k ».')
+      })
     ],
     't-variables': [
-      c => { const a=2+c; return item('Loi discr\u00e8te et esp\u00e9rance',`X prend les valeurs ${-a}, 0, ${2*a}, avec probabilit\u00e9s 0,2 ; 0,5 ; 0,3.`,[Q('E(X)',.4*a),Q('P(X >= 0)',.8)],`E(X)=${-a}\u00d70,2+0\u00d70,5+${2*a}\u00d70,3=${f(.4*a)}. Pour X\u22650, on additionne 0,5+0,3=0,8.`,'L\u2019esp\u00e9rance est une moyenne pond\u00e9r\u00e9e ; une probabilit\u00e9 cumul\u00e9e est une somme de probabilit\u00e9s.'); },
-      c => { const v=10+c,cost=2+c%3,p=(2+c%2)/10; return item('Gain brut et gain net',`Jeu fictif : on paie ${cost} euros ; on re\u00e7oit ${v} euros avec probabilit\u00e9 ${f(p)}, sinon z\u00e9ro. X est le gain net.`,[Q('Gain net en cas de succ\u00e8s',v-cost),Q('E(X)',p*v-cost)],`Le gain net est ${v-cost} en cas de succ\u00e8s, sinon ${-cost}. E(X)=${f(p)}\u00d7${v-cost}+${f(1-p)}\u00d7(${-cost})=${f(p*v-cost)}. Une esp\u00e9rance n'est pas une promesse pour une partie.`,'Retire la participation dans chacune des issues, y compris lors d\u2019un gain.'); },
-      c => { const p=(2+c%3)/10,q=.3,r=1-p-q; return item('Compl\u00e9ter une loi',`X prend 0, 2 et 5. Les deux premi\u00e8res probabilit\u00e9s sont ${f(p)} et 0,3.`,[Q('Probabilit\u00e9 de 5',r),Q('E(X)',2*q+5*r)],`La somme doit valoir 1 : P(X=5)=1-${f(p)}-0,3=${f(r)}. E(X)=0\u00d7${f(p)}+2\u00d70,3+5\u00d7${f(r)}=${f(2*q+5*r)}.`,'Contr\u00f4le d\u2019abord que toutes les probabilit\u00e9s sont positives et de somme 1.'); },
-      c => { const n=5+c%6,p=.3; return item('Nombre de succ\u00e8s et fr\u00e9quence',`X suit B(${n} ; 0,3). La fr\u00e9quence est F=X/${n}.`,[Q('E(X)',n*p),Q('E(F)',p)],`E(X)=np=${f(n*p)}. En divisant les nombres de succ\u00e8s par ${n}, on divise aussi leur moyenne : E(F)=E(X)/${n}=0,3. Un \u00e9chantillon ne donne pas n\u00e9cessairement cette fr\u00e9quence.`,'Ne confonds pas la moyenne du nombre de succ\u00e8s et la moyenne de la fr\u00e9quence.'); },
-      c => { const k=4+c%8,n=20,list=[k,k+1,k-1,k+2]; return item('Lire plusieurs \u00e9chantillons',`Quatre \u00e9chantillons de ${n} essais donnent les nombres de succ\u00e8s : ${list.join(' ; ')}.`,[Q('Nombre total d\u2019essais',4*n),Q('Moyenne des quatre fr\u00e9quences',(k+.5)/n)],`Il y a 4\u00d7${n}=${4*n} essais. La moyenne des fr\u00e9quences est (${list.join('+')})/(4\u00d7${n})=${f((k+.5)/n)}. N=4 d\u00e9signe les \u00e9chantillons ; n=${n} leur taille.`,'Calcule une fr\u00e9quence par \u00e9chantillon, puis leur moyenne ; ici les tailles sont identiques.'); },
-      c => { const counts=[2+c,3+c,4+c,1+c],Ntotal=10+4*c,mean=(counts[1]+2*counts[2]+3*counts[3])/Ntotal; return item('Distribution simul\u00e9e et mod\u00e8le',`On simule X suivant B(3 ; 0,4). Pour X=0,1,2,3, les effectifs observ\u00e9s sont ${counts.join(' ; ')}.`,[Q('Nombre de simulations',Ntotal),Q('Moyenne observ\u00e9e de X',mean),Q('Esp\u00e9rance th\u00e9orique',1.2)],`Les effectifs totalisent ${Ntotal}. La moyenne pond\u00e9r\u00e9e observ\u00e9e vaut ${FR(mean,3)}. Le mod\u00e8le donne E(X)=3\u00d70,4=1,2. Un \u00e9cart n'invalide pas automatiquement le mod\u00e8le.`,'Pour la moyenne observ\u00e9e, utilise les effectifs ; pour l\u2019esp\u00e9rance, utilise les param\u00e8tres du mod\u00e8le.'); }
+      T({ // Loi discrète et espérance
+        base: {a: 3, c: 2, pi: 0},
+        params: r => ({a: r.int(2, 20), c: r.int(2, 3), pi: r.int(0, 4)}),
+        difficulty: ({a, c, pi}) => { const p = LAWS[pi]; return score({steps: 3, values: [-a, c * a, ...p, -a * p[0] + c * a * p[2], p[1] + p[2]]}); },
+        verify: ({a, c, pi}, v) => { const p = LAWS[pi]; return close(v[0], -a * p[0] + 0 * p[1] + c * a * p[2]) && close(v[1], 1 - p[0]); },
+        build: ({a, c, pi}) => {
+          const p = LAWS[pi], e = F(-a * p[0] + c * a * p[2], 6);
+          return item('Loi discrète et espérance', `X prend les valeurs ${M}${a}, 0 et ${c * a}, avec les probabilités ${p.map(fr).join(' ; ')}.`,
+            [Q('E(X)', e), Q('P(X ≥ 0)', p[1] + p[2])],
+            C('l’espérance est la moyenne des valeurs pondérée par leurs probabilités ; une probabilité cumulée est une somme de probabilités.',
+              [`E(X) = (${M}${a}) × ${fr(p[0])} + ${c * a} × ${fr(p[2])} = ${fr(e)} (la valeur 0 n’ajoute rien).`, `P(X ≥ 0) = ${fr(p[1])} + ${fr(p[2])} = ${fr(F(p[1] + p[2], 6))}.`],
+              `E(X) = ${fr(e)} et P(X ≥ 0) = ${fr(F(p[1] + p[2], 6))}.`),
+            'L’espérance est une moyenne pondérée ; une probabilité cumulée est une somme de probabilités.');
+        }
+      }),
+      T({ // Gain brut et gain net
+        base: {v: 11, cost: 3, p: 0.3},
+        params: r => ({v: r.int(5, 30), cost: r.int(1, 6), p: tenth(r)}),
+        accept: ({v, cost, p}) => v > cost && F(p * v - cost, 6) !== 0,
+        difficulty: ({v, cost, p}) => score({steps: 3, values: [v, cost, p, v - cost, p * v - cost]}),
+        verify: ({v, cost, p}, v2) => v2[0] === v - cost && close(v2[1], p * v2[0] + (1 - p) * -cost),
+        build: ({v, cost, p}) => { const e = F(p * v - cost, 6); return item('Gain brut et gain net', `Jeu fictif : on paie ${eur(cost)} ; on reçoit ${eur(v)} avec la probabilité ${fr(p)}, sinon rien. X est le gain net.`,
+          [Q('Gain net en cas de succès, en €', v - cost), Q('E(X), en €', e)],
+          C('le gain net retire la participation dans chaque issue, y compris en cas de succès ; l’espérance pondère les gains nets par leurs probabilités.',
+            [`Gain net : ${v} − ${cost} = ${v - cost} en cas de succès, ${M}${cost} sinon.`, `E(X) = ${fr(p)} × ${v - cost} + ${fr(1 - p)} × (${M}${cost}) = ${fr(e)}.`],
+            `E(X) = ${eur(e)} : en moyenne, le joueur ${e > 0 ? 'gagne' : 'perd'} ${eur(Math.abs(e))} par partie ; ce n’est pas une promesse pour une partie.`),
+          'Retire la participation dans chacune des issues, y compris lors d’un gain.'); }
+      }),
+      T({ // Compléter une loi
+        base: {p: 0.3, q: 0.3, x2: 2, x3: 5},
+        params: r => ({p: r.int(1, 5) / 10, q: r.int(1, 5) / 10, x2: r.int(1, 4), x3: r.int(5, 10)}),
+        accept: ({p, q}) => p + q < 0.95,
+        difficulty: ({p, q, x2, x3}) => score({steps: 3, values: [p, q, 1 - p - q, x2, x3, x2 * q + x3 * (1 - p - q)]}),
+        verify: ({p, q, x2, x3}, v) => close(p + q + v[0], 1) && close(v[1], x2 * q + x3 * v[0]),
+        build: ({p, q, x2, x3}) => { const rr = F(1 - p - q, 6), e = F(x2 * q + x3 * rr, 6); return item('Compléter une loi', `X prend les valeurs 0, ${x2} et ${x3}. Les deux premières probabilités sont ${fr(p)} et ${fr(q)}.`,
+          [Q(`Probabilité de ${x3}`, rr), Q('E(X)', e)],
+          C('les probabilités d’une loi sont positives et ont pour somme 1 ; on calcule ensuite l’espérance.',
+            [`P(X = ${x3}) = 1 − ${fr(p)} − ${fr(q)} = ${fr(rr)}.`, `E(X) = ${x2} × ${fr(q)} + ${x3} × ${fr(rr)} = ${fr(e)}.`],
+            `P(X = ${x3}) = ${fr(rr)} et E(X) = ${fr(e)}.`),
+          'Contrôle d’abord que toutes les probabilités sont positives et de somme 1.'); }
+      }),
+      T({ // Nombre de succès et fréquence
+        base: {n: 6, p: 0.3},
+        params: r => ({n: r.int(5, 30), p: tenth(r)}),
+        difficulty: ({n, p}) => score({steps: 2, values: [n, p, n * p]}),
+        verify: ({n, p}, v) => close(v[0], n * p) && close(v[1], v[0] / n),
+        build: ({n, p}) => item('Nombre de succès et fréquence', `X suit la loi binomiale B(${n} ; ${fr(p)}). La fréquence de succès est F = X/${n}.`,
+          [Q('E(X)', n * p), Q('E(F)', p)],
+          C('E(X) = np ; diviser X par n divise aussi son espérance par n.',
+            [`E(X) = ${n} × ${fr(p)} = ${fr(F(n * p, 6))} ; E(F) = E(X)/${n} = ${fr(p)}.`],
+            `E(X) = ${fr(F(n * p, 6))} et E(F) = ${fr(p)} ; un échantillon ne donne pas forcément cette fréquence.`),
+          'Ne confonds pas la moyenne du nombre de succès et la moyenne de la fréquence.')
+      }),
+      T({ // Lire plusieurs échantillons
+        base: {k: 5, n: 20, pat: 0},
+        params: r => ({k: r.int(3, 12), n: r.pick([20, 25, 50]), pat: r.int(0, 2)}),
+        difficulty: ({k, n}) => score({steps: 3, values: [k, n, 4 * n, (k + 0.5) / n]}),
+        verify: ({k, n, pat}, v) => { const l = OFFSETS[pat].map(o => k + o); return v[0] === 4 * n && close(v[1], l.reduce((a, b) => a + b, 0) / (4 * n)); },
+        build: ({k, n, pat}) => { const l = OFFSETS[pat].map(o => k + o), s = l.reduce((a, b) => a + b, 0); return item('Lire plusieurs échantillons', `Quatre échantillons de ${n} essais donnent les nombres de succès : ${l.join(' ; ')}.`,
+          [Q('Nombre total d’essais', 4 * n), Q('Moyenne des quatre fréquences', s / (4 * n))],
+          C('on calcule une fréquence par échantillon, puis leur moyenne ; comme les tailles sont égales, c’est aussi le total des succès divisé par le total des essais.',
+            [`Total des essais : 4 × ${n} = ${4 * n} ; moyenne des fréquences : (${l.join(' + ')})/(4 × ${n}) = ${s}/${4 * n} ${eq(s / (4 * n))}.`],
+            `il y a ${4 * n} essais et la moyenne des fréquences ${eq(s / (4 * n))} ; N = 4 est le nombre d’échantillons et n = ${n} leur taille.`),
+          'Calcule une fréquence par échantillon, puis leur moyenne ; ici les tailles sont identiques.'); }
+      }),
+      T({ // Distribution simulée et modèle
+        base: {c0: 3, c1: 4, c2: 5, c3: 2, p: 0.4},
+        params: r => ({c0: r.int(1, 30), c1: r.int(1, 30), c2: r.int(1, 30), c3: r.int(1, 30), p: r.pick([0.3, 0.4, 0.5])}),
+        difficulty: ({c0, c1, c2, c3}) => { const N = c0 + c1 + c2 + c3; return score({steps: 3, values: [N, (c1 + 2 * c2 + 3 * c3) / N, 1.2]}); },
+        verify: ({c0, c1, c2, c3, p}, v) => v[0] === c0 + c1 + c2 + c3 && close(v[1], (c1 + 2 * c2 + 3 * c3) / v[0]) && close(v[2], 3 * p),
+        build: ({c0, c1, c2, c3, p}) => { const N = c0 + c1 + c2 + c3, m = (c1 + 2 * c2 + 3 * c3) / N; return item('Distribution simulée et modèle', `On simule X suivant la loi binomiale B(3 ; ${fr(p)}). Pour X = 0, 1, 2 et 3, les effectifs observés sont ${c0} ; ${c1} ; ${c2} ; ${c3}.`,
+          [Q('Nombre de simulations', N), Q('Moyenne observée de X', m), Q('Espérance théorique', 3 * p)],
+          C('la moyenne observée se calcule avec les effectifs ; l’espérance théorique avec les paramètres du modèle : E(X) = np.',
+            [`N = ${c0} + ${c1} + ${c2} + ${c3} = ${N} ; moyenne : (1 × ${c1} + 2 × ${c2} + 3 × ${c3})/${N} ${eq(m)}.`, `E(X) = 3 × ${fr(p)} = ${fr(F(3 * p, 6))}.`],
+            `la moyenne observée ${eq(m)} et l’espérance ${fr(F(3 * p, 6))} peuvent différer : un écart n’invalide pas automatiquement le modèle.`),
+          'Pour la moyenne observée, utilise les effectifs ; pour l’espérance, utilise les paramètres du modèle.'); }
+      })
     ],
     't-outils': [
-      c => { const n=3+c%7; return item('Compteur et accumulateur',`Python : <code>s=0</code>, puis <code>for k in range(1, ${n+1}): s += k*k</code>.`,[Q('Nombre de passages',n),Q('Valeur finale de s',n*(n+1)*(2*n+1)/6)],`range(1,${n+1}) fournit 1 \u00e0 ${n}. On effectue ${n} passages et on additionne leurs carr\u00e9s : s=${n*(n+1)*(2*n+1)/6}.`,'La borne de fin de range est exclue. Initialise une somme \u00e0 z\u00e9ro.'); },
-      c => { const a=2+c,n=3+c%4; return item('Ordre des instructions',`Initialement u=${a} et s=0. On r\u00e9p\u00e8te ${n} fois : d'abord <code>s = s + u</code>, puis <code>u = 2*u</code>.`,[Q('s final',a*(2**n-1)),Q('u final',a*2**n)],`s additionne les termes de u\u2080 \u00e0 u(${n-1}), soit ${a*(2**n-1)}. Apr\u00e8s le dernier doublement, u est d\u00e9j\u00e0 u(${n})=${a*2**n}, qui n'a pas \u00e9t\u00e9 ajout\u00e9.`,'Fais un tableau avec trois colonnes : passage, valeur ajout\u00e9e, nouvelle valeur de u.'); },
-      c => { const n=3+c%4; return item('Construire la ligne suivante de Pascal',`On a construit la ligne n=${n} du triangle de Pascal. On veut la ligne n=${n+1}, dont les positions commencent en k=0.`,[Q('Coefficient en k=1',n+1),Q('Coefficient en k=2',binom(n+1,2))],`On encadre la nouvelle ligne par des 1 et additionne les voisins de la pr\u00e9c\u00e9dente. C(${n+1},1)=${n+1} ; C(${n+1},2)=C(${n},1)+C(${n},2)=${binom(n+1,2)}.`,'Construis une nouvelle liste : modifier l\u2019ancienne pendant sa lecture peut corrompre les sommes.'); },
-      c => { const v=100+10*c,q=1.1; return item('Recopie dans le tableur',`B2 contient ${v}, E1 contient 1,1. En B3, on veut multiplier B2 par le coefficient de E1, puis recopier vers le bas en gardant E1 fixe.`,[choice('Formule en B3','=B2*$E$1',['=B2*$E$1','=B2*E1','=$B$2*E1']),Q('Valeur de B3',v*q)],`La r\u00e9f\u00e9rence $E$1 est absolue ; B2 est relative. La formule =B2*$E$1 donne ${f(v*q)}. Recopi\u00e9e en B4, elle devient =B3*$E$1.`,'Fige le coefficient commun, pas le terme pr\u00e9c\u00e9dent.'); },
-      c => { const list=Array.from({length:6},(_,i)=>c+i),limit=c+1,filtered=list.filter(x=>x>limit && x%2===0); return item('Filtrer avec deux conditions',`La liste est [${list.join(', ')}]. On garde les valeurs strictement sup\u00e9rieures \u00e0 ${limit} ET paires.`,[Q('Nombre de valeurs gard\u00e9es',filtered.length),Q('Somme des valeurs gard\u00e9es',filtered.reduce((a,b)=>a+b,0))],`Les valeurs conserv\u00e9es sont ${filtered.join(' ; ')}. On utilise <code>x > ${limit} and x % 2 == 0</code>. Leur nombre est ${filtered.length} et leur somme ${filtered.reduce((a,b)=>a+b,0)}.`,'Une valeur doit respecter les deux conditions simultan\u00e9ment ; ET ne signifie pas OU.'); },
-      c => { const p=(2+c%4)/10,draws=[.1,.2,.4,.5,.7,.9],count=draws.filter(x=>x<p).length; return item('Simuler une Bernoulli',`Probabilit\u00e9 p=${f(p)}. Pour lire l'algorithme, on fournit six tirages U : 0,1 ; 0,2 ; 0,4 ; 0,5 ; 0,7 ; 0,9. Succ\u00e8s lorsque U < p.`,[Q('Nombre de succ\u00e8s',count),Q('Fr\u00e9quence observ\u00e9e',count/draws.length)],`On compte les tirages strictement inf\u00e9rieurs \u00e0 ${f(p)} : ${count}. La fr\u00e9quence vaut ${count}/6\u2248${FR(count/6,3)}. Les valeurs ici sont impos\u00e9es pour travailler la lecture ; une vraie simulation utilise un g\u00e9n\u00e9rateur pseudo-al\u00e9atoire.`,'Lis le symbole < : une valeur \u00e9gale \u00e0 p n\u2019est pas compt\u00e9e par cet algorithme.'); }
+      T({ // Compteur et accumulateur
+        base: {kind: 0, start: 1, n: 4},
+        params: r => ({kind: r.int(0, 2), start: r.int(0, 2), n: r.int(3, 9)}),
+        difficulty: ({kind, start, n}) => { const f = [k => k * k, k => k, k => 2 * k + 1][kind]; let s = 0; for (let k = start; k <= n; k++) s += f(k); return score({steps: 3, values: [n, s]}); },
+        verify: ({kind, start, n}, v) => { const f = [k => k * k, k => k, k => 2 * k + 1][kind]; let s = 0, c = 0; for (let k = start; k <= n; k++) { s += f(k); c++; } return v[0] === c && v[1] === s; },
+        build: ({kind, start, n}) => {
+          const f = [k => k * k, k => k, k => 2 * k + 1][kind], e = ['k*k', 'k', '2*k + 1'][kind], terms = [];
+          let s = 0; for (let k = start; k <= n; k++) { terms.push(f(k)); s += f(k); }
+          return item('Compteur et accumulateur', `Python : ${code('s = 0')}, puis ${code(`for k in range(${start}, ${n + 1}): s += ${e}`)}.`,
+            [Q('Nombre de passages', n + 1 - start), Q('Valeur finale de s', s)],
+            C(`range(${start}, ${n + 1}) fournit les entiers de ${start} à ${n} (la borne de fin est exclue) ; s accumule les valeurs successives.`,
+              [`Valeurs ajoutées : ${terms.join(' ; ')}, soit ${n + 1 - start} passages.`, `s = ${terms.join(' + ')} = ${s}.`],
+              `la boucle fait ${n + 1 - start} passages et s vaut ${s} à la fin.`),
+            'La borne de fin de range est exclue. Initialise une somme à zéro.');
+        }
+      }),
+      T({ // Ordre des instructions
+        base: {a: 3, n: 4, q: 2, order: 0},
+        params: r => ({a: r.int(2, 9), n: r.int(3, 6), q: r.pick([2, 3]), order: r.int(0, 1)}),
+        accept: ({a, n, q}) => a * q ** n <= 10000,
+        difficulty: ({a, n, q}) => score({steps: 3, values: [a, n, a * q ** n, a * (q ** (n + 1) - 1) / (q - 1)]}),
+        verify: ({a, n, q, order}, v) => { let u = a, s = 0; for (let j = 0; j < n; j++) { if (order) { u *= q; s += u; } else { s += u; u *= q; } } return v[0] === s && v[1] === u; },
+        build: ({a, n, q, order}) => {
+          let u = a, s = 0; const added = [];
+          for (let j = 0; j < n; j++) { if (order) { u *= q; s += u; added.push(u); } else { s += u; added.push(u); u *= q; } }
+          const first = order ? code(`u = ${q}*u`) : code('s = s + u'), second = order ? code('s = s + u') : code(`u = ${q}*u`);
+          return item('Ordre des instructions', `Initialement u = ${a} et s = 0. On répète ${n} fois : d’abord ${first}, puis ${second}.`,
+            [Q('s final', s), Q('u final', u)],
+            C('on suit les variables passage par passage, dans l’ordre exact des instructions (un tableau passage / valeur ajoutée / nouvelle valeur de u aide).',
+              [`Valeurs ajoutées à s : ${added.join(' ; ')}.`, `s = ${added.join(' + ')} = ${s} et u = ${a} × ${q}<sup>${n}</sup> = ${u}.`],
+              order ? `s = ${s} : chaque nouvelle valeur de u est ajoutée après la multiplication ; u vaut ${u}.` : `s = ${s} : la dernière valeur de u (${u}) n’a pas été ajoutée.`),
+            'Fais un tableau avec trois colonnes : passage, valeur ajoutée, nouvelle valeur de u.');
+        }
+      }),
+      T({ // Construire la ligne suivante de Pascal
+        base: {n: 4, k1: 1, k2: 2},
+        params: r => { const n = r.int(3, 9), [k1, k2] = r.pickDistinct(Array.from({length: n}, (_, j) => j + 1), 2).sort((a, b) => a - b); return {n, k1, k2}; },
+        difficulty: ({n, k1, k2}) => score({steps: 3, values: [n + 1, binom(n + 1, k1), binom(n + 1, k2)]}),
+        verify: ({n, k1, k2}, v) => v[0] === binom(n, k1 - 1) + binom(n, k1) && v[1] === binom(n, k2 - 1) + binom(n, k2),
+        build: ({n, k1, k2}) => {
+          const row = Array.from({length: n + 1}, (_, j) => binom(n, j)), next = Array.from({length: n + 2}, (_, j) => binom(n + 1, j));
+          return item('Construire la ligne suivante de Pascal', `On a construit la ligne n = ${n} du triangle de Pascal : ${row.join(' ; ')}. On veut la ligne n = ${n + 1}, dont les positions commencent en k = 0.`,
+            [Q(`Coefficient en k = ${k1}`, binom(n + 1, k1)), Q(`Coefficient en k = ${k2}`, binom(n + 1, k2))],
+            C('la nouvelle ligne commence et finit par 1 ; chaque coefficient intérieur est la somme des deux coefficients voisins de la ligne précédente.',
+              [`Ligne ${n + 1} : ${next.join(' ; ')}.`, `En k = ${k1} : ${binom(n, k1 - 1)} + ${binom(n, k1)} = ${binom(n + 1, k1)} ; en k = ${k2} : ${binom(n, k2 - 1)} + ${binom(n, k2)} = ${binom(n + 1, k2)}.`],
+              `les coefficients cherchés valent ${binom(n + 1, k1)} et ${binom(n + 1, k2)}.`),
+            'Construis une nouvelle liste : modifier l’ancienne pendant sa lecture peut corrompre les sommes.');
+        }
+      }),
+      T({ // Recopie dans le tableur
+        base: {v: 110, kind: 0, coef: 1.1},
+        params: r => ({v: 10 * r.int(5, 30), kind: r.int(0, 1), coef: r.pick([1.05, 1.1, 1.2, 0.9, 0.95])}),
+        difficulty: ({v, coef}) => score({steps: 2, values: [v, coef, v * coef]}),
+        verify: ({v, kind, coef}, x) => x[0] === (kind ? '=B2*C2' : '=B2*$E$1') && close(x[1], v * coef),
+        build: ({v, kind, coef}) => {
+          const formula = kind ? '=B2*C2' : '=B2*$E$1';
+          const intro = kind
+            ? `B2 contient ${v} et C2 contient ${fr(coef)}. En B3, on veut multiplier B2 par le coefficient de la même ligne, écrit dans la colonne C, puis recopier vers le bas : chaque ligne utilise son propre coefficient.`
+            : `B2 contient ${v} et E1 contient ${fr(coef)}. En B3, on veut multiplier B2 par le coefficient de E1, puis recopier vers le bas en gardant toujours E1.`;
+          return item('Recopie dans le tableur', intro,
+            [choice('Formule en B3', formula, ['=B2*$E$1', '=B2*E1', '=$B$2*E1', '=B2*C2'], {shuffle: true}), Q('Valeur de B3', v * coef)],
+            C('une référence relative (B2) se décale lors de la recopie ; une référence absolue ($E$1) reste fixe.',
+              [kind ? 'Le coefficient change à chaque ligne : on garde des références relatives, =B2*C2 devenant =B3*C3 en B4.' : 'Le coefficient est commun à toutes les lignes : on fige E1 avec $E$1 ; recopiée en B4, la formule devient =B3*$E$1.',
+               `B3 = ${v} × ${fr(coef)} = ${fr(F(v * coef, 6))}.`],
+            `on écrit ${formula} en B3, qui vaut ${fr(F(v * coef, 6))}.`),
+            kind ? 'Chaque ligne a son coefficient : aucune référence ne doit être figée.' : 'Fige le coefficient commun, pas le terme précédent.');
+        }
+      }),
+      T({ // Filtrer avec deux conditions
+        base: {c: 1, limit: 2, par: 0, op: 0},
+        params: r => { const c = r.int(1, 20); return {c, limit: c + r.int(0, 3), par: r.int(0, 1), op: r.int(0, 1)}; },
+        accept: ({c, limit, par, op}) => { const l = Array.from({length: 6}, (_, i) => c + i), ok = x => (x % 2 === 0) === (par === 0), f = l.filter(x => (op ? x > limit || ok(x) : x > limit && ok(x))); return f.length >= 1 && f.length <= 5; },
+        difficulty: ({c}) => score({steps: 3, values: [c, c + 5, 3 * c + 9]}),
+        verify: ({c, limit, par, op}, v) => { const l = Array.from({length: 6}, (_, i) => c + i), ok = x => (x % 2 === 0) === (par === 0), f = l.filter(x => (op ? x > limit || ok(x) : x > limit && ok(x))); return v[0] === f.length && v[1] === f.reduce((a, b) => a + b, 0); },
+        build: ({c, limit, par, op}) => {
+          const l = Array.from({length: 6}, (_, i) => c + i), ok = x => (x % 2 === 0) === (par === 0), f = l.filter(x => (op ? x > limit || ok(x) : x > limit && ok(x)));
+          const cond = `x > ${limit} ${op ? 'or' : 'and'} x % 2 == ${par ? 1 : 0}`, name = par ? 'impaires' : 'paires';
+          return item('Filtrer avec deux conditions', `La liste est [${l.join(', ')}]. On garde les valeurs strictement supérieures à ${limit} ${op ? 'OU' : 'ET'} ${name}.`,
+            [Q('Nombre de valeurs gardées', f.length), Q('Somme des valeurs gardées', f.reduce((a, b) => a + b, 0))],
+            C(`en Python, la condition s’écrit ${code(cond)} ; avec ${op ? 'or, une seule des deux conditions suffit' : 'and, les deux conditions doivent être vraies en même temps'}.`,
+              [`Valeurs conservées : ${f.join(' ; ')}.`],
+              `on garde ${f.length} valeur${f.length > 1 ? 's' : ''}, de somme ${f.reduce((a, b) => a + b, 0)}.`),
+            op ? 'Avec OU, une valeur est gardée dès qu’elle vérifie l’une des deux conditions.' : 'Une valeur doit respecter les deux conditions simultanément ; ET ne signifie pas OU.');
+        }
+      }),
+      T({ // Simuler une Bernoulli
+        base: {p: 0.3, draws: [0.1, 0.2, 0.4, 0.5, 0.7, 0.9]},
+        params: r => { const p = r.int(2, 8) / 10; return {p, draws: r.pickDistinct([0.05, 0.1, 0.15, 0.2, 0.3, 0.35, 0.4, 0.5, 0.55, 0.6, 0.7, 0.75, 0.8, 0.9, 0.95, p], 6).sort((a, b) => a - b)}; },
+        accept: ({p, draws}) => { const n = draws.filter(x => x < p).length; return n >= 1 && n <= 5; },
+        difficulty: ({p}) => score({steps: 2, values: [p, 6]}),
+        verify: ({p, draws}, v) => v[0] === draws.filter(x => x < p).length && close(v[1], v[0] / 6),
+        build: ({p, draws}) => {
+          const won = draws.filter(x => x < p), equal = draws.some(x => x === p);
+          return item('Simuler une Bernoulli', `Probabilité p = ${fr(p)}. Pour lire l’algorithme, on fournit six tirages U : ${draws.map(fr).join(' ; ')}. Il y a succès lorsque U < p.`,
+            [Q('Nombre de succès', won.length), Q('Fréquence observée', won.length / 6)],
+            C('on compte les tirages strictement inférieurs à p ; la fréquence est ce nombre divisé par le nombre de tirages.',
+              [`Tirages inférieurs à ${fr(p)} : ${won.map(fr).join(' ; ')}${equal ? ` (le tirage égal à ${fr(p)} n’est pas compté)` : ''}.`, `Fréquence : ${won.length}/6 ${eq(won.length / 6)}.`],
+              `on obtient ${won.length} succès, soit une fréquence ${eq(won.length / 6)}. Une vraie simulation utilise un générateur pseudo-aléatoire.`),
+            'Lis le symbole < : une valeur égale à p n’est pas comptée par cet algorithme.');
+        }
+      })
     ]
   };
+  // Bruits de moyenne nulle, lois à trois valeurs et décalages d'échantillons.
+  const PATTERNS = [[1, -1, -1, 1], [-1, 1, 1, -1], [2, -1, -2, 1], [0, 1, -1, 0]];
+  const LAWS = [[0.2, 0.5, 0.3], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4], [0.25, 0.5, 0.25], [0.4, 0.4, 0.2]];
+  const OFFSETS = [[0, 1, -1, 2], [0, 2, -1, 1], [1, 0, 2, -1]];
+
   const basics = {
-    't-suites':['Distingue un terme, une raison et une somme.','Additionne 10 + 20 + 30.','60','Regroupe 10 et 30, puis ajoute 20.'],
-    't-exponentielles':['Une \u00e9volution relative constante se traduit par des multiplications.','Calcule 2 puissance 3.','8','Multiplie trois facteurs \u00e9gaux \u00e0 2.'],
-    't-logarithme':['Le logarithme d\u00e9cimal retrouve un exposant de dix.','Calcule log(100).','2','Cherche k tel que 10 puissance k vaut 100.'],
-    't-inverse':['V\u00e9rifie le domaine : on ne divise jamais par z\u00e9ro.','Calcule 1/4.','0.25','Une fraction exacte ou 0,25 convient.'],
-    't-statistiques':['Rep\u00e8re les variables, les unit\u00e9s et le mod\u00e8le propos\u00e9.','Calcule la moyenne de 2 et 4.','3','Additionne les deux valeurs puis divise par deux.'],
-    't-conditionnelles':['Pr\u00e9cise la population sur laquelle porte la probabilit\u00e9.','Un chemin porte 0,5 puis 0,4. Quelle est sa probabilit\u00e9 ?','0.2','Multiplie les probabilit\u00e9s le long du chemin.'],
-    't-binomiale':['X compte des succ\u00e8s parmi un nombre fix\u00e9 d\u2019essais ind\u00e9pendants.','Avec trois essais, combien de chemins ont un seul succ\u00e8s ?','3','Place le succ\u00e8s en premi\u00e8re, deuxi\u00e8me ou troisi\u00e8me position.'],
-    't-variables':['Ne confonds pas moyenne th\u00e9orique et r\u00e9sultat observ\u00e9.','X vaut 0 ou 10, chaque valeur avec probabilit\u00e9 0,5. Calcule E(X).','5','Calcule 0 fois 0,5 plus 10 fois 0,5.'],
-    't-outils':['Suis les variables ligne par ligne, sans changer l\u2019ordre des instructions.','On part de s=0 et on ajoute 3 deux fois. Que vaut s ?','6','Les valeurs successives sont 0, puis 3, puis la valeur finale.']
+    't-suites': ['Distingue un terme, une raison et une somme.', 'Additionne 10 + 20 + 30.', '60', 'Regroupe 10 et 30, puis ajoute 20.'],
+    't-exponentielles': ['Une évolution relative constante se traduit par des multiplications.', 'Calcule 2 puissance 3.', '8', 'Multiplie trois facteurs égaux à 2.'],
+    't-logarithme': ['Le logarithme décimal retrouve un exposant de dix.', 'Calcule log(100).', '2', 'Cherche k tel que 10 puissance k vaut 100.'],
+    't-inverse': ['Vérifie le domaine : on ne divise jamais par zéro.', 'Calcule 1/4.', '0.25', 'Une fraction exacte ou 0,25 convient.'],
+    't-statistiques': ['Repère les variables, les unités et le modèle proposé.', 'Calcule la moyenne de 2 et 4.', '3', 'Additionne les deux valeurs puis divise par deux.'],
+    't-conditionnelles': ['Précise la population sur laquelle porte la probabilité.', 'Un chemin porte 0,5 puis 0,4. Quelle est sa probabilité ?', '0.2', 'Multiplie les probabilités le long du chemin.'],
+    't-binomiale': ['X compte des succès parmi un nombre fixé d’essais indépendants.', 'Avec trois essais, combien de chemins ont un seul succès ?', '3', 'Place le succès en première, deuxième ou troisième position.'],
+    't-variables': ['Ne confonds pas moyenne théorique et résultat observé.', 'X vaut 0 ou 10, chaque valeur avec probabilité 0,5. Calcule E(X).', '5', 'Calcule 0 fois 0,5 plus 10 fois 0,5.'],
+    't-outils': ['Suis les variables ligne par ligne, sans changer l’ordre des instructions.', 'On part de s = 0 et on ajoute 3 deux fois. Que vaut s ?', '6', 'Les valeurs successives sont 0, puis 3, puis la valeur finale.']
   };
-  const clean = s => s.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
-  for (const [slug, list] of Object.entries(models)) {
-    V.register(slug, list.map(make => cycle => make(1+(cycle-1)%24)));
-  }
-  window.TerminaleExercises = {slugs:Object.keys(models), count:6, binom, mass, cumulative};
+  const clean = s => V.visible(s).replace(/⟨code⟩/g, '').replace(/\s+/g, ' ').trim();
+  for (const [slug, list] of Object.entries(models)) V.register(slug, list);
+  window.TerminaleExercises = {slugs: Object.keys(models), count: 6, binom, mass, cumulative};
   window.ExerciseCoaching = {
-    context: exercise => exercise ? exercise.statement : '',
-    build: (slug,index,exercise) => {
+    context: exercise => (exercise ? exercise.statement : ''),
+    build: (slug, index, exercise) => {
       if (!basics[slug] || !exercise) return null;
-      const b=basics[slug];
-      return {hints:[b[0],exercise.hint,'Dans cet essai : '+clean(exercise.statement)],
-        diagnose:'Piste \u00e0 v\u00e9rifier : '+exercise.hint,
-        bridge:{q:'Exemple ind\u00e9pendant : '+b[1],a:b[2],help:b[3]}};
+      const b = basics[slug];
+      return {hints: [b[0], clean(exercise.hint), 'Dans cet essai : ' + clean(exercise.statement)],
+        diagnose: 'Piste à vérifier : ' + clean(exercise.hint),
+        bridge: {q: 'Exemple indépendant : ' + b[1], a: b[2], help: b[3]}};
     }
   };
   if (typeof document !== 'undefined') {
-    const root=document.querySelector('[data-terminale-chapter]');
-    const node=document.getElementById('exercise-data');
+    const root = document.querySelector('[data-terminale-chapter]');
+    const node = document.getElementById('exercise-data');
     if (root && node) {
-      const slug=root.dataset.terminaleChapter;
-      if (!models[slug]) throw new Error('Chapitre Terminale inconnu : '+slug);
-      node.textContent=JSON.stringify({slug,exercises:models[slug].map((_,i)=>V.generate(slug,i,1))});
+      const slug = root.dataset.terminaleChapter;
+      if (!models[slug]) throw new Error('Chapitre Terminale inconnu : ' + slug);
+      node.textContent = JSON.stringify({slug, exercises: models[slug].map((_, i) => V.original(slug, i))});
     }
   }
 })();

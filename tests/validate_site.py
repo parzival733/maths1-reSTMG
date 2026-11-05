@@ -16,6 +16,10 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
+# Chapitre → générateur, lu dans les fichiers eux-mêmes (appels à register).
+GENERATOR = {slug: path.stem.removeprefix('variants-')
+             for path in sorted((ROOT / 'assets').glob('variants-*.js'))
+             for slug in re.findall(r"register\('([a-z0-9-]+)'", path.read_text(encoding='utf-8'))}
 COURSES = ['fonctions', 'second-degre', 'suites', 'suites-arithmetiques',
            'suites-geometriques', 'derivees', 'variations',
            'statistiques-deux-variables', 'probabilites-conditionnelles',
@@ -159,12 +163,13 @@ def main():
         lesson = pages[(ROOT / 'cours' / f'{slug}.html').resolve()]
         assert f'../exercices/{slug}.html' in lesson.links, slug
 
-        # Toutes les séries disposent du même moteur et des variantes par thème.
-        for filename in ('exercices-renderer.js','exercices-variants.js',
-                         'variants-fonctions.js','variants-suites.js',
-                         'variants-analyse.js','variants-probabilites.js',
-                         'variants-reperes.js','variants-donnees.js','exercices.js'):
+        # Toutes les séries disposent du même moteur ; chacune ne charge que le
+        # générateur de son chapitre, pour garder des pages légères.
+        own = 'variants-' + GENERATOR[slug] + '.js'
+        for filename in ('exercices-renderer.js','exercices-variants.js', own, 'exercices.js'):
             assert any(link.startswith('../assets/' + filename) for link in page.links), (slug, filename)
+        loaded = {link.split('/')[-1].split('?')[0] for link in page.links if '/assets/variants-' in link}
+        assert loaded == {own}, (slug, sorted(loaded))
 
         if slug == 'fonctions':
             assert page.classes['exercise-block'] == 9

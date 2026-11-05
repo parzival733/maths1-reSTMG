@@ -44,7 +44,8 @@
     const hint = exercise.hint
       ? '<details class="hint"><summary>Indice</summary><p>' + exercise.hint + '</p></details>' : '';
     const correction = Array.isArray(exercise.correction) ? exercise.correction : [exercise.correction];
-    const paragraphs = correction.map(p => '<p>' + p + '</p>').join('');
+    // Un tableau (tableau de signes ou de variations) n'est pas placé dans un paragraphe.
+    const paragraphs = correction.map(p => (/^\s*<(div|table)\b/i.test(p) ? p : '<p>' + p + '</p>')).join('');
     const fields = exercise.fields.map(makeInput).join('');
     return '<article class="exercise-block" id="exercice-' + (index + 1) + '">'
       + '<div class="exercise-workspace">'

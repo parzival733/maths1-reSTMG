@@ -5,7 +5,7 @@ window.ExerciseCoaching.register("suites", [
   [
     "Une formule explicite donne directement le terme de rang n.",
     "Commence par remplacer n par les rangs demandés, sans oublier le rang zéro.",
-    "remplace n successivement par 0, 2 et 5 dans la formule. Respecte les priorités : multiplication avant addition.",
+    "remplace n successivement par chacun des rangs demandés dans la formule. Respecte les priorités : multiplication avant addition.",
     "le terme u₀ n'est pas le terme où tu remplaces n par 1.",
     [
       "Si uₙ = 4 + 3n, combien vaut u₂ ?",
@@ -16,7 +16,7 @@ window.ExerciseCoaching.register("suites", [
   [
     "Une relation de récurrence permet de passer d'un terme au suivant.",
     "Repère la valeur initiale et la quantité constante ajoutée à chaque étape.",
-    "pour obtenir u₃, effectue trois ajouts depuis u₀ ; pour u₆, six ajouts. Tu peux aussi écrire uₙ = u₀ + nr.",
+    "pour obtenir le terme de rang k, effectue k ajouts de la raison depuis u₀. Tu peux aussi écrire uₙ = u₀ + nr.",
     "ne confonds pas le nombre d'étapes avec le numéro du premier terme.",
     [
       "Si u₀ = 5 et uₙ₊₁ = uₙ + 2, combien vaut u₃ ?",
@@ -25,10 +25,10 @@ window.ExerciseCoaching.register("suites", [
     ]
   ],
   [
-    "Une suite géométrique multiplie chaque terme par un même nombre q.",
+    "Compare la façon de passer d’un terme au suivant : ajout d’un même nombre (arithmétique) ou multiplication par un même nombre (géométrique).",
     "Repère le terme de départ et le facteur de multiplication.",
-    "calcule v₀ avec l'exposant 0, puis v₁ avec q et v₂ avec q². Vérifie la nature en comparant les quotients de deux termes.",
-    "une raison géométrique se multiplie ; elle ne s'ajoute pas à chaque rang.",
+    "calcule v₀, v₁ et v₂ avec la formule (un exposant 0 donne 1). Compare ensuite les différences, puis les quotients, de deux termes consécutifs.",
+    "une raison géométrique se multiplie, une raison arithmétique s’ajoute : ne confonds pas les deux.",
     [
       "Si vₙ = 10 × 0,5ⁿ, combien vaut v₂ ?",
       "2.5",
@@ -36,9 +36,9 @@ window.ExerciseCoaching.register("suites", [
     ]
   ],
   [
-    "Une suite arithmétique peut avoir une raison négative.",
-    "Calcule les trois termes en retirant la même quantité à chaque étape.",
-    "pars du terme au rang zéro et retranche la raison positive une, deux puis trois fois ; la suite décroît si l'écart est négatif.",
+    "Une suite arithmétique ajoute la même quantité à chaque rang ; cette raison peut être négative.",
+    "Calcule les trois termes en appliquant la même opération à chaque étape.",
+    "pars du terme au rang zéro et applique la relation une, deux puis trois fois ; la suite croît si l’écart wₙ₊₁ − wₙ est positif et décroît s’il est négatif.",
     "écrire une soustraction récurrente équivaut à ajouter une raison négative.",
     [
       "Si w₀ = 12 et qu'on retranche 3 à chaque étape, combien vaut w₂ ?",
@@ -47,7 +47,7 @@ window.ExerciseCoaching.register("suites", [
     ]
   ],
   [
-    "Pour reconnaître une suite arithmétique, compare les différences consécutives.",
+    "Pour reconnaître une suite, compare d’abord les différences consécutives, puis si besoin les quotients.",
     "Calcule d'abord les images pour trois rangs consécutifs.",
     "évalue u₁, u₂ et u₃, puis calcule u₂ − u₁ et u₃ − u₂ ; compare ces écarts avant de conclure.",
     "les différences d'une formule quadratique ne sont généralement pas constantes.",
@@ -58,9 +58,9 @@ window.ExerciseCoaching.register("suites", [
     ]
   ],
   [
-    "Un stock augmente chaque semaine d'une quantité constante.",
-    "Identifie le stock initial et la quantité ajoutée par semaine.",
-    "écris l'inégalité stock initial + raison × n ≥ seuil, isole n, puis prends le premier rang entier autorisé.",
+    "Une quantité qui augmente de la même valeur à chaque période se modélise par une suite arithmétique.",
+    "Identifie la valeur initiale et la quantité ajoutée à chaque période.",
+    "écris l’inégalité valeur initiale + raison × n ≥ seuil, isole n, puis prends le premier rang entier autorisé.",
     "un seuil atteint exactement compte lorsque l'inégalité contient ≥.",
     [
       "À partir de 20 objets, on ajoute 5 par semaine. Premier rang où il y en a au moins 35 ?",
@@ -95,8 +95,8 @@ window.ExerciseCoaching.register("suites-arithmetiques", [
   [
     "Une suite arithmétique conserve la même différence entre termes consécutifs.",
     "Soustrais deux termes voisins pour trouver la raison.",
-    "vérifie que toutes les différences successives sont égales, puis ajoute cette raison au dernier terme affiché.",
-    "la raison arithmétique est une différence, et non un quotient.",
+    "si les différences successives sont égales, la suite est arithmétique : ajoute la raison au dernier terme ; sinon, vérifie si les quotients sont égaux et multiplie par cette raison.",
+    "la raison arithmétique est une différence, la raison géométrique un quotient.",
     [
       "Dans la suite 3 ; 7 ; 11, quelle est la raison ?",
       "4",
@@ -104,9 +104,9 @@ window.ExerciseCoaching.register("suites-arithmetiques", [
     ]
   ],
   [
-    "Une suite arithmétique de raison négative perd la même quantité à chaque rang.",
-    "Repère le terme initial et le montant de la diminution.",
-    "utilise uₙ = u₀ − montant × n pour les rangs 1, 4 et 6 ; indique le sens de variation en observant la raison.",
+    "Une suite arithmétique ajoute la même quantité à chaque rang ; le signe de la raison donne le sens de variation.",
+    "Repère le terme initial et la raison, avec son signe.",
+    "utilise uₙ = u₀ + n × r pour les rangs 1, 4 et 6 ; indique le sens de variation en observant le signe de la raison.",
     "une raison négative produit une suite décroissante, pas nécessairement des termes négatifs.",
     [
       "Si u₀ = 20 et la raison vaut −3, combien vaut u₂ ?",
@@ -115,9 +115,9 @@ window.ExerciseCoaching.register("suites-arithmetiques", [
     ]
   ],
   [
-    "Connaître u₃ et la raison permet de remonter au terme u₀.",
-    "Reviens de trois rangs en soustrayant trois fois la raison.",
-    "calcule d'abord u₀ = u₃ − 3r, puis repars de u₀ avec u₁₀ = u₀ + 10r.",
+    "Connaître un terme et la raison permet de remonter au terme u₀.",
+    "Reviens au rang 0 en soustrayant la raison autant de fois que le rang connu.",
+    "calcule d’abord u₀ = uₖ − k × r, puis repars de u₀ avec uₙ = u₀ + n × r pour le rang demandé.",
     "si tu reviens en arrière, tu dois soustraire la raison et non l'ajouter.",
     [
       "Si u₃ = 14 et r = 3, combien vaut u₀ ?",
@@ -128,8 +128,8 @@ window.ExerciseCoaching.register("suites-arithmetiques", [
   [
     "Le premier rang qui atteint un seuil se détermine par une inégalité.",
     "Calcule le terme juste avant le seuil puis résous l'inégalité.",
-    "isole n dans u₀ + rn ≥ seuil ; vérifie ensuite le rang précédent pour confirmer qu'il ne convient pas.",
-    "la condition ≥ autorise l'égalité, contrairement à une condition strictement supérieure.",
+    "isole n dans l’inéquation (≥ pour une suite croissante, ≤ pour une suite décroissante) ; vérifie ensuite le rang précédent pour confirmer qu’il ne convient pas.",
+    "une condition large (≥ ou ≤) autorise l’égalité, contrairement à une condition stricte.",
     [
       "Si uₙ = 10 + 2n, quel est le premier rang où uₙ ≥ 18 ?",
       "4",
@@ -160,8 +160,8 @@ window.ExerciseCoaching.register("suites-arithmetiques", [
   ],
   [
     "Une suite arithmétique garde les écarts, une géométrique garde les rapports.",
-    "Calcule des différences dans A et des quotients dans B.",
-    "compare deux différences consécutives de A et deux quotients consécutifs de B, puis lis séparément chaque raison.",
+    "Calcule les différences et les quotients successifs dans chacune des deux suites.",
+    "la suite dont les différences sont constantes est arithmétique ; celle dont les quotients sont constants est géométrique. Lis ensuite chaque raison.",
     "ne choisis pas la nature à partir des seules valeurs : examine comment elles passent d'un rang au suivant.",
     [
       "Dans 2 ; 5 ; 8 ; 11, quelle est la raison arithmétique ?",
@@ -170,10 +170,10 @@ window.ExerciseCoaching.register("suites-arithmetiques", [
     ]
   ],
   [
-    "Une perte mensuelle constante se modélise par une suite arithmétique décroissante.",
-    "Distingue la valeur au bout de 12 mois et le premier mois strictement sous le seuil.",
-    "utilise u₁₂ = départ − 12r ; pour le seuil strict, trouve le rang où le niveau est égal puis avance d'un rang. Pour la somme, additionne les cinq premiers termes.",
-    "une inégalité strictement inférieure n'accepte pas le mois où le seuil est exactement atteint.",
+    "Une perte constante à chaque période se modélise par une suite arithmétique décroissante.",
+    "Distingue la valeur à un rang donné et le premier rang strictement sous le seuil.",
+    "utilise uₙ = départ − n × perte ; pour le seuil strict, trouve le rang où le niveau est égal puis avance d’un rang. Pour la somme, additionne les cinq premiers termes.",
+    "une inégalité strictement inférieure n’accepte pas le rang où le seuil est exactement atteint.",
     [
       "On a 40 clients puis on en perd 2 par mois. Combien au bout de 5 mois ?",
       "30",
@@ -197,7 +197,7 @@ window.ExerciseCoaching.register("suites-geometriques", [
     "Une récurrence géométrique multiplie chaque terme par le même coefficient q.",
     "Pars du terme de rang zéro et applique plusieurs fois le coefficient.",
     "écris u₁ = u₀ × q, u₂ = u₀ × q² et u₃ = u₀ × q³ ; convertis le facteur en pourcentage avec (q − 1) × 100.",
-    "un coefficient inférieur à 1 représente une baisse, même si tous les termes restent positifs.",
+    "un coefficient inférieur à 1 représente une baisse et un coefficient supérieur à 1 une hausse.",
     [
       "Si u₀ = 100 et q = 0,8, combien vaut u₁ ?",
       "80",
@@ -216,10 +216,10 @@ window.ExerciseCoaching.register("suites-geometriques", [
     ]
   ],
   [
-    "Une augmentation répétée se calcule avec un coefficient multiplicateur.",
+    "Une augmentation en pourcentage répétée se calcule avec un coefficient multiplicateur.",
     "Convertis le taux annuel en facteur 1 + taux/100.",
-    "multiplie le capital initial par q, puis par q² et q³ pour les années suivantes, sans arrondir trop tôt.",
-    "ne rajoute pas chaque année le même montant : l'augmentation porte sur le capital déjà augmenté.",
+    "multiplie la valeur initiale par q, puis par q² et q³ pour les périodes suivantes, sans arrondir trop tôt.",
+    "ne rajoute pas chaque période le même montant : l’augmentation porte sur la valeur déjà augmentée.",
     [
       "Un capital de 100 € augmente de 10 %. Combien vaut-il après un an ?",
       "110",
@@ -227,9 +227,9 @@ window.ExerciseCoaching.register("suites-geometriques", [
     ]
   ],
   [
-    "Un seuil est atteint au premier rang où le terme géométrique le dépasse ou lui est égal.",
+    "Le premier rang qui vérifie l’inégalité demandée se trouve en comparant deux termes voisins au seuil.",
     "Calcule deux rangs voisins autour du seuil.",
-    "teste le rang 3 puis le rang 4 dans uₙ = u₀ × qⁿ et compare chacun au seuil de l'énoncé.",
+    "calcule les deux termes demandés avec uₙ = u₀ × qⁿ et compare chacun au seuil de l’énoncé, dans le sens de l’inégalité.",
     "il faut justifier que le rang précédent est en dessous du seuil.",
     [
       "Si uₙ = 10 × 2ⁿ, premier rang où uₙ ≥ 70 ?",

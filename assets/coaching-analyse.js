@@ -5,7 +5,7 @@ window.ExerciseCoaching.register("derivees", [
   [
     "La pente d'une sécante compare deux points d'une courbe.",
     "Calcule séparément les deux images aux abscisses indiquées.",
-    "utilise le quotient (f(3) − f(1))/(3 − 1) ; au numérateur, calcule la variation verticale et au dénominateur, la variation horizontale.",
+    "utilise le quotient (f(x₂) − f(x₁))/(x₂ − x₁) avec les deux abscisses de l’énoncé ; au numérateur, la variation verticale et au dénominateur, la variation horizontale.",
     "le taux de variation se calcule avec une différence de deux images, pas leur somme.",
     [
       "Avec f(x) = x², quelle est la pente de la sécante entre x = 1 et x = 3 ?",
@@ -38,8 +38,8 @@ window.ExerciseCoaching.register("derivees", [
   [
     "Une tangente à f(x) au point x₀ a pour pente f′(x₀) et passe par (x₀ ; f(x₀)).",
     "Calcule la valeur de la fonction puis sa dérivée à l'abscisse indiquée.",
-    "forme m = f′(x₀), puis l'équation y = m(x − x₀) + f(x₀). Développe-la pour isoler l'ordonnée à l'origine b.",
-    "le coefficient b se calcule avec le point de tangence : b = f(x₀) − m x₀.",
+    "forme m = f′(x₀), puis l’équation y = m(x − x₀) + f(x₀). Développe-la pour isoler l’ordonnée à l’origine.",
+    "l’ordonnée à l’origine se calcule avec le point de tangence : p = f(x₀) − m x₀.",
     [
       "Pour f(x) = x², quelle est la pente de la tangente en x = 2 ?",
       "4",
@@ -49,7 +49,7 @@ window.ExerciseCoaching.register("derivees", [
   [
     "La dérivée d'une fonction affine ax + b est la constante a.",
     "Cherche le coefficient de x avant d'étudier la variation.",
-    "recopie a comme valeur de la dérivée, calcule g(2) en remplaçant x par 2, puis examine le signe de a pour la croissance.",
+    "recopie a comme valeur de la dérivée, calcule l’image en remplaçant x par l’abscisse demandée, puis examine le signe de a pour le sens de variation.",
     "la constante ajoutée à la fonction n'intervient pas dans sa dérivée.",
     [
       "Si g(x) = 5x + 2, combien vaut g′(2) ?",
@@ -69,10 +69,10 @@ window.ExerciseCoaching.register("derivees", [
     ]
   ],
   [
-    "Une tangente de pente négative est une droite décroissante.",
+    "Le signe du coefficient directeur d’une tangente donne son sens de variation.",
     "Calcule d'abord l'ordonnée du point où elle touche la courbe.",
-    "écris la droite y = mx + b, remplace x par l'abscisse du point et y par l'image ; résous pour b, puis observe le signe de m.",
-    "le carré d'un nombre négatif est positif, mais la pente de la tangente peut rester négative.",
+    "écris la droite y = mx + p, remplace x par l’abscisse du point et y par l’image ; résous pour p, puis observe le signe de m.",
+    "le carré d’un nombre négatif est positif, mais la pente de la tangente peut être négative.",
     [
       "La droite y = −2x + b passe par (1 ; 3). Combien vaut b ?",
       "5",
@@ -95,7 +95,7 @@ window.ExerciseCoaching.register("variations", [
   [
     "On dérive un polynôme terme à terme.",
     "Repère les termes en x², en x et la constante.",
-    "utilise (ax²)' = 2ax, (bx)' = b et (c)' = 0 ; pour f′(1), remplace ensuite x par 1.",
+    "utilise (ax²)′ = 2ax, (bx)′ = b et (c)′ = 0 ; remplace ensuite x par la valeur demandée.",
     "la dérivée d'une constante est zéro ; veille au signe du coefficient de x.",
     [
       "Dans f(x) = 3x² − 4x + 1, quel est le coefficient de x dans f′(x) ?",
@@ -106,7 +106,7 @@ window.ExerciseCoaching.register("variations", [
   [
     "La dérivée de x³ est 3x² et celle de x² est 2x.",
     "Dérive le terme cubique puis le terme quadratique.",
-    "écris g′(x) = 3ax² − 2bx, puis calcule g′(2) en utilisant 2² = 4.",
+    "écris g′(x) = 3ax² + 2bx avec les coefficients de g (et leurs signes), puis remplace x par la valeur demandée.",
     "n'oublie ni les exposants qui diminuent de un, ni le signe du terme négatif.",
     [
       "Si g(x) = x³ − 2x², combien vaut g′(2) ?",
@@ -117,8 +117,8 @@ window.ExerciseCoaching.register("variations", [
   [
     "Le signe de la dérivée donne le sens de variation de la fonction.",
     "Cherche d'abord la valeur qui annule f′(x).",
-    "factorise la dérivée sous la forme 2(x − h) puis étudie son signe de part et d'autre de h ; calcule le minimum en annulant le carré de f.",
-    "le zéro de la dérivée est l'abscisse du minimum et non sa valeur.",
+    "écris f′(x) = 2a(x − h), étudie son signe de part et d’autre de h (il dépend du signe de a), puis calcule f(h), valeur de l’extremum.",
+    "le zéro de la dérivée est l’abscisse de l’extremum et non sa valeur.",
     [
       "Pour f(x) = (x − 3)² − 5, quelle est la valeur minimale ?",
       "-5",
@@ -127,8 +127,8 @@ window.ExerciseCoaching.register("variations", [
   ],
   [
     "Une parabole tournée vers le bas atteint un maximum à son sommet.",
-    "Repère le centre du carré et la constante ajoutée.",
-    "développe B′(x) = −2a(x − h) pour lire ses coefficients ; annule B′ pour retrouver la quantité optimale et évalue B au sommet.",
+    "Calcule d’abord B′(x) à partir de l’expression développée.",
+    "lis les coefficients de B′(x) = ax + b ; annule B′ pour retrouver la quantité optimale, évalue B en ce point, puis convertis selon l’unité de l’énoncé.",
     "ne confonds pas la quantité optimale en abscisse et le montant du bénéfice maximal.",
     [
       "Pour B(x) = −2(x − 3)² + 12, quelle quantité maximise B ?",
@@ -139,8 +139,8 @@ window.ExerciseCoaching.register("variations", [
   [
     "Une dérivée factorisée en (x − r)(x + r) s'annule en deux valeurs opposées.",
     "Commence par trouver les deux racines du facteur x² − d².",
-    "sépare l'axe en trois intervalles ; entre −d et d, x² − d² est négatif. Calcule ensuite les valeurs de la fonction aux bornes critiques.",
-    "une dérivée négative indique une fonction décroissante sur l'intervalle considéré.",
+    "sépare l’intervalle en trois parties ; entre −d et d, x² − d² est négatif, puis tiens compte du signe du coefficient devant. Calcule ensuite les valeurs de la fonction aux zéros.",
+    "une dérivée négative indique une fonction décroissante, une dérivée positive une fonction croissante.",
     [
       "La dérivée 3(x² − 4) a combien de zéros réels ?",
       "2",
@@ -150,8 +150,8 @@ window.ExerciseCoaching.register("variations", [
   [
     "Factoriser la dérivée permet de repérer ses zéros et son signe.",
     "Mets en facteur le coefficient commun et x.",
-    "écris p′(x) = m × x × (x − A), puis étudie le signe du produit dans l'intervalle entre 0 et A.",
-    "entre les zéros positifs 0 et A, un facteur est positif et l'autre négatif.",
+    "écris p′(x) = m × x × (x − A), puis étudie le signe du produit entre les deux zéros 0 et A, sans oublier le signe de m.",
+    "entre les deux zéros, x et x − A sont de signes contraires.",
     [
       "Quel est le second zéro de p′(x) = 2x(x − 5) ?",
       "5",
@@ -196,7 +196,7 @@ window.ExerciseCoaching.register("statistiques-deux-variables", [
   [
     "Une droite passant par deux points est déterminée par une pente et une ordonnée à l'origine.",
     "Calcule le changement de y puis le changement de x entre A et B.",
-    "utilise a = (yB − yA)/(xB − xA), puis b = yA − axA. Pour prévoir en x = 4, remplace x dans y = ax + b.",
+    "utilise a = (yB − yA)/(xB − xA), puis b = yA − a × xA. Pour prévoir, remplace x par la valeur demandée dans y = ax + b.",
     "soustrais les coordonnées dans le même ordre au numérateur et au dénominateur.",
     [
       "Pour A(1 ; 3) et B(3 ; 7), quelle est la pente de la droite ?",
@@ -207,7 +207,7 @@ window.ExerciseCoaching.register("statistiques-deux-variables", [
   [
     "La pente d'un modèle linéaire donne la variation prévue de y pour une unité supplémentaire de x.",
     "Lis d'abord le coefficient devant x puis la constante.",
-    "pour la prévision, remplace x par la valeur demandée dans y = ax + b ; le gain pour une campagne de plus correspond à la pente a.",
+    "pour la prévision, remplace x par la valeur demandée dans y = ax + b ; la variation de y pour une unité de x en plus correspond à la pente a.",
     "l'ordonnée à l'origine b n'est pas le gain marginal : c'est la valeur du modèle à x = 0.",
     [
       "Si y = 4x + 2, quelle valeur obtient-on pour x = 3 ?",
@@ -251,7 +251,7 @@ window.ExerciseCoaching.register("statistiques-deux-variables", [
   [
     "Le domaine observé aide à juger la fiabilité d'une prévision.",
     "Repère la plage des abscisses mesurées puis classe les deux valeurs à prévoir.",
-    "substitue x = 30 et x = 70 dans l'expression de la droite ; détermine ensuite laquelle des deux abscisses sort de l'intervalle des observations.",
+    "substitue les deux abscisses dans l’expression de la droite ; détermine ensuite laquelle sort de l’intervalle des observations.",
     "ne confonds pas calcul mathématique possible et prévision statistiquement prudente.",
     [
       "Si on a mesuré pour 1 ≤ x ≤ 5, x = 8 est-il hors de la plage ? (oui/non)",
@@ -261,9 +261,9 @@ window.ExerciseCoaching.register("statistiques-deux-variables", [
   ],
   [
     "Une liaison statistique montre une association, pas nécessairement une cause.",
-    "Observe l'évolution des ventes quand la publicité augmente d'une unité.",
-    "calcule la pente à partir de deux couples, puis l'ordonnée à l'origine. Réponds séparément à la question de causalité : d'autres facteurs peuvent expliquer l'association.",
-    "une droite bien ajustée ne démontre pas, à elle seule, que la publicité cause la hausse des ventes.",
+    "Observe l’évolution de la seconde grandeur quand la première augmente d’une unité.",
+    "calcule la pente à partir de deux couples, puis l’ordonnée à l’origine. Réponds ensuite à la question : une variation commune (corrélation) n’établit pas une cause, d’autres facteurs peuvent intervenir.",
+    "une droite bien ajustée ne démontre pas, à elle seule, qu’une grandeur cause l’autre.",
     [
       "Entre (1 ; 2) et (2 ; 5), quelle est la pente ?",
       "3",

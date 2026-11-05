@@ -113,3 +113,24 @@ Pas de refonte en framework, de base de données centrale, de compte obligatoire
 Conserver cette architecture et ce périmètre B. La réception logicielle s'appuie sur des preuves reproductibles ; l'efficacité en classe n'est pas une propriété que les tests unitaires puissent certifier. L'observation d'élèves et la relecture par un professeur tiers sont décrites dans validation-humaine.md, sans prétendre qu'elles ont été réalisées.
 
 La conformité intégrale RGAA/WCAG n'est pas attestée par axe ou par l'arbre d'accessibilité. Les PDF tiers restent hors contrôle. Les informations civiles de l'éditeur doivent être fournies et validées par celui-ci. Ces réserves sont explicites ; elles ne sont ni masquées ni remplacées par un pourcentage fictif d'achèvement.
+
+## 10. Lot 1 du 5 novembre 2026 : variantes à graine et niveau stable
+
+### Diagnostic vérifié dans le code
+
+- `assets/exercices.js` tirait un décalage `offset` (0 à 23) au chargement, puis chaque « Nouvelle variante » faisait `cycle++` ; `pad(c) = 2 + (c % 24)` donnait un paramètre `k` qui augmentait de 1 à chaque clic et revenait de 25 à 2. La Terminale faisait de même avec `make(1 + (cycle − 1) % 24)`. La suite était prévisible et limitée à 24 états.
+- Les paramètres dérivaient presque tous de `k` (`k + n`, `a × k`, `1 + k % 3`) : la taille des nombres changeait d’un clic à l’autre (par exemple `derivees`, exercice 6 : x jusqu’à 35 et C(35) ≈ 4 790 sans calculatrice), les signes étaient figés et les réponses à choix toujours les mêmes (« Vers le haut », « Négatif », « Non »…).
+
+### Ce qui a été construit
+
+- `assets/exercices-variants.js` : générateur mulberry32 à graine (`int`, `pick`, `sign`, `shuffle`, `chance`, `pickDistinct`, `nonZero`) ; graine de chaque variante par `crypto.getRandomValues` (repli `Date.now()`) ; `pad()` supprimé. Modèles déclaratifs `{base, params, accept, difficulty, build, verify}` ; le moteur retire jusqu’à 200 fois un tirage refusé ou hors de la bande de ±20 % autour du score de l’exercice d’origine (`base`). Signature indépendante de l’ordre des valeurs, mémoire des 10 dernières variantes, refus d’une même bonne réponse à choix trois fois de suite. Utilitaires d’écriture (`num`, `signed`, `term`, `poly`, `fact`, `affine`, `frac`, `eur`, `diff`) et contrôle des motifs interdits (`lint`). Corrigés `C(méthode, calculs, conclusion)` et tableaux de signes et de variations accessibles.
+- Les 129 modèles de Première (six fichiers `variants-*.js`) et les 54 modèles de Terminale (`terminale-exercices.js`) sont réécrits sous cette forme ; les aides (`coaching-*.js`, `fonctions-coaching.js`) ont été relues pour rester justes quand un signe, un rang ou un contexte change.
+- Calcul rapide et révision guidée : audit sur 2 000 graines par modèle. Corrections d’écriture (signe moins, exposants et indices Unicode, parenthèses seulement autour des négatifs, plus de « 1x » ni de « + 0 »), fractions de l’énoncé toujours irréductibles (`g-fraction-denominateur` n’utilise plus que des numérateurs impairs ; somme, produit, quotient, arbre et espérances de même), réponses nulles triviales écartées, résultats de calcul mental ramenés sous 200 sauf pour les trois « astuces » ×25, ×99 et ×100, plafonnées à 1 000. Les réponses s’affichent avec le signe moins et la virgule.
+
+### Empreintes de contenu protégé mises à jour (après relecture)
+
+`python3 tools/update_fingerprints.py` liste les entrées modifiées ; `--write` les réécrit. Entrées mises à jour dans ce lot :
+
+- `tests/evolution-mathematics.json` : `assets/variants-{fonctions,suites,analyse,probabilites,reperes,donnees}.js`, `assets/coaching-{algebre,suites,analyse,probabilites,reperes,donnees}.js`, `assets/terminale-exercices.js`, `assets/calcul-rapide-data.js`. Justification : réécriture voulue des générateurs (graine, bande de difficulté, variété, corrigés structurés) et des aides devenues inexactes avec les nouvelles variantes.
+- `tests/interface-content.json` : les mêmes modules, plus `assets/exercices-variants.js`, `assets/exercices.js`, `assets/exercices-renderer.js`, `assets/fonctions-coaching.js` et la zone `<main>` des neuf pages `terminale/exercices/t-*.html`. Justification : nouveau moteur, intégration dans la page (mémoire anti-répétition, signe moins dans les solutions révélées, tableaux hors paragraphe) ; dans les pages Terminale, seule la version sans JavaScript change, régénérée par `tools/build_fallbacks.py` à partir des exercices d’origine désormais corrigés selon la structure Méthode → Calculs → Conclusion.
+- Les énoncés JSON des 15 pages d’exercices de Première (variante 1) ne changent pas dans ce lot.

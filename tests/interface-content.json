@@ -165,39 +165,39 @@
   },
   "terminale/exercices/t-binomiale.html": {
     "part": "main",
-    "sha256": "ee02cbf96948a474cadf477f41603084756f7821b1e8b1e56212a6025631afbd"
+    "sha256": "163b2839af221e53ad9784987f9187de20631e10e53709e6bfba9652b2dc535d"
   },
   "terminale/exercices/t-statistiques.html": {
     "part": "main",
-    "sha256": "e41ba39af1bae0d2ff27064f37759a429027e151bcf8d005a2244cbc0c961bf0"
+    "sha256": "c871dc661afa90671aa66851a8ca39ae55f4ab292e3949e004a604ab3c72e0bc"
   },
   "terminale/exercices/t-variables.html": {
     "part": "main",
-    "sha256": "a016b0d1fee00cbbca61c7df7bd3243a39ba808b076434ec384c3546c485b2b9"
+    "sha256": "a24471350144846ade2229a4e2d0225bf54c0b9f5646190a81639158a21db0ce"
   },
   "terminale/exercices/t-logarithme.html": {
     "part": "main",
-    "sha256": "2836afc0190c8f428183b81e56599edfb5cb52e4f50973cdaf0bd48e474d06ef"
+    "sha256": "c55c27dba09c7584b6d853fc9b49baacf945e3a6b26b3057784d3eb4b63fc21f"
   },
   "terminale/exercices/t-outils.html": {
     "part": "main",
-    "sha256": "2b7dad492f8d63471e6b01890e120d9459e51e184fd8bc92f81ff19f22e72c1e"
+    "sha256": "c6c7f0a945d5b61c8b018e08e66bb2a6bab5df4a565a63fd61a8c34a69da749d"
   },
   "terminale/exercices/t-conditionnelles.html": {
     "part": "main",
-    "sha256": "f5ffa55a51f59cb3a0cc8e1312c558179f18c649bc60f021acc70ce6d70f07bb"
+    "sha256": "49ee4caa850f0c48fd19684133a9c4e802bb08b733be7459f020acbba7786d76"
   },
   "terminale/exercices/t-exponentielles.html": {
     "part": "main",
-    "sha256": "382adec0e4a69bafb0eca499f1795f3a9757187db9819a9f365107fd1ab1e5c4"
+    "sha256": "a26654b9fb32bb8ba105987157f40eb035631009ca81546bd4a6a295781dddaa"
   },
   "terminale/exercices/t-inverse.html": {
     "part": "main",
-    "sha256": "581511c490ce90ee56dd19826af7cda011cd87e57e078b1075c206b87b328ab3"
+    "sha256": "d04e5100392c5bc40f43923be2318228c1e1e1f499dc39778e3548d53116331b"
   },
   "terminale/exercices/t-suites.html": {
     "part": "main",
-    "sha256": "e04e4e91861a651f140310ae4037a547d491f40689839afe6901e0362272e74d"
+    "sha256": "efe8b95b7b7e39b13ffba6440078689398287e48295d64d84f1a0650a762f544"
   },
   "assets/cours.js": {
     "part": "file",
@@ -205,11 +205,11 @@
   },
   "assets/exercices-variants.js": {
     "part": "file",
-    "sha256": "1788c413d833d17cacd8979b1bced8360025a6758fcff1772a99de960eb8806f"
+    "sha256": "363304d2f1e5e15fe04b97714c99051e93b9b85634795519778ec2c7e38aa044"
   },
   "assets/variants-suites.js": {
     "part": "file",
-    "sha256": "cf0c48080eee847716b6d9fa05311b777e0c92191ecba2d3f082dca1771e0758"
+    "sha256": "92e2c7304e370e803f6c6d45851fe5ba064bb66de6fb2e72063fb571db60a869"
   },
   "assets/graphiques-interactifs.js": {
     "part": "file",
@@ -217,15 +217,15 @@
   },
   "assets/coaching-suites.js": {
     "part": "file",
-    "sha256": "258f80b218e38bb361bde54bca5da60701888e028767146f106d7dc631c902d5"
+    "sha256": "756b12d1d4facfdd3bf4e73053b8d871b50566d40f67bee558f582549acf9f30"
   },
   "assets/coaching-analyse.js": {
     "part": "file",
-    "sha256": "a844491951dd0cd44691aa9147700fc1dc86959b3d5649e6368b88c07fc7e0d6"
+    "sha256": "524bc11bff98577f38561200a40918a58d8944af883e45bb6a55afc4b8ed0206"
   },
   "assets/terminale-exercices.js": {
     "part": "file",
-    "sha256": "ecc6b27a18a6d5ec66feacf09ca6aa789da3db9952d47caa1ce423cc54335006"
+    "sha256": "53de726c23e8b389f1f2873eff85301f50f390c3325d9c5120bc9d2020aa48e0"
   },
   "assets/apprentissage.js": {
     "part": "file",
@@ -233,51 +233,51 @@
   },
   "assets/calcul-rapide-data.js": {
     "part": "file",
-    "sha256": "9460c2643111d26e0977b2c02a2756f03575b8167fc390dd06057facb8d07019"
+    "sha256": "0700b61c8e11059f6114ae61062c9a9d6afecf3fe0f596584620288ae457ed29"
   },
   "assets/variants-analyse.js": {
     "part": "file",
-    "sha256": "9c49ce3a65fe1d9cabd4513d71d56bdfce8351d37988449a587d27efd1e493df"
+    "sha256": "a313161b6558a63920879f3f45e9c28a52333eee58012b229e2f5558eb901183"
   },
   "assets/coaching-donnees.js": {
     "part": "file",
-    "sha256": "053c5e3708b8023bf7c699d3b5b8f94424e5ec5c87affb4a6a268674ebcf33bc"
+    "sha256": "d37d38787ce5f7ac3ba8dc762308a98cb4676b19386a6c644cd1df10a21f7987"
   },
   "assets/variants-fonctions.js": {
     "part": "file",
-    "sha256": "905c1f4f000d5b35ebf940820ad90d3ca2925dfcd8072fbf578ca404d7e7a075"
+    "sha256": "4e266aa82f27ac36709e01deda99790a70be12cdc124aacf67a7415259313200"
   },
   "assets/variants-probabilites.js": {
     "part": "file",
-    "sha256": "625fbd861c1f3f684bc513c5322cc11c418ad405c3e2888686a11e21062e16ac"
+    "sha256": "fbfeb8cdaf1e0f4affeb54a938cf511e329f7cf50b307927f6d40266836ff141"
   },
   "assets/coaching-reperes.js": {
     "part": "file",
-    "sha256": "b135dfaaafe23731d86a702f3ca38673a28eee000a7148a42a482a293116520b"
+    "sha256": "d20d6b8df3f44c2afe1c4231a4c268ea0c1d814c2d642a17ad7785ada9bebd4c"
   },
   "assets/coaching-probabilites.js": {
     "part": "file",
-    "sha256": "a23430d03f70a78828e896b5da62f9c0f092d40b8060496d0903d22b85c158f4"
+    "sha256": "2399cb95992ec0f170f56127dbe6188c89fbaedc3cd240299055b6eb70db5050"
   },
   "assets/fonctions-coaching.js": {
     "part": "file",
-    "sha256": "f83dba0dd9809e6fb232257995246c8d5aef90adf4304509cb28df2dd3faef72"
+    "sha256": "aca067a8eade7ae5c3d334d29945781f42c13cb153eabb5ec82099fd758d0741"
   },
   "assets/variants-reperes.js": {
     "part": "file",
-    "sha256": "a4955b3f2841a6bc4e6700cfe6906d1d1a7b5f625f94cf984a521254b3005b38"
+    "sha256": "8cdff06499fb3e630262559d43d91e193b560e18da5f52bf78042408b98d6735"
   },
   "assets/coaching-algebre.js": {
     "part": "file",
-    "sha256": "e39d28cffb3d09872b0fd8fff1b11d5ed7bdd919650f142316b1bae39a814d30"
+    "sha256": "fc7b71389f172ae16a998b84d89a58a93ed5670f9e133db7ab03cdd7dc25b183"
   },
   "assets/exercices.js": {
     "part": "file",
-    "sha256": "bb0e79b94ae852b7a35790f3319fc183ccf95a503b3bdbeac6266205b996cd31"
+    "sha256": "96cf4aa8ef09a895975b21179963b31262a6120da85cf1a57ce4550458c19f1f"
   },
   "assets/exercices-renderer.js": {
     "part": "file",
-    "sha256": "61ac1afbadfe357bad9c25fc1df53849fa80fb704e90b127681fab46233d328f"
+    "sha256": "8cf9b8762bd971760ce013b60663d6901942905dcd5f97332cd1a55d2814812b"
   },
   "assets/coaching-general.js": {
     "part": "file",
@@ -285,6 +285,6 @@
   },
   "assets/variants-donnees.js": {
     "part": "file",
-    "sha256": "c1663f3ae4157203d9154e57fb779b73ea80ce0434b2b40c7a789a952acd0655"
+    "sha256": "e6528bff6c0ebc8f7d93007e0d7a3639d6964948984b3740c7a99dd52c52e52d"
   }
 }

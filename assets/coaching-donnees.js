@@ -38,7 +38,7 @@ window.ExerciseCoaching.register("statistiques-descriptives", [
   [
     "Médiane et quartiles se déterminent à partir d'une série ordonnée.",
     "Repère les positions centrales et les rangs des quartiles.",
-    "pour huit valeurs, fais la moyenne des quatrième et cinquième pour la médiane ; prends la deuxième valeur pour Q₁, la sixième pour Q₃, puis calcule Q₃ − Q₁.",
+    "pour n valeurs (n pair), fais la moyenne des deux valeurs centrales pour la médiane ; Q₁ et Q₃ sont les valeurs de rangs n/4 et 3n/4 arrondis à l’entier supérieur ; calcule enfin Q₃ − Q₁.",
     "attention au rang des quartiles : ici on utilise les rangs arrondis à l'entier supérieur.",
     [
       "Dans 1 ; 3 ; 5 ; 7 ; 9 ; 11 ; 13 ; 15, quelle est la médiane ?",
@@ -105,9 +105,9 @@ window.ExerciseCoaching.register("python-tableur", [
   ],
   [
     "Une condition if teste une affirmation vraie ou fausse.",
-    "Compare chaque nombre au seuil indiqué par >=.",
-    "si le nombre est inférieur au seuil, l'action est refusée ; s'il lui est supérieur ou égal, elle est acceptée. Teste aussi exactement le seuil.",
-    "l'opérateur >= signifie supérieur OU égal : l'égalité satisfait la condition.",
+    "Compare chaque nombre au seuil avec l’opérateur indiqué (>= ou >).",
+    "si le test est vrai, le programme affiche le premier message ; sinon le second. Teste aussi exactement le seuil : >= accepte l’égalité, > la refuse.",
+    "l’opérateur >= signifie supérieur OU égal ; > signifie strictement supérieur.",
     [
       "Si on teste points >= 10 avec points = 10, le résultat est-il accepté ou refusé ?",
       "accepté",
@@ -116,9 +116,9 @@ window.ExerciseCoaching.register("python-tableur", [
   ],
   [
     "Une fonction Python renvoie la valeur calculée par son instruction return.",
-    "Remplace h par la valeur passée à la fonction.",
-    "évalue l'expression prix(h) en commençant par le produit du tarif par h, puis ajoute les frais fixes, pour h = 0, 3 et 5.",
-    "le paramètre h change à chaque appel, mais la formule reste la même.",
+    "Remplace le paramètre par la valeur passée à la fonction.",
+    "évalue l’expression renvoyée en commençant par le produit du tarif par le paramètre, puis ajoute la partie fixe, pour chacune des valeurs demandées.",
+    "le paramètre change à chaque appel, mais la formule reste la même.",
     [
       "Si prix(h) renvoie 5 + 2*h, combien vaut prix(3) ?",
       "11",
@@ -127,8 +127,8 @@ window.ExerciseCoaching.register("python-tableur", [
   ],
   [
     "Les indices d'une liste Python commencent à zéro.",
-    "Écris les positions 0, 1, 2 sous les trois éléments.",
-    "notes[0] renvoie le premier élément, notes[2] le troisième ; len(notes) compte les éléments de la liste.",
+    "Écris les positions 0, 1, 2… sous les éléments de la liste.",
+    "notes[0] renvoie le premier élément, notes[1] le deuxième, etc. ; len(notes) compte les éléments de la liste.",
     "le troisième élément a l'indice 2, pas l'indice 3.",
     [
       "Si notes = [3, 5, 7], combien vaut notes[2] ?",
@@ -138,8 +138,8 @@ window.ExerciseCoaching.register("python-tableur", [
   ],
   [
     "Affecter notes[1] modifie un élément ; append ajoute un nouvel élément à la fin.",
-    "Fais d'abord la modification à l'indice 1 puis l'ajout.",
-    "recopie la liste après notes[1] = nouvelle valeur, puis ajoute la valeur de append en dernière position. Compte enfin les éléments.",
+    "Fais d’abord la modification à l’indice indiqué, puis l’ajout.",
+    "recopie la liste après l’affectation notes[i] = nouvelle valeur, puis ajoute la valeur de append en dernière position. Compte enfin les éléments.",
     "remplacer un élément ne change pas la longueur ; append l'augmente de un.",
     [
       "notes = [1,2,3], puis notes[1] = 9. Combien vaut notes[1] ?",
@@ -161,7 +161,7 @@ window.ExerciseCoaching.register("python-tableur", [
   [
     "Dans un tableur, un pourcentage s'applique avec un coefficient multiplicateur.",
     "Repère les cellules de valeur et de taux sur la même ligne.",
-    "écris =A2*(1+B2) pour la hausse de la ligne 2 ; lors de la recopie en ligne 3, les références relatives deviennent A3 et B3.",
+    "écris =A2*(1+B2) pour une hausse ou =A2*(1-B2) pour une baisse ; lors de la recopie en ligne 3, les références relatives deviennent A3 et B3.",
     "le taux inscrit en B2 représente une proportion : ajouter B2 directement au prix serait incorrect.",
     [
       "Si A2 = 100 et B2 = 10 %, que vaut =A2*(1+B2) ?",
@@ -172,7 +172,7 @@ window.ExerciseCoaching.register("python-tableur", [
   [
     "Un fichier CSV sépare les valeurs en colonnes et comporte souvent une ligne d'en-tête.",
     "Sépare les lignes de données de la ligne qui nomme les colonnes.",
-    "compte les trois lignes de données, additionne les ventes, divise leur somme par trois, puis retrouve l'année correspondant à la valeur maximale.",
+    "compte les lignes de données, additionne les ventes, divise leur somme par le nombre de lignes, puis retrouve l’année correspondant à la valeur maximale.",
     "la ligne d'en-tête ne compte pas comme une vente ; l'année du maximum se lit sur la même ligne.",
     [
       "CSV : 2020,3 puis 2021,7 puis 2022,5. Quelle est l'année du maximum ?",

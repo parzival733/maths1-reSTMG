@@ -85,7 +85,7 @@
     $('rapid-hint').textContent = q.hint; $('rapid-hint').hidden = !s.hint;
     $('rapid-hint-button').setAttribute('aria-expanded', String(s.hint));
     const sol = $('rapid-solution');
-    sol.replaceChildren(node('strong', `Réponse exacte : ${q.expected}${q.unit ? ' '+q.unit : ''}`), node('p', q.solution)); sol.hidden = !s.revealed;
+    sol.replaceChildren(node('strong', `Réponse exacte : ${A.display(q.expected)}${q.unit ? ' '+q.unit : ''}`), node('p', q.solution)); sol.hidden = !s.revealed;
     $('rapid-solution-button').setAttribute('aria-expanded', String(s.revealed));
     $('rapid-course-link').href = '../' + q.course + '.html';
     $('rapid-course-link').textContent = `Revoir la leçon liée · ${A.topics[q.topic]} →`;
@@ -199,7 +199,7 @@
     questions.forEach(q => {
       const li = node('li',''), blank = node('div','Réponse et étapes :'); blank.className = 'rapid-blank';
       li.append(node('p',q.prompt + (q.unit ? ` Réponse en ${q.unit}.` : '')),blank); qlist.append(li);
-      const answer = node('li',''); answer.append(node('strong',`${q.expected}${q.unit ? ' '+q.unit : ''}. `),node('span',q.solution)); alist.append(answer);
+      const answer = node('li',''); answer.append(node('strong',`${A.display(q.expected)}${q.unit ? ' '+q.unit : ''}. `),node('span',q.solution)); alist.append(answer);
     });
   }
   function beforePrint() {

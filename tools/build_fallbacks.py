@@ -9,7 +9,7 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     script="""const fs=require('fs'),vm=require('vm');const s={window:{},console};vm.createContext(s);
     for(const f of ['exercices-variants.js','terminale-exercices.js'])vm.runInContext(fs.readFileSync('assets/'+f,'utf8'),s);
-    const out={};for(const slug of s.window.TerminaleExercises.slugs)out[slug]=Array.from({length:6},(_,i)=>s.window.ExerciseVariants.generate(slug,i,1));
+    const out={};for(const slug of s.window.TerminaleExercises.slugs)out[slug]=Array.from({length:6},(_,i)=>s.window.ExerciseVariants.original(slug,i));
     process.stdout.write(JSON.stringify(out));"""
     terminal=json.loads(subprocess.check_output(['node','-e',script],cwd=ROOT,text=True))
     for path in [*sorted((ROOT/'exercices').glob('*.html')),*sorted((ROOT/'terminale/exercices').glob('*.html'))]:
@@ -22,7 +22,7 @@ def main():
             blocks.append('<section class="exam-block"><h3>'+str(i)+'. '+escape(ex['title'])+'</h3><p>'+ex['statement']+'</p>')
             blocks.append('<ol>'+''.join('<li>'+t+'</li>' for t in ex.get('tasks',[]))+'</ol>')
             blocks.append('<p>R\u00e9ponses demand\u00e9es : '+ ' ; '.join(escape(f['label']) for f in ex['fields'])+'.</p>')
-            blocks.append('<details class="offline-solution"><summary>Voir le corrig\u00e9</summary>'+''.join('<p>'+x+'</p>' for x in ex['correction'])+'</details></section>')
+            blocks.append('<details class="offline-solution"><summary>Voir le corrig\u00e9</summary>'+''.join(x if re.match(r'\s*<(div|table)\b',x) else '<p>'+x+'</p>' for x in ex['correction'])+'</details></section>')
         blocks.append('<p><a href="../cours/'+path.stem+'.html">Revoir la lecon</a></p></section></noscript>')
         text=re.sub(r'<noscript data-offline-series>[\s\S]*?</noscript>','',text)
         # Replace the pre-existing fallback notice; avoid two independent noscript blocks.

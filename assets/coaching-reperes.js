@@ -5,7 +5,7 @@ window.ExerciseCoaching.register("calcul", [
   [
     "Les priorités opératoires sont : puissances, parenthèses, multiplications et divisions, puis additions et soustractions.",
     "Compare l'expression avec parenthèses à celle qui n'en possède pas.",
-    "dans le premier calcul, multiplie avant d'additionner ; dans le deuxième, commence par les parenthèses. Pour −k², calcule d'abord k² puis applique le signe moins.",
+    "dans le premier calcul, multiplie avant d’additionner ou de soustraire ; dans le deuxième, commence par les parenthèses. Pour −k², calcule d’abord k² puis applique le signe moins ; (−k)² est le carré de −k.",
     "−k² et (−k)² ne désignent pas le même nombre.",
     [
       "Que vaut 3 + 4 × 5 ?",
@@ -16,8 +16,8 @@ window.ExerciseCoaching.register("calcul", [
   [
     "Pour additionner des fractions, il faut un dénominateur commun ; pour les multiplier, on multiplie les numérateurs et dénominateurs.",
     "Cherche un multiple commun aux deux dénominateurs de chaque somme.",
-    "mets les fractions de la somme et de la différence au même dénominateur ; multiplie directement les numérateurs et les dénominateurs pour le produit, puis simplifie. Respecte l'arrondi au millième demandé.",
-    "un millième s'écrit avec trois chiffres après la virgule ; n'arrondis pas le calcul intermédiaire.",
+    "mets les fractions de la somme et de la différence au même dénominateur ; multiplie directement les numérateurs et les dénominateurs pour le produit, puis simplifie et donne l’écriture décimale exacte.",
+    "simplifie la fraction obtenue avant de chercher son écriture décimale ; n’arrondis pas.",
     [
       "Combien vaut 1/2 + 1/4 ?",
       "0.75",
@@ -26,8 +26,8 @@ window.ExerciseCoaching.register("calcul", [
   ],
   [
     "Multiplier deux puissances de même base revient à additionner leurs exposants.",
-    "Traite les puissances de 2, celle de 10 et la racine carrée séparément.",
-    "utilise 2ᵃ × 2ᵇ = 2ᵃ⁺ᵇ ; pour 10⁻ⁿ calcule 1/10ⁿ ; pour √m cherche le nombre positif dont le carré vaut m.",
+    "Traite le calcul de puissances, celui de 10 et la racine carrée séparément.",
+    "utilise aᵐ × aⁿ = aᵐ⁺ⁿ et aᵐ ÷ aⁿ = aᵐ⁻ⁿ ; pour 10⁻ⁿ calcule 1/10ⁿ ; pour √m cherche le nombre positif dont le carré vaut m.",
     "une racine carrée est la valeur positive, et un exposant négatif signifie un inverse.",
     [
       "Que vaut 2³ × 2² ?",
@@ -38,8 +38,8 @@ window.ExerciseCoaching.register("calcul", [
   [
     "Une proportion de proportion se calcule en appliquant deux pourcentages successifs.",
     "Commence par déterminer l'effectif du premier sous-groupe.",
-    "multiplie l'effectif total par le premier taux décimal, puis multiplie ce résultat par 0,25. Pour le pourcentage final, divise par l'effectif initial et multiplie par 100.",
-    "la seconde proportion porte sur les membres, pas directement sur toute la population.",
+    "multiplie l’effectif total par le premier taux décimal, puis multiplie ce résultat par le second taux décimal. Pour le pourcentage final, divise par l’effectif initial et multiplie par 100.",
+    "la seconde proportion porte sur le premier sous-groupe, pas directement sur toute la population.",
     [
       "Parmi 40 personnes, la moitié sont membres ; un quart des membres est bénévole. Combien de bénévoles ?",
       "5",
@@ -49,7 +49,7 @@ window.ExerciseCoaching.register("calcul", [
   [
     "Une conversion change d'unité mais pas la grandeur physique.",
     "Repère les facteurs 60, 1 000 et 3,6 associés aux unités.",
-    "multiplie les heures par 60, les kilomètres par 1 000 et les mètres par seconde par 3,6 pour obtenir les unités demandées.",
+    "multiplie les heures par 60 et les kilomètres par 1 000 ; multiplie par 3,6 pour passer des m/s aux km/h, divise par 3,6 pour passer des km/h aux m/s.",
     "ne divise pas par 60 quand tu passes des heures aux minutes.",
     [
       "Combien de minutes font 1,5 heure ?",
@@ -60,8 +60,8 @@ window.ExerciseCoaching.register("calcul", [
   [
     "Développer signifie multiplier chaque terme d'une parenthèse par son coefficient.",
     "Distribue les coefficients puis rassemble les termes en x et les constantes.",
-    "écris séparément a(x + p) = ax + ap et −b(x − q) = −bx + bq ; réduis ensuite et remplace x par 4 pour trouver l'image.",
-    "attention au produit des deux signes moins dans −b(x − q) : la constante obtenue est positive.",
+    "distribue séparément chaque coefficient sur sa parenthèse, avec le signe placé devant ; réduis ensuite, puis remplace x par la valeur demandée.",
+    "attention au signe devant la deuxième parenthèse : un moins change le signe de chacun de ses termes.",
     [
       "Dans 2(x + 3) − (x − 1), quelle est la constante après réduction ?",
       "7",
@@ -82,8 +82,8 @@ window.ExerciseCoaching.register("calcul", [
   [
     "Dans une inéquation, les opérations se font des deux côtés, en gardant l'attention sur le signe.",
     "Isole d'abord x dans la première inéquation, puis traite celle sur le budget.",
-    "ajoute la constante aux deux membres puis divise par le coefficient de x ; pour la durée, écris frais fixes + tarif × h ≤ budget et garde h ≥ 0.",
-    "diviser par un nombre positif conserve le sens de ≤ ; la durée ne peut pas être négative.",
+    "retire la constante des deux membres puis divise par le coefficient de x ; pour la durée, écris frais fixes + tarif × h ≤ budget et garde h ≥ 0.",
+    "diviser par un nombre négatif change le sens de l’inégalité ; diviser par un nombre positif le conserve.",
     [
       "Pour 2x + 3 ≤ 11, quelle est la borne supérieure de x ?",
       "4",
@@ -95,7 +95,7 @@ window.ExerciseCoaching.register("evolutions", [
   [
     "Un taux d'évolution compare la différence entre la valeur finale et la valeur initiale à cette dernière.",
     "Calcule la variation absolue avant le pourcentage.",
-    "utilise hausse = final − initial ; puis taux en % = hausse/initial × 100 et coefficient multiplicateur = final/initial.",
+    "utilise variation = final − initial ; puis taux en % = variation/initial × 100 et coefficient multiplicateur = final/initial.",
     "pour un taux relatif, on divise par le prix initial, pas par le prix final.",
     [
       "Un article passe de 100 € à 120 €. Quelle est sa hausse en % ?",
@@ -106,7 +106,7 @@ window.ExerciseCoaching.register("evolutions", [
   [
     "Des évolutions successives se calculent en multipliant les coefficients multiplicateurs.",
     "Transforme chaque hausse ou baisse en coefficient distinct.",
-    "calcule le prix après la hausse avec le premier coefficient ; applique ensuite le coefficient de baisse au nouveau prix, et non au prix initial.",
+    "calcule le prix après la première évolution avec son coefficient ; applique ensuite le second coefficient au nouveau prix, et non au prix initial.",
     "une hausse de 10 % suivie d'une baisse de 10 % ne ramène pas au départ.",
     [
       "Un prix de 100 € augmente de 10 %, puis baisse de 10 %. Prix final ?",
@@ -115,7 +115,7 @@ window.ExerciseCoaching.register("evolutions", [
     ]
   ],
   [
-    "Une hausse suivie d'une baisse du même pourcentage ne s'annule généralement pas.",
+    "Une hausse et une baisse du même pourcentage ne s’annulent pas.",
     "Convertis la hausse et la baisse en deux coefficients différents.",
     "multiplie (1 + t/100) par (1 − t/100) pour le coefficient global ; multiplie ensuite la valeur initiale par ce coefficient et déduis le taux global.",
     "les pourcentages successifs ne s'additionnent pas car leur base change.",
@@ -126,9 +126,9 @@ window.ExerciseCoaching.register("evolutions", [
     ]
   ],
   [
-    "Deux hausses identiques successives correspondent au carré d'un coefficient multiplicateur.",
-    "Calcule d'abord le coefficient d'une seule hausse.",
-    "écris q = 1 + t/100, puis calcule q² et la valeur finale initial × q² ; le taux global vaut (q² − 1) × 100.",
+    "Deux évolutions identiques successives correspondent au carré d’un coefficient multiplicateur.",
+    "Calcule d’abord le coefficient d’une seule évolution.",
+    "écris q = 1 + t/100 (ou 1 − t/100 pour une baisse), puis calcule q² et la valeur finale initial × q² ; le taux global vaut (q² − 1) × 100.",
     "deux hausses de t % n'équivalent pas exactement à une hausse de 2t %.",
     [
       "Une valeur de 100 augmente de 10 % deux fois. Valeur finale ?",
@@ -148,10 +148,10 @@ window.ExerciseCoaching.register("evolutions", [
     ]
   ],
   [
-    "Un prix réduit est le produit du prix initial par un coefficient inférieur à 1.",
-    "Transforme le pourcentage de réduction en coefficient de conservation.",
-    "écris prix final = prix initial × (1 − taux/100), puis divise le prix final par ce coefficient. Pour le taux réciproque, calcule (1/q − 1) × 100.",
-    "retrouver le prix initial impose de diviser par le coefficient de baisse, pas de multiplier.",
+    "Un prix après évolution est le produit du prix initial par le coefficient multiplicateur.",
+    "Transforme le pourcentage d’évolution en coefficient multiplicateur.",
+    "écris prix final = prix initial × q, puis divise le prix final par q. Pour le taux réciproque, calcule (1/q − 1) × 100.",
+    "retrouver le prix initial impose de diviser par le coefficient, pas d’appliquer le pourcentage opposé.",
     [
       "Un article coûte 80 € après 20 % de réduction. Quel était son prix initial ?",
       "100",
@@ -218,7 +218,7 @@ window.ExerciseCoaching.register("logique", [
   [
     "Une proposition universelle doit être vraie pour tous les x ; une proposition existentielle suffit avec un exemple.",
     "Cherche un contre-exemple pour une phrase qui commence par « pour tout ».",
-    "utilise x = 0 pour tester les affirmations de stricte positivité ; pour une existence x² = a², essaie les deux valeurs opposées ±a.",
+    "pour « pour tout », cherche un contre-exemple (x = 0 ou x = 1 conviennent souvent) ; pour « il existe », cherche un exemple, ou montre qu’aucun nombre ne convient.",
     "il suffit d'un contre-exemple pour rendre une affirmation universelle fausse.",
     [
       "Pour tout réel x, x² ≥ 0 est-il vrai ? (oui/non)",
@@ -249,10 +249,10 @@ window.ExerciseCoaching.register("logique", [
     ]
   ],
   [
-    "Le produit (x − a)(x + a) change de signe aux deux racines opposées.",
+    "Un produit (x − r)(x − s) change de signe en chacune de ses racines.",
     "Commence par déterminer les racines et le signe au milieu.",
-    "pour un produit strictement positif, conserve les valeurs à l'extérieur des racines et respecte les bornes du domaine donné.",
-    "les racines sont exclues d'une inégalité > 0, même si les bornes du domaine restent incluses.",
+    "dresse le tableau de signes : pour « > 0 », garde l’extérieur des racines ; pour « < 0 », l’intérieur ; respecte les bornes du domaine donné.",
+    "les racines sont exclues d’une inégalité stricte, même si les bornes du domaine restent incluses.",
     [
       "Que vaut (x − 2)(x + 2) pour x = 3 ?",
       "5",
@@ -262,7 +262,7 @@ window.ExerciseCoaching.register("logique", [
   [
     "Un filtre ET retient les valeurs qui satisfont toutes les conditions ; un filtre OU n'en demande qu'une.",
     "Parcours les valeurs une par une pour chaque condition.",
-    "pour ET, garde seulement les valeurs paires dans l'intervalle ; pour OU, garde celles qui sont paires ou dépassent le seuil. Compte ensuite sans doublon.",
+    "pour ET, garde seulement les valeurs qui vérifient la condition de parité et sont dans l’intervalle ; pour OU, garde celles qui vérifient l’une ou l’autre condition. Compte ensuite sans doublon.",
     "avec OU, une valeur répondant aux deux conditions n'est comptée qu'une fois.",
     [
       "Dans 1 ; 2 ; 3 ; 4 ; 6 ; 7, combien de nombres sont pairs ET entre 2 et 6 ?",

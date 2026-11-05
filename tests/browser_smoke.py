@@ -280,8 +280,9 @@ def main():
             expect(page.locator('#exercice-1 .answer-row.is-revealed')).to_have_count(5)
             expect(page.locator('#exercice-1 input.answer-was-correct')).to_have_count(5)
             expect(page.locator('#exercice-1 .answer-row.was-correct')).to_have_count(5)
+            # La solution révélée s'affiche avec le vrai signe moins (−).
             for control, expected in zip(first_inputs.all(), values):
-                expect(control).to_have_value(expected)
+                expect(control).to_have_value(expected.replace('-', '\u2212'))
             expect(page.locator('#exercise-score')).to_have_text('1/9')
 
             # Afficher le corrigé remplit aussi les formules, sans augmenter le score.
@@ -349,10 +350,13 @@ def main():
             changed_help = page.locator('#exercice-1 .coaching-hint').nth(2).text_content()
             model_values = [float(c.get_attribute('data-expect')) for c in
                             page.locator('#exercice-1 input[data-expect]').all()]
-            a_coefficient = (model_values[2] - model_values[1]) / 4
-            target = 5 * a_coefficient + model_values[1]
-            assert f'{int(a_coefficient)} × 4' in changed_help, changed_help
-            assert f' = {int(target)}' in changed_help, changed_help
+            labels = page.locator('#exercice-1 .answer-row > span').all_inner_texts()
+            x2 = int(labels[2].replace('f(', '').replace(')', ''))
+            a_coefficient = (model_values[2] - model_values[1]) / x2
+            target = labels[3].split('Antécédent de ')[1]
+            fr = lambda n: str(int(n)).replace('-', '\u2212')
+            assert f'{fr(a_coefficient)} × {x2}' in changed_help, changed_help
+            assert f' = {target}' in changed_help, changed_help
             assert '3 × 4 − 5' not in changed_help, changed_help
             expect(page.locator('#exercice-1 .coaching-hint')).to_have_count(3)
 
@@ -578,6 +582,38 @@ def main():
             nojs.close()
             assert not errors, errors
             assert not failed_responses, failed_responses
+            # Nouvelle variante : 15 tirages successifs dans 3 séries, avec une
+            # vérification juste à chaque fois et aucune erreur dans la console.
+            console_errors = []
+            page.on('console', lambda message: console_errors.append(message.text) if message.type == 'error' else None)
+            page.set_viewport_size({'width': 390, 'height': 900})
+            variant_series = ['exercices/second-degre.html', 'exercices/probabilites-conditionnelles.html', 'terminale/exercices/t-binomiale.html']
+            for series in variant_series:
+                page.goto(base + series, wait_until='networkidle')
+                seen = []
+                for click in range(15):
+                    block = page.locator('#exercice-1')
+                    statement = block.locator('.exercise-statement > p').first.inner_text()
+                    assert not seen or statement != seen[-1], (series, click, 'énoncé inchangé')
+                    seen.append(statement)
+                    for control in block.locator('[data-expect]').all():
+                        answer = control.get_attribute('data-expect').split('|')[0]
+                        if control.evaluate('e => e.tagName') == 'SELECT':
+                            control.select_option(answer)
+                        else:
+                            control.fill(answer)
+                    block.locator('button[type="submit"]').click()
+                    expect(block.locator('.exercise-feedback')).to_contain_text('Exercice validé')
+                    expect(block.locator('[data-action="new-variant"]')).to_be_visible()
+                    block.locator('[data-action="new-variant"]').click()
+                    expect(page.locator('#exercice-1 .exercise-kicker')).to_contain_text(f'variante {click + 2}')
+                final = page.locator('#exercice-1 .exercise-statement > p').first.inner_text()
+                assert final != seen[-1], (series, 'dernier tirage inchangé')
+                assert len(set(seen)) >= 12, (series, 'trop de répétitions', len(set(seen)))
+            assert not console_errors, console_errors
+            assert not errors, errors
+            print('VARIANTES BROWSER OK : 3 séries × 15 nouvelles variantes, énoncé renouvelé à chaque clic, vérification juste, console sans erreur.')
+
             browser.close()
             print(f'BROWSER OK: {checks} page/width combinations (320, 390, 768, 1440 px); search, filters, TOCs, corrections, print events, navigation, simulation and no-JavaScript fallback.')
             print('No JavaScript exceptions, no HTTP errors, no global horizontal overflow.')

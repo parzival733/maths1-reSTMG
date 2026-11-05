@@ -16,8 +16,8 @@ window.ExerciseCoaching.register("probabilites-conditionnelles", [
   [
     "Une probabilité conditionnelle est une proportion calculée dans le groupe connu.",
     "Repère quel groupe suit la barre verticale | et prends son effectif comme dénominateur.",
-    "pour P(abonné | mobile), divise les abonnés sur mobile par le total mobile ; pour P(abonné), additionne les abonnés des deux groupes puis divise par l'effectif global.",
-    "une probabilité sachant mobile ne se divise pas par tous les clients.",
+    "pour une probabilité sachant un groupe, divise l’effectif favorable de ce groupe par l’effectif du groupe ; pour la probabilité globale, additionne les cas favorables des deux groupes puis divise par l’effectif total.",
+    "une probabilité sachant un groupe ne se divise pas par l’effectif total.",
     [
       "Sur 6 utilisateurs mobiles, 3 sont abonnés. Que vaut P(abonné | mobile) ?",
       "0.5",
@@ -26,9 +26,9 @@ window.ExerciseCoaching.register("probabilites-conditionnelles", [
   ],
   [
     "Inverser la condition change le groupe utilisé comme dénominateur.",
-    "Compte tous les abonnés avant de chercher la part d'utilisateurs mobiles parmi eux.",
-    "pour P(mobile | abonné), divise l'intersection mobile et abonné par l'effectif total des abonnés. Pour P(mobile), divise le nombre de mobiles par le total général.",
-    "ne confonds pas P(mobile | abonné) avec P(abonné | mobile).",
+    "Compte tout le groupe qui suit la barre « | » avant de chercher la part de l’autre événement parmi lui.",
+    "pour P(A | B), divise l’effectif de l’intersection par l’effectif de B. Pour une probabilité simple ou une intersection, divise par le total général.",
+    "ne confonds pas P(A | B) avec P(B | A) : inverser le conditionnement change le dénominateur.",
     [
       "Parmi 8 abonnés, 3 utilisent un mobile. Que vaut P(mobile | abonné) ?",
       "0.375",
@@ -58,9 +58,9 @@ window.ExerciseCoaching.register("probabilites-conditionnelles", [
     ]
   ],
   [
-    "La non-indépendance se détecte en comparant P(A ∩ B) et P(A)P(B).",
+    "L’indépendance se teste en comparant P(A ∩ B) et P(A)P(B).",
     "Écris séparément le produit P(A)P(B) et l'intersection donnée.",
-    "si ces deux résultats diffèrent, réponds non à l'indépendance. Pour la probabilité conditionnelle, divise P(A ∩ B) par P(A).",
+    "si ces deux résultats sont égaux, les événements sont indépendants ; sinon, ils ne le sont pas. Pour la probabilité conditionnelle, divise P(A ∩ B) par P(A).",
     "pour P(B | A), le dénominateur est P(A), pas P(B).",
     [
       "Si P(A ∩ B) = 0,2 et P(A) = 0,4, combien vaut P(B | A) ?",
@@ -70,8 +70,8 @@ window.ExerciseCoaching.register("probabilites-conditionnelles", [
   ],
   [
     "Dans un tableau d'effectifs, une fréquence conditionnelle se calcule au sein de la catégorie connue.",
-    "Sépare le nombre d'acheteurs dans chaque catégorie et l'effectif de chaque catégorie.",
-    "divise les acheteurs femmes par toutes les femmes et les acheteurs hommes par tous les hommes ; pour le total, additionne les acheteurs puis divise par la population entière.",
+    "Sépare le nombre de cas favorables dans chaque groupe et l’effectif de chaque groupe.",
+    "dans chaque groupe, divise les cas favorables par l’effectif du groupe ; pour le total, additionne les cas favorables puis divise par la population entière.",
     "un groupe et la population entière n'ont pas le même dénominateur.",
     [
       "Sur 30 personnes, 12 achètent. Quelle est la fréquence d'achat ?",
@@ -80,10 +80,10 @@ window.ExerciseCoaching.register("probabilites-conditionnelles", [
     ]
   ],
   [
-    "Pour trouver P(défaut | positif), il faut d'abord calculer tous les tests positifs.",
-    "Calcule la part des positifs parmi les pièces défectueuses et parmi les pièces non défectueuses.",
-    "multiplie les probabilités sur chacun des deux chemins positifs ; additionne ces deux probabilités pour P(positif), puis divise le chemin « défaut et positif » par P(positif).",
-    "90 % de détection ne représente pas directement P(défaut | positif).",
+    "Pour trouver P(D | T), il faut d’abord calculer P(T) avec la formule des probabilités totales.",
+    "Calcule les deux chemins de l’arbre qui mènent à T : D puis T, et non D puis T.",
+    "multiplie les probabilités sur chacun des deux chemins ; additionne-les pour P(T), puis divise P(D ∩ T) par P(T) : c’est l’inversion du conditionnement.",
+    "le taux de détection P(T | D) ne représente pas directement P(D | T).",
     [
       "Si 10 % des objets sont défectueux et 90 % de ceux-ci sont détectés, que vaut P(défaut ∩ positif) ?",
       "0.09",
@@ -161,8 +161,8 @@ window.ExerciseCoaching.register("bernoulli", [
   [
     "Avec remise, le contenu de l'urne redevient identique après chaque tirage.",
     "Compare ce qui change entre deux tirages avec remise et sans remise.",
-    "avec remise, deux tirages rouges indépendants ont une probabilité 1/N × 1/N ; sans remise, les probabilités du second tirage dépendent du premier.",
-    "sans remise, le second tirage ne peut pas retrouver un unique jeton rouge déjà retiré.",
+    "avec remise, deux tirages rouges indépendants ont une probabilité (r/N) × (r/N), où r est le nombre de jetons rouges ; sans remise, les probabilités du second tirage dépendent du premier.",
+    "sans remise, le contenu de l’urne change après le premier tirage : les tirages ne sont pas indépendants.",
     [
       "Dans une urne de 4 jetons dont 1 rouge, probabilité de deux rouges avec remise ?",
       "0.0625",
@@ -185,7 +185,7 @@ window.ExerciseCoaching.register("variables-aleatoires", [
   [
     "Une variable indicatrice vaut 1 quand l'événement arrive et 0 sinon.",
     "Compte le nombre d'issues du dé qui vérifient la condition.",
-    "divise les issues favorables par 6 pour obtenir P(X = 1), puis fais le complément à 1 ; pour une variable de Bernoulli, l'espérance vaut P(X = 1).",
+    "divise les issues favorables par le nombre de faces pour obtenir P(X = 1), puis fais le complément à 1 ; pour une variable de Bernoulli, l’espérance vaut P(X = 1).",
     "P(X = 0) et P(X = 1) doivent totaliser 1.",
     [
       "Avec un dé, si le succès correspond à 3 faces sur 6, que vaut P(succès) ?",
@@ -196,7 +196,7 @@ window.ExerciseCoaching.register("variables-aleatoires", [
   [
     "L'espérance d'une variable discrète est une moyenne pondérée par les probabilités.",
     "Contrôle d'abord que la somme des probabilités vaut 1.",
-    "calcule E(X) = 0 × P(X = 0) + 1 × P(X = 1) + 2 × P(X = 2) ; pour P(X ≥ 1), additionne les probabilités en 1 et 2.",
+    "calcule E(X) en multipliant chaque valeur par sa probabilité puis en additionnant ; pour P(X ≥ k), additionne les probabilités des valeurs supérieures ou égales à k.",
     "une probabilité et une valeur prise par X jouent des rôles différents dans l'espérance.",
     [
       "Si P(X=0)=0,2, P(X=1)=0,3 et P(X=2)=0,5, que vaut E(X) ?",

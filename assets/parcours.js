@@ -39,7 +39,7 @@
     $('practice-hint-text').hidden=true;$('practice-method-text').hidden=true;
     $('practice-hint').setAttribute('aria-expanded','false');$('practice-method').setAttribute('aria-expanded','false');
     $('practice-solution').hidden=!s.revealed;
-    $('practice-solution').replaceChildren(node('strong','R\u00e9ponse : '+q.expected+(q.unit?' '+q.unit:'')),node('p',q.solution));
+    $('practice-solution').replaceChildren(node('strong','R\u00e9ponse : '+(window.QuickMath&&window.QuickMath.display?window.QuickMath.display(q.expected):q.expected)+(q.unit?' '+q.unit:'')),node('p',q.solution));
     $('practice-course').href=q.course+'.html';$('practice-course').textContent='Revoir la le\u00e7on';
     $('practice-equivalent').hidden=diagnostic||(!s.revealed&&s.first===null);
     if(focus)$('practice-title').focus();
@@ -86,7 +86,7 @@
       for(const [label,href]of[['Le\u00e7on',A.skills[skill].course],['Exercices',A.skills[skill].exercises],['Reprise cibl\u00e9e','revisions.html?niveau='+level.value+'&notion='+skill]]){const a=node('a',label);a.href=href;links.append(a);}card.append(links);results.append(card);
     });
     const details=$('practice-corrections');details.replaceChildren();
-    questions.forEach((q,i)=>{const d=node('details',''),sum=node('summary',`${i+1}. ${q.prompt}`);d.append(sum,node('p',states[i].value?'Ta r\u00e9ponse : '+states[i].value:'Question sans r\u00e9ponse.'),node('p','R\u00e9ponse : '+q.expected+(q.unit?' '+q.unit:'')),node('p',q.solution));details.append(d);});
+    questions.forEach((q,i)=>{const d=node('details',''),sum=node('summary',`${i+1}. ${q.prompt}`);d.append(sum,node('p',states[i].value?'Ta r\u00e9ponse : '+states[i].value:'Question sans r\u00e9ponse.'),node('p','R\u00e9ponse : '+(window.QuickMath&&window.QuickMath.display?window.QuickMath.display(q.expected):q.expected)+(q.unit?' '+q.unit:'')),node('p',q.solution));details.append(d);});
     $('practice-save-note').textContent=A.store.enabled?'Ces observations sont enregistr\u00e9es uniquement sur cet appareil. Consulte Mes progr\u00e8s pour les reprises propos\u00e9es.':'Ce bilan reste dans cette page uniquement. Active le suivi local avant une prochaine s\u00e9ance pour conserver tes futurs r\u00e9sultats.';
     $('practice-result-title').focus();
   }
