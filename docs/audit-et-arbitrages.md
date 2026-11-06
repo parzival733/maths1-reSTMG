@@ -245,3 +245,16 @@ Démarche, constats et décisions : `docs/refonte/audit.md`, `docs/refonte/direc
   - les retours perdent leur signe ✓ / ✗ écrit en texte, remplacé par une icône de la feuille de style ; leurs mots ne changent pas.
 - `tests/interface-content.json` : `assets/exercices-renderer.js` et la zone `<main>` de `exercices/fonctions.html`. La légende reçoit une ligne qui explique les icônes des numéros (« Sur les numéros : validé, à revoir, correction vue. »). Aucun énoncé, réponse ou corrigé ne change ; la relecture des différences du `<main>` ne montre que cette ligne.
 - `tests/interface-content.json` : la zone `<main>` des 25 leçons. Seuls s'ajoutent le bouton « Options de lecture » (téléphone), le lien fixe « Sommaire » et deux identifiants (`options-lecture`, `sommaire-lecon`) ; relecture faite en retirant ces éléments : aucun autre écart. Sans JavaScript, les deux nouveaux éléments sont masqués comme le sommaire et les options de lecture.
+
+### Rangs des variantes (analyse des écarts, lot 2)
+
+Dans 18 exercices sur les suites, les variantes changeaient les nombres mais demandaient toujours les mêmes rangs (u₁, u₂, u₃, u₁₀, « cinquième terme », « au rang 10 »…). Les rangs sont désormais tirés au hasard dans une plage qui garde la difficulté. Deux façons de faire :
+- **décaler les rangs**, par exemple v₁, v₂, v₃ au lieu de v₀, v₁, v₂ ;
+- **donner le terme de départ à un rang variable** (« u₂ = 400 », puis u₃, u₄, u₅), quand décaler les rangs alourdirait les calculs.
+
+Pour les rangs lointains (8, 10 ou 12), la puissance utile est donnée dans l'énoncé.
+
+- `tests/evolution-mathematics.json` et `tests/interface-content.json` : `assets/variants-suites.js` et `assets/coaching-suites.js`. Relecture faite :
+  - les 47 exercices d'origine des trois chapitres de suites sont produits à l'identique (énoncé, intitulés, réponses, corrigé, consignes), vérifié par comparaison automatique avec la version précédente ;
+  - seules changent les variantes et dix-sept phrases d'aide qui citaient un rang fixe, devenues générales (« les trois termes demandés », « le rang demandé »).
+- Nouveau test `tests/test_rangs.js` : tout modèle dont les réponses portent sur un rang doit en demander plusieurs selon la variante. Il échoue sur la version précédente.

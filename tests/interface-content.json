@@ -209,7 +209,7 @@
   },
   "assets/variants-suites.js": {
     "part": "file",
-    "sha256": "7924cd25cc1928a0ef0e03b5fcfb727c1167f111821c0cda7c548998990e6f74"
+    "sha256": "cab082aa832d1c9e43f8f353055e1023633789323fe670be8cc7892e4dd9c086"
   },
   "assets/graphiques-interactifs.js": {
     "part": "file",
@@ -217,7 +217,7 @@
   },
   "assets/coaching-suites.js": {
     "part": "file",
-    "sha256": "756b12d1d4facfdd3bf4e73053b8d871b50566d40f67bee558f582549acf9f30"
+    "sha256": "69246a05f3389151609353f615a82fbd6b2b2177fc454cbeb31e68e579a586e4"
   },
   "assets/coaching-analyse.js": {
     "part": "file",
