@@ -280,3 +280,19 @@ Pour les rangs lointains (8, 10 ou 12), la puissance utile est donnée dans l'é
 - **Cartes des leçons** : le nombre d'exercices de la série du chapitre s'ajoute au surtitre (« CHAPITRE 03 · 8 EXERCICES »), repris du catalogue des exercices à la construction. L'atelier Python/tableur facultatif, sans série dédiée, n'en a pas.
 - **Progression locale** (`assets/catalogue-suivi.js`) : si le suivi est activé, chaque carte de leçon ou de série affiche l'état de la notion calculé par `MathsAcquis` (« Réussite récente », « À reprendre »…), relié à la carte par `aria-describedby`. Sans suivi, rien n'est affiché et rien n'est lu.
 - **Version des feuilles et scripts** : `20261106-ecarts1`, pour que les navigateurs rechargent les fichiers modifiés.
+
+### Couleurs des grands thèmes (demande du 6 novembre 2026)
+
+La refonte avait retiré la couleur propre à chaque domaine des cartes ; à la demande de l'utilisateur, chaque grand thème retrouve une couleur, sans toucher au sens des couleurs d'action (violet pour lire, vert pour s'entraîner) :
+
+| Thème | Clair | Sombre | Contraste (blanc / carte sombre) |
+|---|---|---|---|
+| Analyse | `#1d5fa8` bleu | `#86bdff` | 6,5:1 / 8,6:1 |
+| Statistiques | `#b04a0c` orange brûlé | `#ffad75` | 5,5:1 / 9,2:1 |
+| Probabilités | `#a12d72` prune | `#f59ad0` | 6,7:1 / 8,3:1 |
+| Repères | `#0f6e66` sarcelle | `#6fd6c6` | 6,1:1 / 9,7:1 |
+| Atelier | `#55526a` ardoise | `#c3c0d4` | 7,5:1 / 9,5:1 |
+
+- Cartes des quatre catalogues (leçons et exercices, Première et Terminale) : filet supérieur, surtitre et étiquette du thème dans sa couleur ; le nom du thème et son icône restent écrits, la couleur n'est jamais seule porteuse du sens.
+- Leçons et séries : le surtitre (« 03 / ANALYSE », « 03 / PARCOURS INTERACTIF ») prend la couleur du thème. `tools/refonte_gabarits.py` pose `data-domain` sur chaque page à partir des catalogues ; la leçon Python/tableur passe ainsi de « repères » à « atelier », comme sa carte.
+- Impression : filet en noir.
