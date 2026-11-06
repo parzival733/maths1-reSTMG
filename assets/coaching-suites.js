@@ -27,7 +27,7 @@ window.ExerciseCoaching.register("suites", [
   [
     "Compare la façon de passer d’un terme au suivant : ajout d’un même nombre (arithmétique) ou multiplication par un même nombre (géométrique).",
     "Repère le terme de départ et le facteur de multiplication.",
-    "calcule v₀, v₁ et v₂ avec la formule (un exposant 0 donne 1). Compare ensuite les différences, puis les quotients, de deux termes consécutifs.",
+    "calcule les trois termes demandés avec la formule (un exposant 0 donne 1). Compare ensuite les différences, puis les quotients, de deux termes consécutifs.",
     "une raison géométrique se multiplie, une raison arithmétique s’ajoute : ne confonds pas les deux.",
     [
       "Si vₙ = 10 × 0,5ⁿ, combien vaut v₂ ?",
@@ -38,7 +38,7 @@ window.ExerciseCoaching.register("suites", [
   [
     "Une suite arithmétique ajoute la même quantité à chaque rang ; cette raison peut être négative.",
     "Calcule les trois termes en appliquant la même opération à chaque étape.",
-    "pars du terme au rang zéro et applique la relation une, deux puis trois fois ; la suite croît si l’écart wₙ₊₁ − wₙ est positif et décroît s’il est négatif.",
+    "pars du terme donné et applique la relation une, deux puis trois fois ; la suite croît si l’écart wₙ₊₁ − wₙ est positif et décroît s’il est négatif.",
     "écrire une soustraction récurrente équivaut à ajouter une raison négative.",
     [
       "Si w₀ = 12 et qu'on retranche 3 à chaque étape, combien vaut w₂ ?",
@@ -49,7 +49,7 @@ window.ExerciseCoaching.register("suites", [
   [
     "Pour reconnaître une suite, compare d’abord les différences consécutives, puis si besoin les quotients.",
     "Calcule d'abord les images pour trois rangs consécutifs.",
-    "évalue u₁, u₂ et u₃, puis calcule u₂ − u₁ et u₃ − u₂ ; compare ces écarts avant de conclure.",
+    "évalue les trois termes demandés, puis les deux écarts entre termes consécutifs ; compare ces écarts avant de conclure.",
     "les différences d'une formule quadratique ne sont généralement pas constantes.",
     [
       "Pour uₙ = n², combien vaut u₂ − u₁ ?",
@@ -82,7 +82,7 @@ window.ExerciseCoaching.register("suites", [
   [
     "Deux modèles peuvent évoluer différemment : ajout constant ou multiplication constante.",
     "Calcule séparément les deux suites au même rang.",
-    "pour u₂ puis u₁₀, utilise la formule affine ; pour v₂ et v₁₀, utilise la puissance. Arrondis seulement la suite qui le demande.",
+    "pour les termes de uₙ, utilise la formule affine ; pour ceux de vₙ, utilise la puissance (celle du rang lointain est donnée). Arrondis seulement la suite qui le demande.",
     "ne confonds pas 1,1ⁿ avec 1,1 × n : une suite géométrique utilise une puissance.",
     [
       "Si vₙ = 5 × 2ⁿ, combien vaut v₂ ?",
@@ -106,7 +106,7 @@ window.ExerciseCoaching.register("suites-arithmetiques", [
   [
     "Une suite arithmétique ajoute la même quantité à chaque rang ; le signe de la raison donne le sens de variation.",
     "Repère le terme initial et la raison, avec son signe.",
-    "utilise uₙ = u₀ + n × r pour les rangs 1, 4 et 6 ; indique le sens de variation en observant le signe de la raison.",
+    "utilise uₙ = u₀ + n × r pour chacun des rangs demandés ; indique le sens de variation en observant le signe de la raison.",
     "une raison négative produit une suite décroissante, pas nécessairement des termes négatifs.",
     [
       "Si u₀ = 20 et la raison vaut −3, combien vaut u₂ ?",
@@ -138,9 +138,9 @@ window.ExerciseCoaching.register("suites-arithmetiques", [
   ],
   [
     "Pour sommer une suite arithmétique, on peut associer premier et dernier termes.",
-    "Identifie les cinq termes, surtout le dernier.",
-    "applique somme = nombre de termes × (premier + dernier)/2, et vérifie que le nombre de termes est bien 5.",
-    "le dernier terme ici est le cinquième et non un terme au rang cinq si on commence à zéro.",
+    "Identifie tous les termes donnés, surtout le dernier.",
+    "applique somme = nombre de termes × (premier + dernier)/2, et vérifie le nombre de termes en les comptant.",
+    "compte les termes un par un : si la suite commence au rang 0, le rang du dernier terme n’est pas le nombre de termes.",
     [
       "Quelle est la somme de 2 + 4 + 6 + 8 + 10 ?",
       "30",
@@ -149,8 +149,8 @@ window.ExerciseCoaching.register("suites-arithmetiques", [
   ],
   [
     "Avec un premier terme au rang 1, il faut compter neuf écarts pour atteindre le rang 10.",
-    "Repère u₁ et la raison avant de calculer u₁₀.",
-    "calcule u₁₀ = u₁ + 9r puis la somme des dix termes avec 10 × (u₁ + u₁₀)/2.",
+    "Repère u₁ et la raison avant de calculer le terme demandé.",
+    "calcule uₙ = u₁ + (n − 1)r pour le rang demandé, puis la somme avec nombre de termes × (u₁ + dernier terme)/2.",
     "attention à ne pas écrire 10r au lieu de 9r quand le premier rang est 1.",
     [
       "Si u₁ = 3 et r = 2, combien vaut u₄ ?",
@@ -196,7 +196,7 @@ window.ExerciseCoaching.register("suites-geometriques", [
   [
     "Une récurrence géométrique multiplie chaque terme par le même coefficient q.",
     "Pars du terme de rang zéro et applique plusieurs fois le coefficient.",
-    "écris u₁ = u₀ × q, u₂ = u₀ × q² et u₃ = u₀ × q³ ; convertis le facteur en pourcentage avec (q − 1) × 100.",
+    "multiplie par q à chaque rang à partir du terme donné ; convertis le facteur en pourcentage avec (q − 1) × 100.",
     "un coefficient inférieur à 1 représente une baisse et un coefficient supérieur à 1 une hausse.",
     [
       "Si u₀ = 100 et q = 0,8, combien vaut u₁ ?",
@@ -207,7 +207,7 @@ window.ExerciseCoaching.register("suites-geometriques", [
   [
     "La formule uₙ = u₀ × qⁿ permet de calculer directement n'importe quel rang.",
     "Calcule d'abord le terme initial grâce à q⁰ = 1.",
-    "pour v₁ et v₂, applique le facteur une fois puis deux fois ; pour le pourcentage, calcule (q − 1) × 100.",
+    "pour chaque terme demandé, applique le facteur autant de fois que l’indique son rang ; pour le pourcentage, calcule (q − 1) × 100.",
     "élever le facteur à une puissance n'est pas le multiplier par n.",
     [
       "À quel pourcentage de hausse correspond q = 1,2 ?",
@@ -218,7 +218,7 @@ window.ExerciseCoaching.register("suites-geometriques", [
   [
     "Une augmentation en pourcentage répétée se calcule avec un coefficient multiplicateur.",
     "Convertis le taux annuel en facteur 1 + taux/100.",
-    "multiplie la valeur initiale par q, puis par q² et q³ pour les périodes suivantes, sans arrondir trop tôt.",
+    "multiplie la valeur connue par q pour la période suivante, puis encore par q pour chaque nouvelle période, sans arrondir trop tôt.",
     "ne rajoute pas chaque période le même montant : l’augmentation porte sur la valeur déjà augmentée.",
     [
       "Un capital de 100 € augmente de 10 %. Combien vaut-il après un an ?",
@@ -239,9 +239,9 @@ window.ExerciseCoaching.register("suites-geometriques", [
   ],
   [
     "La somme d'une suite géométrique peut se calculer en additionnant les termes successifs.",
-    "Trouve la raison puis écris le terme après les quatre premiers.",
-    "additionne seulement les quatre termes demandés, puis multiplie le dernier par q pour trouver le cinquième.",
-    "attention à ne pas additionner cinq termes quand la question porte sur quatre.",
+    "Trouve la raison puis écris le terme qui suit le dernier terme donné.",
+    "additionne seulement les termes donnés, puis multiplie le dernier par q pour trouver le terme suivant.",
+    "attention à ne pas additionner un terme de trop : compte les termes de l’énoncé.",
     [
       "Combien vaut 16 + 8 + 4 + 2 ?",
       "30",
@@ -251,7 +251,7 @@ window.ExerciseCoaching.register("suites-geometriques", [
   [
     "Une suite arithmétique utilise une multiplication par le rang ; une géométrique élève la raison à ce rang.",
     "Calcule les valeurs des deux modèles au rang 2 avant de passer au rang 10.",
-    "évalue A₂, G₂, A₁₀ et G₁₀ séparément ; arrondis les valeurs géométriques au centième et compare les deux nombres au même rang.",
+    "évalue les deux modèles à chaque rang demandé, séparément ; arrondis les valeurs géométriques au centième et compare les deux nombres au même rang.",
     "10 × 1,12¹⁰ n'est pas 10 × 1,12 × 10 : l'exposant change fortement le résultat.",
     [
       "Si Gₙ = 10 × 1,2ⁿ, combien vaut G₂ ?",

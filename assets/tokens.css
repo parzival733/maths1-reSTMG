@@ -21,6 +21,21 @@
   size-adjust: 107%;
 }
 
+/* Signes mathématiques absents des deux polices (ₙ, ∪, ∈, ⇔, ℝ…) : un seul dessin partout,
+   tiré de Noto Sans et Noto Sans Math (OFL). */
+@font-face {
+  font-family: "STMG Symboles";
+  src: url("fonts/stmg-symboles-latin.woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: optional;
+  unicode-range: U+0233, U+1D62, U+207A-207B, U+208A, U+2093-209C;
+}
+@font-face {
+  font-family: "STMG Symboles";
+  src: url("fonts/stmg-symboles-maths.woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: optional;
+  unicode-range: U+2115, U+211A, U+211D, U+2124, U+21A6, U+21BB, U+21D2, U+21D4, U+2205, U+2208-220C, U+2229-222A, U+2282-2287, U+25CF, U+27E8-27E9, U+1D53B;
+}
+
 /* Polices de repli aux métriques ajustées (Arial, Times New Roman) : le texte ne se
    décale pas quand la police du site arrive. Valeurs calculées sur le texte des leçons. */
 @font-face {
@@ -73,6 +88,11 @@
   --color-focus: var(--color-learn);
   --color-on-accent: #ffffff;
   --color-on-accent-soft: #d4cbff;  /* détail du logo sur le violet */
+  --color-practice-fill: #246453;   /* bouton principal « s'entraîner » : texte blanc 7,0:1 */
+  --color-practice-fill-hover: #1b4d40;
+  --color-learn-fill: #604bd1;      /* bouton principal « apprendre » : texte blanc 6,1:1 */
+  --color-learn-fill-hover: #4f3bb5;
+  --color-on-fill: #ffffff;
   --color-code-bg: #242335;
   --color-code-text: #f7f5ff;       /* 15,9:1 */
   --color-chart-1: #0b5e96;         /* courbe principale des graphiques */
@@ -80,8 +100,8 @@
   --color-chart-3: #0f766e;         /* point mobile */
 
   /* Typographie */
-  --font-serif: "STMG Serif", "STMG Serif repli", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --font-sans: "STMG Sans", "STMG Sans repli", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-serif: "STMG Serif", "STMG Symboles", "STMG Serif repli", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-sans: "STMG Sans", "STMG Symboles", "STMG Sans repli", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
 
   /* Échelle de rapport 1,2 autour d'un corps de 17 px (18 px sur ordinateur). */
@@ -159,7 +179,11 @@
     --color-warning: #f0c56e;
     --color-warning-line: #c99a3d;
     --color-warning-soft: #33290f;
-    --color-on-accent: #14131c;       /* texte sombre sur les boutons clairs : 7,8 à 9,6:1 */
+    --color-on-accent: #14131c;       /* texte sombre sur les accents clairs : 7,8 à 9,6:1 */
+    --color-practice-fill: #2e7d63;   /* boutons principaux en teinte moyenne, texte blanc : 5,0:1 */
+    --color-practice-fill-hover: #2a7259;
+    --color-learn-fill: #6352d6;      /* texte blanc : 5,7:1 */
+    --color-learn-fill-hover: #5a49c9;
     --color-on-accent-soft: #2d2754;
     --color-code-bg: #0d0c14;
     --color-code-text: #ecebf4;
@@ -177,6 +201,7 @@
 
 /* Formules : chiffres tabulaires, vrai signe moins, aucune coupure à l'intérieur. */
 .math {
+  font-family: var(--font-sans);
   font-variant-numeric: tabular-nums lining-nums;
   white-space: nowrap;
   font-weight: 700;

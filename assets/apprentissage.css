@@ -261,7 +261,6 @@ body.lesson-immersive[data-domain="reperes"] {
   overflow-wrap: anywhere;
 }
 .lesson-immersive .lesson-content .formula::before {
-  content: "FORMULE · À RETENIR";
   display: block;
   font: 800 11px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color:var(--color-learn);
@@ -285,7 +284,6 @@ body.lesson-immersive[data-domain="reperes"] {
   border-left-color:var(--color-practice-strong);
 }
 .lesson-immersive .lesson-content .example::before {
-  content: "● EXEMPLE GUIDÉ";
   display: block;
   font-size: var(--text-caps);
   font-weight: 800;
@@ -300,7 +298,6 @@ body.lesson-immersive[data-domain="reperes"] {
   border-left-color:var(--color-warning-line);
 }
 .lesson-immersive .lesson-content .warning::before {
-  content: "▲ POINT DE VIGILANCE";
   display: block;
   font-size: var(--text-caps);
   font-weight: 800;
@@ -398,18 +395,11 @@ body.lesson-immersive[data-domain="reperes"] {
 /* Rappel actif : question presentee, choix masque sans JavaScript,
    solution en details toujours disponible. */
 .study-quiz {
-  background:linear-gradient(130deg, var(--color-learn-faint), var(--color-bg));
   border:1px solid var(--color-learn-line);
-  border-left:5px solid var(--color-learn);
-  border-radius: 18px;
   padding: 24px;
   margin: 34px 0;
 }
 .study-quiz .study-eyebrow {
-  color:var(--color-learn-strong);
-  font-size: var(--text-caps);
-  font-weight: 850;
-  letter-spacing: 1.1px;
   text-transform: uppercase;
 }
 .study-quiz h3 {
@@ -493,18 +483,6 @@ body.lesson-immersive[data-domain="reperes"] {
 .study-review > p { color:var(--color-learn-strong); font-size: 14px; }
 .study-review ol { display: grid; gap: 12px; margin-bottom: 0 !important; padding-left: 22px !important; }
 .study-review li::marker { color:var(--color-learn); font-weight: 900; }
-.study-review .review-cta {
-  display: inline-flex;
-  background:var(--color-learn);
-  color:var(--color-on-accent) !important;
-  text-decoration: none;
-  padding: 11px 17px;
-  border-radius: 11px;
-  font-size: 14px;
-  font-weight: 750;
-  margin-top: 17px;
-}
-.study-review .review-cta:hover { background:var(--color-learn); }
 body.reading-large .lesson-content { font-size: 19px; line-height: 1.94; }
 body.reading-large .lesson-content .study-quiz { font-size: 18px; }
 body.reading-large .lesson-content .study-choices label { font-size: 17px; }

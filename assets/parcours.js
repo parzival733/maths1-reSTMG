@@ -78,11 +78,11 @@
       const card=node('article','');card.className='progress-card';card.append(node('h3',A.skills[skill].label));
       const evaluated=indices.filter(i=>states[i].first!==null&&!states[i].skipped).length;
       const skipped=indices.filter(i=>states[i].skipped).length;
-      card.append(node('p',evaluated?`${right}/${evaluated} r\u00e9ponse(s) juste(s) sans aide au premier essai.`:'Aucune r\u00e9ponse \u00e9valu\u00e9e pour cette notion.'));
+      card.dataset.state=!evaluated?'aucun':right===evaluated?'acquis':right?'partiel':'reprendre';const scoreLine=node('p',evaluated?`${right}/${evaluated} r\u00e9ponse(s) juste(s) sans aide au premier essai.`:'Aucune r\u00e9ponse \u00e9valu\u00e9e pour cette notion.');scoreLine.className='progress-score';card.append(scoreLine);
       if(skipped)card.append(node('p',`${skipped} question(s) pass\u00e9e(s) volontairement. Ce choix sert \u00e0 proposer une reprise, pas \u00e0 attribuer une note.`));
       if(evaluated<indices.length)card.append(node('p','Bilan partiel : les questions non renseign\u00e9es ne sont pas compt\u00e9es comme des erreurs.'));
-      card.append(node('p',!evaluated?'Aucune conclusion sur ta ma\u00eetrise : reprends ces questions quand tu le souhaites.':right===evaluated?'Bien engag\u00e9 : \u00e0 v\u00e9rifier avec d\u2019autres questions, un autre jour.':right?'Une m\u00e9thode \u00e0 reprendre, sans repartir de z\u00e9ro.':'Revois l\u2019exemple guid\u00e9 avant une nouvelle s\u00e9rie.'));
-      const links=node('p','');links.className='action-row';
+      const verdict=node('p',!evaluated?'Aucune conclusion sur ta ma\u00eetrise : reprends ces questions quand tu le souhaites.':right===evaluated?'Bien engag\u00e9 : \u00e0 v\u00e9rifier avec d\u2019autres questions, un autre jour.':right?'Une m\u00e9thode \u00e0 reprendre, sans repartir de z\u00e9ro.':'Revois l\u2019exemple guid\u00e9 avant une nouvelle s\u00e9rie.');verdict.className='progress-verdict';card.append(verdict);
+      const links=node('p','');links.className='action-row progress-links';
       for(const [label,href]of[['Le\u00e7on',A.skills[skill].course],['Exercices',A.skills[skill].exercises],['Reprise cibl\u00e9e','revisions.html?niveau='+level.value+'&notion='+skill]]){const a=node('a',label);a.href=href;const more=node('span',' : '+A.skills[skill].label);more.className='sr-only';a.append(more);links.append(a);}card.append(links);results.append(card);
     });
     const details=$('practice-corrections');details.replaceChildren();

@@ -245,3 +245,38 @@ Démarche, constats et décisions : `docs/refonte/audit.md`, `docs/refonte/direc
   - les retours perdent leur signe ✓ / ✗ écrit en texte, remplacé par une icône de la feuille de style ; leurs mots ne changent pas.
 - `tests/interface-content.json` : `assets/exercices-renderer.js` et la zone `<main>` de `exercices/fonctions.html`. La légende reçoit une ligne qui explique les icônes des numéros (« Sur les numéros : validé, à revoir, correction vue. »). Aucun énoncé, réponse ou corrigé ne change ; la relecture des différences du `<main>` ne montre que cette ligne.
 - `tests/interface-content.json` : la zone `<main>` des 25 leçons. Seuls s'ajoutent le bouton « Options de lecture » (téléphone), le lien fixe « Sommaire » et deux identifiants (`options-lecture`, `sommaire-lecon`) ; relecture faite en retirant ces éléments : aucun autre écart. Sans JavaScript, les deux nouveaux éléments sont masqués comme le sommaire et les options de lecture.
+
+### Rangs des variantes (analyse des écarts, lot 2)
+
+Dans 18 exercices sur les suites, les variantes changeaient les nombres mais demandaient toujours les mêmes rangs (u₁, u₂, u₃, u₁₀, « cinquième terme », « au rang 10 »…). Les rangs sont désormais tirés au hasard dans une plage qui garde la difficulté. Deux façons de faire :
+- **décaler les rangs**, par exemple v₁, v₂, v₃ au lieu de v₀, v₁, v₂ ;
+- **donner le terme de départ à un rang variable** (« u₂ = 400 », puis u₃, u₄, u₅), quand décaler les rangs alourdirait les calculs.
+
+Pour les rangs lointains (8, 10 ou 12), la puissance utile est donnée dans l'énoncé.
+
+- `tests/evolution-mathematics.json` et `tests/interface-content.json` : `assets/variants-suites.js` et `assets/coaching-suites.js`. Relecture faite :
+  - les 47 exercices d'origine des trois chapitres de suites sont produits à l'identique (énoncé, intitulés, réponses, corrigé, consignes), vérifié par comparaison automatique avec la version précédente ;
+  - seules changent les variantes et dix-sept phrases d'aide qui citaient un rang fixe, devenues générales (« les trois termes demandés », « le rang demandé »).
+- Nouveau test `tests/test_rangs.js` : tout modèle dont les réponses portent sur un rang doit en demander plusieurs selon la variante. Il échoue sur la version précédente.
+
+### Formules et polices (analyse des écarts, lot 3)
+
+- **Police de symboles** : « STMG Symboles », deux sous-ensembles de Noto Sans et de Noto Sans Math sous licence OFL (5 Ko, préchargés), déclarés avec `unicode-range`. Les signes absents de Source Sans 3 et de Source Serif 4 (ₙ, ₘ, ᵢ, ∩, ∪, ∈, ⇔, ℝ, ∅…) ne viennent plus de la police du système. C'est une troisième famille, au-delà de la limite de deux fixée par le brief, ajoutée avec l'accord de l'utilisateur.
+- **Formules et questions en sans-serif** : encadrés de formule (qui utilisaient encore Georgia dans une ancienne règle), questions du calcul rapide, du diagnostic et des pauses mémoire. La serif reste réservée aux titres. Texte des leçons à 17 px sur téléphone, au lieu d'une ancienne règle à 15 px. Page 404 aux polices du site.
+- `tests/interface-content.json` : `assets/exercices-renderer.js`. Le moteur pose la classe `.math` sur les formules courtes en gras des énoncés et des consignes, pour un dessin unique, des chiffres tabulaires et aucune coupure dans une formule. Aucun texte ne change.
+
+### Lecture (analyse des écarts, lot 4)
+
+- **Bouton « Sommaire » des leçons** : réduit à une icône ronde de 44 px, bordée, sans aplat foncé. Il n'apparaît que lorsqu'on remonte la page une fois le sommaire dépassé, et disparaît dès qu'on reprend la lecture. Son nom accessible reste « Sommaire » ; s'il reçoit le focus au clavier, il reste visible.
+- **Bilan du diagnostic et de la révision guidée** (`assets/parcours.js`, sans empreinte) : chaque carte porte son constat (`data-state` : acquis, partiel, à reprendre, aucun) traduit par la couleur du filet de marge ; le score est en gras, les liens Leçon, Exercices, Reprise ciblée deviennent des pastilles de 44 px ; les corrections passent d'une pile de boîtes à une liste à filets. Textes inchangés.
+- **Bilan du calcul rapide** (`assets/calcul-rapide.js`, sans empreinte) : le score en grand, puis une idée par ligne (notions à reprendre, questions sans réponse, temps, suite). Le texte lu est identique, découpé en lignes.
+- **Légende des séries** (`assets/exercices-renderer.js`, empreinte mise à jour) : cinq lignes ramenées à trois sur téléphone. « Vert : ta réponse était juste / Rouge : réponse fausse ou manquante / Les cases affichent ensuite la bonne réponse » devient « Cases : juste, fausse ou vide, puis corrigée » ; « Sur les numéros » devient « Numéros ». Texte d'interface, aucun contenu mathématique touché.
+- **Filtres des sujets sur téléphone** : niveau en commutateur d'une ligne (la légende « Quel niveau ? » reste lue par les lecteurs d'écran), année et remise à zéro côte à côte. Hauteur du bloc : 285 px → 206 px à 375 px.
+
+### Nettoyage et catalogues (analyse des écarts, lot 5)
+
+- **Règles mortes** : retrait des règles dont aucune classe n'existe plus dans le HTML, le JavaScript ou les outils (`.empty-state`, `.method-panel`, `.section-grid`, `.exam-table`, `.review-cta`, `.level-context`…), et des déclarations des anciennes feuilles redéfinies par `refonte.css` avec exactement le même sélecteur dans le même contexte (déclarations `!important` conservées). Gain : 6,7 Ko sur les anciennes feuilles. Vérification : 72 pages capturées en entier à 375 et 1 280 px, en clair et en sombre, avant et après (288 captures), toutes identiques au pixel près ; deux séries de captures sans changement étaient elles aussi identiques, la comparaison est donc fiable.
+- **Limite** : le reste du recouvrement entre anciennes feuilles et `refonte.css` passe par des sélecteurs plus spécifiques ; le retirer sans risque demande une comparaison des styles calculés état par état (réponses, corrections, bilans). Non fait dans ce lot.
+- **Cartes des leçons** : le nombre d'exercices de la série du chapitre s'ajoute au surtitre (« CHAPITRE 03 · 8 EXERCICES »), repris du catalogue des exercices à la construction. L'atelier Python/tableur facultatif, sans série dédiée, n'en a pas.
+- **Progression locale** (`assets/catalogue-suivi.js`) : si le suivi est activé, chaque carte de leçon ou de série affiche l'état de la notion calculé par `MathsAcquis` (« Réussite récente », « À reprendre »…), relié à la carte par `aria-describedby`. Sans suivi, rien n'est affiché et rien n'est lu.
+- **Version des feuilles et scripts** : `20261106-ecarts1`, pour que les navigateurs rechargent les fichiers modifiés.

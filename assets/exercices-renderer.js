@@ -35,12 +35,17 @@
       + '<small class="answer-status" aria-live="polite"></small></label>';
   }
 
+  // Formule courte en gras dans l'énoncé (≤ 32 caractères, avec un signe ou un chiffre) :
+  // classe .math, pour un dessin unique, des chiffres tabulaires et aucune coupure.
+  const mathify = html => String(html).replace(/<strong>([^<]{1,32})<\/strong>/g, (whole, text) =>
+    /[=<>≤≥×÷−+²³ⁿ√∈∩∪]|[a-zA-Z]\(|\d/.test(text) ? '<strong class="math">' + text + '</strong>' : whole);
+
   function makeExercise(exercise, index) {
     if (!Array.isArray(exercise.fields) || exercise.fields.length === 0) {
       throw new Error('Il manque les réponses de l’exercice ' + (index + 1));
     }
     const questions = Array.isArray(exercise.tasks) && exercise.tasks.length
-      ? '<ol>' + exercise.tasks.map(task => '<li>' + task + '</li>').join('') + '</ol>' : '';
+      ? '<ol>' + exercise.tasks.map(task => '<li>' + mathify(task) + '</li>').join('') + '</ol>' : '';
     const hint = exercise.hint
       ? '<details class="hint"><summary>Indice</summary><p>' + exercise.hint + '</p></details>' : '';
     const correction = Array.isArray(exercise.correction) ? exercise.correction : [exercise.correction];
@@ -53,7 +58,7 @@
       + '<span class="exercise-number">' + String(index + 1).padStart(2, '0') + '</span>'
       + '<div><p class="exercise-kicker">' + escapeHtml(exercise.level || 'S’entraîner') + '</p>'
       + '<h2>' + escapeHtml(exercise.title) + '</h2></div></div>'
-      + '<p>' + exercise.statement + '</p>' + questions + hint + '</section>'
+      + '<p>' + mathify(exercise.statement) + '</p>' + questions + hint + '</section>'
       + '<form class="exercise-form" novalidate><h3>Tes réponses</h3>'
       + '<div class="answer-grid two">' + fields + '</div>'
       + '<div class="exercise-actions">'
@@ -90,10 +95,9 @@
       + '<nav class="exercise-stepper" style="--exercise-steps:' + length
       + '" aria-label="Choisir un exercice">' + steps + '</nav>'
       + '<p class="correction-legend">'
-      + '<span><i class="legend-dot" aria-hidden="true"></i> Vert : ta réponse était juste</span>'
-      + '<span><i class="legend-dot wrong" aria-hidden="true"></i> Rouge : réponse fausse ou manquante</span>'
-      + '<span>Les cases affichent ensuite la bonne réponse.</span>'
-      + '<span class="legend-steps">Sur les numéros : <i class="legend-mark is-complete" aria-hidden="true"></i> validé, <i class="legend-mark is-wrong" aria-hidden="true"></i> à revoir, <i class="legend-mark is-revealed" aria-hidden="true"></i> correction vue.</span></p></section>'
+      + '<span class="legend-cases">Cases : <span><i class="legend-dot" aria-hidden="true"></i> juste,</span>'
+      + '<span><i class="legend-dot wrong" aria-hidden="true"></i> fausse ou vide, puis corrigée.</span></span>'
+      + '<span class="legend-steps">Numéros : <span><i class="legend-mark is-complete" aria-hidden="true"></i> validé,</span> <span><i class="legend-mark is-wrong" aria-hidden="true"></i> à revoir,</span> <span><i class="legend-mark is-revealed" aria-hidden="true"></i> correction vue.</span></span></p></section>'
       + '<section class="exercise-stage" aria-label="Exercices du chapitre">'
       + chapter.exercises.map(makeExercise).join('') + '</section>'
       + '<nav class="exercise-linear-nav" aria-label="Navigation entre les exercices">'

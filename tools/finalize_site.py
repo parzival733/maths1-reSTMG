@@ -7,10 +7,10 @@ import re
 ROOT=Path(__file__).resolve().parents[1]
 ORIGIN='https://mathstmgdls.pages.dev'
 VERSION='20261023-simple1'
-ASSET_VERSION='20261106-refonte1'
+ASSET_VERSION='20261106-ecarts1'
 # Toutes les feuilles de style partagent une version, changée à chaque refonte visuelle.
-STYLE_VERSION='20261106-refonte1'
-ASSET_NAMES='|'.join(re.escape(n) for n in ['exercices-variants.js','exercices-renderer.js','exercices.js','fonctions-coaching.js','terminale-exercices.js','calcul-rapide-data.js','calcul-rapide.js','parcours-data.js','parcours.js','exercices.css','compte-rebours.js','cours.js','cours.css','interface.js','graphiques-interactifs.js','graphiques-interactifs.css','examen.js','calcul-rapide.css','typographie.js','accueil.js','menu.js']+[f'variants-{n}.js' for n in ['fonctions','suites','analyse','probabilites','reperes','donnees']]+[f'coaching-{n}.js' for n in ['general','algebre','suites','analyse','probabilites','reperes','donnees']])
+STYLE_VERSION='20261106-ecarts1'
+ASSET_NAMES='|'.join(re.escape(n) for n in ['exercices-variants.js','exercices-renderer.js','exercices.js','fonctions-coaching.js','terminale-exercices.js','calcul-rapide-data.js','calcul-rapide.js','parcours-data.js','parcours.js','exercices.css','compte-rebours.js','cours.js','cours.css','interface.js','graphiques-interactifs.js','graphiques-interactifs.css','examen.js','calcul-rapide.css','typographie.js','accueil.js','menu.js','catalogue-suivi.js']+[f'variants-{n}.js' for n in ['fonctions','suites','analyse','probabilites','reperes','donnees']]+[f'coaching-{n}.js' for n in ['general','algebre','suites','analyse','probabilites','reperes','donnees']])
 from navigation_simple import apply as simplify_navigation, ALIASES
 from lecons import apply as apply_lessons
 from typographie import apply as apply_typography
@@ -71,7 +71,7 @@ def main():
         text=re.sub(r'(assets/(?:'+ASSET_NAMES+r'))(?:\?v=[^"\s]*)?(?=")',r'\g<1>?v='+ASSET_VERSION,text)
         # Polices du site préchargées : prêtes avant le premier affichage, le texte ne se décale pas.
         text=re.sub(r'<link rel="preload" href="[^"]*assets/fonts/[^"]*"[^>]*>\n?','',text)
-        fonts=''.join(f'<link rel="preload" href="{base}assets/fonts/{name}.woff2" as="font" type="font/woff2" crossorigin>\n' for name in ('stmg-sans-regular','stmg-sans-bold','stmg-serif-semibold'))
+        fonts=''.join(f'<link rel="preload" href="{base}assets/fonts/{name}.woff2" as="font" type="font/woff2" crossorigin>\n' for name in ('stmg-sans-regular','stmg-sans-bold','stmg-serif-semibold','stmg-symboles-latin','stmg-symboles-maths'))
         text=re.sub(r'(<link rel="stylesheet" href=")', lambda m: fonts+m.group(1), text, count=1)
         # Jetons de design chargés avant toute autre feuille de style.
         if 'assets/tokens.css' not in text:

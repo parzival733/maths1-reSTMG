@@ -120,6 +120,7 @@ python3 tests/test_typographie.py
 python3 tests/test_noms_liens.py
 for f in assets/*.js; do node --check "$f"; done
 node tests/test_variants.js
+node tests/test_rangs.js
 node tests/test_graphiques.js
 node tests/test_terminale.js
 python3 tests/test_terminale.py
