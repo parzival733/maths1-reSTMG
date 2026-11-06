@@ -95,10 +95,9 @@
       + '<nav class="exercise-stepper" style="--exercise-steps:' + length
       + '" aria-label="Choisir un exercice">' + steps + '</nav>'
       + '<p class="correction-legend">'
-      + '<span><i class="legend-dot" aria-hidden="true"></i> Vert : ta réponse était juste</span>'
-      + '<span><i class="legend-dot wrong" aria-hidden="true"></i> Rouge : réponse fausse ou manquante</span>'
-      + '<span>Les cases affichent ensuite la bonne réponse.</span>'
-      + '<span class="legend-steps">Sur les numéros : <i class="legend-mark is-complete" aria-hidden="true"></i> validé, <i class="legend-mark is-wrong" aria-hidden="true"></i> à revoir, <i class="legend-mark is-revealed" aria-hidden="true"></i> correction vue.</span></p></section>'
+      + '<span class="legend-cases">Cases : <span><i class="legend-dot" aria-hidden="true"></i> juste,</span>'
+      + '<span><i class="legend-dot wrong" aria-hidden="true"></i> fausse ou vide, puis corrigée.</span></span>'
+      + '<span class="legend-steps">Numéros : <span><i class="legend-mark is-complete" aria-hidden="true"></i> validé,</span> <span><i class="legend-mark is-wrong" aria-hidden="true"></i> à revoir,</span> <span><i class="legend-mark is-revealed" aria-hidden="true"></i> correction vue.</span></span></p></section>'
       + '<section class="exercise-stage" aria-label="Exercices du chapitre">'
       + chapter.exercises.map(makeExercise).join('') + '</section>'
       + '<nav class="exercise-linear-nav" aria-label="Navigation entre les exercices">'

@@ -214,12 +214,21 @@ h1, h2, h3, .lesson-heading h1, .page-intro h1 { font-family: var(--font-serif);
   .lesson-immersive .lesson-toc, .lesson-toc { margin: 0 0 var(--space-4); padding: 0; border: 0; background: transparent; box-shadow: none; position: static; }
   .lesson-toc .ui-toc > summary { min-height: var(--target-min); display: inline-flex; align-items: center; padding: 0 var(--space-4);
     border: 1px solid var(--color-line-strong); border-radius: 999px; background: var(--color-surface); font-size: 1rem; }
+  /* Sommaire : une icône ronde et discrète, montrée seulement quand on remonte la page.
+     Le texte « Sommaire » reste le nom accessible du lien. */
   .js-menu .toc-fab {
     position: fixed; right: var(--space-4); bottom: calc(var(--space-4) + env(safe-area-inset-bottom)); z-index: var(--z-header);
-    display: inline-flex; align-items: center; min-height: var(--target-min); padding: 0 var(--space-4); border-radius: 999px;
-    background: var(--color-text); color: var(--color-bg); font-weight: 700; text-decoration: none; box-shadow: var(--shadow-2);
+    display: grid; place-items: center; width: var(--target-min); height: var(--target-min); padding: 0; overflow: hidden;
+    border: 1px solid var(--color-line-strong); border-radius: 50%; background: var(--color-surface); color: var(--color-text);
+    font-size: 0; text-decoration: none; box-shadow: var(--shadow-1);
     opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity var(--duration-base), transform var(--duration-base);
   }
+  .js-menu .toc-fab::before {
+    content: ""; width: 20px; height: 20px; background: currentColor;
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M9 6h11M9 12h11M9 18h11'/%3E%3Ccircle cx='4.5' cy='6' r='1.2' fill='black' stroke='none'/%3E%3Ccircle cx='4.5' cy='12' r='1.2' fill='black' stroke='none'/%3E%3Ccircle cx='4.5' cy='18' r='1.2' fill='black' stroke='none'/%3E%3C/svg%3E");
+    -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+  }
+  .js-menu .toc-fab:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
   .js-menu .toc-fab.is-visible { opacity: 1; transform: none; pointer-events: auto; }
 }
 /* Prérequis : même structure que les encadrés (filet en marge), sans carte emboîtée. */
@@ -402,3 +411,59 @@ html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-wrong {
 .exercise-statement strong, .lesson-content p strong, .lesson-content li strong { font-variant-numeric: tabular-nums lining-nums; }
 @media (max-width: 520px) { .lesson-content:not(#_l) { font-size: var(--text-base); } }
 @media (max-width: 520px) { body.reading-large .lesson-content:not(#_l) { font-size: 20px; } }
+
+/* ── Lecture : bilans du diagnostic et du calcul rapide ─── */
+/* Diagnostic : une carte par notion, filet de marge selon le constat, liens en pastilles. */
+#practice-results { gap: var(--space-3); }
+#practice-results .progress-card { position: relative; padding: var(--space-4) var(--space-4) var(--space-3) var(--space-5); border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-surface); box-shadow: none; }
+#practice-results .progress-card::before { content: ""; position: absolute; inset: var(--space-3) auto var(--space-3) 0; width: var(--rule-width); border-radius: 0 3px 3px 0; background: var(--color-line-strong); }
+#practice-results .progress-card[data-state="acquis"]::before { background: var(--color-success); }
+#practice-results .progress-card[data-state="partiel"]::before { background: var(--color-warning-line); }
+#practice-results .progress-card[data-state="reprendre"]::before { background: var(--color-learn); }
+#practice-results .progress-card h3 { margin: 0 0 var(--space-1); font: 700 var(--text-md)/1.3 var(--font-sans); }
+#practice-results .progress-card p { margin: 0 0 var(--space-2); font-size: var(--text-sm); line-height: 1.5; color: var(--color-text-muted); }
+#practice-results .progress-score { color: var(--color-text) !important; font-weight: 700; font-variant-numeric: tabular-nums; }
+#practice-results .progress-verdict { color: var(--color-text) !important; }
+#practice-results .progress-links { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-3) 0 0 !important; }
+#practice-results .progress-links a { display: inline-flex; align-items: center; min-height: var(--target-min); padding: 0 var(--space-3); border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); color: var(--color-text); font: 700 var(--text-sm)/1.2 var(--font-sans); text-decoration: none; }
+#practice-results .progress-links a:hover { border-color: var(--color-text); }
+#practice-result > h2 { margin: var(--space-8) 0 var(--space-4); }
+#practice-result > .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+#practice-result > .action-row a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+/* Corrections : une liste à filets, plus de boîtes empilées. */
+#practice-corrections { border-top: 1px solid var(--color-line); }
+#practice-corrections > details { margin: 0; padding: 0; border: 0; border-bottom: 1px solid var(--color-line); border-radius: 0; background: transparent; box-shadow: none; }
+#practice-corrections > details > summary:not(#_resume) { padding: var(--space-3) 0; font-weight: 600; line-height: 1.45; }
+#practice-corrections > details > p { margin: 0 0 var(--space-2); padding-left: var(--space-5); }
+#practice-corrections > details > p:last-child { margin-bottom: var(--space-4); }
+
+/* Calcul rapide : le score en grand, une idée par ligne. */
+.rapid-result:not(#_r) { padding: var(--space-6) var(--space-5); border: 1px solid var(--color-practice-line); border-radius: var(--radius-lg); background: var(--color-surface); }
+.rapid-result h3 { margin: 0 0 var(--space-2); font: 600 var(--text-lg)/1.25 var(--font-serif); }
+#rapid-score { margin: 0 0 var(--space-4); font: 400 var(--text-base)/1.4 var(--font-sans); color: var(--color-text-muted); }
+.rapid-score-value { display: block; font: 700 var(--text-2xl)/1.1 var(--font-sans); font-variant-numeric: tabular-nums lining-nums; color: var(--color-text); }
+#rapid-review { margin: 0; }
+.rapid-review-line { display: block; padding: var(--space-2) 0; border-top: 1px solid var(--color-line); line-height: 1.5; }
+.rapid-review-line:first-child { border-top: 0; padding-top: 0; font-weight: 600; color: var(--color-text); }
+.rapid-review-line:not(:first-child) { color: var(--color-text-muted); font-size: var(--text-sm); }
+
+/* Légende des séries : deux lignes, « Cases » puis « Numéros ». */
+.correction-legend:not(#_l) { display: grid; gap: 2px; }
+.correction-legend .legend-cases, .correction-legend .legend-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; }
+.correction-legend .legend-cases > span, .correction-legend .legend-steps > span { display: inline-flex; align-items: center; gap: 4px; }
+
+/* Sujets sur téléphone : niveau en commutateur d'une ligne, recherche puis année et remise à zéro. */
+@media (max-width: 740px) {
+  .subjects-controls:not(#_s) { padding: var(--space-3); margin: var(--space-4) 0 var(--space-3); }
+  .subjects-levels:not(#_s) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-bottom: var(--space-3);
+    border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); overflow: hidden; }
+  .subjects-levels legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .subjects-levels:not(#_s) label + label span { box-shadow: inset 1px 0 0 var(--color-line-strong); }
+  .subjects-levels:not(#_s) span { display: flex; align-items: center; justify-content: center; min-height: var(--target-min); padding: 0 var(--space-1);
+    border-width: 0; border-radius: 0; background: var(--color-surface); color: var(--color-text-muted); font: 600 var(--text-sm)/1.2 var(--font-sans); text-align: center; }
+  .subjects-levels:not(#_s) input:checked + span { background: var(--color-learn-soft); color: var(--color-learn-strong); font-weight: 700; }
+  .subjects-levels:not(#_s) input:focus-visible + span { outline-offset: -3px; }
+  .subjects-filters:not(#_s) { grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2) var(--space-3); }
+  .subjects-filters label { font-size: var(--text-sm); gap: 4px; }
+  .subjects-filters label:nth-child(2):not(#_s) { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--space-2); }
+}

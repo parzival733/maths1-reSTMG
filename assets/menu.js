@@ -15,15 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
       page.classList.toggle('options-open', open);
     });
   }
-  // Lien fixe « Sommaire » : visible une fois le sommaire sorti de l'écran ; il l'ouvre.
+  // Lien fixe « Sommaire » : une icône qui n'apparaît que lorsqu'on remonte la page, une
+  // fois le sommaire sorti de l'écran. Elle disparaît dès qu'on reprend la lecture.
   const fab = document.querySelector('.toc-fab');
   const toc = document.getElementById('sommaire-lecon');
   if (fab && toc) {
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(entries => entries.forEach(entry => {
-        fab.classList.toggle('is-visible', !entry.isIntersecting && entry.boundingClientRect.top < 0);
-      })).observe(toc);
-    }
+    let lastY = window.scrollY, ticking = false;
+    const update = () => {
+      ticking = false;
+      const y = window.scrollY, past = toc.getBoundingClientRect().bottom < 0;
+      if (document.activeElement === fab) fab.classList.add('is-visible');
+      else if (!past || y > lastY + 4) fab.classList.remove('is-visible');
+      else if (y < lastY - 4) fab.classList.add('is-visible');
+      if (Math.abs(y - lastY) > 4) lastY = y;
+    };
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    fab.addEventListener('focus', () => fab.classList.add('is-visible'));
     fab.addEventListener('click', () => {
       const details = toc.querySelector('details');
       if (details) details.open = true;

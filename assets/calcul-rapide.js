@@ -163,14 +163,21 @@
   function showResult() {
     $('rapid-session').hidden = true; $('rapid-result').hidden = false;
     $('rapid-result-title').textContent = reason === 'timeout' ? 'Temps écoulé · ton bilan' : 'Ton bilan';
-    $('rapid-score').textContent = `${score()} / ${questions.length} réponses justes au premier essai.`;
+    const value = document.createElement('strong'); value.className = 'rapid-score-value';
+    value.textContent = `${score()} / ${questions.length}`;
+    $('rapid-score').replaceChildren(value, ' réponses justes au premier essai.');
     const unanswered = states.filter(s => s.first === null).length;
     const topics = [...new Set(questions.filter((_,i) => states[i].first !== true).map(q => A.topics[q.topic]))];
-    let text = topics.length ? `À reprendre calmement : ${topics.join(', ')}.` : 'Toutes les réponses sont justes au premier essai. Essaie une autre série ou explique les méthodes sans regarder.';
-    if (unanswered) text += ` ${unanswered} question(s) sans réponse vérifiée ne rapportent pas de point.`;
-    if (timed) text += ` Temps utilisé : ${timeText(timer.elapsed())} sur ${timeText(timer.duration)}.`;
-    text += ' Le bilan est terminé. Tu peux revoir les questions et les corrections sans modifier le score.';
-    $('rapid-review').textContent = text; $('rapid-result-title').focus();
+    // Une idée par ligne : notions à reprendre, questions sans réponse, temps, suite.
+    const lines = [topics.length ? `À reprendre calmement : ${topics.join(', ')}.` : 'Toutes les réponses sont justes au premier essai. Essaie une autre série ou explique les méthodes sans regarder.'];
+    if (unanswered) lines.push(`${unanswered} question(s) sans réponse vérifiée ne rapportent pas de point.`);
+    if (timed) lines.push(`Temps utilisé : ${timeText(timer.elapsed())} sur ${timeText(timer.duration)}.`);
+    lines.push('Le bilan est terminé. Tu peux revoir les questions et les corrections sans modifier le score.');
+    $('rapid-review').replaceChildren(...lines.map((line, i) => {
+      const span = document.createElement('span'); span.className = 'rapid-review-line';
+      span.textContent = (i ? ' ' : '') + line; return span;
+    }));
+    $('rapid-result-title').focus();
   }
   function finish(endReason = 'manual') {
     if (phase === 'finished') { showResult(); return; }
