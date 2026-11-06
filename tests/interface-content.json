@@ -1,7 +1,7 @@
 {
   "cours/evolutions.html": {
     "part": "main",
-    "sha256": "842d2a58eaae2e1a65afa66c871e7008343f24b5032a9d278eea7eac2be6a516"
+    "sha256": "1a807f734cae09a990be530cff85064e997294b1e4e0fc0b1af1d0d1ba9a67f7"
   },
   "cours/suites-arithmetiques.html": {
     "part": "main",
@@ -13,27 +13,27 @@
   },
   "cours/logique.html": {
     "part": "main",
-    "sha256": "91a50b71182881b43a6cb8c21bba7c07ca49671c4f25e85e4f18a74b1a9651ea"
+    "sha256": "102d2610c7cde77f23c75446f6749146d431a376fa0dc3a3ccbc90154dd7a703"
   },
   "cours/suites.html": {
     "part": "main",
-    "sha256": "da019b97883ff62de3e80123477afc6013f2e868166ec8a67198486611df8036"
+    "sha256": "48a054607adcf9ef43e978c74b22e6d6c3de32c8ce2cc955d6dc7fa7e6536d3f"
   },
   "cours/calcul.html": {
     "part": "main",
-    "sha256": "36168b1c17023216d9427c22d434abf6555adb66e7066a00c268d0500c90f748"
+    "sha256": "d1d7f2da89bad294f42523a5497231d4a58ab678d27435dfc283a9dc2d768e60"
   },
   "cours/variations.html": {
     "part": "main",
-    "sha256": "6eac7a9b0261a52a6c839bc6961962f5a44eb58f55c3d644a11e03ae78996d3a"
+    "sha256": "e2b6c1fa0f1d99c0122c196ba08f0e5c73e605b75a66d6c7c639b9dc065d4856"
   },
   "cours/python-tableur.html": {
     "part": "main",
-    "sha256": "2c596de42feacfabb1db06535942fdff6c56b29afb43346133a381e1e4cabaf3"
+    "sha256": "d146c36bdf30c06890bb5071685c4a9820683edb4d528b561c2c3a8f6739eca7"
   },
   "cours/derivees.html": {
     "part": "main",
-    "sha256": "1f1fa893ea1b5116f5d4f5464d55a4687f68aa64dff38a58a810f465a5598a9e"
+    "sha256": "d62eadbdd67dd84519b58fd0d4a71a89786c2e209fda1cab7f7ebcf990185485"
   },
   "cours/statistiques-deux-variables.html": {
     "part": "main",
@@ -41,23 +41,23 @@
   },
   "cours/second-degre.html": {
     "part": "main",
-    "sha256": "c5d8aac7c3fed7f2c508c667d1448b1ffc4ef629aac2781891d74c0a2139e36b"
+    "sha256": "a688cb8945507f57b557628f363e5cf6b5ef6e483ff2270d6d7abb29e2fc1556"
   },
   "cours/fonctions.html": {
     "part": "main",
-    "sha256": "97ecd8dd7aecd8cc7451611299204a34c9be2f87f05d6128d0bc406478633858"
+    "sha256": "df23f267e04795c1d2bdbeae2b71ba91ef6b12c87e8b3231c16fa6a6f2aa0187"
   },
   "cours/bernoulli.html": {
     "part": "main",
-    "sha256": "1fab9b49de149e166a3967e58ba6da0a184073ba2c7de824cd9f4ba61e4168e5"
+    "sha256": "3e919f5810b7055fdf16665b4448d18189ab2f8d987a76e389ad5210212bac16"
   },
   "cours/statistiques-descriptives.html": {
     "part": "main",
-    "sha256": "6d76277c4f4241894651a09ed895614f4a4aa8bb9118b841b479ec3eb4ed9b1b"
+    "sha256": "7ca52c633ab63fb200a70228d646b2ad6c234be8cd99f90bd2097cad3e9005a9"
   },
   "cours/suites-geometriques.html": {
     "part": "main",
-    "sha256": "eec28b1aa9fe122c2f5df81fa3fdc28c84905958b5102d3228d69aa84fe172e5"
+    "sha256": "4a7cfdd91d419e3f5cf183d014ff7254eec57b44fde750004fde219054352935"
   },
   "cours/probabilites-conditionnelles.html": {
     "part": "main",
@@ -145,11 +145,11 @@
   },
   "terminale/cours/t-outils.html": {
     "part": "main",
-    "sha256": "0bf80da60a9bbc1c7848ca3ce8bd340a32264567324946348f78d9062901958f"
+    "sha256": "10a6c35128f13a0e8cc44c826d32f1a3298873ebd9031fa1e37a780eba32ee8d"
   },
   "terminale/cours/t-conditionnelles.html": {
     "part": "main",
-    "sha256": "7a308978e22a13ad884bb39d958e6869267f10a982cea53b2f9ddb195e796611"
+    "sha256": "cd5965f973c5ecbffd0ec17c74a6c5bb6e7bf4a92b8c3d179c1647ac616c4cdb"
   },
   "terminale/cours/t-exponentielles.html": {
     "part": "main",
@@ -161,7 +161,7 @@
   },
   "terminale/cours/t-suites.html": {
     "part": "main",
-    "sha256": "e3c96053838ce9982d4e25a6be2b23f2558af5a970c2080a236ba8a131779e43"
+    "sha256": "1972de7cdcddf2ae29df1e623347d3e67a076152025bf03f0a99276f0add646e"
   },
   "terminale/exercices/t-binomiale.html": {
     "part": "main",

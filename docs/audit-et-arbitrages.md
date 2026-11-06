@@ -307,3 +307,23 @@ Même défaut que les rangs des suites : deux exercices demandaient toujours la 
 - **Empreintes mises à jour** : `assets/variants-analyse.js` (ces deux modèles) et `assets/coaching-analyse.js` (une aide disait « avec x = 5 », elle dit maintenant « avec l'abscisse demandée »).
 - Sur 183 modèles, 81 gardent des intitulés fixes ; les trois qui citent une position (q(0), Q₁, f(0)) désignent une notion et non une valeur à faire varier.
 - **Test navigateur** : la vérification « l'indice change avec la variante » acceptait mal le hasard (deux tirages successifs pouvaient tomber sur le même indice). Elle exige désormais un changement en cinq tirages au plus.
+
+### Encadrés « Définition » et « Méthode » (6 novembre 2026, avec l'accord de l'utilisateur)
+
+Les types d'encadrés prévus par la direction graphique existaient pour Exemple, Formule, Attention et À retenir, pas pour Définition et Méthode.
+
+- **23 paragraphes encadrés** dans 15 leçons : 16 définitions (épreuve de Bernoulli, nombre dérivé, tangente, taux d'évolution, fonction, ensemble, intersection et réunion, implication, variable informatique, polynôme du second degré, racine, population et échantillon, suite, recette et bénéfice, probabilité conditionnelle, termes consécutifs) et 7 méthodes (comparer deux nombres, forme réduite d'une tangente, calculer un taux, résoudre f(x) < k graphiquement, vérifier un algorithme, calculer des termes sans tableur, construire le triangle de Pascal).
+- **Choix éditorial** : seuls les paragraphes qui introduisent une notion ou donnent une démarche réutilisable ; les remarques, exemples et démonstrations restent hors encadré. Les leçons sans paragraphe de ce type n'en ont pas.
+- **Texte inchangé** : chaque paragraphe est seulement entouré d'un bloc (`<div class="definition">` ou `<div class="method">`) par `tools/refonte_gabarits.py`, repéré par ses premiers mots et de façon idempotente. Le texte de la zone principale des 25 leçons a été comparé avant et après, mot pour mot : identique. Les empreintes HTML de ces 15 leçons sont mises à jour pour cette seule raison.
+- **Style** : même structure que les autres encadrés (filet de 3 px, icône, titre en capitales) ; Définition sur fond gris avec filet encre, Méthode sur fond transparent avec filet violet. Impression en noir, sans coupure.
+
+### Allègement des anciennes feuilles de style (6 novembre 2026)
+
+Les anciennes feuilles (`styles.css`, `interface.css`, `cours.css`, `exercices.css`…) restaient chargées sous `refonte.css`. Une grande partie de leurs déclarations ne s'appliquait plus nulle part.
+
+- **Méthode**
+  1. Couverture CSS de Chromium pendant un parcours de toutes les pages (3 largeurs, clair et sombre, impression, détails et menu ouverts) et pendant toute la batterie navigateur. Résultat : règles jamais appliquées.
+  2. Pour chaque élément de chaque page (375, 768 et 1 280 px ; page à l'ouverture puis blocs dépliés), calcul de la déclaration gagnante pour chaque propriété (`CSS.getMatchedStylesForNode`, raccourcis décomposés). Une ancienne déclaration n'est retirée que si elle est battue partout par une règle **sans état** : pas de pseudo-classe, d'attribut (`[hidden]`…) ni de classe posée par JavaScript. Une déclaration battue seulement dans un état particulier est conservée.
+  3. Garde-fous : rien n'est retiré dans les règles d'interaction (`:hover`, `:focus`…), les pseudo-éléments, les sélecteurs d'attribut, les règles d'impression ou d'accessibilité (`prefers-reduced-motion`, `forced-colors`), ni dans `refonte.css` et `tokens.css`.
+- **Gain** : anciennes feuilles 113 Ko → 93 Ko (−20 Ko, −17 %).
+- **Vérification** : 288 captures pleine page (72 pages, 375 et 1 280 px, clair et sombre), 56 captures d'états interactifs (réponses justes et fausses, corrections ouvertes, bilans du diagnostic et du calcul rapide, menu, filtres, suivi activé) avec tirages aléatoires fixés, et 7 rendus d'impression : tous identiques au pixel près avant et après. Une première passe trop large avait changé le fond des numéros d'exercices et la barre du chronomètre ; ces cas ont conduit aux règles « sans état » ci-dessus.

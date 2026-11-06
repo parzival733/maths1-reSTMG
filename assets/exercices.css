@@ -28,7 +28,7 @@
 
 .exercise-progress {
   border: 1px solid var(--line);
-  border-radius: 18px;
+  
   background:var(--color-surface);
   padding: 18px 20px 16px;
   margin-bottom: 24px;
@@ -46,9 +46,9 @@
 .score-chip {
   flex: 0 0 auto;
   border: 1px solid var(--exercise-line);
-  background: var(--exercise-soft);
+  
   color: var(--exercise-dark);
-  border-radius: 999px;
+  
   padding: 5px 10px;
   font-weight: 750;
 }
@@ -114,7 +114,7 @@
 .exercise-statement,
 .exercise-form {
   min-width: 0;
-  padding: clamp(24px, 3vw, 38px);
+  
 }
 
 .exercise-statement {
@@ -135,7 +135,7 @@
 }
 
 .exercise-head h2 {
-  margin: 2px 0 0 !important;
+  
   font-size: clamp(23px, 2.7vw, 31px) !important;
   line-height: 1.2;
 }
@@ -143,15 +143,10 @@
 .exercise-kicker {
   margin: 0 !important;
   color: var(--muted);
-  font-size: var(--text-caps);
+  
   font-weight: 750;
   letter-spacing: .7px;
   text-transform: uppercase;
-}
-
-.exercise-statement ol {
-  padding-left: 22px;
-  margin: 18px 0;
 }
 
 .exercise-statement li + li {
@@ -186,10 +181,10 @@
 }
 
 .hint summary {
-  cursor: pointer;
+  
   padding: 12px 0;
-  font-weight: 700;
-  color:var(--color-text-muted);
+  
+  
 }
 
 .hint p {
@@ -205,8 +200,8 @@
 
 .answer-row input,
 .answer-row select {
-  width: 100%;
-  min-width: 0;
+  
+  
   background:var(--color-surface);
   color: var(--ink);
   padding: 9px 10px;
@@ -290,16 +285,10 @@
   background: var(--error);
 }
 
-.answer-status {
-  min-height: 18px;
-  font-size: var(--text-sm);
-  font-weight: 750;
-}
-
 .formula-builder,
 .interval-builder {
   grid-template-columns: auto minmax(68px, 1fr) auto minmax(68px, 1fr) auto;
-  align-items: center;
+  
 }
 
 .formula-builder > span,
@@ -325,14 +314,10 @@
   margin-top: 18px;
 }
 
-.exercise-actions .button {
-  min-height: 44px;
-}
-
 .exercise-page .button-primary {
   background: var(--exercise);
   border-color: var(--exercise);
-  box-shadow: none;
+  
 }
 
 .exercise-page .button-primary:hover {
@@ -355,7 +340,7 @@
 }
 
 .exercise-feedback {
-  min-height: 23px;
+  
   margin: 12px 0 0;
   color: var(--exercise-dark);
   font-weight: 700;
@@ -365,10 +350,6 @@
   border-color: var(--exercise-line);
   background:var(--color-surface);
   margin: 16px 0 0;
-}
-
-.exercise-page .check summary {
-  font-weight: 750;
 }
 
 .exercise-linear-nav {
@@ -421,44 +402,19 @@
 }
 
 @media (max-width: 680px) {
-  .interactive-exercise-page {
-    padding-top: 20px;
-  }
-
-  .exercise-progress {
-    padding: 15px;
-  }
 
   .exercise-stepper {
-    overflow-x: auto;
+    
     padding-bottom: 4px;
     scrollbar-width: thin;
-  }
-
-  .answer-grid.two,
-  .answer-grid.three {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .exercise-linear-nav {
-    grid-template-columns: 1fr 1fr;
   }
 
   .exercise-linear-nav .button {
     width: 100%;
   }
-
-  .nav-help {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
 }
 
 @media (max-width: 460px) {
-  .exercise-statement,
-  .exercise-form {
-    padding: 22px 16px;
-  }
 
   .exercise-progress-top {
     align-items: flex-start;
@@ -585,18 +541,11 @@
 }
 @media (max-width: 680px) {
   .exercise-workspace > .coaching-panel { margin: 0 16px 20px; }
-  .answer-row { padding: 9px 11px; margin-bottom: 10px; gap: 5px; }
+  .answer-row { padding: 9px 11px; margin-bottom: 10px; }
   .exercise-progress { padding: 12px 14px; }
 }
 @media (max-width: 680px) {
-  /* Libellé et champ sur une ligne quand la place suffit ; sinon le champ passe dessous,
-     sur toute la largeur. Le message de vérification est toujours en dessous. */
-  .answer-row { display: flex; flex-wrap: wrap; align-items: center; column-gap: 10px; row-gap: 5px; }
   .answer-row > span:first-child { flex: 1 1 8em; min-width: 0; }
-  .answer-row > input { flex: 1 1 9em; min-width: 9em; width: auto; }
-  .answer-row > select { flex: 1 1 12em; min-width: 12em; width: auto; }
-  .answer-row > .answer-status { flex: 1 0 100%; min-height: 0; }
   .answer-row > span:first-child { font-size: var(--text-sm); }
-  .correction-legend { margin-top: 9px; gap: 4px 12px; font-size: var(--text-sm); }
   .interactive-exercise-page .page-intro p, .exercise-page-intro p { font-size: 16px; }
 }
