@@ -275,3 +275,42 @@ input[type="radio"], input[type="checkbox"] { width: 22px; height: 22px; accent-
   .menu-toggle, .lesson-options-toggle, .toc-fab, .series-recap button, .exercise-stepper, .lesson-corrections-toggle { display: none !important; }
   .lesson-content :is(.formula, .example, .warning, .recap, .callout), .lesson-content .lesson-prerequisites { background: none !important; border-left-color: #000 !important; }
 }
+
+/* ── Sujets blancs : barre « Temps et impression » ──────── */
+/* Deux blocs nets : le chrono (cadran, durée, boutons, options), puis l'impression. */
+.exam-toolbar { display: grid; gap: var(--space-4); padding: var(--space-5); border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-surface); }
+.exam-timer-ui:not([hidden]) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-3) var(--space-4); }
+.exam-timer-ui .action-row { display: contents; }
+.exam-clock { grid-column: 1; grid-row: 1; display: grid; gap: 2px; justify-self: start; min-width: 10ch; padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); background: var(--color-surface-sunken);
+  font: 700 2rem/1.1 var(--font-sans); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: var(--color-text); }
+.exam-clock::before { content: "Temps restant"; font: 700 var(--text-caps)/1.3 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--color-text-muted); }
+.exam-timer-ui > label:first-child { grid-column: 2; grid-row: 1; display: grid; gap: var(--space-1); font-size: var(--text-sm); font-weight: 700; color: var(--color-text-muted); }
+.exam-toolbar input[type="number"] { width: 6.5em; min-height: var(--target-min); padding: 0 var(--space-3); border: 1px solid var(--color-line-strong); border-radius: var(--radius-md);
+  background: var(--color-surface); color: var(--color-text); font: 700 var(--text-base)/1 var(--font-sans); font-variant-numeric: tabular-nums; }
+.exam-timer-ui .button { grid-column: 1 / -1; justify-self: start; min-height: var(--target-min); border-radius: var(--radius-md); font: 700 1rem/1 var(--font-sans); }
+.exam-timer-ui .button:not([hidden]) + .button:not([hidden]) { grid-column: auto; }
+#exam-start { background: var(--color-practice); border-color: var(--color-practice); color: var(--color-on-accent); }
+#exam-start:hover { background: var(--color-practice-strong); }
+#exam-pause, #exam-stop { background: var(--color-surface); border: 1px solid var(--color-line-strong); color: var(--color-text); }
+.exam-timer-ui .exam-autopause { grid-column: 1 / -1; margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); align-items: flex-start; }
+.exam-timer-ui #exam-status { grid-column: 1 / -1; margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+/* Impression : séparée du chrono, bouton secondaire avec icône. */
+.exam-toolbar > label { display: flex; align-items: center; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--color-line); font-weight: 600; }
+.exam-toolbar > [data-print-exam] { justify-self: start; display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--target-min); padding: 0 var(--space-5);
+  border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); font: 700 1rem/1 var(--font-sans); box-shadow: none; }
+.exam-toolbar > [data-print-exam]:hover { background: var(--color-surface-sunken); }
+.exam-toolbar > [data-print-exam]::before { content: ""; width: 18px; height: 18px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 9V3h10v6'/%3E%3Crect x='3' y='9' width='18' height='8' rx='2'/%3E%3Cpath d='M7 14h10v7H7z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 9V3h10v6'/%3E%3Crect x='3' y='9' width='18' height='8' rx='2'/%3E%3Cpath d='M7 14h10v7H7z'/%3E%3C/svg%3E") center / contain no-repeat; }
+@media (max-width: 420px) {
+  .exam-clock { font-size: 1.75rem; }
+}
+/* Chrono : cadran et durée sur une ligne, boutons groupés dessous, largeur contenue. */
+.exam-timer-ui:not([hidden]) { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); max-width: 560px; }
+.exam-clock { order: 1; flex: 1 1 auto; }
+.exam-timer-ui > label:first-child { order: 2; flex: 0 0 auto; }
+.exam-timer-ui .button { order: 3; flex: 0 0 auto; }
+.exam-timer-ui .exam-autopause, .exam-timer-ui #exam-status { order: 4; flex: 1 0 100%; }
+#exam-start:disabled { opacity: 0.55; }
+.exam-clock { max-width: 300px; }
