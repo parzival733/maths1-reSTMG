@@ -314,3 +314,82 @@ input[type="radio"], input[type="checkbox"] { width: 22px; height: 22px; accent-
 .exam-timer-ui .exam-autopause, .exam-timer-ui #exam-status { order: 4; flex: 1 0 100%; }
 #exam-start:disabled { opacity: 0.55; }
 .exam-clock { max-width: 300px; }
+
+/* ══ Système de composants (lot 1 de l'analyse des écarts) ══════════════════
+   Trois boutons pour tout le site : principal, secondaire, lien. Mêmes hauteur,
+   rayon, taille et graisse partout ; vert pour s'entraîner, violet pour apprendre.
+   :is(#…) donne à ces règles la priorité sur les anciennes feuilles. */
+:is(#_btn, .button, button.study-submit, .print-button, .subjects-reset, .practice-secondary, .rapid-secondary, .rapid-text-button, .math-lab button, #home-try button, .lesson-corrections-toggle button) {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  min-height: var(--target-min); padding: 0 var(--space-5); border-radius: var(--radius-md);
+  font: 700 1rem/1.2 var(--font-sans); letter-spacing: 0; text-decoration: none; text-align: center;
+  box-shadow: none; cursor: pointer; transition: background-color var(--duration-fast), border-color var(--duration-fast), color var(--duration-fast);
+}
+/* Secondaire : contour neutre. */
+:is(#_btn, .button-secondary, .practice-secondary, .rapid-secondary, .print-button, .subjects-reset, .math-lab button, #practice-previous, #rapid-next, #rapid-previous, #progress-export, [data-print-exam], .lesson-corrections-toggle button) {
+  background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-line-strong);
+}
+:is(#_btn, .button-secondary, .practice-secondary, .rapid-secondary, .print-button, .subjects-reset, .math-lab button, #practice-previous, #rapid-next, #rapid-previous, #progress-export, [data-print-exam], .lesson-corrections-toggle button):hover:not(:disabled) {
+  background: var(--color-surface-sunken); border-color: var(--color-text-muted);
+}
+/* Principal : une action par écran. Vert par défaut (s'entraîner). */
+:is(#_btn, .button-primary, #practice-check, #practice-next, #practice-start, #progress-enable, #progress-review, #rapid-check, #rapid-start, #exam-start, button.study-submit, #home-try button, .math-lab button[type="submit"], .math-lab__question button) {
+  background: var(--color-practice-fill); color: var(--color-on-fill); border: 1px solid var(--color-practice-fill);
+}
+:is(#_btn, .button-primary, #practice-check, #practice-next, #practice-start, #progress-enable, #progress-review, #rapid-check, #rapid-start, #exam-start, button.study-submit, #home-try button, .math-lab button[type="submit"], .math-lab__question button):hover:not(:disabled) {
+  background: var(--color-practice-fill-hover); border-color: var(--color-practice-fill-hover); color: var(--color-on-fill);
+}
+/* Apprendre (leçons, accueil, programme) : principal violet. */
+:is(.lesson-content, .lesson-page, .lesson-immersive, #essai, .home-try, .hero, .programme-page) :is(#_btn, .button-primary, button.study-submit, #home-try button, .math-lab button[type="submit"], .math-lab__question button) {
+  background: var(--color-learn-fill); border-color: var(--color-learn-fill); color: var(--color-on-fill);
+}
+:is(.lesson-content, .lesson-page, .lesson-immersive, #essai, .home-try, .hero, .programme-page) :is(#_btn, .button-primary, button.study-submit, #home-try button, .math-lab button[type="submit"], .math-lab__question button):hover:not(:disabled) {
+  background: var(--color-learn-fill-hover); border-color: var(--color-learn-fill-hover);
+}
+/* Lien : action discrète (terminer, quitter). */
+:is(#_btn, .rapid-text-button, #practice-stop) {
+  background: transparent; border: 0; padding-inline: var(--space-2); color: var(--color-text-muted); text-decoration: underline; text-underline-offset: 0.2em; font-weight: 600;
+}
+:is(#_btn, .button, button):disabled { opacity: 0.45; cursor: not-allowed; }
+:is(#_btn, .button, button):focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+
+/* Champs : un seul style, identique en clair et en sombre. */
+:is(input:not([type]), input[type="text"], input[type="number"], input[type="search"], input[type="email"], select, textarea):not(#_champ) {
+  min-height: var(--target-min); padding: 0 var(--space-3); border: 1px solid var(--color-line-strong); border-radius: var(--radius-md);
+  background-color: var(--color-surface); color: var(--color-text); font: 400 max(16px, 1rem)/1.3 var(--font-sans); font-variant-numeric: tabular-nums; box-shadow: none;
+}
+textarea:not(#_champ) { padding-block: var(--space-2); min-height: 6em; }
+:is(input, select, textarea):not(#_champ)::placeholder { color: var(--color-text-muted); opacity: 1; }
+:is(input, select, textarea):not(#_champ):focus-visible { outline: 3px solid var(--color-focus); outline-offset: 1px; border-color: var(--color-focus); }
+
+/* Éléments dépliables : même typographie et même zone cliquable partout. */
+details > summary:not(#_resume) { min-height: var(--target-min); padding-block: 10px; font: 700 1rem/1.4 var(--font-sans); cursor: pointer; }
+details > summary:not(#_resume)::marker { color: currentColor; }
+
+/* Accueil : la question d'essai, aérée et alignée. */
+#home-try { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); }
+#home-try input { flex: 1 1 9em; max-width: 14em; }
+/* Impressions et navigation « suivante » du calcul rapide : boutons secondaires. */
+html body :is(#_btn, [data-print-exam], [data-print-problems], #rapid-next, .rapid-secondary, #rapid-configure, #rapid-hint-button, #rapid-solution-button, #rapid-preview, #rapid-print) {
+  background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-line-strong); box-shadow: none;
+}
+html body :is(#_btn, [data-print-exam], [data-print-problems], #rapid-next, .rapid-secondary):hover:not(:disabled) { background: var(--color-surface-sunken); border-color: var(--color-text-muted); }
+/* Éléments dépliables : texte à la couleur du texte, repère (triangle) en accent. */
+details > summary:not(#_resume) { color: var(--color-text); }
+details > summary:not(#_resume)::marker { color: var(--color-learn); }
+:is(.exercise-page, .practice-panel, .rapid-main, .coaching-panel) details > summary:not(#_resume)::marker { color: var(--color-practice); }
+/* Règles plus fortes que les anciennes feuilles (sélecteurs à deux identifiants). */
+html body:not(#_page) :is(#_btn, #rapid-next, #rapid-previous) { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-line-strong); box-shadow: none; }
+html body:not(#_page) :is(#_btn, .rapid-text-button, #practice-stop) { background: transparent; border: 0; color: var(--color-text-muted); text-decoration: underline; text-underline-offset: 0.2em; }
+/* Navigation des parcours : boutons à leur largeur naturelle, sans retour à la ligne. */
+.practice-nav, .rapid-nav { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.practice-nav :is(button, .button), .rapid-nav :is(button, .button) { flex: 1 1 auto; width: auto; white-space: nowrap; }
+/* États des champs (réponse juste, fausse, révélée) : prioritaires sur le style commun. */
+html body:not(#_p) .answer-row.is-correct :is(input, select),
+html body:not(#_p) #rapid-answer.is-correct { border: 2px solid var(--color-success); }
+html body:not(#_p) .answer-row.is-wrong :is(input, select),
+html body:not(#_p) #rapid-answer.is-wrong { border: 2px solid var(--color-danger); }
+html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-correct { border: 2px solid var(--color-success); background-color: var(--color-practice-soft); color: var(--color-practice-strong); }
+html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-wrong { border: 2px solid var(--color-danger); background-color: var(--color-danger-soft); color: var(--color-danger-strong); }
+/* Bouton du chrono : peut passer à la ligne sur un écran étroit. */
+.exam-timer-ui .button { flex: 0 1 auto; max-width: 100%; white-space: normal; }

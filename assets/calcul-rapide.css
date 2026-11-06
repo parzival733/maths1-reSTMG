@@ -34,7 +34,7 @@
 .rapid-checkbox { display:flex; align-items:center; gap:10px; min-height:44px; font-size:14px; }
 .rapid-checkbox input { flex-shrink:0; width:18px; height:18px; accent-color:var(--purple); }
 .rapid-main .button { border:1px solid transparent; min-height:46px; gap:8px; font-size:14px; }
-.rapid-secondary { background:var(--color-surface); color:var(--purple-dark); border-color:var(--color-learn-line) !important; box-shadow:none; }
+.rapid-secondary { background:var(--color-surface); color:var(--purple-dark); border-color:var(--color-learn-line); box-shadow:none; }
 .rapid-secondary:hover { background:var(--color-learn-soft); }
 .rapid-scope { padding:13px 16px; margin:15px 0; border-radius:10px; background:var(--color-practice-soft); color:var(--color-practice-strong); font-size:14px; }
 .rapid-scope.is-terminale { background:var(--color-warning-soft); color:var(--color-warning); }

@@ -73,6 +73,11 @@
   --color-focus: var(--color-learn);
   --color-on-accent: #ffffff;
   --color-on-accent-soft: #d4cbff;  /* détail du logo sur le violet */
+  --color-practice-fill: #246453;   /* bouton principal « s'entraîner » : texte blanc 7,0:1 */
+  --color-practice-fill-hover: #1b4d40;
+  --color-learn-fill: #604bd1;      /* bouton principal « apprendre » : texte blanc 6,1:1 */
+  --color-learn-fill-hover: #4f3bb5;
+  --color-on-fill: #ffffff;
   --color-code-bg: #242335;
   --color-code-text: #f7f5ff;       /* 15,9:1 */
   --color-chart-1: #0b5e96;         /* courbe principale des graphiques */
@@ -159,7 +164,11 @@
     --color-warning: #f0c56e;
     --color-warning-line: #c99a3d;
     --color-warning-soft: #33290f;
-    --color-on-accent: #14131c;       /* texte sombre sur les boutons clairs : 7,8 à 9,6:1 */
+    --color-on-accent: #14131c;       /* texte sombre sur les accents clairs : 7,8 à 9,6:1 */
+    --color-practice-fill: #2e7d63;   /* boutons principaux en teinte moyenne, texte blanc : 5,0:1 */
+    --color-practice-fill-hover: #2a7259;
+    --color-learn-fill: #6352d6;      /* texte blanc : 5,7:1 */
+    --color-learn-fill-hover: #5a49c9;
     --color-on-accent-soft: #2d2754;
     --color-code-bg: #0d0c14;
     --color-code-text: #ecebf4;
