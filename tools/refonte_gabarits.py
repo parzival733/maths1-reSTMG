@@ -97,9 +97,30 @@ def tracking(root: Path):
                 path.write_text(new, encoding='utf-8')
 
 
+def page_domains(root: Path):
+    """Leçons et séries : le thème du chapitre, tel que le donnent les catalogues, sur <body>
+    (data-domain), pour colorer leur surtitre comme leur carte."""
+    for _, exercises, _, _ in CATALOGS:
+        folder = (root / exercises).parent
+        text = (root / exercises).read_text(encoding='utf-8')
+        domains = {m.group(1): m.group(2) for m in re.finditer(
+            r'<a class="lesson-card"[^>]*href="exercices/([\w-]+)\.html"[^>]*data-category="(\w+)"', text)}
+        for slug, domain in domains.items():
+            for page in (folder / 'exercices' / f'{slug}.html', folder / 'cours' / f'{slug}.html'):
+                if not page.exists() or domain not in DOMAINS:
+                    continue
+                html = page.read_text(encoding='utf-8')
+                body = re.search(r'<body[^>]*>', html).group(0)
+                new_body = re.sub(r' data-domain="\w+"', '', body)[:-1] + f' data-domain="{domain}">'
+                new = html.replace(body, new_body, 1)
+                if new != html:
+                    page.write_text(new, encoding='utf-8')
+
+
 def apply(root: Path):
     catalogs(root)
     tracking(root)
+    page_domains(root)
 
 
 if __name__ == '__main__':

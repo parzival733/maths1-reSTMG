@@ -250,7 +250,6 @@ h1, h2, h3, .lesson-heading h1, .page-intro h1 { font-family: var(--font-serif);
 .lesson-card .course-code { font-size: var(--text-caps); letter-spacing: var(--tracking-caps); color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
 .lesson-card h3 { font-family: var(--font-serif); font-weight: 600; }
 .card-domain { display: inline-flex; align-items: center; gap: 6px; margin-top: var(--space-1); font-size: var(--text-sm); font-weight: 700; color: var(--color-learn-strong); }
-.exercises-page .card-domain, a[href^="exercices/"] .card-domain { color: var(--color-practice-strong); }
 .card-domain::before { content: ""; width: 16px; height: 16px; flex: none; background: currentColor;
   -webkit-mask: var(--domain-icon) center / contain no-repeat; mask: var(--domain-icon) center / contain no-repeat; }
 .card-domain[data-domain="analyse"] { --domain-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20V4M4 20h16'/%3E%3Cpath d='M6 17c3-9 7-11 12-12'/%3E%3C/svg%3E"); }
@@ -474,3 +473,19 @@ html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-wrong {
 .card-progress::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--color-line-strong); }
 .card-progress[data-stage="1"]::before, .card-progress[data-stage="2"]::before, .card-progress[data-stage="3"]::before { background: var(--color-success); }
 .card-progress[data-stage="due"]::before { background: var(--color-warning-line); }
+
+/* Grands thèmes : chaque carte (leçons et exercices, Première et Terminale) porte la couleur de
+   son thème en filet supérieur et sur son étiquette ; le lien d'action garde la couleur de
+   l'onglet (violet pour lire, vert pour s'entraîner). Les surtitres des leçons et des séries
+   reprennent la même couleur. */
+:is(.lesson-card, body)[data-category="analyse"], :is(.lesson-card, body)[data-domain="analyse"] { --domain: var(--color-domain-analyse); --domain-soft: var(--color-domain-analyse-soft); }
+:is(.lesson-card, body)[data-category="statistiques"], :is(.lesson-card, body)[data-domain="statistiques"] { --domain: var(--color-domain-statistiques); --domain-soft: var(--color-domain-statistiques-soft); }
+:is(.lesson-card, body)[data-category="probabilites"], :is(.lesson-card, body)[data-domain="probabilites"] { --domain: var(--color-domain-probabilites); --domain-soft: var(--color-domain-probabilites-soft); }
+:is(.lesson-card, body)[data-category="reperes"], :is(.lesson-card, body)[data-domain="reperes"] { --domain: var(--color-domain-reperes); --domain-soft: var(--color-domain-reperes-soft); }
+:is(.lesson-card, body)[data-category="atelier"], :is(.lesson-card, body)[data-domain="atelier"] { --domain: var(--color-domain-atelier); --domain-soft: var(--color-domain-atelier-soft); }
+html body:not(#_p) .lesson-card[data-category] { border-top: 4px solid var(--domain); }
+html body:not(#_p) .lesson-card[data-category]:hover { border-color: var(--domain); }
+html body:not(#_p) .lesson-card .card-domain { align-self: flex-start; padding: 2px var(--space-2) 2px 6px; border-radius: var(--radius-sm); background: var(--domain-soft, var(--color-surface-sunken)); color: var(--domain, var(--color-text)); }
+html body:not(#_p) .lesson-card .course-code { color: var(--domain, var(--color-text-muted)); }
+html body[data-domain]:not(#_p) :is(.lesson-heading, .exercise-hero, main > header) .eyebrow { color: var(--domain); }
+@media print { html body:not(#_p) .lesson-card[data-category] { border-top-color: #000; } }
