@@ -356,20 +356,20 @@
       }
     },
     { // 4. Nuage aligné
-      base: {a: 2, b: 2},
-      params: r => ({a: r.nonZero(1, 6), b: r.int(-8, 10)}),
-      accept: ({a, b}) => [1, 2, 3, 4, 5].every(x => a * x + b !== 0) && b !== 0,
+      base: {a: 2, b: 2, xp: 5},
+      params: r => ({a: r.nonZero(1, 6), b: r.int(-8, 10), xp: r.int(5, 8)}),
+      accept: ({a, b, xp}) => [1, 2, 3, 4, xp].every(x => a * x + b !== 0) && b !== 0,
       coefs: ['a', 'b'],
-      difficulty: ({a, b}) => score({steps: 3, values: [a, b, a + b, 2 * a + b, 3 * a + b, 4 * a + b, 5 * a + b]}),
-      verify: ({a, b}, v) => v[0] === a && v[1] === b && v[2] === 5 * v[0] + v[1],
-      build: ({a, b}, o) => {
+      difficulty: ({a, b, xp}) => score({steps: 3, values: [a, b, a + b, 2 * a + b, 3 * a + b, 4 * a + b, xp * a + b]}),
+      verify: ({a, b, xp}, v) => v[0] === a && v[1] === b && v[2] === xp * v[0] + v[1],
+      build: ({a, b, xp}, o) => {
         const pts = [1, 2, 3, 4].map(x => `(${x} ; ${fr(a * x + b)})`);
         return E(o, `Un petit nuage est formé des points <strong>${pts.join(', ')}</strong>.`,
-          [N('Pente', a), N('Ordonnée à l’origine', b), N('Valeur prévue à x = 5', 5 * a + b)],
+          [N('Pente', a), N('Ordonnée à l’origine', b), N(`Valeur prévue à x = ${xp}`, xp * a + b)],
           C('les points sont alignés : la pente est la variation de y quand x augmente de 1 ; on trouve l’ordonnée à l’origine avec un point.',
             [`Quand x augmente de 1, y varie de ${fr(a)} : a = ${fr(a)}.`, `Avec (1 ; ${fr(a + b)}) : ${fr(a + b)} = ${times(a, 1, true)} + b, donc b = ${fr(a + b)}${sg(-a)} = ${fr(b)}.`],
-            `la droite a pour équation y = ${affine(a, b)} et donne ${fr(5 * a + b)} pour x = 5.`),
-          tasks('Donne la pente de la droite qui les relie.', 'Détermine l’ordonnée à l’origine.', 'Prévois y pour x = 5.'));
+            `la droite a pour équation y = ${affine(a, b)} et donne ${fr(xp * a + b)} pour x = ${xp}.`),
+          tasks('Donne la pente de la droite qui les relie.', 'Détermine l’ordonnée à l’origine.', `Prévois y pour x = ${xp}.`));
       }
     },
     { // 5. Interpoler ou extrapoler ?
@@ -393,27 +393,29 @@
       }
     },
     { // 6. Passer par le point moyen
-      base: {y1: 10, d1: 3, d2: 2, d3: 3},
-      params: r => ({y1: r.int(5, 30), d1: r.int(1, 6), d2: r.int(1, 6), d3: r.int(1, 6)}),
+      base: {y1: 10, d1: 3, d2: 2, d3: 3, x0: 1, far: 1},
+      params: r => ({y1: r.int(5, 30), d1: r.int(1, 6), d2: r.int(1, 6), d3: r.int(1, 6), x0: r.int(1, 3), far: r.int(1, 2)}),
       decimals: 2,
-      difficulty: ({y1, d1, d2, d3}) => {
+      difficulty: ({y1, d1, d2, d3, x0, far}) => {
         const ys = [y1, y1 + d1, y1 + d1 + d2, y1 + d1 + d2 + d3], my = ys.reduce((a, b) => a + b) / 4, a = (3 * (ys[3] - ys[0]) + (ys[2] - ys[1])) / 10;
-        return score({steps: 4, values: [...ys, a, my - 2.5 * a, my, 5 * a + my - 2.5 * a]});
+        const mx = x0 + 1.5, xp = x0 + 3 + far;
+        return score({steps: 4, values: [...ys, a, my - mx * a, my, xp * a + my - mx * a]});
       },
-      verify: ({y1, d1, d2, d3}, v) => {
-        const ys = [y1, y1 + d1, y1 + d1 + d2, y1 + d1 + d2 + d3], my = ys.reduce((a, b) => a + b) / 4;
-        const a = [1, 2, 3, 4].reduce((s, x, i) => s + (x - 2.5) * (ys[i] - my), 0) / 5, b = my - 2.5 * a;
-        return v[0] === 2.5 && Math.abs(v[1] - my) < 1e-9 && Math.abs(v[2] - (a * 2.5 + b)) < 1e-9 && Math.abs(v[3] - (5 * a + b)) < 1e-9;
+      verify: ({y1, d1, d2, d3, x0, far}, v) => {
+        const ys = [y1, y1 + d1, y1 + d1 + d2, y1 + d1 + d2 + d3], my = ys.reduce((a, b) => a + b) / 4, mx = x0 + 1.5, xp = x0 + 3 + far;
+        const a = [0, 1, 2, 3].reduce((s, k, i) => s + (x0 + k - mx) * (ys[i] - my), 0) / 5, b = my - mx * a;
+        return v[0] === mx && Math.abs(v[1] - my) < 1e-9 && Math.abs(v[2] - (a * mx + b)) < 1e-9 && Math.abs(v[3] - (xp * a + b)) < 1e-9;
       },
-      build: ({y1, d1, d2, d3}, o) => {
+      build: ({y1, d1, d2, d3, x0, far}, o) => {
         const ys = [y1, y1 + d1, y1 + d1 + d2, y1 + d1 + d2 + d3], my = ys.reduce((a, b) => a + b) / 4;
-        const a = F((3 * (ys[3] - ys[0]) + (ys[2] - ys[1])) / 10, 6), b = F(my - 2.5 * a, 6), y5 = F(5 * a + b, 6);
-        return E(o, `Pour les données x : <strong>1 ; 2 ; 3 ; 4</strong> et y : <strong>${ys.join(' ; ')}</strong>, on propose la droite d’ajustement <strong>y = ${affine(a, b)}</strong>.`,
-          [N('x moyen', 2.5), N('y moyen', my), N('Valeur de la droite en x = 2,5', my), N('Estimation pour x = 5', y5)],
+        const xs = [x0, x0 + 1, x0 + 2, x0 + 3], mx = x0 + 1.5, xp = x0 + 3 + far;
+        const a = F((3 * (ys[3] - ys[0]) + (ys[2] - ys[1])) / 10, 6), b = F(my - mx * a, 6), yp = F(xp * a + b, 6);
+        return E(o, `Pour les données x : <strong>${xs.join(' ; ')}</strong> et y : <strong>${ys.join(' ; ')}</strong>, on propose la droite d’ajustement <strong>y = ${affine(a, b)}</strong>.`,
+          [N('x moyen', mx), N('y moyen', my), N(`Valeur de la droite en x = ${fr(mx)}`, my), N(`Estimation pour x = ${xp}`, yp)],
           C('on calcule les coordonnées du point moyen G ; une droite d’ajustement par les moindres carrés passe par G ; on l’utilise ensuite pour estimer y.',
-            [`x̄ = (1 + 2 + 3 + 4)/4 = 2,5 ; ȳ = (${ys.join(' + ')})/4 = ${fr(my)}.`, `En x = 2,5 : y = ${fr(a)} × 2,5${sg(b)} = ${fr(my)} ; en x = 5 : y = ${fr(a)} × 5${sg(b)} = ${fr(y5)}.`],
-            `la droite passe par G(2,5 ; ${fr(my)}) et prévoit y = ${fr(y5)} pour x = 5.`),
-          tasks('Calcule les coordonnées de G.', 'Vérifie la valeur donnée par la droite en x = 2,5.', 'Prévois y en x = 5.'));
+            [`x̄ = (${xs.join(' + ')})/4 = ${fr(mx)} ; ȳ = (${ys.join(' + ')})/4 = ${fr(my)}.`, `En x = ${fr(mx)} : y = ${fr(a)} × ${fr(mx)}${sg(b)} = ${fr(my)} ; en x = ${xp} : y = ${fr(a)} × ${xp}${sg(b)} = ${fr(yp)}.`],
+            `la droite passe par G(${fr(mx)} ; ${fr(my)}) et prévoit y = ${fr(yp)} pour x = ${xp}.`),
+          tasks('Calcule les coordonnées de G.', `Vérifie la valeur donnée par la droite en x = ${fr(mx)}.`, `Prévois y en x = ${xp}.`));
       }
     },
     { // 7. Portée d'une prévision
