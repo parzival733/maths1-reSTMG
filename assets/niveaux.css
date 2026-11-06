@@ -6,7 +6,6 @@
 .level-switch a:focus-visible { outline:3px solid var(--color-learn); outline-offset:4px; }
 .programme-note { margin:1.2rem 0; padding:1rem 1.25rem; border-left:4px solid var(--color-learn); border-radius:.5rem; background:var(--color-learn-soft); line-height:1.65; }
 .programme-note p { margin:.3rem 0; }
-.level-context { color:var(--color-learn); font-weight:700; }
 .course-pagination { display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem; }
 .terminal-course table { width:100%; }
 .terminal-course pre { overflow-x:auto; max-width:100%; }

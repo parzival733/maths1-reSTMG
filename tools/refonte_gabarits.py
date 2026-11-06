@@ -4,6 +4,9 @@ façon idempotente par finalize_site.py. Aucun contenu pédagogique n'est modifi
 - Catalogues : chaque carte porte son domaine en toutes lettres (icône ajoutée par
   assets/refonte.css), au lieu d'une couleur propre à chaque domaine. Les cartes
   d'exercices reprennent le domaine de la leçon du même chapitre.
+- Les cartes de leçons indiquent le nombre d'exercices de la série du chapitre, et les
+  deux catalogues chargent assets/catalogue-suivi.js (progression locale, seulement si
+  le suivi est activé).
 """
 from pathlib import Path
 import re
@@ -53,8 +56,50 @@ def catalogs(root: Path):
             exercise_path.write_text(new, encoding='utf-8')
 
 
+CODE = re.compile(r'(<a class="lesson-card"[^>]*href="[^"]*?([\w-]+)\.html"[^>]*><span class="course-code">)([^<]*?)(?: · \d+ EXERCICES)?(</span>)')
+
+
+def exercise_counts(text):
+    return {m.group(1): m.group(2) for m in re.finditer(
+        r'<a class="lesson-card"[^>]*href="[^"]*?([\w-]+)\.html"[^>]*><span class="course-code">[^<]*· (\d+) EXERCICES</span>', text)}
+
+
+def add_counts(lesson_text, counts):
+    def card(m):
+        n = counts.get(m.group(2))
+        code = m.group(3).rstrip()
+        return m.group(1) + code + (f' · {n} EXERCICES' if n else '') + m.group(4)
+    return CODE.sub(card, lesson_text)
+
+
+def add_script(text, base, name):
+    tag = f'<script src="{base}assets/{name}?v='
+    if tag in text:
+        return text
+    version = re.search(r'assets/typographie\.js\?v=([\w-]+)', text).group(1)
+    new = f'<script src="{base}assets/{name}?v={version}" defer></script>'
+    anchor = re.search(r'<script src="[^"]*assets/typographie\.js[^"]*" defer></script>', text)
+    return text[:anchor.start()] + new + text[anchor.start():]
+
+
+def tracking(root: Path):
+    for lessons, exercises, _, _ in CATALOGS:
+        base = '../' if lessons.startswith('terminale/') else ''
+        lesson_path, exercise_path = root / lessons, root / exercises
+        counts = exercise_counts(exercise_path.read_text(encoding='utf-8'))
+        for path in (lesson_path, exercise_path):
+            text = path.read_text(encoding='utf-8')
+            new = add_counts(text, counts) if path == lesson_path else text
+            if 'assets/acquis.js' not in new:
+                new = add_script(new, base, 'acquis.js')
+            new = add_script(new, base, 'catalogue-suivi.js')
+            if new != text:
+                path.write_text(new, encoding='utf-8')
+
+
 def apply(root: Path):
     catalogs(root)
+    tracking(root)
 
 
 if __name__ == '__main__':

@@ -120,3 +120,15 @@ S'y ajoutent :
 5. **Nettoyage** : suppression des règles mortes des anciennes feuilles, et nombre d'exercices et progression sur les cartes des catalogues.
 
 Chaque lot fera l'objet d'un commit séparé, avec la batterie complète, des captures avant / après en clair et en sombre, et une mise en ligne après ta validation.
+
+## État après correction (6 novembre 2026, branche `refonte-graphique`)
+
+| Lot | Résultat mesuré |
+|---|---|
+| 1. Composants | Styles de boutons : 43 → 9. Champs blancs en mode sombre : 7 → 0. Bouton principal : même hauteur, même rayon, même texte partout ; teinte moyenne et texte blanc en sombre. |
+| 2. Variantes | 18 modèles « de rang » tirent leurs rangs au hasard ; un test (`test_rangs`) échoue si l'un d'eux redevient figé. Les 47 versions d'origine restent identiques. |
+| 3. Formules et polices | Police de symboles (5 Ko, OFL) ; formules et questions en sans-serif ; classe `.math` posée ; 404 aux polices du site. CLS nul. |
+| 4. Lecture | « Sommaire » réduit à une icône visible en remontant ; bilans du diagnostic et du calcul rapide restructurés ; légende des séries de 5 à 3 lignes ; filtres des sujets de 285 à 206 px. |
+| 5. Nettoyage | 6,7 Ko de règles mortes retirés, 288 captures identiques ; nombre d'exercices et progression locale sur les cartes. |
+
+Reste ouvert : le recouvrement restant entre anciennes feuilles et `refonte.css` (voir `docs/audit-et-arbitrages.md`, lot 5) ; balisage « Définition » et « Méthode » dans les leçons, qui toucherait au contenu.

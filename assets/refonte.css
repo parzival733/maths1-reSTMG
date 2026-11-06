@@ -467,3 +467,10 @@ html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-wrong {
   .subjects-filters label { font-size: var(--text-sm); gap: 4px; }
   .subjects-filters label:nth-child(2):not(#_s) { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--space-2); }
 }
+
+/* Catalogues : progression locale sur la carte (seulement si le suivi est activé). */
+.card-progress { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; margin: var(--space-2) 0 var(--space-3); padding: 2px var(--space-2);
+  border-radius: var(--radius-sm); background: var(--color-surface-sunken); color: var(--color-text); font: 600 var(--text-sm)/1.4 var(--font-sans); }
+.card-progress::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--color-line-strong); }
+.card-progress[data-stage="1"]::before, .card-progress[data-stage="2"]::before, .card-progress[data-stage="3"]::before { background: var(--color-success); }
+.card-progress[data-stage="due"]::before { background: var(--color-warning-line); }

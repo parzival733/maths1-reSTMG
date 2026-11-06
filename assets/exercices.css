@@ -90,20 +90,7 @@
   border-color:var(--color-practice-line);
 }
 
-.exercise-stepper button.is-active {
-  background: var(--exercise);
-  border-color: var(--exercise);
-  color:var(--color-on-accent);
-}
-
-.exercise-stepper button.is-complete:not(.is-active) {
-  background: var(--exercise-soft);
-  border-color:var(--color-practice-line);
-  color: var(--exercise-dark);
-}
-
 .exercise-stepper button.is-complete::after {
-  content: " ✓";
   font-size: .85em;
 }
 
@@ -114,7 +101,6 @@
 .exercise-block {
   margin: 0;
   border: 1px solid var(--line);
-  border-radius: 20px;
   background:var(--color-surface);
   overflow: hidden;
 }
@@ -134,35 +120,16 @@
 .exercise-statement {
   border-right: 1px solid var(--line);
   background:var(--color-surface);
-  font-size: 16px;
-  line-height: 1.78;
-}
-
-.exercise-form {
-  background:var(--color-bg);
 }
 
 .exercise-form > h3 {
   margin: 0 0 18px;
-  font-size: 17px;
-}
-
-.exercise-head {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  margin-bottom: 22px;
 }
 
 .exercise-number {
   display: inline-grid;
   place-items: center;
   flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--exercise-soft);
-  color: var(--exercise-dark);
   font-size: var(--text-sm);
   font-weight: 850;
 }
@@ -171,7 +138,6 @@
   margin: 2px 0 0 !important;
   font-size: clamp(23px, 2.7vw, 31px) !important;
   line-height: 1.2;
-  letter-spacing: -.5px;
 }
 
 .exercise-kicker {
@@ -181,10 +147,6 @@
   font-weight: 750;
   letter-spacing: .7px;
   text-transform: uppercase;
-}
-
-.exercise-statement > p {
-  margin: 12px 0;
 }
 
 .exercise-statement ol {
@@ -234,50 +196,21 @@
   margin: 0 0 14px;
 }
 
-.answer-grid {
-  display: grid;
-  gap: 12px;
-}
-
-.answer-grid.two {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.answer-grid.three {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .answer-row {
   position: relative;
-  display: grid;
-  gap: 7px;
   min-width: 0;
   margin-bottom: 14px;
-  padding: 12px;
-  border:1px solid var(--color-line);
-  border-radius: 11px;
-  background:var(--color-surface);
   transition: border-color .15s, background .15s;
-}
-
-.answer-row > span:first-child {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color:var(--color-text-muted);
 }
 
 .answer-row input,
 .answer-row select {
   width: 100%;
   min-width: 0;
-  min-height: 44px;
-  border:1px solid var(--color-line-strong);
-  border-radius: 8px;
   background:var(--color-surface);
   color: var(--ink);
   padding: 9px 10px;
   font: inherit;
-  font-size: 16px;
 }
 
 .answer-row input:focus-visible,
@@ -289,29 +222,24 @@
 
 .answer-row.is-correct {
   border-color:var(--color-practice-line);
-  background: var(--success-soft);
 }
 
 .answer-row.is-wrong {
   border-color:var(--color-danger-line);
-  background: var(--error-soft);
 }
 
 /* La couleur indique la justesse de la réponse AVANT la révélation.
    Les champs contiennent désormais les bonnes réponses du corrigé. */
 .answer-row.is-revealed.was-correct {
   border-color:var(--color-practice);
-  background: var(--success-soft);
 }
 
 .answer-row.is-revealed.was-wrong {
   border-color:var(--color-danger-line);
-  background: var(--error-soft);
 }
 
 .answer-row.is-revealed input.answer-was-correct,
 .answer-row.is-revealed select.answer-was-correct {
-  border: 2px solid var(--success);
   background:var(--color-practice-soft);
   color:var(--color-practice-strong);
   font-weight: 800;
@@ -319,7 +247,6 @@
 
 .answer-row.is-revealed input.answer-was-wrong,
 .answer-row.is-revealed select.answer-was-wrong {
-  border: 2px solid var(--error);
   background:var(--color-danger-soft);
   color:var(--color-danger-strong);
   font-weight: 800;
@@ -342,12 +269,7 @@
 
 .correction-legend {
   margin: 13px 0 0;
-  display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 18px;
-  color: var(--muted);
-  font-size: var(--text-sm);
 }
 
 .correction-legend span {
@@ -372,14 +294,6 @@
   min-height: 18px;
   font-size: var(--text-sm);
   font-weight: 750;
-}
-
-.answer-row.is-correct .answer-status {
-  color: var(--success);
-}
-
-.answer-row.is-wrong .answer-status {
-  color: var(--error);
 }
 
 .formula-builder,
@@ -444,7 +358,6 @@
   min-height: 23px;
   margin: 12px 0 0;
   color: var(--exercise-dark);
-  font-size: var(--text-sm);
   font-weight: 700;
 }
 
@@ -517,14 +430,9 @@
   }
 
   .exercise-stepper {
-    display: flex;
     overflow-x: auto;
     padding-bottom: 4px;
     scrollbar-width: thin;
-  }
-
-  .exercise-stepper button {
-    flex: 0 0 48px;
   }
 
   .answer-grid.two,
@@ -678,8 +586,6 @@
 @media (max-width: 680px) {
   .exercise-workspace > .coaching-panel { margin: 0 16px 20px; }
   .answer-row { padding: 9px 11px; margin-bottom: 10px; gap: 5px; }
-  .exercise-stepper { gap: 5px; }
-  .exercise-stepper button { flex: 1 0 32px; min-width: 32px; }
   .exercise-progress { padding: 12px 14px; }
 }
 @media (max-width: 680px) {
