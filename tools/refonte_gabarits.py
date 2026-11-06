@@ -9,6 +9,7 @@ façon idempotente par finalize_site.py. Aucun contenu pédagogique n'est modifi
   le suivi est activé).
 """
 from pathlib import Path
+import html
 import re
 
 DOMAINS = {'analyse': 'Analyse', 'statistiques': 'Statistiques', 'probabilites': 'Probabilités',
@@ -117,10 +118,64 @@ def page_domains(root: Path):
                     page.write_text(new, encoding='utf-8')
 
 
+# Encadrés « Définition » et « Méthode » : paragraphes du cours déjà rédigés, repérés par
+# leur début. Le texte n'est pas modifié : il est seulement entouré d'un bloc typé.
+BOXES = {
+    'definition': {
+        'cours/bernoulli.html': ['Une épreuve de Bernoulli est une expérience'],
+        'cours/derivees.html': ['Lorsque les pentes des sécantes tendent', 'La droite obtenue comme position limite'],
+        'cours/evolutions.html': ['Si une grandeur passe de VI à VF'],
+        'cours/fonctions.html': ['Une fonction f associe à chaque nombre x'],
+        'cours/logique.html': ['Un ensemble rassemble des éléments', 'L’intersection A ∩ B contient', 'Une implication « si P, alors Q »'],
+        'cours/python-tableur.html': ['Une variable donne un nom à une valeur'],
+        'cours/second-degre.html': ['Un polynôme du second degré s’écrit', 'Une racine de f est un nombre r'],
+        'cours/statistiques-descriptives.html': ['La population est l’ensemble des individus'],
+        'cours/suites.html': ['Une suite associe un nombre réel'],
+        'cours/variations.html': ['La recette est la somme encaissée'],
+        'terminale/cours/t-conditionnelles.html': ['PA(B) signifie'],
+        'terminale/cours/t-suites.html': ['Trois nombres a, b, c sont des termes consécutifs'],
+    },
+    'method': {
+        'cours/calcul.html': ['Pour comparer a et b, on peut étudier'],
+        'cours/derivees.html': ['Pour obtenir la forme réduite'],
+        'cours/evolutions.html': ['Pour calculer un taux, soustrais'],
+        'cours/fonctions.html': ['Pour résoudre f(x) < k'],
+        'cours/python-tableur.html': ['Pour vérifier un algorithme, dresser'],
+        'cours/suites-geometriques.html': ['Pour calculer sans tableur, écris'],
+        'terminale/cours/t-outils.html': ['Pour construire la ligne suivante'],
+    },
+}
+
+
+def plain(fragment):
+    text = html.unescape(re.sub(r'<[^>]+>', '', fragment))
+    return re.sub(r'[\s\u00a0\u202f]+', ' ', text).strip()
+
+
+def lesson_boxes(root: Path):
+    for kind, pages in BOXES.items():
+        for name, starts in pages.items():
+            path = root / name
+            text = path.read_text(encoding='utf-8')
+            new = text
+            for start in starts:
+                key = plain(start)
+                done = [m for m in re.finditer(rf'<div class="{kind}">(<p>[\s\S]*?</p>)</div>', new) if plain(m.group(1)).startswith(key)]
+                if done:
+                    continue
+                hits = [m for m in re.finditer(r'<p>([\s\S]*?)</p>', new) if plain(m.group(1)).startswith(key)]
+                assert len(hits) == 1, (name, start, len(hits))
+                m = hits[0]
+                new = new[:m.start()] + f'<div class="{kind}">' + m.group(0) + '</div>' + new[m.end():]
+            if new != text:
+                path.write_text(new, encoding='utf-8')
+
+
 def apply(root: Path):
     catalogs(root)
     tracking(root)
     page_domains(root)
+    lesson_boxes(root)
 
 
 if __name__ == '__main__':
