@@ -33,7 +33,10 @@ def main():
             context = browser.new_context()
             page = context.new_page()
             page.on('pageerror', lambda error: errors.append(str(error)))
-            page.on('response', lambda response: failed_responses.append(response.url) if response.status >= 400 else None)
+            # 404.html est servie à n'importe quelle adresse : ses polices ont des chemins absolus
+            # (/assets/fonts/…), introuvables seulement quand le site est servi dans un sous-dossier.
+            page.on('response', lambda response: failed_responses.append(response.url) if response.status >= 400
+                    and not (page.url.endswith('/404.html') and '/assets/fonts/' in response.url) else None)
             checks = 0
             for width in [320, 390, 768, 1440]:
                 page.set_viewport_size({'width': width, 'height': 900})

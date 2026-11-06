@@ -21,6 +21,21 @@
   size-adjust: 107%;
 }
 
+/* Signes mathématiques absents des deux polices (ₙ, ∪, ∈, ⇔, ℝ…) : un seul dessin partout,
+   tiré de Noto Sans et Noto Sans Math (OFL). */
+@font-face {
+  font-family: "STMG Symboles";
+  src: url("fonts/stmg-symboles-latin.woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: optional;
+  unicode-range: U+0233, U+1D62, U+207A-207B, U+208A, U+2093-209C;
+}
+@font-face {
+  font-family: "STMG Symboles";
+  src: url("fonts/stmg-symboles-maths.woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: optional;
+  unicode-range: U+2115, U+211A, U+211D, U+2124, U+21A6, U+21BB, U+21D2, U+21D4, U+2205, U+2208-220C, U+2229-222A, U+2282-2287, U+25CF, U+27E8-27E9, U+1D53B;
+}
+
 /* Polices de repli aux métriques ajustées (Arial, Times New Roman) : le texte ne se
    décale pas quand la police du site arrive. Valeurs calculées sur le texte des leçons. */
 @font-face {
@@ -85,8 +100,8 @@
   --color-chart-3: #0f766e;         /* point mobile */
 
   /* Typographie */
-  --font-serif: "STMG Serif", "STMG Serif repli", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --font-sans: "STMG Sans", "STMG Sans repli", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-serif: "STMG Serif", "STMG Symboles", "STMG Serif repli", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-sans: "STMG Sans", "STMG Symboles", "STMG Sans repli", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
 
   /* Échelle de rapport 1,2 autour d'un corps de 17 px (18 px sur ordinateur). */
@@ -186,6 +201,7 @@
 
 /* Formules : chiffres tabulaires, vrai signe moins, aucune coupure à l'intérieur. */
 .math {
+  font-family: var(--font-sans);
   font-variant-numeric: tabular-nums lining-nums;
   white-space: nowrap;
   font-weight: 700;

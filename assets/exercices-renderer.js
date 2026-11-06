@@ -35,12 +35,17 @@
       + '<small class="answer-status" aria-live="polite"></small></label>';
   }
 
+  // Formule courte en gras dans l'énoncé (≤ 32 caractères, avec un signe ou un chiffre) :
+  // classe .math, pour un dessin unique, des chiffres tabulaires et aucune coupure.
+  const mathify = html => String(html).replace(/<strong>([^<]{1,32})<\/strong>/g, (whole, text) =>
+    /[=<>≤≥×÷−+²³ⁿ√∈∩∪]|[a-zA-Z]\(|\d/.test(text) ? '<strong class="math">' + text + '</strong>' : whole);
+
   function makeExercise(exercise, index) {
     if (!Array.isArray(exercise.fields) || exercise.fields.length === 0) {
       throw new Error('Il manque les réponses de l’exercice ' + (index + 1));
     }
     const questions = Array.isArray(exercise.tasks) && exercise.tasks.length
-      ? '<ol>' + exercise.tasks.map(task => '<li>' + task + '</li>').join('') + '</ol>' : '';
+      ? '<ol>' + exercise.tasks.map(task => '<li>' + mathify(task) + '</li>').join('') + '</ol>' : '';
     const hint = exercise.hint
       ? '<details class="hint"><summary>Indice</summary><p>' + exercise.hint + '</p></details>' : '';
     const correction = Array.isArray(exercise.correction) ? exercise.correction : [exercise.correction];
@@ -53,7 +58,7 @@
       + '<span class="exercise-number">' + String(index + 1).padStart(2, '0') + '</span>'
       + '<div><p class="exercise-kicker">' + escapeHtml(exercise.level || 'S’entraîner') + '</p>'
       + '<h2>' + escapeHtml(exercise.title) + '</h2></div></div>'
-      + '<p>' + exercise.statement + '</p>' + questions + hint + '</section>'
+      + '<p>' + mathify(exercise.statement) + '</p>' + questions + hint + '</section>'
       + '<form class="exercise-form" novalidate><h3>Tes réponses</h3>'
       + '<div class="answer-grid two">' + fields + '</div>'
       + '<div class="exercise-actions">'

@@ -47,7 +47,7 @@ h1, h2, h3, .lesson-heading h1, .page-intro h1 { font-family: var(--font-serif);
   border: 0; border-left: var(--rule-width) solid var(--box-rule); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   background: var(--box-bg); color: var(--color-text); box-shadow: none;
 }
-.lesson-content .formula { --box-rule: var(--color-learn); --box-bg: var(--color-learn-faint); --box-ink: var(--color-learn-strong); font-family: var(--font-serif); }
+.lesson-content .formula { --box-rule: var(--color-learn); --box-bg: var(--color-learn-faint); --box-ink: var(--color-learn-strong); font-family: var(--font-sans); }
 .lesson-content .example { --box-rule: var(--color-line-strong); --box-bg: transparent; --box-ink: var(--color-text-muted); }
 .lesson-content .warning { --box-rule: var(--color-warning-line); --box-bg: var(--color-warning-soft); --box-ink: var(--color-warning); }
 .lesson-content .recap { --box-rule: var(--color-learn-strong); --box-bg: var(--color-learn-soft); --box-ink: var(--color-learn-strong); }
@@ -393,3 +393,12 @@ html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-correct
 html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-wrong { border: 2px solid var(--color-danger); background-color: var(--color-danger-soft); color: var(--color-danger-strong); }
 /* Bouton du chrono : peut passer à la ligne sur un écran étroit. */
 .exam-timer-ui .button { flex: 0 1 auto; max-width: 100%; white-space: normal; }
+
+/* ══ Formules et polices (lot 3 de l'analyse des écarts) ══════════════════════
+   Une formule a le même dessin partout : sans-serif, chiffres tabulaires. La serif
+   reste réservée aux titres de page et de partie. */
+.formula:not(#_f), .lesson-content .formula, .formula :is(p, li) { font-family: var(--font-sans); font-variant-numeric: tabular-nums lining-nums; font-size: 1.08em; font-weight: 600; }
+#rapid-question-title, #practice-title, .study-question, .rapid-card h3 { font-family: var(--font-sans); font-weight: 700; letter-spacing: 0; font-variant-numeric: tabular-nums lining-nums; }
+.exercise-statement strong, .lesson-content p strong, .lesson-content li strong { font-variant-numeric: tabular-nums lining-nums; }
+@media (max-width: 520px) { .lesson-content:not(#_l) { font-size: var(--text-base); } }
+@media (max-width: 520px) { body.reading-large .lesson-content:not(#_l) { font-size: 20px; } }

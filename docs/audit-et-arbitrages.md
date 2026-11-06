@@ -258,3 +258,9 @@ Pour les rangs lointains (8, 10 ou 12), la puissance utile est donnée dans l'é
   - les 47 exercices d'origine des trois chapitres de suites sont produits à l'identique (énoncé, intitulés, réponses, corrigé, consignes), vérifié par comparaison automatique avec la version précédente ;
   - seules changent les variantes et dix-sept phrases d'aide qui citaient un rang fixe, devenues générales (« les trois termes demandés », « le rang demandé »).
 - Nouveau test `tests/test_rangs.js` : tout modèle dont les réponses portent sur un rang doit en demander plusieurs selon la variante. Il échoue sur la version précédente.
+
+### Formules et polices (analyse des écarts, lot 3)
+
+- **Police de symboles** : « STMG Symboles », deux sous-ensembles de Noto Sans et de Noto Sans Math sous licence OFL (5 Ko, préchargés), déclarés avec `unicode-range`. Les signes absents de Source Sans 3 et de Source Serif 4 (ₙ, ₘ, ᵢ, ∩, ∪, ∈, ⇔, ℝ, ∅…) ne viennent plus de la police du système. C'est une troisième famille, au-delà de la limite de deux fixée par le brief, ajoutée avec l'accord de l'utilisateur.
+- **Formules et questions en sans-serif** : encadrés de formule (qui utilisaient encore Georgia dans une ancienne règle), questions du calcul rapide, du diagnostic et des pauses mémoire. La serif reste réservée aux titres. Texte des leçons à 17 px sur téléphone, au lieu d'une ancienne règle à 15 px. Page 404 aux polices du site.
+- `tests/interface-content.json` : `assets/exercices-renderer.js`. Le moteur pose la classe `.math` sur les formules courtes en gras des énoncés et des consignes, pour un dessin unique, des chiffres tabulaires et aucune coupure dans une formule. Aucun texte ne change.
