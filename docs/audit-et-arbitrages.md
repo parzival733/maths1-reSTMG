@@ -296,3 +296,14 @@ La refonte avait retiré la couleur propre à chaque domaine des cartes ; à la 
 - Cartes des quatre catalogues (leçons et exercices, Première et Terminale) : filet supérieur, surtitre et étiquette du thème dans sa couleur ; le nom du thème et son icône restent écrits, la couleur n'est jamais seule porteuse du sens.
 - Leçons et séries : le surtitre (« 03 / ANALYSE », « 03 / PARCOURS INTERACTIF ») prend la couleur du thème. `tools/refonte_gabarits.py` pose `data-domain` sur chaque page à partir des catalogues ; la leçon Python/tableur passe ainsi de « repères » à « atelier », comme sa carte.
 - Impression : filet en noir.
+
+### Abscisses des prévisions (statistiques à deux variables, 6 novembre 2026)
+
+Même défaut que les rangs des suites : deux exercices demandaient toujours la même abscisse.
+
+- **Exercice 4, nuage aligné** : la prévision porte sur x = 5, 6, 7 ou 8 au lieu de toujours x = 5.
+- **Exercice 6, point moyen** : les abscisses observées partent de 1, 2 ou 3 (le point moyen passe de x = 2,5 à 3,5 ou 4,5), et la prévision porte sur l'abscisse qui suit la dernière observée, ou sur la suivante.
+- Les versions d'origine (paramètres de base) restent identiques mot pour mot ; corrigés et consignes sont produits à partir des mêmes paramètres ; la vérification recalcule la pente par les moindres carrés avec les abscisses tirées.
+- **Empreintes mises à jour** : `assets/variants-analyse.js` (ces deux modèles) et `assets/coaching-analyse.js` (une aide disait « avec x = 5 », elle dit maintenant « avec l'abscisse demandée »).
+- Sur 183 modèles, 81 gardent des intitulés fixes ; les trois qui citent une position (q(0), Q₁, f(0)) désignent une notion et non une valeur à faire varier.
+- **Test navigateur** : la vérification « l'indice change avec la variante » acceptait mal le hasard (deux tirages successifs pouvaient tomber sur le même indice). Elle exige désormais un changement en cinq tirages au plus.

@@ -240,7 +240,7 @@ window.ExerciseCoaching.register("statistiques-deux-variables", [
   [
     "Comparer le point moyen à un ajustement permet de contrôler la cohérence du modèle.",
     "Calcule séparément les moyennes des quatre abscisses et des quatre ordonnées.",
-    "remplace l'abscisse moyenne dans l'équation proposée pour vérifier le point moyen, puis réutilise la même équation avec x = 5.",
+    "remplace l'abscisse moyenne dans l'équation proposée pour vérifier le point moyen, puis réutilise la même équation avec l'abscisse demandée.",
     "pour une moyenne, divise par quatre ; pour une prévision, remplace x dans la droite.",
     [
       "Si y = 2x + 3, quelle valeur prévoit-on pour x = 4 ?",

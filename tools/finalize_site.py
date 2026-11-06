@@ -7,9 +7,9 @@ import re
 ROOT=Path(__file__).resolve().parents[1]
 ORIGIN='https://mathstmgdls.pages.dev'
 VERSION='20261023-simple1'
-ASSET_VERSION='20261106-ecarts2'
+ASSET_VERSION='20261106-ecarts3'
 # Toutes les feuilles de style partagent une version, changée à chaque refonte visuelle.
-STYLE_VERSION='20261106-ecarts2'
+STYLE_VERSION='20261106-ecarts3'
 ASSET_NAMES='|'.join(re.escape(n) for n in ['exercices-variants.js','exercices-renderer.js','exercices.js','fonctions-coaching.js','terminale-exercices.js','calcul-rapide-data.js','calcul-rapide.js','parcours-data.js','parcours.js','exercices.css','compte-rebours.js','cours.js','cours.css','interface.js','graphiques-interactifs.js','graphiques-interactifs.css','examen.js','calcul-rapide.css','typographie.js','accueil.js','menu.js','catalogue-suivi.js']+[f'variants-{n}.js' for n in ['fonctions','suites','analyse','probabilites','reperes','donnees']]+[f'coaching-{n}.js' for n in ['general','algebre','suites','analyse','probabilites','reperes','donnees']])
 from navigation_simple import apply as simplify_navigation, ALIASES
 from lecons import apply as apply_lessons

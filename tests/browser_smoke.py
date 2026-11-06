@@ -435,11 +435,16 @@ def main():
                 form.locator('button[type="submit"]').click()
                 form.locator('[data-action="new-variant"]').click()
                 first_generated = page.locator(f'#exercice-{i+1} .coaching-hint').nth(2).text_content()
-                form = page.locator(f'#exercice-{i+1} .exercise-form')
-                form.locator('button[type="submit"]').click()
-                form.locator('[data-action="new-variant"]').click()
-                second_generated = page.locator(f'#exercice-{i+1} .coaching-hint').nth(2).text_content()
-                assert first_generated != second_generated, f'Indice figé pour exercice {i+1}'
+                # Deux tirages successifs peuvent tomber sur le même indice par hasard : on
+                # vérifie que l'indice change au moins une fois en cinq nouvelles variantes.
+                generated = set()
+                for _ in range(5):
+                    form = page.locator(f'#exercice-{i+1} .exercise-form')
+                    form.locator('button[type="submit"]').click()
+                    form.locator('[data-action="new-variant"]').click()
+                    generated.add(page.locator(f'#exercice-{i+1} .coaching-hint').nth(2).text_content())
+                    if generated - {first_generated}: break
+                assert generated - {first_generated}, f'Indice figé pour exercice {i+1}'
                 expect(page.locator(f'#exercice-{i+1} .coaching-hint')).to_have_count(3)
 
             # Tous les nouveaux parcours : valider, consulter, recommencer.
