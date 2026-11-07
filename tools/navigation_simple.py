@@ -53,7 +53,7 @@ def apply(root):
         path.write_text(text)
     for path in sorted(root.rglob('*.html')):
         rel=path.relative_to(root).as_posix()
-        if any(x.startswith('.') or x == 'docs' for x in path.relative_to(root).parts) or rel in ALIASES:continue
+        if any(x.startswith('.') or x in ('docs', 'public') for x in path.relative_to(root).parts) or rel in ALIASES:continue
         text=path.read_text();base='../'*(len(path.relative_to(root).parts)-1)
         terminale=rel.startswith('terminale/')
         # Remove the sixth top-level entry on every page, including the error page.

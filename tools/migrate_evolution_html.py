@@ -25,7 +25,7 @@ for rel in ['cours/python-tableur.html','programme.html','lecons.html','exercice
 p=ROOT/'tests/validate_site.py';s=p.read_text().replace('8 exercices de programmation facultatifs','8 exercices de programmation transversaux');p.write_text(s)
 # Header, footer and metadata are generated for every page without touching lesson bodies.
 for p in sorted(ROOT.rglob('*.html')):
- if any(x.startswith('.') or x == 'docs' for x in p.relative_to(ROOT).parts) or p.name=='404.html':continue
+ if any(x.startswith('.') or x in ('docs', 'public') for x in p.relative_to(ROOT).parts) or p.name=='404.html':continue
  s=p.read_text();rel=p.relative_to(ROOT).as_posix();base='../'*(len(p.relative_to(ROOT).parts)-1)
  if 'assets/evolution.css' not in s:s=s.replace('</head>',f'<link rel="stylesheet" href="{base}assets/evolution.css?v={V}"></head>',1)
  nav=re.search(r'<nav class="main-nav"[^>]*>(.*?)</nav>',s,re.S)

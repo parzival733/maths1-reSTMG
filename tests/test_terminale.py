@@ -18,7 +18,7 @@ def check_structure():
     paths = sorted((ROOT / 'terminale').rglob('*.html'))
     assert len(paths) == 21, len(paths)
     all_pages = {p.resolve(): Page(p.read_text(encoding='utf-8'))
-                 for p in ROOT.rglob('*.html') if '.git' not in p.parts and 'docs' not in p.parts}
+                 for p in ROOT.rglob('*.html') if '.git' not in p.parts and 'docs' not in p.parts and 'public' not in p.parts}
     checked = 0
     for path in paths:
         page = all_pages[path.resolve()]

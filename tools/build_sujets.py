@@ -60,7 +60,7 @@ def build():
 </main><footer class="site-footer"><div class="container footer-inner"><p><strong>maths.</strong> Comprendre, puis pratiquer.</p><p>Math\u00e9matiques \u00b7 Premi\u00e8re\u2013Terminale STMG</p></div></footer></body></html>
 '''
     (ROOT/'sujets.html').write_text(document,encoding='utf-8')
-    paths=[p for p in ROOT.rglob('*.html') if not any(part.startswith('.') or part == 'docs' for part in p.relative_to(ROOT).parts)]
+    paths=[p for p in ROOT.rglob('*.html') if not any(part.startswith('.') or part in ('docs', 'public') for part in p.relative_to(ROOT).parts)]
     for path in paths:
         if path.name=='404.html':continue
         text=path.read_text(encoding='utf-8')

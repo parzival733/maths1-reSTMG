@@ -97,7 +97,7 @@ Les pages d'exercices Terminale chargent, dans cet ordre, le moteur de variantes
 
 Aucun compte, police distante, publicité ou traceur ajouté dans le code. Les réponses sont traitées localement sans transmission. Un suivi local facultatif, désactivé par défaut, conserve seulement les dates et catégories de résultats après activation ; jamais les réponses saisies. Les requêtes d’hébergement restent traitées par Cloudflare et les sources externes après clic. Aucun interpréteur Python n'est embarqué : les codes du cours se copient dans un environnement Python 3.
 
-`donnees/naissances-france-2018-2023.csv` contient six totaux annuels issus de l'[Insee Focus 339, figure 1](https://www.insee.fr/fr/statistiques/8282356). Le champ, l'unité et la période sont décrits dans `donnees/README.md`. Les autres situations chiffrées sont fictives et pédagogiques, pas des conseils financiers ou fiscaux.
+`donnees/naissances-france-2018-2023.csv` contient six totaux annuels issus de l'[Insee Focus 339, figure 1](https://www.insee.fr/fr/statistiques/8282356). Le champ, l’unité et la période sont décrits dans `donnees/provenance.html`. Les autres situations chiffrées sont fictives et pédagogiques, pas des conseils financiers ou fiscaux.
 
 `pedagogie.html` expose les choix d'apprentissage et leurs sources académiques. Ces sources et les tests logiciels ne constituent pas une certification de l'efficacité du site pour chaque élève ; une évaluation de terrain reste nécessaire.
 
@@ -139,7 +139,17 @@ Les nouveaux tests vérifient les 21 pages Terminale, leurs liens, les 18 pauses
 
 ## Publication et maintenance
 
-GitHub Pages publie la branche **`gh-pages`**, à la racine. **`main`** reste la référence des sources. Une modification de `main` n'est visible qu'après mise à jour de `gh-pages` vers le commit validé et réussite de `pages build and deployment`. Ne pas forcer l'historique : vérifier que l'avancement est possible sans écraser de changements.
+Cloudflare Pages publie la branche **`main`** sur https://mathstmgdls.pages.dev/. Seul le dossier `public/`, construit par `tools/build_public.py`, est mis en ligne : pages, `assets/`, données liées par une page, `_headers`, `robots.txt`, `sitemap.xml` et `404.html`. Les dossiers `docs/`, `tests/`, `tools/` et `.github/` ne sont jamais publiés.
+
+Réglage à faire une fois dans le tableau de bord Cloudflare :
+
+1. Ouvrir https://dash.cloudflare.com, puis **Workers & Pages** et le projet du site (`mathstmgdls`).
+2. Onglet **Settings**, section **Build** (ou **Builds & deployments**), bouton **Edit** de **Build configuration**.
+3. **Framework preset** : `None`. **Build command** : `python3 tools/build_public.py`. **Build output directory** : `public`. **Root directory** : laisser vide.
+4. **Save**. Puis onglet **Deployments**, dernier déploiement de `main`, menu **⋯** → **Retry deployment** (ou pousser un commit sur `main`).
+5. Une fois le déploiement terminé : `python3 tests/check_publication.py`. Il doit confirmer que `/docs/audit-et-arbitrages.md` répond 404.
+
+Le script n'utilise que la bibliothèque standard de Python, présente dans l'image de build de Cloudflare. Il échoue si une page lie un fichier local absent de `public/`.
 
 Les workflows de vérification disposent uniquement de permissions de lecture et ne déploient pas. Le workflow historique est conservé ; `terminale.yml` ajoute les contrôles des deux niveaux.
 

@@ -43,7 +43,7 @@ def main():
             report['pages'].append({'path':name,'violations':len(issues),'manual_review':[{ 'id':x['id'],'nodes':len(x['nodes'])} for x in results['incomplete']]})
         for file in sorted(ROOT.rglob('*.html')):
             name=file.relative_to(ROOT).as_posix()
-            if any(x.startswith('.') or x == 'docs' for x in file.relative_to(ROOT).parts):continue
+            if any(x.startswith('.') or x in ('docs', 'public') for x in file.relative_to(ROOT).parts):continue
             ctx=browser.new_context(viewport={'width':1280,'height':900})
             page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
             page.goto(origin+name,wait_until='networkidle')

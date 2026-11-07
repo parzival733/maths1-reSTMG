@@ -133,7 +133,7 @@
   },
   "terminale/cours/t-statistiques.html": {
     "part": "main",
-    "sha256": "353dbda25963ad2b7aa1a262c8c5eb173e75e29e2c5b652bfabe2931df0a9643"
+    "sha256": "e24ce63450b0616bfb9f444b636ee4aa9d02c9f041943468101d3b651c6cdfa1"
   },
   "terminale/cours/t-variables.html": {
     "part": "main",
@@ -145,7 +145,7 @@
   },
   "terminale/cours/t-outils.html": {
     "part": "main",
-    "sha256": "10a6c35128f13a0e8cc44c826d32f1a3298873ebd9031fa1e37a780eba32ee8d"
+    "sha256": "2cce61ec9a69e0cce03881a7f5253b832f0256e16c2521d7fab6e53d33366cde"
   },
   "terminale/cours/t-conditionnelles.html": {
     "part": "main",

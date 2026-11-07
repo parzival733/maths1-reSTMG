@@ -37,7 +37,7 @@ def main():
     apply_lessons(ROOT)
     urls=[]
     for path in sorted(ROOT.rglob('*.html')):
-        if any(p.startswith('.') or p == 'docs' for p in path.relative_to(ROOT).parts):continue
+        if any(p.startswith('.') or p in ('docs', 'public') for p in path.relative_to(ROOT).parts):continue
         if path.name=='404.html':
             # Page d'erreur : seulement les jetons et la version des feuilles de style.
             page=path.read_text()

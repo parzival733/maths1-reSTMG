@@ -14,7 +14,7 @@ class Quiet(SimpleHTTPRequestHandler):
   self.send_header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'")
   super().end_headers()
 def main():
- pages=[p for p in R.rglob('*.html') if not any(x.startswith('.') or x == 'docs' for x in p.relative_to(R).parts)]
+ pages=[p for p in R.rglob('*.html') if not any(x.startswith('.') or x in ('docs', 'public') for x in p.relative_to(R).parts)]
  for p in pages:
   text=p.read_text()
   if p.name=='404.html':
