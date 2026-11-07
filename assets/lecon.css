@@ -55,17 +55,13 @@
 @media (min-width: 741px) {
   body .lesson-content p, body .lesson-content li, body.lesson-immersive .lesson-content p, body.lesson-immersive .lesson-content li { max-width: 54ch; }
 }
-/* Parcours d'apprentissage accessible — complement de cours.css.
-   Les codes couleurs sont systematiquement accompagnes de titres lisibles. */
+/* Parcours d’apprentissage : les codes couleurs sont toujours accompagnés de titres lisibles. */
 body.lesson-immersive {
   --learn-accent: var(--color-learn);
   --learn-accent-dark: var(--color-learn-strong);
   --learn-accent-soft: var(--color-learn-soft);
   --learn-bg: var(--color-bg);
-  
-  
-  
-  
+
 }
 body.lesson-immersive[data-domain="statistiques"] {
   --learn-accent: var(--color-learn);
@@ -90,14 +86,9 @@ body.lesson-immersive[data-domain="reperes"] {
   max-width: none;
   position: relative;
   isolation: isolate;
-  
-  
-  
-  
+
   border-left: 6px solid var(--learn-accent);
-  
-  
-  
+
 }
 .lesson-immersive .lesson-heading::before {
   content: "";
@@ -127,11 +118,9 @@ body.lesson-immersive[data-domain="reperes"] {
 }
 .lesson-immersive .lesson-heading h1 {
   max-width: 800px;
-  
-  
+
   letter-spacing: -1.3px;
-  
-  
+
 }
 .lesson-immersive .lesson-heading .lead {
   max-width: 735px;
@@ -142,20 +131,14 @@ body.lesson-immersive[data-domain="reperes"] {
 .learning-path {
   display: flex;
   flex-wrap: wrap;
-  
-  
+
   align-items: center;
 }
 .learning-path span {
   display: inline-flex;
   gap: 8px;
   align-items: center;
-  
-  
-  
-  
-  
-  
+
   border-radius: 999px;
 }
 .learning-path span b {
@@ -164,8 +147,7 @@ body.lesson-immersive[data-domain="reperes"] {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  
-  
+
 }
 .lesson-reading-controls {
   display: flex;
@@ -204,7 +186,7 @@ body.lesson-immersive[data-domain="reperes"] {
   gap: clamp(20px, 2.5vw, 30px);
   align-items: start;
 }
-/* Sans JS le sommaire reste cache : le contenu prend toute la largeur. */
+/* Sans JavaScript, le sommaire reste caché : le contenu prend toute la largeur. */
 .lesson-immersive .lesson-layout:has(.lesson-toc[hidden]) {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -237,25 +219,17 @@ body.lesson-immersive[data-domain="reperes"] {
 }
 .lesson-immersive .lesson-content {
   background:var(--color-surface);
-  
-  
-  
-  
-  
-  
-  
+
 }
 .lesson-immersive .lesson-content p,
 .lesson-immersive .lesson-content li { max-width: 84ch; }
 .lesson-immersive .lesson-content p { margin: 13px 0; }
 .lesson-immersive .lesson-content > h2 {
-  
-  
+
   line-height: 1.38;
   
   border-left: 5px solid var(--learn-accent);
-  
-  
+
   color: var(--learn-ink);
   scroll-margin-top: 28px;
 }
@@ -264,11 +238,7 @@ body.lesson-immersive[data-domain="reperes"] {
   color:var(--color-learn-strong);
 }
 .lesson-immersive .lesson-content .objectives {
-  
-  
-  
-  
-  
+
   margin: 0 0 28px;
 }
 .lesson-immersive .lesson-content .objectives h2 {
@@ -283,14 +253,7 @@ body.lesson-immersive[data-domain="reperes"] {
 .lesson-immersive .lesson-content .formula {
   
   display: block;
-  
-  
-  
-  
-  
-  
-  
-  
+
   line-height: 1.9;
   overflow-x: auto;
   overflow-wrap: anywhere;
@@ -351,21 +314,18 @@ body.lesson-immersive[data-domain="reperes"] {
   border-color: var(--learn-accent);
   color: var(--learn-accent-dark);
 }
-/* Etayage facultatif : rendre l'aide accessible sans surcharger la page. */
+/* Étayage facultatif : l’aide reste accessible sans surcharger la page. */
 .support-scaffold {
   border:1px solid var(--color-practice-line);
   border-left:5px solid var(--color-practice-strong);
-  
-  
+
   margin: 24px 0 34px;
   padding: 0 20px;
 }
 .support-scaffold summary {
   
   padding: 17px 0;
-  
-  
-  
+
 }
 .support-scaffold summary::marker { color:var(--color-practice-strong); }
 .support-scaffold[open] { padding-bottom: 19px; }
@@ -392,8 +352,7 @@ body.lesson-immersive[data-domain="reperes"] {
   font-size: var(--text-caps);
   font-weight: 850;
 }
-/* Rappel actif : question presentee, choix masque sans JavaScript,
-   solution en details toujours disponible. */
+/* Rappel actif : question, choix masqués sans JavaScript, solution toujours disponible en élément dépliable. */
 .study-quiz {
   
   padding: 24px;
@@ -442,11 +401,7 @@ body.lesson-immersive[data-domain="reperes"] {
   background:var(--color-learn);
   color:var(--color-on-accent);
   border: none;
-  
-  
-  
-  
-  
+
 }
 .study-quiz .study-submit:hover { background:var(--color-learn-strong); }
 .study-quiz .study-feedback {
@@ -471,9 +426,7 @@ body.lesson-immersive[data-domain="reperes"] {
 .study-solution { margin-top: 12px; border-top:1px solid var(--color-learn-line); padding-top: 12px; }
 .study-solution[open] p { margin: 10px 0 0 !important; }
 .study-review {
-  
-  
-  
+
   padding: 24px;
   margin: 28px 0;
 }
@@ -519,7 +472,7 @@ body.reading-focus .lesson-content { max-width: 880px; margin-inline: auto; widt
 }
 :where(.terminal-course) .course-pagination { display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem; }
 .terminal-course pre { overflow-x:auto; max-width:100%; }
-/* Match the existing lesson choice cards, with touch-friendly labels. */
+/* Cartes de choix des pauses mémoire, adaptées au toucher. */
 .terminal-course .study-quiz fieldset > label { display:flex; align-items:flex-start; gap:11px; min-height:44px; min-width:0; padding:12px; margin:10px 0; border:1px solid var(--color-learn-line); border-radius:10px; background:var(--color-surface); font-size:15px; line-height:1.5; cursor:pointer; }
 .terminal-course .study-quiz fieldset > label input { flex:0 0 auto; margin-top:4px; accent-color:var(--color-learn); }
 /* Modules graphiques interactifs, accessibles sans dépendance externe. */
@@ -544,10 +497,10 @@ body.reading-focus .lesson-content { max-width: 880px; margin-inline: auto; widt
 @media(prefers-reduced-motion:reduce) {
   .math-lab *{scroll-behavior:auto!important;transition:none!important}
 }
-/* Couche visuelle commune. Les contenus et moteurs pedagogiques restent inchanges. */
+
 :root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
 body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
-/* Les couleurs semantiques restent en accents, pas en grands aplats. */
+/* Les couleurs sémantiques restent des accents, pas de grands aplats. */
 body.lesson-immersive { --learn-ink:var(--ink); --learn-muted:var(--muted); --learn-shadow:none; }
 .lesson-immersive .lesson-heading { background:none; border:0; border-radius:0; box-shadow:none; padding:0; margin:22px 0 20px; overflow:visible; }
 .lesson-immersive .lesson-heading::before,.lesson-immersive .lesson-heading::after { display:none; }
@@ -609,7 +562,7 @@ body { font-family: var(--font-sans); font-size: var(--text-base); line-height: 
 .math-lab svg [fill="#bc570c"] { fill: var(--color-chart-2); }
 .math-lab svg [fill="#0f766e"] { fill: var(--color-chart-3); }
 .math-lab svg [stroke="#fff"] { stroke: var(--color-surface); }
-/* ── b. Leçon : encadrés typés ───────────────────────────── */
+/* Encadrés typés */
 /* Même structure partout : filet de 3 px en marge, icône et titre en capitales de 13 px.
    Chaque type a son fond, distinct des autres ; l'ambre est réservé au point de vigilance. */
 .lesson-immersive .lesson-content :is(.definition, .method, .formula, .example, .warning, .recap, .callout),
@@ -650,7 +603,7 @@ body { font-family: var(--font-sans); font-size: var(--text-base); line-height: 
 @media (max-width: 680px) {
   pre { white-space: pre-wrap; overflow-wrap: anywhere; overflow-x: visible; }
 }
-/* ── b. Leçon : le cours commence dans le premier écran ─── */
+/* Le cours commence dans le premier écran */
 .lesson-options-toggle, .toc-fab { display: none; }
 @media (max-width: 899px) {
   .js-menu .lesson-options-toggle {

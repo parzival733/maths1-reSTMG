@@ -28,13 +28,10 @@
   :root { --ink: var(--color-text); --muted: var(--color-text-muted); }
   body { background:var(--color-surface); font-size: 11pt; }
 }
-/* Catalogue des lecons : les 16 cartes restent filtrables comme avant. */
+/* Catalogue des leçons : cartes filtrables. */
 .lessons-page .page-intro {
   position: relative;
-  
-  
-  
-  
+
   overflow: hidden;
 }
 .catalog-learning-guide {
@@ -48,11 +45,7 @@
   display: grid;
   align-content: start;
   gap: 8px;
-  
-  
-  
-  
-  
+
 }
 .catalog-learning-guide article:nth-child(2) { border-top-color:var(--color-practice-strong); background:var(--color-bg); }
 .catalog-learning-guide article:nth-child(3) { border-top-color:var(--color-warning-line); background:var(--color-bg); }
@@ -93,7 +86,7 @@
 .exercise-page .lesson-card:hover { border-color: var(--exercise); }
 .exercise-page .lesson-card .course-code, .exercise-page .lesson-card .read-link { color: var(--exercise); }
 .programme-note p { margin:.3rem 0; }
-/* Couche visuelle commune. Les contenus et moteurs pedagogiques restent inchanges. */
+
 :root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
 body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 .ui-disclosure > .catalog-learning-guide { margin:8px 0 0; }
@@ -116,7 +109,7 @@ body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
   body,body.lesson-immersive { background:var(--color-surface); color:var(--color-text); }
 }
 .catalog-variant-note { max-width: 70ch; }
-/* Simple revision entry: chapters first; optional tools do not block them. */
+/* Accès à la révision : les chapitres d’abord, les outils facultatifs ensuite. */
 .exercise-shortcuts{display:flex;gap:8px 20px;align-items:center;flex-wrap:wrap;margin:12px 0;color:var(--muted);font-size:14px}
 .inline-progress{margin:10px 0 22px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 .inline-progress>summary{padding:12px 18px;}

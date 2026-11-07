@@ -73,7 +73,7 @@ Chaque modèle déclare :
 | `finalize_site.py` | Normalise toutes les pages (navigation, en-tête mobile, feuilles et scripts versionnés, polices préchargées, métadonnées, URL canoniques, sitemap, robots) ; appelle les outils ci-dessous. Idempotent. |
 | `navigation_simple.py` | Cinq entrées de navigation, raccourcis des catalogues d'exercices, pages-relais |
 | `lecons.py` | Encadré « Prérequis », routine de révision et sommaire des leçons |
-| `refonte_gabarits.py` | Domaine sur les cartes et les pages, nombre d'exercices, suivi des catalogues, encadrés Définition et Méthode |
+| `gabarits.py` | Domaine sur les cartes et les pages, nombre d'exercices, suivi des catalogues, encadrés Définition et Méthode |
 | `liens_accessibles.py` | Nom accessible unique pour les liens génériques répétés |
 | `typographie.py` | Typographie française du HTML (apostrophes, espaces insécables) |
 | `build_fallbacks.py` | Version de lecture sans JavaScript des séries |

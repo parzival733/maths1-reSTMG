@@ -4,7 +4,7 @@
   :root { --ink: var(--color-text); --muted: var(--color-text-muted); }
   body { background:var(--color-surface); font-size: 11pt; }
 }
-/* Styles limites a l'annexe et a ses liens d'entree. */
+
 .rapid-page [hidden] { display:none !important; }
 .rapid-main a:not(.button):not(.main-nav a) { text-decoration:underline; text-underline-offset:3px; }
 .rapid-main h2 { font-size:clamp(22px,3vw,30px); line-height:1.3; letter-spacing:-.6px; }
@@ -106,7 +106,7 @@
 @media screen {
   .rapid-paper-solutions { display:none; }
 }
-/* Couche visuelle commune. Les contenus et moteurs pedagogiques restent inchanges. */
+
 :root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
 body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 /* Annexe : preparer, travailler, consulter les aides ensuite. */
@@ -191,14 +191,14 @@ body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 #rapid-progress { appearance:none; -webkit-appearance:none; overflow:hidden; background:var(--color-learn-soft); border-radius:99px; }
 #rapid-progress::-webkit-progress-bar { background:var(--color-learn-soft); border-radius:99px; }
 #rapid-progress::-webkit-progress-value { background:var(--purple); border-radius:99px; }
-/* Cinquieme onglet: libelles entiers et navigation utilisable sur petit ecran. */
+/* Navigation sur petit écran : libellés entiers. */
 
-/* Lot 4 : confirmation avant d'imprimer le corrigé, reprise après une pause. */
+/* Confirmation avant d’imprimer le corrigé, reprise après une pause. */
 .rapid-print-confirm { margin: 12px 0; padding: 14px 16px; border:1px solid var(--color-warning-line); border-left:4px solid var(--color-warning-line); border-radius: 10px; background:var(--color-warning-soft); }
 .rapid-print-confirm p { margin: 0 0 10px; }
 .rapid-pause-screen button { margin-top: 10px; }
 body { font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-body); }
-/* Règles plus fortes que les anciennes feuilles (sélecteurs à deux identifiants). */
+/* Sélecteurs à deux identifiants : ces règles priment sur les styles de base de la page. */
 html body:not(#_page) :is(#_btn, #rapid-next, #rapid-previous) { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-line-strong); box-shadow: none; }
 /* Calcul rapide : le score en grand, une idée par ligne. */
 .rapid-result:not(#_r) { padding: var(--space-6) var(--space-5); border: 1px solid var(--color-practice-line); border-radius: var(--radius-lg); background: var(--color-surface); }

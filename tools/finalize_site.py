@@ -1,21 +1,18 @@
-"""Idempotent metadata and navigation finalizer for the static site.
-Run after generating any catalogue. No runtime dependency.
+"""Normalise toutes les pages du site : navigation, en-tête mobile, feuilles de style et
+scripts, polices préchargées, métadonnées, URL canoniques, sitemap et robots.txt.
+Idempotent ; à relancer après toute modification d'une page ou d'un asset.
 """
 from pathlib import Path
 from html import escape,unescape
+import hashlib
 import re
 ROOT=Path(__file__).resolve().parents[1]
 ORIGIN='https://mathstmgdls.pages.dev'
-VERSION='20261023-simple1'
-ASSET_VERSION='20261106-ecarts4'
-# Toutes les feuilles de style partagent une version, changée à chaque refonte visuelle.
-STYLE_VERSION='20261106-ecarts4'
-ASSET_NAMES='|'.join(re.escape(n) for n in ['exercices-variants.js','exercices-renderer.js','exercices.js','fonctions-coaching.js','terminale-exercices.js','calcul-rapide-data.js','calcul-rapide.js','parcours-data.js','parcours.js','exercices.css','compte-rebours.js','cours.js','cours.css','interface.js','graphiques-interactifs.js','graphiques-interactifs.css','examen.js','calcul-rapide.css','typographie.js','accueil.js','menu.js','catalogue-suivi.js']+[f'variants-{n}.js' for n in ['fonctions','suites','analyse','probabilites','reperes','donnees']]+[f'coaching-{n}.js' for n in ['general','algebre','suites','analyse','probabilites','reperes','donnees']])
 from navigation_simple import apply as simplify_navigation, ALIASES
 from lecons import apply as apply_lessons
 from typographie import apply as apply_typography
 from liens_accessibles import apply as apply_link_names
-from refonte_gabarits import apply as apply_refonte
+from gabarits import apply as apply_templates
 # Chaque série de Première ne charge que le générateur de son chapitre : les
 # autres fichiers alourdiraient la page sans servir.
 GENERATOR={'fonctions':'fonctions','second-degre':'fonctions',
@@ -24,6 +21,15 @@ GENERATOR={'fonctions':'fonctions','second-degre':'fonctions',
   'probabilites-conditionnelles':'probabilites','bernoulli':'probabilites','variables-aleatoires':'probabilites',
   'calcul':'reperes','evolutions':'reperes','logique':'reperes',
   'statistiques-descriptives':'donnees','python-tableur':'donnees'}
+
+def asset_version(name,cache={}):
+    """Empreinte courte du contenu d'un asset : le cache du navigateur change avec le fichier."""
+    if name not in cache:
+        cache[name]=hashlib.sha256((ROOT/'assets'/name).read_bytes()).hexdigest()[:10]
+    return cache[name]
+
+def with_versions(text):
+    return re.sub(r'(assets/([\w-]+\.(?:css|js)))(?:\?v=[^"\s]*)?(?=")',lambda m:m.group(1)+'?v='+asset_version(m.group(2)) if (ROOT/'assets'/m.group(2)).is_file() else m.group(0),text)
 
 def template(rel):
     """Gabarit d'une page : il choisit sa feuille de style et l'attribut data-gabarit."""
@@ -53,7 +59,7 @@ def main():
             page=path.read_text()
             if 'assets/tokens.css' not in page:
                 page=re.sub(r'(<link rel="stylesheet" href=")', lambda m: '<link rel="stylesheet" href="/assets/tokens.css">\n'+m.group(1), page, count=1)
-            path.write_text(re.sub(r'(assets/[\w-]+\.css)(?:\?v=[^"\s]*)?(?=")',r'\g<1>?v='+STYLE_VERSION,page))
+            path.write_text(page)
             continue
         text=path.read_text();rel=path.relative_to(ROOT).as_posix();base='../'*(len(path.relative_to(ROOT).parts)-1)
         target=ALIASES.get(rel,rel)
@@ -72,11 +78,7 @@ def main():
             text=text.replace('</title>',f'</title><script src="{base}assets/menu.js"></script>',1)
         # Typographie française du texte produit par JavaScript (tools/typographie.py pour le HTML).
         if 'assets/typographie.js' not in text:text=text.replace('</head>',f'<script src="{base}assets/typographie.js" defer></script></head>',1)
-        text=re.sub(r'(assets/(?:acquis|progres)\.js\?v=)[^"\s]+',r'\g<1>'+VERSION,text)
-        # Moteur de variantes, générateurs, aides et banques : une version commune,
-        # ajoutée si besoin, pour qu'aucun navigateur ne mélange ancien et nouveau code.
         text=keep_own_generator(rel,text)
-        text=re.sub(r'(assets/(?:'+ASSET_NAMES+r'))(?:\?v=[^"\s]*)?(?=")',r'\g<1>?v='+ASSET_VERSION,text)
         # Polices du site préchargées : prêtes avant le premier affichage, le texte ne se décale pas.
         text=re.sub(r'<link rel="preload" href="[^"]*assets/fonts/[^"]*"[^>]*>\n?','',text)
         fonts=''.join(f'<link rel="preload" href="{base}assets/fonts/{name}.woff2" as="font" type="font/woff2" crossorigin>\n' for name in ('stmg-sans-regular','stmg-sans-bold','stmg-serif-semibold','stmg-symboles-latin','stmg-symboles-maths'))
@@ -87,7 +89,6 @@ def main():
         text=re.sub(r'(<link rel="preload" href="[^"]*assets/fonts/[^"]*"[^>]*>\n?)(?![\s\S]*<link rel="preload" href="[^"]*assets/fonts/)', lambda m: m.group(1).rstrip('\n')+sheets+'\n', text, count=1)
         text=re.sub(r'<body(?![^>]*data-gabarit)', f'<body data-gabarit="{template(rel)}"', text, count=1)
         text=re.sub(r'(<body[^>]*data-gabarit=")[^"]*', lambda m: m.group(1)+template(rel), text, count=1)
-        text=re.sub(r'(assets/[\w-]+\.css)(?:\?v=[^"\s]*)?(?=")',r'\g<1>?v='+STYLE_VERSION,text)
         if 'footer-links' not in text and '</footer>' in text:
             text=text.replace('</footer>',f'<div class="container footer-links"><a href="{base}exercices.html#mes-progres">Mes progr\u00e8s</a> \u00b7 <a href="{base}a-propos.html">\u00c0 propos et donn\u00e9es</a> \u00b7 <a href="{base}accessibilite.html">Accessibilit\u00e9</a></div></footer>')
         if '<meta property="og:type"' not in text:
@@ -98,7 +99,7 @@ def main():
         text=text.replace('</head>',f'<link rel="canonical" href="{canonical}"></head>',1)
         path.write_text(text)
         if 'name="robots" content="noindex' not in text:urls.append(canonical)
-    apply_refonte(ROOT)
+    apply_templates(ROOT)
     apply_link_names(ROOT)
     apply_typography(ROOT)
     # Aliases are rendered last so a fresh catalogue build and a simple finalization
@@ -109,6 +110,11 @@ def main():
         canonical=ORIGIN+'/'+new.removesuffix('.html')
         text=text.replace('</head>',f'<meta name="robots" content="noindex,follow"><link rel="canonical" href="{canonical}"></head>',1)
         (ROOT/old).write_text(text)
+    # Versions des scripts et feuilles de style, une fois tous les outils passés.
+    for path in sorted(ROOT.rglob('*.html')):
+        if any(p.startswith('.') or p in ('docs', 'public') for p in path.relative_to(ROOT).parts):continue
+        text=path.read_text();new=with_versions(text)
+        if new!=text:path.write_text(new)
     (ROOT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join('<url><loc>'+escape(u)+'</loc></url>\n' for u in urls)+'</urlset>\n')
     (ROOT/'robots.txt').write_text('User-agent: *\nDisallow: /tests/\nDisallow: /tools/\nDisallow: /.github/\nSitemap: '+ORIGIN+'/sitemap.xml\n')
     print('SEO OK:',len(urls),'canonical URLs indexed.')

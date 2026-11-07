@@ -213,7 +213,7 @@
   },
   "assets/graphiques-interactifs.js": {
     "part": "file",
-    "sha256": "7dfb6e157761f01fe9f0e97207bac04924b51d59ae0457236a30385f81082143"
+    "sha256": "89022d188a5c26ec34f92d56fe2b3c973f3c597315b60c8ce2236a5e9e63850b"
   },
   "assets/coaching-suites.js": {
     "part": "file",
@@ -273,7 +273,7 @@
   },
   "assets/exercices.js": {
     "part": "file",
-    "sha256": "8ce7e9bcfc37058299cb00746b25e91e2e8ead946b9659cbc884bd1f8f0cf0de"
+    "sha256": "b4f09c29d1e688c394ab3c6e3f62edc7b446a7555a52ac9f475bfdf60e86ae51"
   },
   "assets/exercices-renderer.js": {
     "part": "file",
@@ -281,7 +281,7 @@
   },
   "assets/coaching-general.js": {
     "part": "file",
-    "sha256": "7afe2160e4f9991f71c390fcab1ab1aef308c06b6f9135e9c9dea698c60603dd"
+    "sha256": "8404fe04391df5d4ac3ed970370cb67d1bac610128ac7ad105d701c3b318f119"
   },
   "assets/variants-donnees.js": {
     "part": "file",

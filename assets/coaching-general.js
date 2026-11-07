@@ -1,4 +1,4 @@
-/* Aides progressives de tous les exercices générés (hors prototype Fonctions).
+/* Aides progressives de tous les exercices générés (le chapitre Fonctions a les siennes).
    Aucun résultat n'est lu dans fields[].answer ni dans correction : l'indice
    accompagne le raisonnement sans divulguer la solution. */
 (() => {

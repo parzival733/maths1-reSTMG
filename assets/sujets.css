@@ -4,13 +4,13 @@
   :root { --ink: var(--color-text); --muted: var(--color-text-muted); }
   body { background:var(--color-surface); font-size: 11pt; }
 }
-/* Couche visuelle commune. Les contenus et moteurs pedagogiques restent inchanges. */
+
 :root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
 body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 @media print {
   body,body.lesson-immersive { background:var(--color-surface); color:var(--color-text); }
 }
-/* Catalogue documentaire; ne change pas les styles des cours. */
+
 .subjects-main { max-width:1040px; }
 .subjects-intro .eyebrow { color:var(--muted); }
 .subjects-intro > p:last-child { max-width:65ch; }

@@ -50,7 +50,7 @@ def main():
             for name, pattern in CHECKS.items():
                 for match in pattern.finditer(text):
                     problems.append(f'{rel} : {name} → « {text[max(0, match.start() - 25):match.end() + 15].strip()} »')
-    assert not problems, '\n'.join(problems[:30]) + f'\n… {len(problems)} écarts'
+    assert not problems, '\n'.join(problems[:30]) + f'\n… {len(problems)} anomalies'
     print(f'TYPOGRAPHIE OK: {pages} pages, apostrophes, espaces insécables (: ; ! ?, « », unités).')
 
 

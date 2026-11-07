@@ -1,258 +1,106 @@
 # Maths · Première–Terminale STMG
 
-Site pédagogique en français, en HTML/CSS/JavaScript statiques. Un même design et les mêmes moteurs pédagogiques, avec **deux parcours séparés**.
+Site de mathématiques en français pour la Première et la Terminale STMG : leçons, séries d'exercices à variantes, calcul rapide, sujets et suivi local facultatif. HTML, CSS et JavaScript statiques, sans framework, sans compte et sans traceur.
 
 **[Ouvrir le site](https://mathstmgdls.pages.dev/)**
 
 | Niveau | Leçons | Exercices |
 | --- | --- | --- |
-| Première STMG | [Catalogue Première](https://mathstmgdls.pages.dev/lecons.html) | [Séries Première](https://mathstmgdls.pages.dev/exercices.html) |
-| Terminale STMG | [Catalogue Terminale](https://mathstmgdls.pages.dev/terminale/lecons.html) | [Séries Terminale](https://mathstmgdls.pages.dev/terminale/exercices.html) |
-
-Dépôt : [parzival733/maths1-reSTMG](https://github.com/parzival733/maths1-reSTMG).
+| Première STMG | [16 leçons](https://mathstmgdls.pages.dev/lecons) | [16 séries](https://mathstmgdls.pages.dev/exercices) |
+| Terminale STMG | [9 leçons](https://mathstmgdls.pages.dev/terminale/lecons) | [9 séries](https://mathstmgdls.pages.dev/terminale/exercices) |
 
 ## Programmes de référence
 
 - **Première, depuis 2026–2027** : arrêté du 26 février 2026, BO n° 14 du 2 avril 2026, NOR [MENE2602918A](https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602918A).
 - **Terminale, en 2026–2027** : programme de 2019, BO spécial n° 8 du 25 juillet 2019, [annexe sur Éduscol](https://eduscol.education.gouv.fr/sites/default/files/document/spe242annexe1158914pdf-84153.pdf).
-- **Terminale, à partir de 2027–2028** : arrêté du 26 février 2026, NOR [MENE2602921A](https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602921A). L'article 2 précise l'entrée en vigueur en septembre 2027.
+- **Terminale, à partir de 2027–2028** : arrêté du 26 février 2026, NOR [MENE2602921A](https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602921A).
+- **Épreuve anticipée de Première** : [note de service du 11 septembre 2026](https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N).
 
-`programme.html` documente le parcours Première ; `terminale/programme.html` explique la couverture de Terminale et le changement de programme. Le parcours Terminale s'appuie sur les notions communes aux deux textes, en conservant les rappels utiles à la cohorte issue de Première 2019. Les activités propres à d'autres séries technologiques ne sont pas ajoutées comme prérequis STMG.
-
-Les leçons sont des rédactions pédagogiques originales, pas des documents rédigés ou certifiés par le ministère. Le découpage des chapitres est celui du site. Les banques ne prétendent pas couvrir toutes les formulations possibles d'un sujet ni remplacer le travail en classe.
+`programme.html`, `terminale/programme.html` et `couverture.html` relient les notions des programmes aux ressources du site. Les leçons sont des rédactions pédagogiques originales, pas des documents ministériels.
 
 ## Contenu
 
-### Première : contenu existant conservé
+- **Leçons** : objectifs, encadrés (définition, méthode, formule, exemple, point de vigilance), deux pauses mémoire, application corrigée, routine de révision ; lisibles et imprimables sans JavaScript.
+- **Exercices** : 183 modèles (129 en Première, 54 en Terminale). Chaque nouvelle variante change les nombres et, si besoin, les rangs ou les abscisses demandés, avec un niveau de difficulté stable. Indices progressifs et corrigés Méthode → Calculs → Conclusion.
+- **Calcul rapide** : séries de 5 à 20 questions sans calculatrice, avec chrono réglable et fiche imprimable.
+- **Sujets** : 41 annales en PDF, liées chez leurs éditeurs ; deux sujets blancs et des problèmes rédigés, avec corrigés et barèmes.
+- **Diagnostic, révision guidée, suivi local** : désactivé par défaut ; aucune réponse saisie n'est conservée ni transmise.
 
-**11 chapitres · 4 repères · 1 atelier** Python/tableur séparé. **121 exercices de maths + 8 exercices numériques** : 121 exercices de mathématiques en 15 séries et 8 exercices numériques. Les adresses des cours et exercices n'ont pas changé.
-
-L'atelier reste présenté séparément du parcours de révision sans calculatrice. Ce choix d'interface ne signifie pas que l'algorithmique est facultative dans le programme officiel. Les 13 programmes déplacés des autres cours restent dans sa bibliothèque.
-
-### Terminale : un parcours parallèle
-
-**8 chapitres + 1 repère transversal**, chacun relié à une série de **6 exercices**, soit **54 modèles** :
-
-1. Suites, moyennes et sommes.
-2. Fonctions exponentielles et taux moyen.
-3. Logarithme décimal, équations et seuils.
-4. Fonction inverse, dérivation et optimisation.
-5. Ajustements statistiques et changements de variable.
-6. Conditionnement et probabilités totales.
-7. Loi binomiale et triangle de Pascal.
-8. Espérance et simulation.
-9. Repère transversal : algorithmique et tableur.
-
-Chaque leçon comprend objectifs, méthode progressive, exemples, deux pauses mémoire, une application corrigée et une routine de révision. Les bases communes sont reliées aux ressources de Première, plutôt que recopiées. En Terminale, l'algorithmique et le tableur sont explicitement présentés comme des pratiques du programme, non comme une option.
-
-Pour les deux parcours de chapitres, hors annexe de calcul rapide : **25 ressources de cours, 50 pauses mémoire et 183 modèles d'exercices** pour les deux niveaux. Ces nombres incluent les repères transversaux et l'atelier de Première ; il ne s'agit pas de 25 chapitres obligatoires.
-
-## Fonctionnement pédagogique
-
-Les catalogues de leçons et d'exercices comportent un sélecteur Première/Terminale. L'accueil conserve ses deux espaces, Leçons et Exercices. L'ancien badge de Première est masqué dans l'en-tête partagé ; les pages précisent leur niveau dans leur contexte.
-
-Les leçons utilisent les styles et scripts partagés : couleurs accompagnées de mots, aide en trois étapes, deux mini-tests de rappel actif, agrandissement du texte, lecture concentrée, sommaire et impression. Le texte principal et les corrections HTML `details` restent lisibles sans JavaScript. Aucun suivi nominatif ni score de lecture n'est stocké.
-
-Les exercices réutilisent le moteur existant : saisies et choix, score du chapitre, indices, correction détaillée et bouton Effacer. Une correction remplit les champs ; le vert signale une réponse initialement correcte, le rouge une réponse fausse ou manquante. Révéler une réponse ne rapporte pas de point.
-
-Après une vérification, une variante est préparée, mais l'essai reste visible jusqu'au clic sur **Nouvelle variante ↻**. Énoncé, réponses et correction sont recalculés ensemble. Renouveler une question retire sa validation précédente. Les scores se réinitialisent au rechargement.
-
-Chaque nouvelle variante est tirée avec une graine aléatoire (`crypto.getRandomValues`, repli sur `Date.now()`) par un générateur pseudo-aléatoire reproductible (mulberry32) : même graine, même exercice, mais la suite des variantes est imprévisible et le rang de la variante n’intervient jamais. Chaque modèle déclare ses paramètres (tirés indépendamment dans des plages fixes calibrées sur l’exercice d’origine), ses contraintes (`accept` : pas de cas dégénéré, résultats « propres »), son score de difficulté (`difficulty`) et sa construction (`build`) ; le moteur retire jusqu’à 200 fois un tirage refusé ou dont la difficulté sort de la bande de ±20 % autour de celle de l’exercice d’origine. Les signes, les configurations et les contextes varient ; chaque bonne réponse à choix sort entre 30 et 70 % du temps ; les 10 dernières variantes d’un exercice ne peuvent pas revenir (mémoire en variable JS, sans stockage). L’exercice écrit dans la page reste la variante 1. Les corrigés suivent la structure Méthode → Calculs → Conclusion, avec tableaux de signes et de variations accessibles. Les fractions et les virgules décimales sont acceptées. Les arrondis sont indiqués dans les exercices. Les exercices de Terminale autorisent la calculatrice, avec des valeurs plafonnées ; ce ne sont pas des simulations de l’épreuve anticipée de Première.
-
-Tests : `tests/test_variants.js` (129 modèles de Première) et `tests/test_terminale.js` (54 modèles de Terminale) contrôlent chaque modèle sur 2 000 graines : validité, reproductibilité, au moins 40 énoncés distincts (ou le maximum documenté), difficulté dans la bande, plages déclarées, équilibre des réponses à choix, absence de motifs d’écriture interdits (`+ −`, `− −3`, `1x`, `+ 0`, `NaN`, point décimal…), recalcul indépendant des réponses et absence de répétition sur 10 variantes consécutives. `tests/test_terminale.py` recalcule en Python les réponses à partir des paramètres tirés.
+Les détails de fonctionnement (variantes, outils, tests, règle des empreintes) sont dans [`docs/maintenance.md`](docs/maintenance.md).
 
 ## Structure
 
 ```text
-index.html                       Accueil commun
-lecons.html, exercices.html       Catalogues Première avec sélecteur de niveau
-cours/, exercices/               16 cours et 16 séries Première, adresses conservées
-programme.html, pedagogie.html    Références Première et méthodes pédagogiques
-terminale/lecons.html             Catalogue des 9 ressources Terminale
-terminale/exercices.html          Catalogue des 9 séries Terminale
-terminale/programme.html          Périmètre et calendrier 2019 / 2026
-terminale/cours/t-*.html           9 leçons statiques
-terminale/exercices/t-*.html       9 pages de séries
-assets/terminale-exercices.js      54 générateurs Terminale et aides progressives
-assets/niveaux.css                Sélecteur de niveau et adaptations Terminale
-assets/exercices-variants.js      Moteur commun de génération et validation
-assets/exercices-renderer.js      Rendu partagé des fiches et renouvellement
-assets/exercices.js               Vérification, score, navigation et corrections
-assets/variants-*.js              Générateurs existants de Première
-assets/coaching-*.js              Aides existantes de Première
-assets/cours.js                   Recherche, sommaire, impression et simulation
-assets/apprentissage.*            Lecture et pauses mémoire
-assets/graphiques-interactifs.*    Graphiques interactifs existants
-assets/styles.css, cours.css      Thème et composants communs
-assets/exercices.css              Styles des parcours interactifs
-donnees/                         CSV réel et provenance
-tests/                           Tests structurels, numériques et navigateur
-.github/workflows/                Vérifications en lecture seule
-.nojekyll                        Publication statique
+*.html, cours/, exercices/        Pages de Première
+terminale/                        Pages de Terminale
+annexes/, entrainement/           Calcul rapide, sujets blancs et problèmes
+donnees/                          CSV Insee et sa provenance ; JSON de référence des outils
+assets/                           Feuilles de style, scripts et polices
+tools/                            Normalisation des pages et construction de public/
+tests/                            Tests Node, Python et navigateur
+docs/                             Maintenance et vérifications humaines
 ```
 
-Les pages d'exercices Terminale chargent, dans cet ordre, le moteur de variantes, le module Terminale, le renderer, puis le script d'interaction. Les slugs `t-*` évitent toute collision avec les chapitres de Première. Les liens précédent/suivant des leçons Terminale sont statiques ; leur sommaire utilise le script commun.
+## Lancement local
 
-## Données et confidentialité
-
-Aucun compte, police distante, publicité ou traceur ajouté dans le code. Les réponses sont traitées localement sans transmission. Un suivi local facultatif, désactivé par défaut, conserve seulement les dates et catégories de résultats après activation ; jamais les réponses saisies. Les requêtes d’hébergement restent traitées par Cloudflare et les sources externes après clic. Aucun interpréteur Python n'est embarqué : les codes du cours se copient dans un environnement Python 3.
-
-`donnees/naissances-france-2018-2023.csv` contient six totaux annuels issus de l'[Insee Focus 339, figure 1](https://www.insee.fr/fr/statistiques/8282356). Le champ, l’unité et la période sont décrits dans `donnees/provenance.html`. Les autres situations chiffrées sont fictives et pédagogiques, pas des conseils financiers ou fiscaux.
-
-`pedagogie.html` expose les choix d'apprentissage et leurs sources académiques. Ces sources et les tests logiciels ne constituent pas une certification de l'efficacité du site pour chaque élève ; une évaluation de terrain reste nécessaire.
-
-## Utilisation locale et tests
-
-Aucun paquet n'est requis pour lire le site. Ouvrir `index.html`, ou servir la racine :
+Aucun paquet n'est nécessaire pour lire le site :
 
 ```sh
 python3 -m http.server 8000
 ```
 
-Tous les chemins internes sont relatifs, y compris les liens entre les niveaux, pour fonctionner dans un sous-répertoire GitHub Pages.
-
-Contrôles structurels et numériques :
+Après une modification d'une page ou d'un asset :
 
 ```sh
-python3 tests/validate_site.py
-python3 tests/test_notation.py
-python3 tests/test_typographie.py
-python3 tests/test_noms_liens.py
-for f in assets/*.js; do node --check "$f"; done
-node tests/test_variants.js
-node tests/test_rangs.js
-node tests/test_graphiques.js
-node tests/test_terminale.js
-python3 tests/test_terminale.py
+python3 tools/finalize_site.py
 ```
 
-Tests de navigateur, avec Playwright comme seule dépendance de développement :
+## Tests
+
+Tests structurels et mathématiques (Node et Python 3, sans dépendance) :
+
+```sh
+for f in assets/*.js; do node --check "$f"; done
+for t in test_variants test_rangs test_graphiques test_terminale test_calcul_rapide \
+         test_countdown test_acquis test_parcours test_domaines test_cloture; do node tests/$t.js; done
+for t in validate_site test_notation test_typographie test_noms_liens test_terminale \
+         test_calcul_rapide test_evolution test_cloture; do python3 tests/$t.py; done
+python3 tools/build_public.py
+```
+
+Tests dans le navigateur (Playwright et Chromium) :
 
 ```sh
 python3 -m pip install playwright==1.55.0
 python3 -m playwright install chromium
-python3 tests/browser_smoke.py
-python3 tests/browser_terminale.py
+for t in test_navigation_simple test_interface test_sujets browser_smoke browser_terminale \
+         browser_calcul_rapide browser_evolution; do python3 tests/$t.py; done
+npm install --prefix /tmp/stmg-qa axe-core@4.10.3
+AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
 ```
 
-Les nouveaux tests vérifient les 21 pages Terminale, leurs liens, les 18 pauses mémoire, les exemples Python, les 54 modèles avec un recalcul indépendant en Python, la validation des arrondis, les scores et corrections, les variantes, la navigation entre niveaux, les écrans de 320 et 390 pixels et les leçons sans JavaScript. Les tests existants continuent de vérifier le parcours Première.
+Le workflow `.github/workflows/verification.yml` lance l'ensemble à chaque pull request et à chaque modification de `main`.
 
-## Publication et maintenance
+## Publication
 
 Cloudflare Pages publie la branche **`main`** sur https://mathstmgdls.pages.dev/. Seul le dossier `public/`, construit par `tools/build_public.py`, est mis en ligne : pages, `assets/`, données liées par une page, `_headers`, `robots.txt`, `sitemap.xml` et `404.html`. Les dossiers `docs/`, `tests/`, `tools/` et `.github/` ne sont jamais publiés.
 
-Réglage à faire une fois dans le tableau de bord Cloudflare :
+Réglage du projet dans le tableau de bord Cloudflare :
 
 1. Ouvrir https://dash.cloudflare.com, puis **Workers & Pages** et le projet du site (`mathstmgdls`).
 2. Onglet **Settings**, section **Build** (ou **Builds & deployments**), bouton **Edit** de **Build configuration**.
 3. **Framework preset** : `None`. **Build command** : `python3 tools/build_public.py`. **Build output directory** : `public`. **Root directory** : laisser vide.
 4. **Save**. Puis onglet **Deployments**, dernier déploiement de `main`, menu **⋯** → **Retry deployment** (ou pousser un commit sur `main`).
-5. Une fois le déploiement terminé : `python3 tests/check_publication.py`. Il doit confirmer que `/docs/audit-et-arbitrages.md` répond 404.
+5. Une fois le déploiement terminé : `python3 tests/check_publication.py`. Il vérifie que chaque fichier publié est identique à `public/` et que `/docs/…`, `/tests/…`, `/tools/…`, `/README.md` et `/.github/…` répondent 404.
 
-Le script n'utilise que la bibliothèque standard de Python, présente dans l'image de build de Cloudflare. Il échoue si une page lie un fichier local absent de `public/`.
+Le script n'utilise que la bibliothèque standard de Python, présente dans l'image de build de Cloudflare. Il échoue si une page lie un fichier local absent de `public/`. Le workflow `.github/workflows/publication.yml` lance le contrôle après chaque modification de `main`.
 
-Les workflows de vérification disposent uniquement de permissions de lecture et ne déploient pas. Le workflow historique est conservé ; `terminale.yml` ajoute les contrôles des deux niveaux.
+Pour revenir en arrière : redéployer un déploiement Cloudflare précédent, ou ajouter un commit de retour sur `main`. Les progrès enregistrés par les élèves restent dans leur navigateur et ne sont jamais effacés par un déploiement.
 
-Pour modifier le parcours Première, maintenir ses catalogues, le tableau de couverture et `courseOrder` dans `assets/cours.js`. Pour Terminale, maintenir ses deux catalogues, sa page de programme, les liens statiques précédent/suivant et la liste des slugs des tests. Ne pas ajouter les slugs Terminale à l'ordre de Première. Conserver les indications textuelles avec les codes couleur et exécuter les tests avant publication.
+## Données et confidentialité
 
+Aucun compte, police distante, publicité ni outil de mesure d'audience. Les réponses sont vérifiées dans le navigateur, sans transmission. Le suivi local, une fois activé, conserve des dates et des catégories de résultats, jamais les réponses saisies ; il s'exporte, s'importe et s'efface depuis la page « Mes progrès ».
 
-## Annexe : calcul rapide sans calculatrice
+`donnees/naissances-france-2018-2023.csv` reprend six totaux annuels de l'[Insee Focus n° 339](https://www.insee.fr/fr/statistiques/8282356) ; champ, unité et période sont décrits dans `donnees/provenance.html`. Les autres données chiffrées des leçons sont fictives.
 
-`annexes/calcul-rapide.html` est une annexe distincte des catalogues de chapitres. L'accueil et les quatre catalogues y donnent acces par la navigation et un encadre. Aucun cours ni exercice existant n'est remplace.
-
-La banque `assets/calcul-rapide-data.js` comprend **54 modeles** : 18 bases generales, 24 calculs lies aux chapitres de Premiere et 12 prolongements Terminale. Le parcours par defaut « Bac Premiere » exclut strictement les 12 modeles Terminale. On peut choisir le niveau, la notion, le calcul mental ou sur feuille et une serie de 5, 10 ou 20 questions. Les tirages sont reproductibles par graine, sans promesse de nouveaute indefinie.
-
-Chaque question comprend un indice, une correction expliquee et un lien vers sa lecon. Le bilan compte seulement les reponses justes au premier essai ; les corrections revelees ne rapportent pas de point. Les fractions equivalentes et les decimaux exacts sont acceptes par comparaison rationnelle (BigInt), sans eval et sans arrondis arbitraires. Le compte a rebours se regle avant le depart, de 15 secondes a 120 minutes. Il se lance explicitement avec la serie, propose pause/reprise et termine la serie a zero en evaluant les reponses deja saisies. Quitter l'onglet met le compte a rebours en pause automatiquement (« Pause automatique : tu as quitté l’onglet », bouton Reprendre) ; les sujets blancs proposent de desactiver ce comportement pour une simulation stricte. Le mode sans limite reste disponible. Le bilan termine ne peut plus etre modifie en consultant les corrections.
-
-Une fiche imprimable reprend la serie courante. Les corrections sont masquees dans la previsualisation et absentes de l'impression par defaut. Une case permet de les imprimer sur des pages separees : librement apres « Terminer la serie », ou, avant la fin, apres une confirmation dans la page qui fige les points. L'impression elle-meme ne modifie jamais le score, meme annulee. Douze methodes et une serie papier de douze questions restent accessibles sans JavaScript. Aucun compte ni transmission des réponses. Le suivi local facultatif est décrit dans la section Évolution du 22 octobre 2026.
-
-Reference de l'epreuve pour 2026-2027 (session 2028) : [note de service du 11 septembre 2026](https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N), qui prevoit des questions a reponses courtes et interdit la calculatrice. Cette annexe ne constitue ni un sujet officiel ni une preparation exhaustive a toute l'epreuve.
-
-Tests supplementaires :
-
-```sh
-node tests/test_calcul_rapide.js
-python3 tests/test_calcul_rapide.py
-python3 tests/browser_calcul_rapide.py
-```
-
-Le script `tools/integrate_calcul_rapide.py` rend l'ajout des liens idempotent. Il n'est pas necessaire pour servir le site : les fichiers publies sont statiques. Le workflow permanent `calcul-rapide.yml` verifie l'annexe en lecture seule.
-
-
-## Interface et compte à rebours
-
-La présentation commune est dans `assets/interface.css`. Les catalogues affichent le choix du niveau et la recherche avant les précisions dépliables. Les contenus des leçons et des exercices ne sont pas réécrits. `assets/interface.js` replie le sommaire sur petit écran ; le texte du cours reste toujours disponible. Les couleurs sémantiques, les libellés et les contrastes sont conservés avec des surfaces plus neutres.
-
-Dans l’annexe, quatre choix explicites remplacent le menu de parcours. Le réglage du compte à rebours est indépendant du niveau. La durée s’applique à toute la série ; la pause masque les questions. Le bilan enregistre les réponses saisies non encore vérifiées, sans crédit supplémentaire pour les réponses révélées. Un bilan terminé reste figé. L’impression met temporairement en pause un chrono actif et respecte une pause manuelle déjà en cours.
-
-Tests : `node tests/test_countdown.js` et `python3 tests/test_interface.py`. Le fichier `tests/interface-content.json` fige les empreintes des 50 contenus de cours/exercices et de 22 modules pédagogiques de la version précédant le changement visuel. Une future modification pédagogique intentionnelle doit mettre à jour son empreinte après relecture.
-
-Références de conception : [W3C, comprendre les contrôles](https://www.w3.org/WAI/WCAG2/supplemental/objectives/o1-understandable/), [W3C, contenu clair](https://www.w3.org/WAI/WCAG2/supplemental/objectives/o3-clear-content/), [WCAG, temps ajustable](https://www.w3.org/WAI/WCAG22/Understanding/timing-adjustable.html), [GOV.UK, choix exclusifs](https://design-system.service.gov.uk/components/radios/). Ces choix ne constituent pas une certification WCAG ni une mesure de l’efficacité auprès des élèves.
-
-
-## Sujets et annales
-
-`sujets.html` est le catalogue statique de 41 PDF : 8 sujets de Première technologique 2026, 2 sujets zéro et 31 archives de Terminale STMG (2017–2020). L’onglet Sujets est présent dans la navigation de toutes les pages. Les niveaux, les programmes et les sources sont distingués. Les corrigés ne sont pas inclus.
-
-Les PDF s’ouvrent chez leur source dans un nouvel onglet, sans iframe, sans copie réhébergée et sans chargement externe avant le clic. Le lecteur PDF permet le téléchargement ou l’impression. APMEP est créditée selon ses [conditions de liens](https://www.apmep.fr/Mentions-legales).
-
-`donnees/sujets.json` conserve les métadonnées et empreintes des fichiers fournis. L’année du filtre est celle de l’épreuve ; le sujet de mars 2019 en Nouvelle-Calédonie reste explicitement rattaché aux archives APMEP 2018. `tools/build_sujets.py` produit le HTML et ajoute les liens de navigation de façon idempotente. Le site ne nécessite pas ce script pour fonctionner.
-
-`assets/sujets.js` ajoute seulement la recherche (sans distinction des accents), le filtre par année et le choix du niveau. Le parcours par défaut est Première ; les 41 liens restent lisibles sans JavaScript. `?niveau=terminale` ouvre directement les archives de Terminale. Aucune réponse ni donnée personnelle n’est stockée.
-
-Contrôles : `python3 tests/test_sujets.py` (structure, contenu, mobile, filtres et navigation) et `python3 tests/check_sujets_sources.py` (vérification réseau explicite des PDF, non nécessaire pour servir le site).
-
-
-## Evolution du 22 octobre 2026
-
-Architecture statique conservee, sans framework, serveur applicatif, compte eleve ni abonnement. Point de retour : branche `backup/avant-evolution-20261022`, commit `280ae6bac5cc95ac5f665ce6ae2152ec0c9750b5`.
-
-- `progresser.html` : acces libre aux parcours ; `diagnostic.html` : dix questions sur cinq bases, sans categorisation definitive.
-- `revisions.html`, `assets/parcours-data.js` : 54 modeles exacts existants et neuf nouveaux modeles ; environ 70 % de questions ciblant les notions representees et 30 % de melange. Les autres notions renvoient aux chapitres ; ne pas promettre une couverture adaptative exhaustive.
-- `assets/acquis.js` : opt-in explicite, cle versionnee, 500 traces / 180 jours maximum ; pas de reponses brutes. Les traces expirees sont purgees a la prochaine lecture. Import/export uniquement local, controle de taille/version/types, suppression limitee a la cle du site. Le navigateur prive ou un stockage bloque peuvent empecher la sauvegarde sans bloquer le travail.
-- `assets/suivi-exercices.js` : la premiere tentative de chaque question concrete est observee au plus une fois par 24 heures. Une aide ou une correction n'est pas une reussite autonome. Le score de chapitre reste un score de seance, distinct du suivi.
-- Reprises proposees : 1 jour apres difficulte/aide ; 2 jours apres reussite recente, puis 7 et 21 jours apres reussites distinctes espacees d'au moins 48 heures. Heuristique transparente a evaluer avec des eleves, non diagnostic psychometrique.
-- `preparer-bac.html`, `entrainement/` : deux sujets blancs originaux de Premiere (6+14 points dont 2 de langue), huit problemes rediges dont deux de Terminale. Corriges et baremes pedagogiques, pas de notation automatique des copies ni de certification ministerielle.
-- `404.html`, `robots.txt`, `sitemap.xml` et URL canoniques : adresse principale Cloudflare ; aucune redirection destructive depuis l'ancien site. `_headers` ajoute une politique de securite compatible avec les scripts locaux ; ne pas ajouter de code inline executable sans revoir cette politique.
-- Accessibilite : tableaux de valeurs des graphiques, messages de correction relies aux champs, menu mobile sur deux lignes ; 24 series initiales sont lisibles sans JavaScript. La conformite RGAA/WCAG n'est pas certifiee et requiert une revue humaine avec lecteurs d'ecran. L'identite et les informations legales de l'editeur doivent etre completees par le responsable selon son statut, sans inventer ces donnees.
-
-Maintenance : `python3 tools/build_fallbacks.py` regenere les lectures sans JavaScript a partir des memes modeles. `python3 tools/build_sujets.py` appelle le finaliseur idempotent ; `python3 tools/finalize_site.py` remet les liens partages et metadonnees. `donnees/entrainements.json` est le jeu de reference arithmetique et de bareme des sujets blancs ; garder ces donnees synchronisees avec les pages HTML.
-
-Validation supplementaire : `node tests/test_acquis.js`, `node tests/test_parcours.js`, `node tests/test_domaines.js`, `python3 tests/test_evolution.py`, `python3 tests/browser_evolution.py`. `tests/evolution-mathematics.json` conserve les empreintes des banques mathematiques anterieures. Les changements volontaires du contenu protege par `interface-content.json` sont documentes : presentation de l'algorithmique, versions sans JavaScript et ameliorations du validateur/retour de saisie. Les generateurs mathematiques et les enonces JSON initiaux restent inchanges.
-
-Retours arriere : commencer par un deploiement de previsualisation. Un retour en production peut utiliser le dernier deploiement Cloudflare valide, ou un commit de revert de cette evolution ; ne pas forcer `main` ou ecraser des changements concurrents. Les sauvegardes locales des eleves ne sont jamais supprimees par un deploiement de code ; leur schema reste versionne.
-
-
-## Cloture technique et pedagogique du 23 octobre 2026
-
-- `couverture.html` et `donnees/couverture-programme.json` relient les trois cohortes aux 26 familles de notions et aux ressources existantes. Le diagnostic court ne pretend pas mesurer tout le programme.
-- Treize familles de retours sur erreurs reconnaissables dans les revisions ; une bonne reponse ne peut pas etre classee parmi ces erreurs. Aucun texte brut de reponse n'est enregistre.
-- Deux activites transversales supplementaires dans le repere Terminale : interpolation exponentielle par moyenne geometrique, comparaison des sommes de carres pour un ensemble fini de modeles. Les exemples Python et les domaines sont executes par les tests.
-- `tests/test_cloture.js` tire 300 variantes à graine pour chacun des 183 modèles et vérifie leur reproductibilité (les anciens cycles de 24 états ont été remplacés le 5 novembre 2026). Les domaines bornes et exclus sont controles par contrats explicites et contre-exemples. `tests/test_cloture.py` recalcule les sujets blancs, verifie les domaines initiaux et les correspondances de programme.
-- `tests/browser_cloture.py` examine toutes les pages avec axe-core, plusieurs etats interactifs, le clavier, les noms accessibles, le reflow et l'espacement du texte. Il mesure huit pages en reseau mobile simule sur trois passages. Il ne constitue pas une certification WCAG/RGAA, une mesure INP terrain ou un essai humain.
-- `tools/prepare_browser.sh` utilise Chrome/Chromium deja installe, puis verifie son lancement. Tous les workflows de non-regression l'emploient, au lieu d'une installation systeme potentiellement bloquante.
-- Documents de reception : `docs/recette-cloture.md`, `docs/audit-et-arbitrages.md`, `docs/validation-humaine.md`. Les renseignements civils de l'editeur, la validation avec des lecteurs d'ecran et les observations en classe ne sont pas inventes.
-- Sauvegarde avant cloture : `backup/avant-cloture-20261023`, commit `6249d85afe5526a4fa81a71e9d9213101028f8e5`. Retour par deploiement connu ou commit revert, jamais en ecrasant des changements concurrents.
-
-## Navigation simplifiee - 23 octobre 2026
-
-Cinq entrees principales : Accueil, Lecons, Exercices, Sujets, Calcul rapide.
-La page Exercices de chaque niveau est le point de depart : chapitres en acces
-libre, deux raccourcis facultatifs (revision et diagnostic) et panneau Mes progres
-sur place. La cle de stockage et les resultats existants ne sont pas modifies.
-Les sujets blancs et les problemes corriges sont directement accessibles dans Sujets.
-Les anciennes pages-relais progresser.html et preparer-bac.html affichent le catalogue
-utile, sans redirection ; elles sont exclues du sitemap et ont une URL canonique adaptee.
-Les anciennes adresses des outils restent fonctionnelles pour les favoris existants.
-
-Le dessin d'accueil est exactement le HTML/SVG du premier commit dd451763.
-Seules les surcharges de style qui avaient aplati sa presentation sont retirees :
-carte violette inclinee et feuille interne inclinee, sans creation d'une image.
-Le test tests/home-art-baseline.json conserve son empreinte.
-
-Maintenance : tools/navigation_simple.py, appele par le finaliseur, conserve ces
-choix lors d'une regeneration du catalogue. tools/templates/inline-progress.fragment
-reutilise le moteur assets/progres.js, egalement utilise par l'ancienne adresse.
-Validation : python3 tests/test_navigation_simple.py, les suites historiques et
-l'audit automatise d'accessibilite restent actifs. Les attentes de navigation passent
-de six a cinq liens ; aucun test de correction mathematique n'est retire.
+Les tests vérifient les calculs et l'interface, pas l'efficacité pédagogique ni la conformité RGAA ; les vérifications humaines à mener sont décrites dans [`docs/validation-humaine.md`](docs/validation-humaine.md).

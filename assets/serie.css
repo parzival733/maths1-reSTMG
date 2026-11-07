@@ -142,8 +142,7 @@
 .hint summary {
   
   padding: 12px 0;
-  
-  
+
 }
 .hint p {
   margin: 0 0 14px;
@@ -156,8 +155,7 @@
 }
 .answer-row input,
 .answer-row select {
-  
-  
+
   background:var(--color-surface);
   color: var(--ink);
   padding: 9px 10px;
@@ -175,8 +173,7 @@
 .answer-row.is-wrong {
   border-color:var(--color-danger-line);
 }
-/* La couleur indique la justesse de la réponse AVANT la révélation.
-   Les champs contiennent désormais les bonnes réponses du corrigé. */
+/* La couleur indique la justesse de la réponse avant la révélation ; les champs affichent ensuite les bonnes réponses du corrigé. */
 .answer-row.is-revealed.was-correct {
   border-color:var(--color-practice);
 }
@@ -390,7 +387,7 @@
   min-height: 26px;
   line-height: 1.65;
 }
-/* Prototype pédagogique du chapitre Fonctions uniquement. */
+/* Aides contextualisées du chapitre Fonctions. */
 .coaching-panel { margin-top: 20px; padding: 18px; border:1px solid var(--color-practice-line); border-radius: 14px; background:var(--color-surface-sunken); }
 .coaching-panel h3 { margin: 0 0 8px; color:var(--color-practice-strong); font-size: 17px; }
 .coaching-panel > p { margin: 0 0 12px; line-height: 1.6; }
@@ -415,7 +412,7 @@
   .answer-row > span:first-child { flex: 1 1 8em; min-width: 0; }
   .answer-row > span:first-child { font-size: var(--text-sm); }
 }
-/* Couche visuelle commune. Les contenus et moteurs pedagogiques restent inchanges. */
+
 :root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
 body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 .exercise-progress,.exercise-block { border-radius:14px; box-shadow:none; }
@@ -431,7 +428,7 @@ body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 }
 body { font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-body); }
 [stroke="#246453"]:not(.hero-art *) { stroke: var(--color-practice); }
-/* ── a. Série d'exercices ───────────────────────────────── */
+/* Série d’exercices */
 /* Une seule carte par exercice : l'énoncé, puis la liste des réponses, sans cadre
    autour de chaque champ. Ordre et libellés inchangés. */
 .exercise-block { border-radius: var(--radius-lg); border-color: var(--color-line); box-shadow: var(--shadow-1); }

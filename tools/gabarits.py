@@ -1,9 +1,9 @@
-"""Refonte graphique : petits ajouts de présentation dans le HTML commun, appliqués de
-façon idempotente par finalize_site.py. Aucun contenu pédagogique n'est modifié.
+"""Ajouts de présentation dans le HTML commun, appliqués de façon idempotente par
+finalize_site.py. Aucun contenu pédagogique n'est modifié.
 
-- Catalogues : chaque carte porte son domaine en toutes lettres (icône ajoutée par
-  assets/refonte.css), au lieu d'une couleur propre à chaque domaine. Les cartes
-  d'exercices reprennent le domaine de la leçon du même chapitre.
+- Catalogues : chaque carte porte son domaine en toutes lettres et en couleur ; les
+  cartes d'exercices reprennent le domaine de la leçon du même chapitre. Leçons et
+  séries portent le même domaine sur <body data-domain>.
 - Les cartes de leçons indiquent le nombre d'exercices de la série du chapitre, et les
   deux catalogues chargent assets/catalogue-suivi.js (progression locale, seulement si
   le suivi est activé).
@@ -77,8 +77,7 @@ def add_script(text, base, name):
     tag = f'<script src="{base}assets/{name}?v='
     if tag in text:
         return text
-    version = re.search(r'assets/typographie\.js\?v=([\w-]+)', text).group(1)
-    new = f'<script src="{base}assets/{name}?v={version}" defer></script>'
+    new = f'<script src="{base}assets/{name}" defer></script>'
     anchor = re.search(r'<script src="[^"]*assets/typographie\.js[^"]*" defer></script>', text)
     return text[:anchor.start()] + new + text[anchor.start():]
 

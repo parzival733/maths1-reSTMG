@@ -1,7 +1,6 @@
 /* Composants communs : boutons, champs, éléments dépliables, cartes, encadrés,
    navigation et états de réponse. Chargée sur toutes les pages, après base.css. */
 
-/* Course catalogue and reading layout; supplements styles.css. */
 [hidden] { display: none !important; }
 :where(body:not([data-gabarit="accueil"])) button { cursor: pointer; }
 :where(body:not([data-gabarit="accueil"])) button:focus-visible, :where(body:not([data-gabarit="accueil"])) input:focus-visible, :where(body:not([data-gabarit="accueil"])) select:focus-visible, :where(body:not([data-gabarit="accueil"])) summary:focus-visible, :where(body:not([data-gabarit="accueil"])) [tabindex="0"]:focus-visible { outline: 3px solid var(--purple); outline-offset: 4px; }
@@ -67,7 +66,7 @@ p code, li code { background:var(--color-surface-sunken); color:var(--color-lear
 }
 .study-choices input { flex: 0 0 auto; margin-top: 4px; accent-color:var(--color-learn); }
 .lessons-page .page-intro > p:last-child { max-width: 760px; color:var(--color-text-muted); line-height: 1.75; }
-/* Exercices interactifs - Premiere STMG */
+/* Exercices interactifs */
 .exercise-page {
   --exercise: var(--color-practice);
   --exercise-dark: var(--color-practice-strong);
@@ -199,7 +198,7 @@ body.reading-large .lesson-content { font-size:20px; }
   .ui-disclosure::details-content { display:block; content-visibility:visible; }
   .ui-disclosure > :not(summary) { display:block !important; }
 }
-/* Annonces utiles aux lecteurs d'ecran, sans compteur vocal chaque seconde. */
+/* Annonces utiles aux lecteurs d’écran, sans compteur vocal chaque seconde. */
 .sr-only { position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
 #rapid-progress::-moz-progress-bar { background:var(--purple); border-radius:99px; }
 .home-try__feedback[data-result="correct"] { color:var(--color-practice-strong); font-weight: 600; }
@@ -241,14 +240,14 @@ body.reading-large .lesson-content { font-size:20px; }
   h1{font-size:25pt!important}
   .page-intro{margin-block:0 18px!important}
 }
-/* Closeout: keep primary links legible against their filled background. */
+/* Liens principaux lisibles sur leur fond plein. */
 a.button.button-primary{color:var(--color-on-accent)}
-/* Native file inputs have an intrinsic minimum size; allow text-spacing reflow. */
+/* Champs de fichier : taille minimale native ; l’espacement du texte peut passer à la ligne. */
 .progress-data .action-row{min-width:0}
 .progress-data label{min-width:0;max-width:100%;overflow-wrap:anywhere}
 #progress-import{box-sizing:border-box;display:block;max-width:100%;min-width:0;width:100%;margin-top:8px;font:inherit}
 #progress-import::file-selector-button{max-width:100%;white-space:normal}
-/* Reserve room for the generated first exercise, without hiding static content. */
+/* Place réservée au premier exercice, sans masquer le contenu statique. */
 #exercise-mounted:has(>p:only-child){min-height:800px}
 @media screen and (scripting:enabled) {
   .lesson-immersive .lesson-reading-controls[hidden]{display:flex!important;visibility:hidden}
@@ -260,15 +259,13 @@ a.button.button-primary{color:var(--color-on-accent)}
 @media print {
   .exercise-shortcuts,.inline-progress,.return-to-exercises{display:none!important}
 }
-/* Refonte graphique : couche chargée en dernier sur toutes les pages, construite
-   seulement avec les jetons de assets/tokens.css. Voir docs/refonte/direction.md. */
 
-/* ── Base typographique ─────────────────────────────────── */
+/* Typographie */
 html { font-synthesis: style; }
 h1, h2, h3, .lesson-heading h1, .page-intro h1 { font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em; }
 :focus-visible { outline-color: var(--color-focus); }
 .score, [id$="-score"], [id$="-time"], .timer, time, td, .sign-table { font-variant-numeric: tabular-nums; }
-/* ── Figures et graphiques ──────────────────────────────── */
+/* Figures et graphiques */
 /* Les couleurs écrites dans les figures SVG des leçons et des graphiques interactifs
    suivent les jetons (et donc le mode sombre). L'illustration de l'accueil garde les siennes. */
 [fill="#252436"]:not(.hero-art *) { fill: var(--color-text); }
@@ -289,12 +286,12 @@ h1, h2, h3, .lesson-heading h1, .page-intro h1 { font-family: var(--font-serif);
 .exercise-stepper button.is-complete { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E"); }
 .exercise-stepper button.is-wrong { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E"); }
 /* Correction et changement d'exercice : apparition brève, coupée si le mouvement est réduit. */
-@keyframes refonte-apparition { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-.exercise-block.is-active, details.check[open] > :not(summary) { animation: refonte-apparition var(--duration-base) var(--ease-out); }
+@keyframes apparition { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.exercise-block.is-active, details.check[open] > :not(summary) { animation: apparition var(--duration-base) var(--ease-out); }
 @media (prefers-reduced-motion: reduce) {
   .exercise-block.is-active, details.check[open] > :not(summary) { animation: none; }
 }
-/* ── c. En-tête et navigation ───────────────────────────── */
+/* En-tête et navigation */
 .site-header .header-inner { min-height: 64px; padding-block: var(--space-2); position: relative; }
 .site-header .main-nav a { min-height: var(--target-min); font-size: 1rem; }
 .site-header .main-nav a[aria-current] { box-shadow: inset 0 -2px 0 var(--color-learn); }
@@ -320,10 +317,10 @@ h1, h2, h3, .lesson-heading h1, .page-intro h1 { font-family: var(--font-serif);
   .lesson-heading .lead { margin-bottom: 0; }
   .js-menu .toc-fab.is-visible { opacity: 1; transform: none; pointer-events: auto; }
 }
-/* ── d. Catalogues ──────────────────────────────────────── */
+/* Catalogues */
 /* La recherche et le filtre gardent leur place dès le premier affichage (pas de décalage). */
 .js-menu .catalog-tools[hidden] { display: flex !important; }
-/* ── e. Diagnostic, révision guidée, calcul rapide ──────── */
+/* Diagnostic, révision guidée, calcul rapide */
 input[type="radio"], input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--color-learn); flex: none; }
 #rapid-time, .exam-clock, #practice-progress, .rapid-progress, [id$="-progress-text"], [id$="-progress-label"] { font-variant-numeric: tabular-nums; }
 @media print {
@@ -339,7 +336,7 @@ input[type="radio"], input[type="checkbox"] { width: 22px; height: 22px; accent-
 #exam-start { background: var(--color-practice); border-color: var(--color-practice); color: var(--color-on-accent); }
 #exam-pause, #exam-stop { background: var(--color-surface); border: 1px solid var(--color-line-strong); color: var(--color-text); }
 #exam-start:disabled { opacity: 0.55; }
-/* ══ Système de composants (lot 1 de l'analyse des écarts) ══════════════════
+/* Composants : boutons, champs et éléments dépliables.
    Trois boutons pour tout le site : principal, secondaire, lien. Mêmes hauteur,
    rayon, taille et graisse partout ; vert pour s'entraîner, violet pour apprendre.
    :is(#…) donne à ces règles la priorité sur les anciennes feuilles. */
@@ -403,7 +400,7 @@ html body:not(#_p) #rapid-answer.is-correct { border: 2px solid var(--color-succ
 html body:not(#_p) .answer-row.is-wrong :is(input, select),
 html body:not(#_p) #rapid-answer.is-wrong { border: 2px solid var(--color-danger); }
 html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-correct { border: 2px solid var(--color-success); background-color: var(--color-practice-soft); color: var(--color-practice-strong); }
-/* ══ Formules et polices (lot 3 de l'analyse des écarts) ══════════════════════
+/* Formules et polices.
    Une formule a le même dessin partout : sans-serif, chiffres tabulaires. La serif
    reste réservée aux titres de page et de partie. */
 .formula:not(#_f), .lesson-content .formula, .formula :is(p, li) { font-family: var(--font-sans); font-variant-numeric: tabular-nums lining-nums; font-size: 1.08em; font-weight: 600; }

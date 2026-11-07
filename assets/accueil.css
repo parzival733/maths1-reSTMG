@@ -77,7 +77,7 @@
   .graph-footer { font-size: 8px; }
   .art-bottom p { font-size: 9px; }
 }
-/* Couche visuelle commune. Les contenus et moteurs pedagogiques restent inchanges. */
+
 :root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
 body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 .hero { padding:44px 0 42px; gap:64px; }
@@ -101,7 +101,7 @@ body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 @media print {
   body,body.lesson-immersive { background:var(--color-surface); color:var(--color-text); }
 }
-/* Lot 5 : question d’accueil (une seule question, réponse dépliable sans JavaScript). */
+/* Question d’accueil : une seule question, réponse dépliable sans JavaScript. */
 .home-try { display: grid; gap: 16px 32px; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; margin: 8px 0 40px; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
 .home-try:focus { outline: none; }
 .home-try h2 { margin: 4px 0 8px; }
@@ -114,7 +114,7 @@ body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 @media (max-width: 740px) {
   .home-try { grid-template-columns: minmax(0, 1fr); padding: 18px; }
 }
-/* Keep readable labels on the restored original artwork. */
+/* Libellés lisibles sur le dessin d’accueil. */
 .graph-index,.art-scribble{color:#665477}
 body { font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-body); }
 /* Accueil : le titre garde son dessin actuel (sans-serif très gras). */

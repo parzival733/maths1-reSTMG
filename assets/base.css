@@ -1,17 +1,9 @@
 /* Base : éléments HTML, mise en page générale, en-tête, pied de page et impression.
    Chargée sur toutes les pages, après tokens.css. */
 
-/* Shared styles. Static site: no framework, external font, or build step. */
 :root {
   color-scheme: light;
-  
-  
-  
-  
-  
-  
-  
-  
+
   --green: var(--color-practice);
   --green-soft: var(--color-practice-soft);
   
@@ -43,7 +35,7 @@ main:focus { outline: none; }
 .site-footer { border-top: 1px solid var(--line); }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; color: var(--muted); }
 .footer-inner strong { margin-right: 10px; color: var(--ink); font-size: 17px; font-weight: 750; letter-spacing: -0.6px; }
-/* Shared starter pages */
+
 .section-page { padding-bottom: 45px; min-height: calc(100vh - 177px); }
 .breadcrumb { display: flex; align-items: center; color: var(--muted); }
 .breadcrumb a { min-height: 44px; display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: 4px; }
@@ -65,5 +57,5 @@ main:focus { outline: none; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .pathway-card:hover, .button-primary:hover { transform: none; }
 }
-/* The shared header serves both STMG levels. Keep the level in page context. */
+/* En-tête commun aux deux niveaux ; le niveau est indiqué dans la page. */
 .level-badge { display: none; }
