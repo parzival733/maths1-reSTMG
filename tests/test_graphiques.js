@@ -71,6 +71,6 @@ for (const [slug,type] of [
   const page=fs.readFileSync(path.join(root,'cours',slug+'.html'),'utf8');
   assert.ok(page.includes('class="math-lab" data-lab="'+type+'"'),slug+' lacks interactive module');
   assert.ok(page.includes('graphiques-interactifs.js?v='),slug+' lacks script');
-  assert.ok(page.includes('graphiques-interactifs.css?v='),slug+' lacks style');
+  assert.ok(page.includes('assets/lecon.css?v='),slug+' lacks style');
 }
 console.log('GRAPHIQUES OK: '+checks+' cas numériques, cinq cours, quatre visualisations.');

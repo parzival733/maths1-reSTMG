@@ -54,7 +54,7 @@ def main():
             assert target.is_file(),(p,link)
             if u.fragment and target.suffix=='.html':assert unquote(u.fragment) in pages[target].ids,(p,link)
     # Idempotent regeneration: no duplicated tabs, no changes to unrelated files.
-    watched=[*paths,ROOT/'assets/interface.css',ROOT/'tests/test_interface.py',ROOT/'README.md']
+    watched=[*paths,*sorted((ROOT/'assets').glob('*.css')),ROOT/'tests/test_interface.py',ROOT/'README.md']
     before={str(p):p.read_bytes() for p in watched}
     subprocess.run(['python3','tools/build_sujets.py'],cwd=ROOT,check=True)
     assert all(p.read_bytes()==before[str(p)] for p in watched)

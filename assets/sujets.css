@@ -1,3 +1,15 @@
+/* Gabarit des sujets : filtres, cartes des annales, sujets blancs. */
+
+@media print {
+  :root { --ink: var(--color-text); --muted: var(--color-text-muted); }
+  body { background:var(--color-surface); font-size: 11pt; }
+}
+/* Couche visuelle commune. Les contenus et moteurs pedagogiques restent inchanges. */
+:root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
+body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
+@media print {
+  body,body.lesson-immersive { background:var(--color-surface); color:var(--color-text); }
+}
 /* Catalogue documentaire; ne change pas les styles des cours. */
 .subjects-main { max-width:1040px; }
 .subjects-intro .eyebrow { color:var(--muted); }
@@ -6,7 +18,6 @@
 .subjects-levels { display:flex; flex-wrap:wrap; gap:4px; border:0; padding:0; margin:0 0 18px; min-width:0; }
 .subjects-levels legend { padding:0; margin-bottom:10px; font-size:14px; font-weight:650; }
 .subjects-levels label { position:relative; cursor:pointer; }
-.subjects-levels input { position:absolute; opacity:0; width:1px; height:1px; }
 .subjects-levels span { display:block; padding:9px 14px; min-height:44px; border:1px solid transparent; border-radius:9px; color:var(--muted); background:var(--color-bg); font-size:14px; }
 .subjects-levels input:checked + span { color:var(--purple-dark); background:var(--purple-soft); border-color:var(--color-learn-line); font-weight:650; }
 .subjects-levels input:focus-visible + span { outline:3px solid var(--purple); outline-offset:3px; }
@@ -54,4 +65,27 @@
   .subjects-grid { display:block; }
   .subject-card { break-inside:avoid; margin-bottom:10px; }
   .subject-footer a { text-decoration:underline; }
+}
+.simple-exam-entry{margin:20px 0 28px;padding:20px 24px;background:var(--color-surface);border:1px solid var(--line);border-radius:14px}
+.simple-exam-entry h2{font-size:21px;margin:0 0 8px}
+.simple-exam-entry p{font-size:15px;color:var(--muted)}
+.simple-exam-entry .action-row{margin-top:12px}
+.simple-exam-entry .action-row a{min-height:44px;display:inline-flex;align-items:center}
+@media(max-width:520px) {
+  .simple-exam-entry{padding:18px}
+}
+body { font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-body); }
+@media (max-width: 740px) {
+  .subjects-controls:not(#_s) { padding: var(--space-3); margin: var(--space-4) 0 var(--space-3); }
+  .subjects-levels:not(#_s) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-bottom: var(--space-3);
+      border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); overflow: hidden; }
+  .subjects-levels legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .subjects-levels:not(#_s) label + label span { box-shadow: inset 1px 0 0 var(--color-line-strong); }
+  .subjects-levels:not(#_s) span { display: flex; align-items: center; justify-content: center; min-height: var(--target-min); padding: 0 var(--space-1);
+      border-width: 0; border-radius: 0; background: var(--color-surface); color: var(--color-text-muted); font: 600 var(--text-sm)/1.2 var(--font-sans); text-align: center; }
+  .subjects-levels:not(#_s) input:checked + span { background: var(--color-learn-soft); color: var(--color-learn-strong); font-weight: 700; }
+  .subjects-levels:not(#_s) input:focus-visible + span { outline-offset: -3px; }
+  .subjects-filters:not(#_s) { grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2) var(--space-3); }
+  .subjects-filters label { font-size: var(--text-sm); gap: 4px; }
+  .subjects-filters label:nth-child(2):not(#_s) { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: var(--space-2); }
 }

@@ -120,7 +120,7 @@ def main():
             assert page.tags['h2'] >= 6, name
             assert '../programme.html' in page.links, name
             assert '../pedagogie.html' in page.links, name
-            assert any(link.startswith('../assets/apprentissage.css') for link in page.links), name
+            assert any(link.startswith('../assets/lecon.css') for link in page.links), name
             assert any(link.startswith('../assets/apprentissage.js') for link in page.links), name
             words = len(re.findall(r'\w+', ' '.join(page.text)))
             assert words >= 550, (name, 'lesson too short', words)

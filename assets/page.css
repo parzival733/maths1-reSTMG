@@ -1,0 +1,143 @@
+/* Gabarit des pages simples : diagnostic, révisions, progrès, sujets blancs,
+   problèmes, programme et pages d’information. */
+
+.source-panel h2 { margin-bottom: 14px; font-size: 24px; }
+.source-panel p { margin-block: 12px; }
+.source-panel li { margin: 10px 0; }
+@media print {
+  :root { --ink: var(--color-text); --muted: var(--color-text-muted); }
+  body { background:var(--color-surface); font-size: 11pt; }
+}
+/* Lot 5 bis : tableaux sur petit écran. La grille de maîtrise de la langue est un tableau
+   de texte : ses cellules passent à la ligne. Les tableaux de signes gardent leurs formules
+   sur une ligne, deviennent plus compacts, et leur colonne d'intitulés reste visible
+   pendant le défilement horizontal. */
+.sign-table.language-grid th, .sign-table.language-grid td { white-space: normal; text-align: left; vertical-align: top; min-width: 7em; }
+@media (max-width: 680px) {
+  .sign-table.language-grid { font-size: var(--text-sm); }
+  .sign-table.language-grid th, .sign-table.language-grid td { min-width: 0; padding: 5px; hyphens: auto; overflow-wrap: break-word; }
+}
+/* Couche visuelle commune. Les contenus et moteurs pedagogiques restent inchanges. */
+:root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
+body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
+@media print {
+  body,body.lesson-immersive { background:var(--color-surface); color:var(--color-text); }
+}
+/* Small additions to the existing visual system, not a replacement theme. */
+.evo-page{max-width:1000px;padding-bottom:48px}
+.evo-page .page-intro{max-width:78ch}
+.evo-page p,.evo-page li{line-height:1.75}
+.evo-grid,.progress-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:24px 0}
+.evo-card,.progress-card,.practice-panel,.exam-block{background:var(--surface,var(--color-surface));border:1px solid var(--line,var(--color-learn-soft));border-radius:14px;padding:24px;min-width:0}
+.evo-card h2,.evo-card h3,.progress-card h3{margin-top:0;font-size:21px;line-height:1.4}
+.evo-card p{color:var(--muted,var(--color-text-muted))}
+.evo-note,.local-status{padding:14px 18px;background:var(--color-learn-soft);border-left:3px solid var(--purple,var(--color-learn));border-radius:8px;margin:20px 0;font-size:15px}
+.local-status{display:flex;gap:8px 20px;flex-wrap:wrap;align-items:center;font-size: var(--text-sm)}
+.evo-page button:disabled{cursor:default;opacity:.6}
+.evo-page details{margin:16px 0;border:1px solid var(--line);padding:14px 18px;border-radius:10px}
+.evo-page details p{max-width:80ch}
+#practice-title{font-size:clamp(23px,3vw,30px);line-height:1.55}
+#practice-answer{font-size:22px;max-width:340px}
+.practice-header{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;color:var(--muted);font-size:14px}
+.practice-nav{justify-content:space-between;margin:24px 0}
+.practice-helpers{border-top:1px solid var(--line);margin-top:24px;padding-top:12px}
+#practice-solution{background:var(--color-surface-sunken);border-left:3px solid var(--color-practice-strong);padding:18px;margin-top:14px;border-radius:8px}
+.exam-intro{display:flex;flex-wrap:wrap;gap:12px 24px}
+.exam-block{margin:24px 0}
+.exam-block h2{margin:0 0 16px;font-size:25px}
+.exam-block h3{font-size:19px}
+.exam-block li{padding:5px 0}
+.exam-answer-space{height:64px;border-bottom:1px solid var(--color-learn-line);margin:12px 0}
+.exam-toolbar{align-items:center;flex-wrap:wrap}
+.exam-toolbar label{display:flex;gap:10px;align-items:center}
+.exam-toolbar input[type=number]{width:86px;padding:7px;border:1px solid var(--color-text-muted);border-radius:6px;font:inherit}
+@media(max-width:740px) {
+  .evo-grid,.progress-grid{grid-template-columns:1fr}
+  .evo-card,.progress-card,.practice-panel,.exam-block{padding:20px}
+}
+@media(max-width:520px) {
+  .evo-page .page-intro h1{font-size:31px}
+  .evo-form button{width:100%}
+  .exam-block{padding:18px 15px}
+  .exam-block ol{padding-left:22px}
+}
+@media print {
+  .evo-page{max-width:none;width:auto!important;margin:0;padding:0}
+  .exam-block{border:0;border-radius:0;margin:20px 0;padding:0}
+  .exam-block h2{break-after:avoid}
+  .exam-block li{break-inside:avoid}
+  .exam-answer-space{height:48px}
+  .exam-correction p,.exam-correction li{font-size:11pt}
+  .evo-page a{color:var(--color-text)}
+  .evo-grid{display:block}
+  .evo-card{break-inside:avoid;margin-bottom:16px;border:1px solid var(--color-line-strong)}
+  .exam-intro{color:var(--color-text)}
+  .evo-page p,.evo-page li{font-size:11pt;line-height:1.5}
+  .exam-automatisms>ol{columns:2;column-gap:28px}
+  .exam-answer-space{height:22px;margin:8px 0}
+  .exam-block+.exam-block{break-before:page}
+  .exam-correction{font-size:11pt}
+  .exam-intro{padding:8px 0}
+  .exam-block h2{font-size:18pt}
+}
+@media screen and (scripting:enabled) {
+  #practice-loading{position:absolute;max-width:65ch}
+}
+.return-to-exercises{gap:6px;font-size:14px;margin:12px 0}
+body { font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-body); }
+/* ── f. Sujets et sujets blancs : présentation de copie d'examen ── */
+.exam-block h2 { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-4); font-family: var(--font-serif); }
+.exam-points { margin-left: auto; font: 700 var(--text-sm)/1.3 var(--font-sans); color: var(--color-text-muted);
+  border: 1px solid var(--color-line-strong); border-radius: var(--radius-sm); padding: 2px 8px; white-space: nowrap; }
+.exam-intro { border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); margin: var(--space-4) 0 var(--space-2);
+  background: var(--color-surface); color: var(--color-text); font-variant-numeric: tabular-nums; }
+.exam-intro + p { border-left: var(--rule-width) solid var(--color-line-strong); padding-left: var(--space-4); margin-bottom: var(--space-4); }
+.exam-block { border-radius: var(--radius-lg); box-shadow: none; }
+.exam-block ol > li + li { margin-top: var(--space-2); }
+/* ── Sujets blancs : barre « Temps et impression » ──────── */
+/* Deux blocs nets : le chrono (cadran, durée, boutons, options), puis l'impression. */
+.exam-toolbar { display: grid; gap: var(--space-4); padding: var(--space-5); border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-surface); }
+.exam-timer-ui:not([hidden]) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-3) var(--space-4); }
+.exam-timer-ui .action-row { display: contents; }
+.exam-clock { grid-column: 1; grid-row: 1; display: grid; gap: 2px; justify-self: start; min-width: 10ch; padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); background: var(--color-surface-sunken);
+  font: 700 2rem/1.1 var(--font-sans); letter-spacing: 0.02em; color: var(--color-text); }
+.exam-clock::before { content: "Temps restant"; font: 700 var(--text-caps)/1.3 var(--font-sans); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--color-text-muted); }
+.exam-timer-ui > label:first-child { grid-column: 2; grid-row: 1; display: grid; gap: var(--space-1); font-size: var(--text-sm); font-weight: 700; color: var(--color-text-muted); }
+.exam-toolbar input[type="number"] { width: 6.5em; min-height: var(--target-min); padding: 0 var(--space-3); border: 1px solid var(--color-line-strong); border-radius: var(--radius-md);
+  background: var(--color-surface); color: var(--color-text); font: 700 var(--text-base)/1 var(--font-sans); font-variant-numeric: tabular-nums; }
+.exam-timer-ui .button { grid-column: 1 / -1; justify-self: start; }
+#exam-start:hover { background: var(--color-practice-strong); }
+.exam-timer-ui .exam-autopause { grid-column: 1 / -1; margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); align-items: flex-start; }
+.exam-timer-ui #exam-status { grid-column: 1 / -1; margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+/* Impression : séparée du chrono, bouton secondaire avec icône. */
+.exam-toolbar > label { display: flex; align-items: center; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--color-line); font-weight: 600; }
+.exam-toolbar > [data-print-exam] { justify-self: start; display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--target-min); padding: 0 var(--space-5);
+  border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); font: 700 1rem/1 var(--font-sans); box-shadow: none; }
+.exam-toolbar > [data-print-exam]:hover { background: var(--color-surface-sunken); }
+.exam-toolbar > [data-print-exam]::before { content: ""; width: 18px; height: 18px; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 9V3h10v6'/%3E%3Crect x='3' y='9' width='18' height='8' rx='2'/%3E%3Cpath d='M7 14h10v7H7z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 9V3h10v6'/%3E%3Crect x='3' y='9' width='18' height='8' rx='2'/%3E%3Cpath d='M7 14h10v7H7z'/%3E%3C/svg%3E") center / contain no-repeat; }
+@media (max-width: 420px) {
+  .exam-clock { font-size: 1.75rem; }
+}
+/* Chrono : cadran et durée sur une ligne, boutons groupés dessous, largeur contenue. */
+.exam-timer-ui:not([hidden]) { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); max-width: 560px; }
+.exam-clock { order: 1; flex: 1 1 auto; }
+.exam-timer-ui > label:first-child { order: 2; flex: 0 0 auto; }
+.exam-timer-ui .button { order: 3; }
+.exam-timer-ui .exam-autopause, .exam-timer-ui #exam-status { order: 4; flex: 1 0 100%; }
+.exam-clock { max-width: 300px; }
+/* Navigation des parcours : boutons à leur largeur naturelle, sans retour à la ligne. */
+.practice-nav, .rapid-nav { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.practice-nav :is(button, .button), .rapid-nav :is(button, .button) { flex: 1 1 auto; width: auto; white-space: nowrap; }
+/* Bouton du chrono : peut passer à la ligne sur un écran étroit. */
+.exam-timer-ui .button { flex: 0 1 auto; max-width: 100%; white-space: normal; }
+/* ── Lecture : bilans du diagnostic et du calcul rapide ─── */
+/* Diagnostic : une carte par notion, filet de marge selon le constat, liens en pastilles. */
+#practice-results { gap: var(--space-3); }
+#practice-result > h2 { margin: var(--space-8) 0 var(--space-4); }
+#practice-result > .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+#practice-result > .action-row a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+/* Corrections : une liste à filets, plus de boîtes empilées. */
+#practice-corrections { border-top: 1px solid var(--color-line); }

@@ -1,0 +1,155 @@
+/* Gabarit des catalogues de leçons et de séries : choix du niveau, recherche, cartes. */
+
+.catalog-tools { display: flex; flex-wrap: wrap; align-items: end; }
+.catalog-tools label { display: grid; gap: 6px; font-weight: 650; }
+.catalog-tools label:first-child { flex: 1 1 280px; }
+.result-count { font-size: var(--text-sm); color: var(--muted); margin: 8px 0 20px; }
+.catalog-group { margin-block: 32px 42px; }
+.catalog-group > p { color: var(--muted); max-width: 760px; }
+.lesson-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.lesson-card { border: 1px solid var(--line); background:var(--color-surface); display: flex; flex-direction: column; min-width: 0; }
+.lesson-card:hover { border-color: var(--purple); transform: translateY(-2px); }
+.lesson-card .course-code { font-weight: 750; }
+.lesson-card h3 { margin: 11px 0; }
+.lesson-card p { color: var(--muted); }
+.lesson-card .read-link { margin-top: auto; font-weight: 700; }
+.no-results { padding: 30px; text-align: center; border:1px dashed var(--color-learn-line); border-radius: 12px; }
+@media (max-width: 960px) {
+  .lesson-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .lesson-cards { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lesson-card { transition: none; }
+  .lesson-card:hover { transform: none; }
+}
+@media print {
+  :root { --ink: var(--color-text); --muted: var(--color-text-muted); }
+  body { background:var(--color-surface); font-size: 11pt; }
+}
+/* Catalogue des lecons : les 16 cartes restent filtrables comme avant. */
+.lessons-page .page-intro {
+  position: relative;
+  
+  
+  
+  
+  overflow: hidden;
+}
+.catalog-learning-guide {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+  
+}
+.catalog-learning-guide article {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  
+  
+  
+  
+  
+}
+.catalog-learning-guide article:nth-child(2) { border-top-color:var(--color-practice-strong); background:var(--color-bg); }
+.catalog-learning-guide article:nth-child(3) { border-top-color:var(--color-warning-line); background:var(--color-bg); }
+.catalog-learning-guide h2 { color:var(--color-learn-strong); margin: 0; }
+.catalog-learning-guide p { line-height: 1.65; color:var(--color-text-muted); }
+.catalog-learning-guide .guide-number {
+  font-size: var(--text-caps);
+  letter-spacing: 1px;
+  font-weight: 850;
+  color:var(--color-learn);
+}
+.catalog-learning-guide article:nth-child(2) .guide-number { color:var(--color-practice-strong); }
+.catalog-learning-guide article:nth-child(3) .guide-number { color:var(--color-warning); }
+.lessons-page .catalog-group > h2 { color:var(--color-learn-strong); }
+.lessons-page .lesson-card {
+  border-top:4px solid var(--card-color, var(--color-learn));
+  box-shadow: 0 10px 24px rgba(42, 33, 80, .04);
+  transition: transform .16s, box-shadow .16s, border-color .16s;
+}
+.lessons-page .lesson-card[data-category="analyse"] { --card-color: var(--color-learn); }
+.lessons-page .lesson-card[data-category="statistiques"] { --card-color: var(--color-learn); }
+.lessons-page .lesson-card[data-category="probabilites"] { --card-color: var(--color-learn); }
+.lessons-page .lesson-card[data-category="reperes"] { --card-color: var(--color-learn); }
+.lessons-page .lesson-card .course-code,
+.lessons-page .lesson-card .read-link { color: var(--card-color); }
+.lessons-page .lesson-card:hover { box-shadow: 0 17px 30px rgba(42, 33, 80, .08); }
+.lessons-page .lesson-card h3 { font-size: 19px; }
+.lessons-page .catalog-notice a { color:var(--color-learn); }
+@media (max-width: 740px) {
+  .catalog-learning-guide { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lessons-page .lesson-card { transition: none; }
+}
+.exercise-category-nav { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 28px; }
+.exercise-category-nav a { display: inline-flex; align-items: center; border:1px solid var(--color-practice-line); padding: 10px 15px; min-height: 44px; border-radius: 999px; background: var(--exercise-soft); font-size: var(--text-sm); font-weight: 750; color: var(--exercise-dark); }
+.exercise-category-nav a:hover { border-color: var(--exercise); }
+.exercise-page .lesson-card:hover { border-color: var(--exercise); }
+.exercise-page .lesson-card .course-code, .exercise-page .lesson-card .read-link { color: var(--exercise); }
+.programme-note p { margin:.3rem 0; }
+/* Couche visuelle commune. Les contenus et moteurs pedagogiques restent inchanges. */
+:root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
+body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
+.ui-disclosure > .catalog-learning-guide { margin:8px 0 0; }
+.catalog-tools { padding:14px 0 8px; }
+.catalog-tools input,.catalog-tools select { font-size:16px; border-color:var(--color-learn-line); border-radius:10px; }
+.catalog-group { margin:28px 0 34px; }
+.catalog-group > h2 { font-size:23px; letter-spacing:-.5px; }
+.catalog-group > p { font-size:15px; margin:6px 0 18px; }
+.lesson-cards { gap:16px; }
+.lesson-card { padding:22px; transition:border-color .15s; box-shadow:none; }
+.lesson-card:hover { transform:none; border-color:var(--color-learn-line); box-shadow:none; }
+.lesson-card h3 { font-size:19px; line-height:1.4; }
+.lesson-card p { font-size:14px; line-height:1.65; }
+.lesson-card .read-link { font-size:14px; padding-top:18px; }
+.catalog-learning-guide article { background:var(--color-bg); border:1px solid var(--line); border-top:1px solid var(--line); padding:18px; border-radius:10px; }
+.catalog-learning-guide article:nth-child(n) { background:var(--color-bg); border-color:var(--line); }
+.catalog-learning-guide h2 { font-size:16px; }
+.catalog-learning-guide p { font-size:14px; }
+@media print {
+  body,body.lesson-immersive { background:var(--color-surface); color:var(--color-text); }
+}
+.catalog-variant-note { max-width: 70ch; }
+/* Simple revision entry: chapters first; optional tools do not block them. */
+.exercise-shortcuts{display:flex;gap:8px 20px;align-items:center;flex-wrap:wrap;margin:12px 0;color:var(--muted);font-size:14px}
+.inline-progress{margin:10px 0 22px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.inline-progress>summary{padding:12px 18px;}
+.optional-label{font-size: var(--text-sm);font-weight:400;color:var(--muted);margin-left:8px}
+.inline-progress[open]{padding-bottom:18px}
+.inline-progress #progress-controls{padding:0 18px}
+.inline-progress h3{font-size:18px;margin:12px 0}
+.inline-progress .evo-form{margin:0}
+.inline-progress #progress-overview{margin:14px 0}
+.progress-list-compact{display:grid;gap:10px;margin:14px 0}
+.inline-progress .progress-data{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+@media(max-width:520px) {
+  .exercise-shortcuts{gap:0 16px}
+  .inline-progress>summary{padding:12px 14px}
+  .inline-progress #progress-controls{padding:0 14px}
+}
+body { font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-body); }
+.catalog-tools { padding-block: var(--space-3) var(--space-2); gap: var(--space-3); }
+.lesson-card, .lessons-page .lesson-card { border-top-width: 1px; border-top-color: var(--color-line); border-radius: var(--radius-lg); }
+.lesson-card .course-code { font-size: var(--text-caps); letter-spacing: var(--tracking-caps); font-variant-numeric: tabular-nums; }
+.lesson-card h3 { font-family: var(--font-serif); font-weight: 600; }
+.card-domain { display: inline-flex; align-items: center; gap: 6px; margin-top: var(--space-1); font-size: var(--text-sm); font-weight: 700; }
+.card-domain::before { content: ""; width: 16px; height: 16px; flex: none; background: currentColor;
+  -webkit-mask: var(--domain-icon) center / contain no-repeat; mask: var(--domain-icon) center / contain no-repeat; }
+.card-domain[data-domain="analyse"] { --domain-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20V4M4 20h16'/%3E%3Cpath d='M6 17c3-9 7-11 12-12'/%3E%3C/svg%3E"); }
+.card-domain[data-domain="statistiques"] { --domain-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 20V11M10 20V5M15 20v-7M20 20V8'/%3E%3C/svg%3E"); }
+.card-domain[data-domain="probabilites"] { --domain-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='5' cy='12' r='2'/%3E%3Ccircle cx='19' cy='6' r='2'/%3E%3Ccircle cx='19' cy='18' r='2'/%3E%3Cpath d='M7 11l10-4M7 13l10 4'/%3E%3C/svg%3E"); }
+.card-domain[data-domain="reperes"] { --domain-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Cpath d='M12 8v4l3 2'/%3E%3C/svg%3E"); }
+.card-domain[data-domain="atelier"] { --domain-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 6l-5 6 5 6M16 6l5 6-5 6'/%3E%3C/svg%3E"); }
+html body:not(#_p) .lesson-card[data-category] { border-top: 4px solid var(--domain); }
+html body:not(#_p) .lesson-card[data-category]:hover { border-color: var(--domain); }
+html body:not(#_p) .lesson-card .card-domain { align-self: flex-start; padding: 2px var(--space-2) 2px 6px; border-radius: var(--radius-sm); background: var(--domain-soft, var(--color-surface-sunken)); color: var(--domain, var(--color-text)); }
+html body:not(#_p) .lesson-card .course-code { color: var(--domain, var(--color-text-muted)); }
+@media print {
+  html body:not(#_p) .lesson-card[data-category] { border-top-color: #000; }
+}

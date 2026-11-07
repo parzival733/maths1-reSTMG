@@ -25,6 +25,16 @@ GENERATOR={'fonctions':'fonctions','second-degre':'fonctions',
   'calcul':'reperes','evolutions':'reperes','logique':'reperes',
   'statistiques-descriptives':'donnees','python-tableur':'donnees'}
 
+def template(rel):
+    """Gabarit d'une page : il choisit sa feuille de style et l'attribut data-gabarit."""
+    if rel=='index.html':return 'accueil'
+    if rel.startswith(('cours/','terminale/cours/')):return 'lecon'
+    if rel.startswith(('exercices/','terminale/exercices/')):return 'serie'
+    if rel in ('lecons.html','exercices.html','terminale/lecons.html','terminale/exercices.html','progresser.html'):return 'catalogue'
+    if rel=='annexes/calcul-rapide.html':return 'calcul-rapide'
+    if rel in ('sujets.html','preparer-bac.html'):return 'sujets'
+    return 'page'
+
 def keep_own_generator(rel,text):
     slug=rel.removeprefix('exercices/').removesuffix('.html')
     if not rel.startswith('exercices/') or slug not in GENERATOR:return text
@@ -49,7 +59,6 @@ def main():
         target=ALIASES.get(rel,rel)
         canonical=ORIGIN+('/' if target=='index.html' else '/'+target.removesuffix('.html'))
         nav=re.search(r'<nav class="main-nav"[^>]*>(.*?)</nav>',text,re.S)
-        if 'assets/evolution.css' not in text:text=text.replace('</head>',f'<link rel="stylesheet" href="{base}assets/evolution.css?v={VERSION}"></head>',1)
         # En-tête mobile : bouton « Menu » après la navigation, script dédié et règle sans JavaScript.
         if 'class="main-nav"' in text and 'class="menu-toggle"' not in text:
             text=re.sub(r'(<nav class="main-nav")([^>]*>[\s\S]*?</nav>)', r'\1 id="navigation-principale"\2<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation-principale">Menu</button>', text, count=1)
@@ -63,7 +72,6 @@ def main():
             text=text.replace('</title>',f'</title><script src="{base}assets/menu.js"></script>',1)
         # Typographie française du texte produit par JavaScript (tools/typographie.py pour le HTML).
         if 'assets/typographie.js' not in text:text=text.replace('</head>',f'<script src="{base}assets/typographie.js" defer></script></head>',1)
-        text=re.sub(r'(assets/(?:interface|evolution)\.css\?v=)[^"\s]+',r'\g<1>'+VERSION,text)
         text=re.sub(r'(assets/(?:acquis|progres)\.js\?v=)[^"\s]+',r'\g<1>'+VERSION,text)
         # Moteur de variantes, générateurs, aides et banques : une version commune,
         # ajoutée si besoin, pour qu'aucun navigateur ne mélange ancien et nouveau code.
@@ -73,14 +81,12 @@ def main():
         text=re.sub(r'<link rel="preload" href="[^"]*assets/fonts/[^"]*"[^>]*>\n?','',text)
         fonts=''.join(f'<link rel="preload" href="{base}assets/fonts/{name}.woff2" as="font" type="font/woff2" crossorigin>\n' for name in ('stmg-sans-regular','stmg-sans-bold','stmg-serif-semibold','stmg-symboles-latin','stmg-symboles-maths'))
         text=re.sub(r'(<link rel="stylesheet" href=")', lambda m: fonts+m.group(1), text, count=1)
-        # Jetons de design chargés avant toute autre feuille de style.
-        if 'assets/tokens.css' not in text:
-            text=re.sub(r'(<link rel="stylesheet" href=")', lambda m: f'<link rel="stylesheet" href="{base}assets/tokens.css">\n'+m.group(1), text, count=1)
-        # Couche de la refonte graphique, chargée après toutes les autres feuilles.
-        text=re.sub(r'\s*<link rel="stylesheet" href="[^"]*assets/refonte\.css[^"]*">','',text)
-        last=list(re.finditer(r'<link rel="stylesheet" href="[^"]*">',text))
-        if last:
-            end=last[-1].end(); text=text[:end]+f'\n<link rel="stylesheet" href="{base}assets/refonte.css">'+text[end:]
+        # Feuilles de style : jetons, base, composants, puis la feuille du gabarit de la page.
+        text=re.sub(r'\s*<link rel="stylesheet" href="[^"]*assets/[\w-]+\.css[^"]*">','',text)
+        sheets=''.join(f'\n<link rel="stylesheet" href="{base}assets/{name}.css">' for name in ('tokens','base','components',template(rel)))
+        text=re.sub(r'(<link rel="preload" href="[^"]*assets/fonts/[^"]*"[^>]*>\n?)(?![\s\S]*<link rel="preload" href="[^"]*assets/fonts/)', lambda m: m.group(1).rstrip('\n')+sheets+'\n', text, count=1)
+        text=re.sub(r'<body(?![^>]*data-gabarit)', f'<body data-gabarit="{template(rel)}"', text, count=1)
+        text=re.sub(r'(<body[^>]*data-gabarit=")[^"]*', lambda m: m.group(1)+template(rel), text, count=1)
         text=re.sub(r'(assets/[\w-]+\.css)(?:\?v=[^"\s]*)?(?=")',r'\g<1>?v='+STYLE_VERSION,text)
         if 'footer-links' not in text and '</footer>' in text:
             text=text.replace('</footer>',f'<div class="container footer-links"><a href="{base}exercices.html#mes-progres">Mes progr\u00e8s</a> \u00b7 <a href="{base}a-propos.html">\u00c0 propos et donn\u00e9es</a> \u00b7 <a href="{base}accessibilite.html">Accessibilit\u00e9</a></div></footer>')

@@ -1,30 +1,79 @@
-name: Verification du site
+name: Vérification du site
 on:
   push:
-    branches: [main, cours-programme-2026]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: verification-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   verification:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
-      - name: Lire le depot
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
-      - name: Verifier les pages et les exemples
-        run: python3 tests/validate_site.py
-      - name: Verifier JavaScript
+      - name: Tests mathématiques et structurels
         run: |
           for f in assets/*.js; do node --check "$f"; done
-      - name: Verifier les variantes mathematiques
-        run: node tests/test_variants.js
-      - name: Verifier les calculs des graphiques
-        run: node tests/test_graphiques.js
-      - name: Installer le navigateur de test
+          python3 tests/validate_site.py
+          python3 tests/test_notation.py
+          python3 tests/test_typographie.py
+          python3 tests/test_noms_liens.py
+          node tests/test_variants.js
+          node tests/test_rangs.js
+          node tests/test_graphiques.js
+          node tests/test_terminale.js
+          python3 tests/test_terminale.py
+          node tests/test_calcul_rapide.js
+          python3 tests/test_calcul_rapide.py
+          node tests/test_countdown.js
+          node tests/test_acquis.js
+          node tests/test_parcours.js
+          node tests/test_domaines.js
+          python3 tests/test_evolution.py
+          node tests/test_cloture.js
+          python3 tests/test_cloture.py
+      - name: Dossier publié
+        run: python3 tools/build_public.py
+      - name: Navigateur
+        timeout-minutes: 3
         run: sh tools/prepare_browser.sh
-      - name: Tester le site dans Chromium
-        run: python3 tests/browser_smoke.py
+      - name: Tests dans le navigateur
+        run: |
+          python3 - <<'PY'
+          import subprocess, sys
+          failed = []
+          for name in ['test_navigation_simple.py', 'browser_smoke.py', 'browser_terminale.py', 'browser_calcul_rapide.py',
+                       'test_interface.py', 'test_sujets.py', 'browser_evolution.py']:
+              print('::group::' + name, flush=True)
+              if subprocess.run([sys.executable, 'tests/' + name], timeout=300).returncode:
+                  failed.append(name)
+              print('::endgroup::', flush=True)
+          print('Échecs :', failed, flush=True)
+          sys.exit(bool(failed))
+          PY
+      - name: Accessibilité et performances mobiles
+        run: |
+          npm install --prefix /tmp/stmg-qa --no-fund --no-audit axe-core@4.10.3
+          AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
+      - name: Captures de contrôle
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: controles
+          path: |
+            .qa-navigation/
+            .qa-terminale/
+            .qa-rapide/
+            .qa-evolution/
+            .qa-interface/
+            .qa-sujets/
+            .qa-cloture/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
