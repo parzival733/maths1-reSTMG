@@ -114,7 +114,7 @@ def apply(root: Path):
         text = path.read_text(encoding='utf-8')
         original = text
         title = re.sub(r'<[^>]+>', '', re.search(r'<h1>(.*?)</h1>', text).group(1))
-        # 1. Prérequis : l'ancienne ligne « Appui(s) » devient l'encadré en tête de leçon.
+        # 1. Prérequis : encadré en tête de leçon (remplace une ligne « Appui(s) » éventuelle).
         text = OLD_SUPPORT.sub('', text, count=1)
         box = prerequisites_box(items, note)
         if BOX.search(text):
@@ -132,7 +132,7 @@ def apply(root: Path):
         text = TOC.sub(lambda _: table_of_contents(len(re.findall(r'<h2[ >]', article))), text, count=1)
         text = re.sub(r'(<div class="lesson-reading-controls"[^>]*?) hidden', r'\1', text, count=1)
         # Téléphone : un bouton « Options de lecture » replie les étapes et le confort de lecture ;
-        # un lien fixe « Sommaire » ramène au sommaire (assets/menu.js, docs/refonte/direction.md).
+        # un lien fixe « Sommaire » ramène au sommaire (assets/menu.js).
         text = re.sub(r'<button class="lesson-options-toggle"[^>]*>[^<]*</button>', '', text)
         text = re.sub(r'<div class="lesson-reading-controls"(?![^>]*\bid=)', '<div class="lesson-reading-controls" id="options-lecture"', text, count=1)
         text = text.replace('<div class="lesson-reading-controls"', OPTIONS + '<div class="lesson-reading-controls"', 1)

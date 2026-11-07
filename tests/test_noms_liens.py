@@ -66,7 +66,7 @@ def main():
     problems, pages = [], 0
     for path in sorted(ROOT.rglob('*.html')):
         rel = path.relative_to(ROOT).as_posix()
-        if any(part.startswith('.') or part == 'docs' for part in rel.split('/')):
+        if any(part.startswith('.') or part in ('docs', 'public') for part in rel.split('/')):
             continue
         pages += 1
         parser = Links()

@@ -265,8 +265,8 @@
     showSlide(index, true);
   }
 
-  // Le prototype Fonctions est conservé ; les autres chapitres utilisent
-  // leurs fiches de méthodes spécifiques, avec les valeurs de la variante en cours.
+  // Le chapitre Fonctions a ses propres indices (fonctions-coaching.js) ; les autres chapitres
+  // utilisent leurs fiches de méthodes, avec les valeurs de la variante en cours.
   function addCoaching(slide, form, index, context) {
     let data = null;
     if (slug === 'fonctions' && window.FonctionsCoaching) {

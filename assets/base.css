@@ -1,0 +1,61 @@
+/* Base : éléments HTML, mise en page générale, en-tête, pied de page et impression.
+   Chargée sur toutes les pages, après tokens.css. */
+
+:root {
+  color-scheme: light;
+
+  --green: var(--color-practice);
+  --green-soft: var(--color-practice-soft);
+  
+}
+* { box-sizing: border-box; }
+body { margin: 0; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+svg { display: block; width: 24px; height: 24px; flex-shrink: 0; }
+p, h1, h2, h3 { margin: 0; }
+sup { font-size: 0.65em; line-height: 0; }
+.container { margin-inline: auto; }
+a:focus-visible { outline: 3px solid var(--purple); outline-offset: 5px; }
+main:focus { outline: none; }
+.skip-link { position: fixed; left: 16px; top: 12px; z-index: 20; padding: 12px 20px; border-radius: 10px; background: var(--ink); color:var(--color-on-accent); transform: translateY(-180%); }
+.skip-link:focus { transform: translateY(0); }
+.header-inner { display: flex; align-items: center; justify-content: space-between; }
+.brand { display: inline-flex; align-items: center; gap: 11px; font-weight: 800; }
+.brand-mark { display: grid; place-content: center; position: relative; background: var(--purple); color:var(--color-on-accent); line-height: 1; letter-spacing: -2px; padding-bottom: 4px; }
+.brand-mark span { position: absolute; color: var(--color-on-accent-soft); font-size: 22px; }
+.brand-dot { color: var(--purple); }
+.main-nav { display: flex; }
+.main-nav a { display: flex; align-items: center; font-weight: 600; border-radius: 10px; }
+.main-nav a:hover { color: var(--purple-dark); }
+.main-nav a[aria-current="page"] { color: var(--ink); background: var(--surface); box-shadow:0 2px 5px color-mix(in srgb, var(--color-learn-strong) 4%, transparent); }
+.level-badge { background:var(--color-line); border:1px solid var(--color-line); border-radius: 8px; padding: 6px 12px; white-space: nowrap; font-size: var(--text-caps); font-weight: 700; letter-spacing: 0.4px; }
+.eyebrow { display: flex; align-items: center; gap: 9px; color: var(--purple-dark); line-height: 1.6; font-weight: 750; }
+.button-primary { color:var(--color-on-accent); background: var(--purple); }
+.button-primary:hover { background: var(--purple-dark); transform: translateY(-2px); }
+.site-footer { border-top: 1px solid var(--line); }
+.footer-inner { display: flex; align-items: center; justify-content: space-between; color: var(--muted); }
+.footer-inner strong { margin-right: 10px; color: var(--ink); font-size: 17px; font-weight: 750; letter-spacing: -0.6px; }
+
+.section-page { padding-bottom: 45px; min-height: calc(100vh - 177px); }
+.breadcrumb { display: flex; align-items: center; color: var(--muted); }
+.breadcrumb a { min-height: 44px; display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: 4px; }
+.breadcrumb a:hover, .back-link:hover { color: var(--purple-dark); }
+.page-intro h1 { margin: 8px 0 12px; line-height: 1.15; }
+.title-dot { color: var(--purple); }
+.page-intro > p:last-child { max-width: 610px; font-size: 15px; color: var(--muted); line-height: 1.8; }
+.back-link { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; margin-top: 24px; font-size: var(--text-sm); color: var(--muted); }
+.exercises-page .button-primary:hover { background:var(--color-practice-strong); }
+@media (max-width: 720px) {
+  .footer-inner { flex-direction: column; }
+  .section-page { min-height: calc(100vh - 190px); }
+}
+@media (max-width: 390px) {
+  .brand { gap: 6px; }
+  .button { padding-inline: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  .pathway-card:hover, .button-primary:hover { transform: none; }
+}
+/* En-tête commun aux deux niveaux ; le niveau est indiqué dans la page. */
+.level-badge { display: none; }
