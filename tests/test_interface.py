@@ -111,7 +111,7 @@ def main():
             page.clock.fast_forward(3600000);expect(page.locator('#rapid-app')).to_have_attribute('data-phase','running')
             page.context.close()
             # Every screen uses the same stylesheet and a usable four-link navigation.
-            paths=sorted(p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*.html') if not any(part.startswith('.') or part == 'docs' for part in p.relative_to(ROOT).parts))
+            paths=sorted(p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*.html') if not any(part.startswith('.') or part in ('docs', 'public') for part in p.relative_to(ROOT).parts))
             representatives=['index.html','lecons.html','exercices.html','cours/fonctions.html','exercices/fonctions.html','terminale/lecons.html','terminale/cours/t-logarithme.html','annexes/calcul-rapide.html']
             for name in (representatives if INLINE else [x for x in paths if x != "404.html"]):
                 for width in [320,390,1280]:

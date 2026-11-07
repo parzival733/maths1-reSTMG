@@ -3,7 +3,6 @@ from pathlib import Path
 from urllib.parse import urlsplit, parse_qs, unquote
 import posixpath, re
 ALIASES={'progresser.html':'exercices.html','preparer-bac.html':'sujets.html'}
-VERSION='20261023-simple1'
 
 def apply(root):
     root=Path(root)
@@ -28,7 +27,7 @@ def apply(root):
         text=text.replace('<span>Pas de chapitre en t\u00eate ?</span>','').replace('R\u00e9vision rapide</a>','R\u00e9vision guid\u00e9e</a>')
         for src in ['acquis.js','progres.js','navigation-simple.js']:
             if 'assets/'+src not in text:
-                text=text.replace('</head>',f'<script src="{base}assets/{src}?v={VERSION}" defer></script></head>')
+                text=text.replace('</head>',f'<script src="{base}assets/{src}" defer></script></head>')
         path.write_text(text)
     # Remove the home relay: courses and exercises are already directly available.
     path=root/'index.html';text=path.read_text()
@@ -49,11 +48,11 @@ def apply(root):
         if 'class="return-to-exercises"' not in text:
             text=re.sub(r'(<main\b[^>]*>)',r'\1<a class="return-to-exercises" data-return-exercises href="exercices.html">← Retour aux exercices</a>',text,count=1)
         if 'assets/navigation-simple.js' not in text:
-            text=text.replace('</head>',f'<script src="assets/navigation-simple.js?v={VERSION}" defer></script></head>')
+            text=text.replace('</head>',f'<script src="assets/navigation-simple.js" defer></script></head>')
         path.write_text(text)
     for path in sorted(root.rglob('*.html')):
         rel=path.relative_to(root).as_posix()
-        if any(x.startswith('.') or x == 'docs' for x in path.relative_to(root).parts) or rel in ALIASES:continue
+        if any(x.startswith('.') or x in ('docs', 'public') for x in path.relative_to(root).parts) or rel in ALIASES:continue
         text=path.read_text();base='../'*(len(path.relative_to(root).parts)-1)
         terminale=rel.startswith('terminale/')
         # Remove the sixth top-level entry on every page, including the error page.

@@ -14,7 +14,7 @@ class Quiet(SimpleHTTPRequestHandler):
   self.send_header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'")
   super().end_headers()
 def main():
- pages=[p for p in R.rglob('*.html') if not any(x.startswith('.') or x == 'docs' for x in p.relative_to(R).parts)]
+ pages=[p for p in R.rglob('*.html') if not any(x.startswith('.') or x in ('docs', 'public') for x in p.relative_to(R).parts)]
  for p in pages:
   text=p.read_text()
   if p.name=='404.html':
@@ -33,9 +33,11 @@ def main():
  art=re.search(r'<div class="hero-art"[\s\S]+?\n    </section>',text)[0]
  expected=json.loads((R/'tests/home-art-baseline.json').read_text())
  assert hashlib.sha256(art.encode()).hexdigest()==expected['sha256']
- css=(R/'assets/interface.css').read_text()
- assert not re.search(r'\.hero-art\s*\{|\.graph-paper\s*\{|\.art-bottom\s*\{',css)
- assert 'rotate(1.5deg)' in (R/'assets/styles.css').read_text() and 'rotate(-3deg)' in (R/'assets/styles.css').read_text()
+ # Le dessin d'accueil garde sa géométrie d'origine, définie seulement dans accueil.css.
+ home=(R/'assets/accueil.css').read_text()
+ others=''.join(p.read_text() for p in sorted((R/'assets').glob('*.css')) if p.name!='accueil.css')
+ assert not re.search(r'\.graph-paper\s*\{|\.art-bottom\s*\{|\.hero-art\s*\{[^}]*(?:transform|rotate|background|border)',others)
+ assert 'rotate(1.5deg)' in home and 'rotate(-3deg)' in home
  before={p:p.read_bytes() for p in pages}
  subprocess.run(['python3','tools/finalize_site.py'],cwd=R,check=True)
  assert all(p.read_bytes()==s for p,s in before.items()),'finalization must be idempotent'

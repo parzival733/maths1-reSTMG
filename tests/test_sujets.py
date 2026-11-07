@@ -38,7 +38,7 @@ def main():
         text=(ROOT/name).read_text()
         value=re.search(r'<main\b[\s\S]*?</main>',text).group() if expected['part']=='main' else text
         assert hashlib.sha256(value.encode()).hexdigest()==expected['sha256'],name
-    paths=[p for p in ROOT.rglob('*.html') if not any(x.startswith('.') or x == 'docs' for x in p.relative_to(ROOT).parts)]
+    paths=[p for p in ROOT.rglob('*.html') if not any(x.startswith('.') or x in ('docs', 'public') for x in p.relative_to(ROOT).parts)]
     pages={p.resolve():Page(p.read_text()) for p in paths}
     for p in paths:
         text=p.read_text();page=pages[p.resolve()]
@@ -54,7 +54,7 @@ def main():
             assert target.is_file(),(p,link)
             if u.fragment and target.suffix=='.html':assert unquote(u.fragment) in pages[target].ids,(p,link)
     # Idempotent regeneration: no duplicated tabs, no changes to unrelated files.
-    watched=[*paths,ROOT/'assets/interface.css',ROOT/'tests/test_interface.py',ROOT/'README.md']
+    watched=[*paths,*sorted((ROOT/'assets').glob('*.css')),ROOT/'tests/test_interface.py',ROOT/'README.md']
     before={str(p):p.read_bytes() for p in watched}
     subprocess.run(['python3','tools/build_sujets.py'],cwd=ROOT,check=True)
     assert all(p.read_bytes()==before[str(p)] for p in watched)

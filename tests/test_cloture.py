@@ -85,7 +85,7 @@ def main():
  assert [ns['ecart_carre'](points,a,b) for a,b in [(3,9),(3,9.5),(4,7)]]==[2,1,4]
  assert ns['meilleur_ajustement'](points,[(3,9),(3,9.5),(4,7)])==(3,9.5)
  assert '2, 1 et 4' in ' '.join(content.text)
- for name in ['recette-cloture.md','audit-et-arbitrages.md','validation-humaine.md']:
+ for name in ['maintenance.md','validation-humaine.md']:
   assert (R/'docs'/name).is_file()
- print('CLOTURE OK: exact paper answers, domains, scores, 3 cohorts, 26 skill routes, algorithmic examples and delivery documents.')
+ print('CLOTURE OK: exact paper answers, domains, scores, 3 cohorts, 26 skill routes, algorithmic examples and maintenance documents.')
 if __name__=='__main__':main()

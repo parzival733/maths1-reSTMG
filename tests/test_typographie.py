@@ -32,7 +32,7 @@ def main():
     problems, pages = [], 0
     for path in sorted(ROOT.rglob('*.html')):
         rel = path.relative_to(ROOT)
-        if any(part.startswith('.') or part == 'docs' for part in rel.parts):
+        if any(part.startswith('.') or part in ('docs', 'public') for part in rel.parts):
             continue
         pages += 1
         source = path.read_text(encoding='utf-8')
@@ -50,7 +50,7 @@ def main():
             for name, pattern in CHECKS.items():
                 for match in pattern.finditer(text):
                     problems.append(f'{rel} : {name} → « {text[max(0, match.start() - 25):match.end() + 15].strip()} »')
-    assert not problems, '\n'.join(problems[:30]) + f'\n… {len(problems)} écarts'
+    assert not problems, '\n'.join(problems[:30]) + f'\n… {len(problems)} anomalies'
     print(f'TYPOGRAPHIE OK: {pages} pages, apostrophes, espaces insécables (: ; ! ?, « », unités).')
 
 

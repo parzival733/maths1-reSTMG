@@ -257,7 +257,7 @@
     desc.textContent = config.explanation(p) +
       (key === 'suites' ? ' Les points des suites sont séparés et ne forment pas une courbe continue.' : '');
     // Conserver les éléments SVG accessibles title et desc, puis remplacer seulement
-    // les tracés. Aucun texte de l'utilisateur n'entre dans le SVG.
+    // les tracés. Aucun texte saisi n'entre dans le SVG.
     while (svg.childNodes.length > 2) svg.removeChild(svg.lastChild);
     const graph = document.createElementNS(svgNS, 'g');
     graph.innerHTML = parts.join('');

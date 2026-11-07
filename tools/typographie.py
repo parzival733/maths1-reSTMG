@@ -91,7 +91,7 @@ def fix_page(text):
 
 def apply(root: Path):
     for path in sorted(root.rglob('*.html')):
-        if any(part.startswith('.') or part == 'docs' for part in path.relative_to(root).parts):
+        if any(part.startswith('.') or part in ('docs', 'public') for part in path.relative_to(root).parts):
             continue
         text = path.read_text(encoding='utf-8')
         new = fix_page(text)

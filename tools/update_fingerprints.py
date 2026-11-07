@@ -5,7 +5,7 @@
 
 Les deux manifestes (tests/interface-content.json et tests/evolution-mathematics.json)
 gardent leur format et leurs entrées ; seules les valeurs sha256 changent. Chaque mise à
-jour doit être justifiée dans docs/audit-et-arbitrages.md.
+jour doit être justifiée dans le message de commit (voir docs/maintenance.md).
 """
 from pathlib import Path
 import hashlib, json, re, sys

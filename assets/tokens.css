@@ -1,7 +1,6 @@
-/* Jetons de design du site Maths STMG (refonte graphique, proposition à valider).
+/* Jetons de design : couleurs, typographie, espacements, formes et mouvement.
    Chargé en premier sur toutes les pages ; les autres feuilles n'utilisent que ces jetons.
-   Palette d'origine conservée : encre #252436, violet #604bd1, vert #246453, rouge
-   #a53c42 ; fond gris clair #f7f8fa (choix validé le 5 novembre 2026, au lieu du papier #f8f7f3). Contrastes calculés dans docs/refonte/direction.md. */
+   Palette : encre #252436, violet #604bd1, vert #246453, rouge #a53c42, fond #f7f8fa. */
 
 @font-face {
   font-family: "STMG Serif";
@@ -52,7 +51,7 @@
 :root {
   color-scheme: light dark;
   /* Couleurs sémantiques */
-  --color-bg: #f7f8fa;              /* fond gris clair (choix validé) */
+  --color-bg: #f7f8fa;              /* fond gris clair */
   --color-surface: #ffffff;
   --color-surface-sunken: #eef0f4;  /* zones secondaires */
   --color-text: #252436;            /* encre : 14,3:1 sur le fond */
@@ -158,7 +157,7 @@
 }
 
 /* Mode sombre : suit le réglage de l'appareil (aucun choix n'est mémorisé par le site).
-   Teintes éclaircies et désaturées, contrastes AA vérifiés (docs/refonte/rapport.md).
+   Teintes éclaircies et désaturées, contrastes AA vérifiés.
    L'impression reste toujours en clair. */
 @media screen and (prefers-color-scheme: dark) {
   :root {
