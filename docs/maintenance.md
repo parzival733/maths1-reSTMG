@@ -78,7 +78,7 @@ Chaque modèle déclare :
 | `typographie.py` | Typographie française du HTML (apostrophes, espaces insécables) |
 | `build_fallbacks.py` | Version de lecture sans JavaScript des séries |
 | `build_sujets.py` | Catalogue des sujets à partir de `donnees/sujets.json` |
-| `build_public.py` | Dossier `public/` publié par Cloudflare Pages ; échoue sur un lien local cassé |
+| `build_public.py` | Dossier `public/` publié par Cloudflare Pages (pages, assets, icônes, données liées) ; échoue sur un lien local cassé |
 | `update_fingerprints.py` | Liste ou réécrit les empreintes du contenu protégé |
 | `prepare_browser.sh` | Vérifie le navigateur de test en intégration continue |
 

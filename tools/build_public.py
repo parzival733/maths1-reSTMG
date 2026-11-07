@@ -16,7 +16,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'public'
 PAGE_DIRS = ('cours', 'exercices', 'terminale', 'entrainement', 'annexes', 'donnees')
-ROOT_FILES = ('_headers', 'robots.txt', 'sitemap.xml')
+ROOT_FILES = ('_headers', 'robots.txt', 'sitemap.xml', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png')
 
 
 class Links(HTMLParser):

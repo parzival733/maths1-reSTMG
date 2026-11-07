@@ -510,7 +510,7 @@ body.lesson-immersive { --learn-ink:var(--ink); --learn-muted:var(--muted); --le
 .learning-path span { border:0; background:none; padding:0; color:var(--muted); font-size: var(--text-sm); font-weight:500; }
 .learning-path span b { background:var(--color-learn-soft); color:var(--purple-dark); }
 .lesson-reading-controls { border-bottom:1px solid var(--line); padding-bottom:16px; margin-bottom:24px; font-size: var(--text-sm); }
-.lesson-reading-controls button { border-radius:9px; font-weight:600; padding:8px 13px; }
+.lesson-reading-controls button { border-radius:999px; font-weight:700; font-size:1rem; padding:8px 16px; }
 .lesson-immersive .lesson-toc { border:0; border-radius:0; background:transparent; box-shadow:none; padding:8px 6px 8px 0; }
 .lesson-immersive .lesson-toc nav a { font-size: var(--text-sm); padding:9px; font-weight:500; }
 .ui-toc > summary { padding:10px 0; }
@@ -652,3 +652,11 @@ body { font-family: var(--font-sans); font-size: var(--text-base); line-height: 
 @media print {
   .lesson-content :is(.definition, .method) { break-inside: avoid; }
 }
+
+/* Textes des figures et des graphiques : la sans-serif du site, pas les polices système. */
+.lesson-content svg text { font-family: var(--font-sans); }
+/* Question des graphiques : consigne, champ et boutons espacés ; une seule action principale. */
+.math-lab__question { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
+.math-lab__question > label, .math-lab__question > .math-lab__feedback { flex: 1 0 100%; margin: 0; }
+html body:not(#_page):not(#_question) .math-lab__question button[type="button"] { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-line-strong); }
+html body:not(#_page):not(#_question) .math-lab__question button[type="button"]:hover { border-color: var(--color-text); }

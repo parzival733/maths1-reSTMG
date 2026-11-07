@@ -59,6 +59,9 @@ def main():
             page=path.read_text()
             if 'assets/tokens.css' not in page:
                 page=re.sub(r'(<link rel="stylesheet" href=")', lambda m: '<link rel="stylesheet" href="/assets/tokens.css">\n'+m.group(1), page, count=1)
+            page=re.sub(r'\s*<link rel="(?:icon|apple-touch-icon)"[^>]*>','',page)
+            # Servie à n'importe quelle adresse : icônes en URL complètes, comme ses liens.
+            page=page.replace('</title>',f'</title><link rel="icon" href="{ORIGIN}/favicon.svg" type="image/svg+xml"><link rel="icon" href="{ORIGIN}/favicon.ico" sizes="16x16 32x32 48x48"><link rel="apple-touch-icon" href="{ORIGIN}/apple-touch-icon.png">',1)
             path.write_text(page)
             continue
         text=path.read_text();rel=path.relative_to(ROOT).as_posix();base='../'*(len(path.relative_to(ROOT).parts)-1)
@@ -79,6 +82,9 @@ def main():
         # Typographie française du texte produit par JavaScript (tools/typographie.py pour le HTML).
         if 'assets/typographie.js' not in text:text=text.replace('</head>',f'<script src="{base}assets/typographie.js" defer></script></head>',1)
         text=keep_own_generator(rel,text)
+        # Icônes du site (onglet, favoris, écran d'accueil du téléphone).
+        text=re.sub(r'\s*<link rel="(?:icon|apple-touch-icon)"[^>]*>','',text)
+        text=text.replace('</title>',f'</title><link rel="icon" href="{base}favicon.svg" type="image/svg+xml"><link rel="icon" href="{base}favicon.ico" sizes="16x16 32x32 48x48"><link rel="apple-touch-icon" href="{base}apple-touch-icon.png">',1)
         # Polices du site préchargées : prêtes avant le premier affichage, le texte ne se décale pas.
         text=re.sub(r'<link rel="preload" href="[^"]*assets/fonts/[^"]*"[^>]*>\n?','',text)
         fonts=''.join(f'<link rel="preload" href="{base}assets/fonts/{name}.woff2" as="font" type="font/woff2" crossorigin>\n' for name in ('stmg-sans-regular','stmg-sans-bold','stmg-serif-semibold','stmg-symboles-latin','stmg-symboles-maths'))

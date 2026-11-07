@@ -468,7 +468,7 @@ body { font-family: var(--font-sans); font-size: var(--text-base); line-height: 
 .answer-row.is-wrong .answer-status, .answer-row.was-wrong .answer-status { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E"); }
 .exercise-feedback { font-size: var(--text-sm); }
 /* Numéros d'exercice : 4 × 2 sur téléphone, état lisible sans la couleur. */
-.exercise-stepper button { font-size: var(--text-base); font-variant-numeric: tabular-nums; border-color: var(--color-line-strong); display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+.exercise-stepper button { font-size: var(--text-base); font-weight: 700; font-variant-numeric: tabular-nums; border-color: var(--color-line-strong); display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
 .exercise-stepper button.is-active { background: var(--color-text); border-color: var(--color-text); color: var(--color-on-accent); }
 .exercise-stepper button.is-revealed:not(.is-active):not(.is-complete) { background: var(--color-learn-faint); border-color: var(--color-learn); color: var(--color-learn-strong); }
 .exercise-stepper button.is-complete::before, .exercise-stepper button.is-wrong::before, .exercise-stepper button.is-revealed:not(.is-complete)::before {

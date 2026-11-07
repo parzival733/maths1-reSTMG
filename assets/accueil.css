@@ -117,11 +117,17 @@ body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 /* Libellés lisibles sur le dessin d’accueil. */
 .graph-index,.art-scribble{color:#665477}
 body { font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-body); }
-/* Accueil : le titre garde son dessin actuel (sans-serif très gras). */
-.hero h1 { font-family: var(--font-sans); font-weight: 700; }
+/* Titre de l'accueil : même serif que les titres des autres pages. */
+.hero h1 { letter-spacing: -0.015em; }
+/* Dessin d'accueil : graduations dans la sans-serif du site, formules comme .math. */
+.function-graph text { font-family: var(--font-sans); }
+.function-graph > text, .art-scribble, .graph-index { font-family: var(--font-sans); font-style: normal; font-weight: 700; font-variant-numeric: tabular-nums lining-nums; }
+.art-scribble { font-size: 20px; }
 @media screen and (prefers-color-scheme: dark) {
   .hero-art { filter: brightness(0.92); }
 }
 /* Accueil : la question d'essai, aérée et alignée. */
 #home-try { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); }
+#home-try > label, #home-try > .home-try__line, #home-try > .home-try__feedback { flex: 1 0 100%; margin-bottom: 0; }
+#home-try > .home-try__line { align-items: center; }
 #home-try input { flex: 1 1 9em; max-width: 14em; }
