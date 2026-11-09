@@ -1,4 +1,4 @@
-/* Only navigation presentation: no teaching text or exercise data is modified. */
+/* Sommaire repliable des leçons selon la largeur de l’écran. */
 (() => {
   'use strict';
   const toc = document.querySelector('.lesson-toc');

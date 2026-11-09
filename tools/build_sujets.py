@@ -59,4 +59,4 @@ if __name__=='__main__':
     from finalize_site import main as finalize
     finalize()
 
-# After regenerating the catalogue, run tools/finalize_site.py to restore shared links and metadata.
+# Normalisation des liens et des métadonnées après construction du catalogue.

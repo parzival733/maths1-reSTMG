@@ -13,7 +13,7 @@ def main():
     process.stdout.write(JSON.stringify(out));"""
     terminal=json.loads(subprocess.check_output(['node','-e',script],cwd=ROOT,text=True))
     for path in [*sorted((ROOT/'exercices').glob('*.html')),*sorted((ROOT/'terminale/exercices').glob('*.html'))]:
-        if path.name=='fonctions.html':continue # This page is already readable as authored HTML.
+        if path.name=='fonctions.html':continue # Cette page contient déjà sa version de lecture.
         text=path.read_text();match=re.search(r'<script type="application/json" id="exercise-data">(.*?)</script>',text,re.S)
         if not match:continue
         exercises=terminal[path.stem] if path.stem.startswith('t-') else json.loads(match[1])['exercises']
@@ -25,7 +25,7 @@ def main():
             blocks.append('<details class="offline-solution"><summary>Voir le corrig\u00e9</summary>'+''.join(x if re.match(r'\s*<(div|table)\b',x) else '<p>'+x+'</p>' for x in ex['correction'])+'</details></section>')
         blocks.append('<p><a href="../cours/'+path.stem+'.html">Revoir la lecon</a></p></section></noscript>')
         text=re.sub(r'<noscript data-offline-series>[\s\S]*?</noscript>','',text)
-        # Replace the pre-existing fallback notice; avoid two independent noscript blocks.
+        # Une seule version de lecture sans JavaScript par série.
         text=re.sub(r'<noscript>[\s\S]*?</noscript>',''.join(blocks),text,count=1)
         if 'data-offline-series' not in text:text=text.replace('</main>',''.join(blocks)+'</main>')
         text=text.replace(' aria-busy="true"','')
