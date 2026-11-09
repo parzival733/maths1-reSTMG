@@ -32,7 +32,7 @@
         caption.append(label);
       }
     }
-    if (!input.getAttribute('aria-label') && !caption) input.setAttribute('aria-label', name);
+    if (!input.getAttribute('aria-label')) input.setAttribute('aria-label', name);
     const group = document.createElement('div');
     group.className = 'answer-input';
     const button = document.createElement('button');
