@@ -1,4 +1,4 @@
-"""Direct access and useful home graph regression. No external requests."""
+"""Vérifie la navigation, le suivi local et le graphique d’accueil."""
 from pathlib import Path
 from html.parser import HTMLParser
 from functools import partial
@@ -33,8 +33,7 @@ def main():
  art=re.search(r'<svg class="function-graph"[\s\S]*?</svg>',text)[0]
  expected=json.loads((R/'tests/home-art-baseline.json').read_text())
  assert hashlib.sha256(art.encode()).hexdigest()==expected['sha256']
- # Le graphique et les deux inclinaisons historiques sont restaurés
- # à la demande de l’utilisateur. Les styles restent propres à l’accueil.
+ # Géométrie du graphique et styles propres à l’accueil.
  assert 'd="M40 210 240 10"' in art and 'cx="140" cy="110"' in art
  assert 'role="img"' in art and 'f(2) = 3' in art
  home=(R/'assets/accueil.css').read_text()

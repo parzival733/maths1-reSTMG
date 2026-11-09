@@ -1,4 +1,4 @@
-"""Small, idempotent navigation changes. Keep all mathematical resources intact."""
+"""Normalisation idempotente de la navigation et des accès aux ressources."""
 from pathlib import Path
 from urllib.parse import urlsplit, parse_qs, unquote
 import posixpath, re
@@ -17,7 +17,7 @@ def apply(root):
                    f'<a href="{base}diagnostic.html?niveau={level}">Tester mes bases</a></div>')
             extra+=template.replace('{base}',base).replace('{level}',level)
             text=text[:intro.end()]+extra+text[intro.end():]
-        # A short instruction replaces the long inventory above the actual chapters.
+        # Présentation du catalogue avant la liste des chapitres.
         intro=re.search(r'<(?:section|header) class="page-intro"[^>]*>[\s\S]*?</(?:section|header)>',text)
         if intro:
             count='16' if level=='premiere' else '9'
@@ -29,7 +29,7 @@ def apply(root):
             if 'assets/'+src not in text:
                 text=text.replace('</head>',f'<script src="{base}assets/{src}" defer></script></head>')
         path.write_text(text)
-    # Remove the home relay: courses and exercises are already directly available.
+    # Accès direct aux leçons et aux exercices depuis l’accueil.
     path=root/'index.html';text=path.read_text()
     text=re.sub(r'<section class="rapid-entry evo-home-entry">[\s\S]*?</section>','',text)
     path.write_text(text)

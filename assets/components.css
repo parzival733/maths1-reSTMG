@@ -339,7 +339,7 @@ input[type="radio"], input[type="checkbox"] { width: 22px; height: 22px; accent-
 /* Composants : boutons, champs et éléments dépliables.
    Trois boutons pour tout le site : principal, secondaire, lien. Mêmes hauteur,
    rayon, taille et graisse partout ; vert pour s'entraîner, violet pour apprendre.
-   :is(#…) donne à ces règles la priorité sur les anciennes feuilles. */
+   :is(#…) donne aux composants la priorité sur les règles de gabarit. */
 :is(#_btn, .button, button.study-submit, .print-button, .subjects-reset, .practice-secondary, .rapid-secondary, .rapid-text-button, .math-lab button, #home-try button, .lesson-corrections-toggle button) {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
   min-height: var(--target-min); padding: 0 var(--space-5); border-radius: var(--radius-md);
