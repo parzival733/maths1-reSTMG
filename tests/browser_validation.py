@@ -35,6 +35,59 @@ def main():
             context = browser.new_context(viewport={'width': 390, 'height': 844}, is_mobile=True,
                                           has_touch=True, locale='fr-FR')
             page = context.new_page()
+            # Le clavier décimal iOS n'offre pas de touche moins : le raccourci
+            # doit fonctionner au toucher, sans soumettre le formulaire.
+            page.goto(base + 'exercices/fonctions.html#exercice-3')
+            slide = page.locator('#exercice-3')
+            negative = slide.locator('[data-expect]').nth(1)
+            sign = negative.locator('..').locator('.answer-sign')
+            sign.tap()
+            expect(negative).to_have_value('−')
+            expect(negative).to_be_focused()
+            expect(slide.locator('.exercise-feedback')).to_have_text('')
+            page.keyboard.insert_text('1')
+            expect(negative).to_have_value('−1')
+            sign.tap()
+            expect(negative).to_have_value('1')
+            sign.tap()
+            for index, control in enumerate(slide.locator('[data-expect]').all()):
+                value = control.get_attribute('data-expect').split('|')[0]
+                if control.evaluate('e => e.tagName') == 'SELECT':
+                    option = control.locator('option').evaluate_all(
+                        '(xs, value) => xs.find(x => x.value.replace(/\\s/g, "") === value.replace(/\\s/g, "")).value', value)
+                    control.select_option(option)
+                elif index != 1:
+                    control.fill(value.replace('.', ',').replace('-', '−'))
+            slide.locator('button[type=submit]').tap()
+            expect(slide.locator('.exercise-feedback')).to_contain_text('Exercice validé')
+            expect(page.locator('#exercise-score')).to_have_text('1/9')
+            sign.tap()
+            expect(page.locator('#exercise-score')).to_have_text('0/9')
+            sign.tap()
+            slide.locator('button[type=submit]').tap()
+            slide.locator('details.check > summary').tap()
+            expect(negative).to_have_attribute('readonly', '')
+            expect(sign).to_be_disabled()
+            expect(slide.locator('.answer-was-wrong')).to_have_count(0)
+            slide.locator('[data-action=reset]').tap()
+            expect(negative).to_have_value('')
+            expect(sign).to_be_enabled()
+            negative.fill('0')
+            slide.locator('button[type=submit]').tap()
+            slide.locator('[data-action=new-variant]').tap()
+            numeric = slide.locator('input[inputmode=decimal]')
+            expect(slide.locator('.answer-sign')).to_have_count(numeric.count())
+            negative = numeric.first
+            sign = negative.locator('..').locator('.answer-sign')
+            negative.fill('12,5')
+            negative.evaluate('e => e.setSelectionRange(2, 2)')
+            sign.tap()
+            expect(negative).to_have_value('−12,5')
+            assert negative.evaluate('e => e.selectionStart') == 3
+            sign.tap()
+            expect(negative).to_have_value('12,5')
+            assert negative.evaluate('e => e.selectionStart') == 2
+
             page.goto(base + 'exercices/suites.html')
             slide = page.locator('#exercice-1')
             page.evaluate('MathsAcquis.store.enable()')
