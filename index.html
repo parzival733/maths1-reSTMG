@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Ton espace de mathématiques en Première et Terminale STMG : deux parcours de leçons et d’exercices, pour avancer à ton rythme.">
+  <meta name="description" content="Leçons, exercices corrigés et sujets d’examen de mathématiques pour la Première et la Terminale STMG.">
   <meta name="theme-color" content="#f8f7f3">
   <title>Accueil | Maths · Première–Terminale STMG</title><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48"><link rel="apple-touch-icon" href="apple-touch-icon.png"><script src="assets/menu.js?v=20b5691876"></script>  <link rel="preload" href="assets/fonts/stmg-sans-regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/stmg-sans-bold.woff2" as="font" type="font/woff2" crossorigin>
@@ -13,8 +13,8 @@
 <link rel="stylesheet" href="assets/tokens.css?v=42c911e47c">
 <link rel="stylesheet" href="assets/base.css?v=c6dadbfe0c">
 <link rel="stylesheet" href="assets/components.css?v=cb6b510261">
-<link rel="stylesheet" href="assets/accueil.css?v=a7aaee6dd7">
-<script src="assets/interface.js?v=865923d509" defer></script><meta property="og:type" content="website"><meta property="og:title" content="Accueil | Maths · Première–Terminale STMG"><meta property="og:url" content="https://mathstmgdls.pages.dev/"><meta property="og:description" content="Ton espace de mathématiques en Première et Terminale STMG : deux parcours de leçons et d’exercices, pour avancer à ton rythme."><script src="assets/typographie.js?v=3aa4e8de78" defer></script><noscript><style>.home-try__form{display:none!important}</style></noscript><script src="assets/accueil.js?v=78ad482be1" defer></script><link rel="canonical" href="https://mathstmgdls.pages.dev/"></head>
+<link rel="stylesheet" href="assets/accueil.css?v=485d0a1cc5">
+<script src="assets/interface.js?v=865923d509" defer></script><meta property="og:type" content="website"><meta property="og:title" content="Accueil | Maths · Première–Terminale STMG"><meta property="og:url" content="https://mathstmgdls.pages.dev/"><meta property="og:description" content="Leçons, exercices corrigés et sujets d’examen de mathématiques pour la Première et la Terminale STMG."><script src="assets/typographie.js?v=3aa4e8de78" defer></script><noscript><style>.home-try__form{display:none!important}</style></noscript><script src="assets/accueil.js?v=78ad482be1" defer></script><link rel="canonical" href="https://mathstmgdls.pages.dev/"></head>
 <body data-gabarit="accueil" class="has-rapid-link">
   <a class="skip-link" href="#contenu">Aller au contenu</a>
   <header class="site-header">
@@ -26,58 +26,64 @@
   <main id="contenu" class="container" tabindex="-1">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="eyebrow-line" aria-hidden="true"></span>PREMIÈRE–TERMINALE STMG</p>
-        <h1 id="hero-title">Les maths,<br>un peu plus<br><span class="accent-word">claires.</span></h1>
-        <p class="hero-description">Comprendre une notion. Trouver la bonne méthode. Et prendre confiance, un exercice à la fois.</p>
-        <a class="button button-primary" href="#essai">Essayer une première question <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        <p class="hero-note"><span aria-hidden="true">✓</span> Première et Terminale STMG, sans compte et sans publicité.</p>
+        <p class="eyebrow">PREMIÈRE ET TERMINALE</p>
+        <h1 id="hero-title">Mathématiques<br>en STMG.</h1>
+        <p class="hero-description">Des leçons pour comprendre le cours, des exercices corrigés pour s’entraîner et des sujets pour préparer les examens.</p>
+        <a class="button button-primary" href="#essai">Essayer une question</a>
+        <p class="hero-note">Accès libre, sans compte et sans publicité.</p>
       </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="art-heading"><span class="art-dot"></span>CHAQUE NOTION A SON DÉCLIC<span class="art-star">✦</span></div>
-        <div class="graph-paper">
-          <div class="graph-heading"><span>Un point de départ.</span><span class="graph-index">f(2) = 3</span></div>
-          <svg class="function-graph" viewBox="0 0 400 285" fill="none">
-            <defs><pattern id="grid" width="40" height="40" x="60" y="230" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" stroke="#e8e5f0" stroke-width="1"/></pattern></defs>
+      <figure class="hero-art" aria-labelledby="home-graph-title">
+        <figcaption class="graph-heading" id="home-graph-title">Lecture graphique</figcaption>
+        <div class="graph-paper"><svg class="function-graph" viewBox="0 0 400 285" fill="none" role="img" aria-labelledby="home-graph-description">
+            <title id="home-graph-description">La droite f(x) = x + 1 passe par le point (2 ; 3). Les pointillés permettent de lire f(2) = 3 sur les axes.</title><defs><pattern id="grid" width="40" height="40" x="60" y="230" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" stroke="var(--color-line)" stroke-width="1"/></pattern></defs>
             <rect x="20" y="10" width="360" height="260" fill="url(#grid)"/>
-            <path d="M30 230H370M60 260V15" stroke="#928baf" stroke-width="1.5"/>
-            <path d="m364 225 6 5-6 5M55 21l5-6 5 6" stroke="#928baf" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M140 230V110H60" stroke="#8d7ad9" stroke-width="1.5" stroke-dasharray="5 6"/>
-            <path d="M40 210 240 10" stroke="#604bd1" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="140" cy="110" r="12" fill="#ebe6ff"/><circle cx="140" cy="110" r="5.5" fill="#604bd1" stroke="white" stroke-width="2"/>
-            <g fill="#6c6582" font-family="Arial, sans-serif" font-size="13"><text x="43" y="247">0</text><text x="136" y="249">2</text><text x="41" y="115">3</text><text x="370" y="249">x</text><text x="43" y="19">y</text></g>
-            <rect x="167" y="89" width="71" height="31" rx="9" fill="#f0ecff"/><text x="182" y="109" fill="#5945bd" font-family="Arial, sans-serif" font-size="13">(2 ; 3)</text>
-            <text x="229" y="185" fill="#604bd1" font-family="Georgia, serif" font-size="22" font-style="italic">f(x) = x + 1</text>
-          </svg>
-          <div class="graph-footer"><span class="small-check">✓</span> Comprendre, c’est déjà avancer.</div>
-        </div>
-        <div class="art-bottom"><span class="art-mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"/></svg></span><p>Les bonnes bases.<br><strong>Et tout devient plus simple.</strong></p><span class="art-scribble">2 + 1 = 3</span></div>
-      </div>
+            <path d="M30 230H370M60 260V15" stroke="var(--color-text-muted)" stroke-width="1.5"/>
+            <path d="m364 225 6 5-6 5M55 21l5-6 5 6" stroke="var(--color-text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M140 230V110H60" stroke="var(--color-text-muted)" stroke-width="1.5" stroke-dasharray="5 6"/>
+            <path d="M40 210 240 10" stroke="var(--color-chart-1)" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="140" cy="110" r="5.5" fill="var(--color-chart-1)" stroke="white" stroke-width="2"/>
+            <g fill="var(--color-text-muted)" font-family="Arial, sans-serif" font-size="13"><text x="43" y="247">0</text><text x="136" y="249">2</text><text x="41" y="115">3</text><text x="370" y="249">x</text><text x="43" y="19">y</text></g>
+            <text x="182" y="109" fill="var(--color-text)" font-family="Arial, sans-serif" font-size="13">(2 ; 3)</text>
+            <text x="229" y="185" fill="var(--color-chart-1)" font-family="Georgia, serif" font-size="22" font-style="italic">f(x) = x + 1</text>
+          </svg></div>
+        <p class="graph-footer">À l’abscisse 2, on lit l’ordonnée 3.</p>
+      </figure>
     </section>
 
-<section id="essai" class="home-try" aria-labelledby="home-try-title" tabindex="-1"><div class="home-try__intro"><p class="eyebrow">UNE QUESTION POUR COMMENCER</p><h2 id="home-try-title">Lis une image.</h2><p>La fonction f est définie par <strong>f(x) = x + 1</strong> : c’est la droite du dessin. Combien vaut f(2) ?</p></div><form id="home-try" class="home-try__form" novalidate><label for="home-try-answer">Ta réponse</label><div class="home-try__line"><input id="home-try-answer" inputmode="decimal" autocomplete="off" aria-describedby="home-try-feedback"><button class="button button-primary" type="submit">Vérifier</button></div><p id="home-try-feedback" class="home-try__feedback" role="status" aria-live="polite"></p></form><details class="home-try__answer"><summary>Voir la réponse et la méthode</summary><p><strong>Méthode :</strong> pour une image, on remplace x par la valeur donnée. <strong>Calcul :</strong> f(2) = 2 + 1 = 3. <strong>Conclusion :</strong> f(2) = 3 ; sur le dessin, le point de la droite d’abscisse 2 a pour ordonnée 3.</p><p><a href="cours/fonctions.html">Revoir les images et les antécédents dans la leçon Fonctions</a></p></details></section>
+    <section id="essai" class="home-try" aria-labelledby="home-try-title" tabindex="-1">
+      <div class="home-try__intro"><p class="eyebrow">APPLICATION</p><h2 id="home-try-title">Calculer une image</h2><p>La fonction f est définie par <strong>f(x) = x + 1</strong>. Combien vaut f(2) ?</p></div>
+      <form id="home-try" class="home-try__form" novalidate>
+        <label for="home-try-answer">Ta réponse</label>
+        <div class="home-try__line"><input id="home-try-answer" inputmode="decimal" autocomplete="off" aria-describedby="home-try-feedback"><button class="button button-primary" type="submit">Vérifier</button></div>
+        <p id="home-try-feedback" class="home-try__feedback" role="status" aria-live="polite"></p>
+      </form>
+      <details class="home-try__answer"><summary>Voir la réponse et la méthode</summary><p><strong>Méthode :</strong> pour une image, on remplace x par la valeur donnée. <strong>Calcul :</strong> f(2) = 2 + 1 = 3. <strong>Conclusion :</strong> f(2) = 3 ; sur le dessin, le point de la droite d’abscisse 2 a pour ordonnée 3.</p><p><a href="cours/fonctions.html">Revoir les images et les antécédents dans la leçon Fonctions</a></p></details>
+    </section>
+
     <section class="pathways" aria-labelledby="pathways-title">
-      <div class="section-heading"><div><p class="eyebrow">DEUX ESPACES, UN MÊME OBJECTIF</p><h2 id="pathways-title">À toi de choisir la suite.</h2></div><p>Un pas pour comprendre.<br>Un autre pour progresser.</p></div>
+      <div class="section-heading"><h2 id="pathways-title">Leçons et exercices</h2><p>Parcours de Première STMG</p></div>
       <div class="pathway-grid">
         <a class="pathway-card lessons-card" href="lecons.html" aria-labelledby="lessons-title lessons-link">
-          <div class="card-top"><span class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C9.5 4.5 6 4.5 3 5.5v14c3-1 6.5-1 9 1 2.5-2 6-2 9-1v-14c-3-1-6.5-1-9 1Z"/><path d="M12 6.5v14M6.5 9h2M6.5 12h2M15.5 9h2M15.5 12h2"/></svg></span><span class="card-number" aria-hidden="true">01</span></div>
-          <p class="card-eyebrow">COMPRENDRE &amp; RETENIR</p><h3 id="lessons-title">Les leçons</h3>
-          <p class="card-description">L’espace pour découvrir les notions et retrouver les méthodes, avec un parcours Première et un parcours Terminale.</p>
-          <div class="card-bottom"><span id="lessons-link">Accéder aux leçons</span><span class="round-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></div>
+          <h3 id="lessons-title">Les leçons</h3>
+          <p class="card-description">Définitions, méthodes et exemples, organisés par chapitre.</p>
+          <div class="card-bottom"><span id="lessons-link">Consulter les leçons</span></div>
         </a>
         <a class="pathway-card exercises-card" href="exercices.html" aria-labelledby="exercises-title exercises-link">
-          <div class="card-top"><span class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 5.5 4 4M4 20l4.5-1L20 7.5a2.8 2.8 0 0 0-4-4L4.5 15Z"/><path d="m4.5 15 4 4M13 20h7"/></svg></span><span class="card-number" aria-hidden="true">02</span></div>
-          <p class="card-eyebrow">ESSAYER &amp; PROGRESSER</p><h3 id="exercises-title">Les exercices</h3>
-          <p class="card-description">L’espace pour mettre les notions en pratique, avec des séries distinctes selon ton niveau et les mêmes aides pour progresser.</p>
-          <div class="card-bottom"><span id="exercises-link">Accéder aux exercices</span><span class="round-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></div>
+          <h3 id="exercises-title">Les exercices</h3>
+          <p class="card-description">Des séries avec variantes, indices et corrections détaillées.</p>
+          <div class="card-bottom"><span id="exercises-link">Commencer une série</span></div>
         </a>
       </div>
-      <nav class="level-switch" aria-label="Accès direct aux parcours de Terminale"><a href="terminale/lecons.html">Leçons de Terminale STMG →</a><a href="terminale/exercices.html">Exercices de Terminale STMG →</a></nav>
+      <nav class="home-levels" aria-label="Accès direct aux parcours de Terminale"><p>Terminale STMG</p><a href="terminale/lecons.html">Les leçons de Terminale</a><a href="terminale/exercices.html">Les exercices de Terminale</a></nav>
     </section>
-    <aside class="encouragement" aria-label="Un conseil pour progresser"><span class="encouragement-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"/></svg></span><p><strong>Pas besoin de tout comprendre du premier coup.</strong> L’important, c’est de faire le prochain pas.</p></aside>
-  <aside id="annexe-calcul-rapide" class="rapid-entry" aria-labelledby="annexe-calcul-title"><p class="eyebrow">ANNEXE / SANS CALCULATRICE</p><h2 id="annexe-calcul-title">Calcul mental et calcul rapide sur feuille</h2><p>Des séries courtes, des méthodes et des fiches imprimables pour le bac de Première. Les prolongements Terminale sont séparés du parcours bac.</p><a href="annexes/calcul-rapide.html">Ouvrir l’annexe de calcul rapide →</a></aside><aside id="sujets-entry" class="rapid-entry" aria-labelledby="sujets-entry-title"><p class="eyebrow">SUJETS / EN CONDITIONS D’EXAMEN</p><h2 id="sujets-entry-title">Des sujets pour s’entraîner comme le jour J</h2><p>41 sujets en PDF (Première 2026, sujets zéro, archives de Terminale), 2 sujets blancs corrigés avec barème et chrono, et 8 problèmes à rédiger.</p><a href="sujets.html">Voir les sujets et les sujets blancs →</a></aside>
-</main>
+
+    <div class="home-resources">
+      <aside id="annexe-calcul-rapide" class="rapid-entry" aria-labelledby="annexe-calcul-title"><p class="eyebrow">SANS CALCULATRICE</p><h2 id="annexe-calcul-title">Calcul mental et calcul rapide</h2><p>Des séries courtes, des méthodes et des fiches imprimables pour le bac de Première. Les prolongements de Terminale sont proposés à part.</p><a href="annexes/calcul-rapide.html">Consulter les séries de calcul</a></aside>
+      <aside id="sujets-entry" class="rapid-entry" aria-labelledby="sujets-entry-title"><p class="eyebrow">PRÉPARER LES EXAMENS</p><h2 id="sujets-entry-title">Sujets et sujets blancs</h2><p>41 sujets en PDF, 2 sujets blancs corrigés avec barème et chrono, et 8 problèmes à rédiger.</p><a href="sujets.html">Consulter les sujets</a></aside>
+    </div>
+  </main>
   <footer class="site-footer">
-    <div class="container footer-inner"><p><strong>maths.</strong> Un peu de méthode, beaucoup de progrès.</p><p>Mathématiques · Première–Terminale STMG</p></div>
+    <div class="container footer-inner"><p><strong>maths.</strong></p><p>Mathématiques · Première–Terminale STMG</p></div>
   <div class="container footer-links"><a href="exercices.html#mes-progres">Mes progrès</a> · <a href="a-propos.html">À propos et données</a> · <a href="accessibilite.html">Accessibilité</a></div></footer>
 </body>
 </html>
