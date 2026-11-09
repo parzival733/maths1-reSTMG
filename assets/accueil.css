@@ -1,36 +1,18 @@
-/* Proposition sobre, limitée à l'accueil. Couleurs et modes issus des jetons du site. */
+/* Accueil sobre : violet pour apprendre, vert pour s’entraîner. */
 body[data-gabarit="accueil"] {
   --bg: var(--color-surface);
   --surface: var(--color-surface);
   --ink: var(--color-text);
   --muted: var(--color-text-muted);
   --line: var(--color-line);
-  --purple: var(--color-chart-1);
-  --purple-dark: var(--color-chart-1);
-  --color-focus: var(--color-chart-1);
-  --color-learn: var(--color-chart-1);
-  --color-learn-strong: var(--color-text);
-  --color-learn-soft: var(--color-surface-sunken);
-  --color-learn-fill: var(--color-text);
-  --color-learn-fill-hover: var(--color-text-muted);
-  --color-on-fill: var(--color-surface);
-  --color-on-accent: var(--color-surface);
-  --radius-sm: 3px;
-  --radius-md: 4px;
-  --radius-lg: 4px;
+  --purple: var(--color-learn);
+  --purple-dark: var(--color-learn-strong);
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: var(--leading-body);
 }
-body[data-gabarit="accueil"] .site-header .brand-mark { border-radius: 3px; background: var(--ink); }
-body[data-gabarit="accueil"] .brand-mark span { color: var(--surface); }
-body[data-gabarit="accueil"] .brand-dot { color: var(--ink); }
-body[data-gabarit="accueil"] .site-header .menu-toggle { border-radius: var(--radius-md); }
-body[data-gabarit="accueil"] .site-header .main-nav { background: none; border-radius: 0; gap: var(--space-2); }
-body[data-gabarit="accueil"] .site-header .main-nav a { border-radius: 0; padding-inline: var(--space-3); }
-body[data-gabarit="accueil"] .site-header .main-nav a[aria-current] { background: none; color: var(--ink); box-shadow: inset 0 -2px 0 var(--ink); }
 .hero { display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: var(--space-16); padding: var(--space-12) 0 var(--space-10); }
 .eyebrow { color: var(--muted); font-size: var(--text-caps); letter-spacing: var(--tracking-caps); }
 .hero h1 { margin: var(--space-4) 0 var(--space-5); font-size: clamp(42px, 4.4vw, 62px); line-height: 1.12; letter-spacing: -0.025em; }
@@ -38,8 +20,8 @@ body[data-gabarit="accueil"] .site-header .main-nav a[aria-current] { background
 .hero-note { margin-top: var(--space-3); color: var(--muted); font-size: var(--text-sm); }
 .hero-art { margin: 0; padding-left: var(--space-8); border-left: 1px solid var(--line); }
 .graph-heading { color: var(--muted); font-size: var(--text-sm); font-weight: 700; }
-.graph-paper { max-width: 430px; margin: var(--space-3) auto 0; }
-.function-graph { width: 100%; height: auto; }
+.graph-paper { --color-line: var(--color-figure-line); --color-text: var(--color-figure-text); --color-text-muted: var(--color-figure-muted); --color-learn: var(--color-figure-accent); color-scheme: light; background: var(--color-figure-bg); max-width: 430px; margin: var(--space-3) auto 0; }
+.function-graph { width: 100%; height: auto; background: var(--color-figure-bg); }
 .function-graph text { font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
 .function-graph > text:last-child { font-weight: 700; }
 .graph-footer { margin-top: var(--space-2); color: var(--muted); font-size: var(--text-sm); }
@@ -65,6 +47,9 @@ body[data-gabarit="accueil"] .site-header .main-nav a[aria-current] { background
 .section-heading > p { font-size: var(--text-sm); color: var(--muted); }
 .pathway-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
 .pathway-card { display: flex; flex-direction: column; padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.lessons-card { border-top: var(--rule-width) solid var(--color-learn); }
+.exercises-card { border-top: var(--rule-width) solid var(--color-practice); }
+.exercises-card .card-bottom { color: var(--color-practice); }
 .pathway-card:hover { transform: none; box-shadow: none; border-color: var(--color-line-strong); }
 .pathway-card h3 { font-size: var(--text-lg); line-height: var(--leading-tight); }
 .card-description { margin: var(--space-3) 0 var(--space-5); color: var(--muted); max-width: 40ch; }
@@ -82,7 +67,6 @@ body[data-gabarit="accueil"] .site-header .main-nav a[aria-current] { background
 @media (max-width: 900px) {
   .hero { gap: var(--space-8); }
   .hero-art { padding-left: var(--space-5); }
-  body[data-gabarit="accueil"] .site-header.menu-open .main-nav { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); }
 }
 @media (max-width: 740px) {
   .hero { grid-template-columns: minmax(0, 1fr); padding-block: var(--space-8); gap: var(--space-8); }
@@ -102,3 +86,5 @@ body[data-gabarit="accueil"] .site-header .main-nav a[aria-current] { background
   .hero-art, .home-try, .pathway-card { break-inside: avoid; }
   .hero .button, .hero-note, .home-try__form { display: none; }
 }
+
+.home-levels a[href*="exercices"], .home-resources .rapid-entry:first-child a { color: var(--color-practice); }

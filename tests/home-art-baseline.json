@@ -1,5 +1,5 @@
 {
   "source_commit": "1ba5eefee378366cd070cfe01715a124a81b5717",
-  "sha256": "413776d2a46563e00fa4db59cb21dc31e41d967597763484185ea17e0700092b",
-  "note": "Simplification de l’accueil demandée : seule la géométrie du graphique utile est figée. La droite, les axes et le point (2 ; 3) sont conservés ; les pastilles, étoiles, coches, rotations et slogans décoratifs sont retirés."
+  "sha256": "b70e3fd7ce810236f6d9c65b2b0f326944fbc6bbbd1a13cda4e668b921e1344d",
+  "note": "Présentation sobre validée : couleur violette d’origine, papier blanc dans les deux thèmes ; courbe et point conservés."
 }
