@@ -8,6 +8,7 @@
   const {register, E, N, S, C, score, fmt, productSignTable, affineSignTable, variationTable} = V;
   const {num: fr, paren: pa, signed: sg, term, poly, fact, bare, affine, eur, MINUS: M} = fmt;
   const coefText = k => (k === 1 ? '' : k === -1 ? M : fr(k));
+  const rootField = (label, value) => ({...N(label, value), answerGroup: 'roots'});
 
   function parabolaGraph(h, dir) {
     const top = dir > 0 ? 3 : 1, y = v => 60 + 50 * (top - v), y0 = y(0);
@@ -249,7 +250,7 @@
           [N(`${fr(low)}²`, l2, 0.00001), N(`${fr(high)}²`, h2, 0.00001), N('Borne inférieure', low), N('Borne supérieure', high)],
           C('on calcule les carrés de deux nombres positifs voisins et on les compare à ' + n + ' ; la fonction carré étant croissante sur [0 ; +∞[, l’ordre des carrés donne l’ordre des nombres.',
             [`${fr(low)}² = ${fr(l2)} et ${fr(high)}² = ${fr(h2)}.`, `On a ${fr(l2)} < ${n} < ${fr(h2)}.`],
-            `${fr(low)} < √${n} < ${fr(high)} : c’est l’encadrement de √${n} au centième.`)),
+            `${fr(low)} < √${n} < ${fr(high)} : c’est l’encadrement de √${n} au centième.`), {title: 'Encadrer √' + n}),
           coachingContext: {n, low, high}};
       }
     }
@@ -281,7 +282,7 @@
       build: ({k, r, s}, o) => {
         const sign = k > 0 ? 'Négatif' : 'Positif';
         return E(o, `On donne <strong>g(x) = ${coefText(k)}${fact(r)}${fact(s)}</strong>. Trouve ses deux racines et le signe de g(x) pour ${fr(r)} < x < ${fr(s)}.`,
-          [N('Première racine', r), N('Deuxième racine', s), S('Signe entre les racines', sign, ['Positif', 'Négatif', 'Nul'])],
+          [rootField('Première racine', r), rootField('Deuxième racine', s), S('Signe entre les racines', sign, ['Positif', 'Négatif', 'Nul'])],
           C('un produit est nul si et seulement si l’un de ses facteurs est nul ; le signe du produit se lit dans un tableau de signes.',
             [`${r === 0 ? 'le facteur x s’annule pour x = 0' : `${bare(r)} = 0 ⇔ x = ${fr(r)}`} et ${s === 0 ? 'le facteur x s’annule pour x = 0' : `${bare(s)} = 0 ⇔ x = ${fr(s)}`}.`],
             `les racines sont ${fr(r)} et ${fr(s)}. Entre elles, g(x) est ${sign.toLowerCase()}${k === 1 ? '' : ` (le coefficient ${fr(k)} est ${k > 0 ? 'positif' : 'négatif'})`}.`,
@@ -363,7 +364,7 @@
         ][ctx];
         const B = x => -m * (x - r) * (x - s);
         return E(o, `${c.intro} <strong>B(x) = ${poly([-m, m * top, -m * r * s])}</strong>, pour x ∈ [0 ; ${top}]. Trouve la valeur de x qui donne le maximum, le bénéfice maximal et les valeurs de x pour lesquelles B(x) = 0.`,
-          [N(c.q, h), N('Bénéfice maximal, en ' + c.unit, max), N('Première racine', r), N('Deuxième racine', s)],
+          [N(c.q, h), N('Bénéfice maximal, en ' + c.unit, max), rootField('Première racine', r), rootField('Deuxième racine', s)],
           C('le coefficient de x² est négatif : la parabole est tournée vers le bas et le maximum est atteint au sommet, d’abscisse −b/(2a). On écrit ensuite la forme canonique pour trouver les racines.',
             [`x<sub>S</sub> = −${fr(m * top)}/(2 × ${pa(-m)}) = ${h} et B(${h}) = ${fr(max)}. On en déduit B(x) = ${M}${m === 1 ? '' : fr(m)}${fact(h)}² + ${fr(max)}.`,
              `B(x) = 0 ⇔ ${fact(h)}² = ${half * half} ⇔ x = ${h} − ${half} = ${r} ou x = ${h} + ${half} = ${s}.`],
@@ -387,7 +388,7 @@
         const s = r + 2 * half, v = r + half, ext = -dir * half * half;
         const coefs = [dir, -dir * (r + s), dir * r * s];
         return E(o, `On étudie <strong>q(x) = ${poly(coefs)}</strong>. Calcule q(0), trouve les racines (ce sont des entiers), puis l’abscisse du sommet et la valeur de l’extremum.`,
-          [N('q(0)', dir * r * s), N('Première racine', r), N('Deuxième racine', s), N('Abscisse du sommet', v), N('Valeur de l’extremum', ext),
+          [N('q(0)', dir * r * s), rootField('Première racine', r), rootField('Deuxième racine', s), N('Abscisse du sommet', v), N('Valeur de l’extremum', ext),
            S('Nature de l’extremum', dir > 0 ? 'Minimum' : 'Maximum', ['Minimum', 'Maximum'])],
           C(`on cherche deux entiers r et s tels que q(x) = ${dir > 0 ? '' : M}(x − r)(x − s) ; la parabole étant symétrique, le sommet est au milieu des racines.`,
             [`q(0) = ${fr(dir * r * s)}. On vérifie que q(x) = ${coefText(dir)}${fact(r)}${fact(s)} en développant : on retrouve ${poly(coefs)}.`,

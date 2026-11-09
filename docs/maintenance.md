@@ -51,6 +51,12 @@ Chaque modèle déclare :
 
 **Corrigés.** Ils suivent la structure Méthode → Calculs → Conclusion. Les fractions et les virgules décimales sont acceptées. Les réponses sont comparées en arithmétique rationnelle, sans `eval`.
 
+Les champs qui déclarent une unité (`unit`, ou un libellé « en % » / « en € ») acceptent ce suffixe à la saisie, sans modifier l'échelle du nombre demandé. Un champ de probabilité sans unité ne transforme donc pas « 20 % » en 0,2. Les racines sans ordre imposé partagent `answerGroup: "roots"` ; chacune doit appartenir à l'ensemble attendu, sans doublon. Les champs « Petite racine » / « Grande racine » restent ordonnés. L'évaluation du chapitre et le suivi local utilisent les mêmes règles.
+
+Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement avant tout remplacement de valeur, puis reste affichée sous la solution. Cela évite qu'une permutation correcte des racines soit marquée fausse pendant la révélation.
+
+**Chargement du correcteur.** Une absence du moteur est une panne technique, pas une réponse fausse : Vérifier est désactivé et le corrigé s'affiche sans évaluation rouge ou verte. En Terminale, la version statique des énoncés et corrigés prend le relais. Les scripts de validation et de typographie évitent le lookbehind, non pris en charge avant Safari 16.4. Une soumission entièrement vide ne crée pas d'observation dans le suivi local.
+
 ## Ajouter un exercice
 
 1. Écrire le modèle dans le fichier `variants-*.js` du chapitre (ou `terminale-exercices.js`), en reprenant la forme d'un modèle voisin : `base`, `params`, `accept`, `difficulty`, `verify`, `build`.
@@ -95,6 +101,7 @@ Chaque modèle déclare :
 | `test_acquis.js`, `test_parcours.js`, `test_evolution.py` | Suivi local, diagnostic, révision, empreintes mathématiques |
 | `test_interface.py`, `test_sujets.py`, `test_navigation_simple.py` | Interface, sujets, navigation, contenu protégé |
 | `browser_*.py` | Parcours réels dans Chromium, 320 à 1 440 px, sans JavaScript, accessibilité (axe-core) |
+| `test_safari.js`, `browser_validation.py` | Absence de lookbehind bloquant, montants au centime, moteur absent ou incomplet sans faux négatif, suivi à vide et réinitialisation accessible ; `STMG_TEST_BROWSER=webkit` permet le contrôle avec WebKit |
 | `check_publication.py` | Site en ligne identique à `public/`, fichiers internes en 404 |
 
 ## Règle des empreintes

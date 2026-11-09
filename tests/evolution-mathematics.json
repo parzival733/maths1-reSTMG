@@ -17,7 +17,7 @@
   },
   "exercices/suites-geometriques.html": {
     "kind": "exercise-json",
-    "sha256": "c85cc42b839dd15285a5a637f7620627b0db6e295d18d238d7111f9a4d1cc06d"
+    "sha256": "54c43fb2fd9e1aea1d2cd60cb61e47c4c53d682b473bbad1a2349bc29b4ada58"
   },
   "exercices/variations.html": {
     "kind": "exercise-json",
@@ -41,7 +41,7 @@
   },
   "exercices/second-degre.html": {
     "kind": "exercise-json",
-    "sha256": "66a121aa8a94be7d8dafed24c9406c5ba2ee0ddaaebb49963575eeab0f814387"
+    "sha256": "bd16d960ec6c470f804e27091a7259c28ff086dddc14684af6880a9d333119ff"
   },
   "exercices/bernoulli.html": {
     "kind": "exercise-json",
@@ -77,11 +77,11 @@
   },
   "assets/variants-fonctions.js": {
     "kind": "file",
-    "sha256": "d42ee226dabce70de5577da24daae03fca7801d4d7d533c0fdfe132b9b0e1b8f"
+    "sha256": "d12a18f6390c73dfc74f9a525dec9651bb7e7b6115dc0761d12a61d11a47f800"
   },
   "assets/variants-suites.js": {
     "kind": "file",
-    "sha256": "cab082aa832d1c9e43f8f353055e1023633789323fe670be8cc7892e4dd9c086"
+    "sha256": "668aad24e546f2524281c3a924ced69a69f674e5acd4288bcd3d967cbb175cd3"
   },
   "assets/coaching-reperes.js": {
     "kind": "file",

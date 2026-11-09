@@ -31,10 +31,21 @@
   },true);
   document.addEventListener('submit',event=>{
     const form=event.target;
-    if(form.matches('.exercise-form')&&window.ExerciseVariants){
+    if(form.matches('.exercise-form')&&typeof window.ExerciseVariants?.matchesAnswer==='function'){
       if(form.dataset.revealed==='true')return;
       const fields=[...form.querySelectorAll('[data-expect]')];if(!fields.length)return;
-      const right=fields.every(c=>window.ExerciseVariants.matchesAnswer(c.value,c.dataset.expect,c.dataset.type||'text',c.dataset.tolerance,c.dataset.rounding));
+      if(!fields.some(c=>c.value.trim()))return;
+      const V=window.ExerciseVariants;
+      if(form.dataset.validationUnavailable==='true')return;
+      const right=fields.every(c=>{
+        if(c.dataset.answerGroup){
+          const peers=fields.filter(p=>p.dataset.answerGroup===c.dataset.answerGroup);
+          return typeof V.matchesAnswerInGroup==='function'&&V.matchesAnswerInGroup(c.value,
+            peers.map(p=>p.dataset.expect),peers.filter(p=>p!==c).map(p=>p.value),
+            c.dataset.type||'number',c.dataset.tolerance,c.dataset.rounding,c.dataset.unit);
+        }
+        return V.matchesAnswer(c.value,c.dataset.expect,c.dataset.type||'text',c.dataset.tolerance,c.dataset.rounding,c.dataset.unit);
+      });
       record(form,right?(aided.has(form)?'assisted':'independent'):'retry');
     }
     if(form.closest('.study-quiz')&&!attempted.has(form)){

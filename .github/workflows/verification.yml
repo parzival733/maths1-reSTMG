@@ -25,6 +25,7 @@ jobs:
           python3 tests/test_typographie.py
           python3 tests/test_noms_liens.py
           node tests/test_variants.js
+          node tests/test_safari.js
           node tests/test_rangs.js
           node tests/test_graphiques.js
           node tests/test_terminale.js
@@ -49,7 +50,7 @@ jobs:
           import subprocess, sys
           failed = []
           for name in ['test_navigation_simple.py', 'browser_smoke.py', 'browser_terminale.py', 'browser_calcul_rapide.py',
-                       'test_interface.py', 'test_sujets.py', 'browser_evolution.py']:
+                       'test_interface.py', 'test_sujets.py', 'browser_evolution.py', 'browser_validation.py']:
               print('::group::' + name, flush=True)
               if subprocess.run([sys.executable, 'tests/' + name], timeout=300).returncode:
                   failed.append(name)
