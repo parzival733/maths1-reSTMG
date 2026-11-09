@@ -62,7 +62,7 @@ Tests structurels et mathématiques (Node et Python 3, sans dépendance) :
 ```sh
 for f in assets/*.js; do node --check "$f"; done
 for t in test_variants test_rangs test_graphiques test_terminale test_calcul_rapide \
-         test_countdown test_acquis test_parcours test_domaines test_cloture; do node tests/$t.js; done
+         test_countdown test_acquis test_parcours test_domaines test_cloture test_safari; do node tests/$t.js; done
 for t in validate_site test_notation test_typographie test_noms_liens test_terminale \
          test_calcul_rapide test_evolution test_cloture; do python3 tests/$t.py; done
 python3 tools/build_public.py
@@ -74,7 +74,7 @@ Tests dans le navigateur (Playwright et Chromium) :
 python3 -m pip install playwright==1.55.0
 python3 -m playwright install chromium
 for t in test_navigation_simple test_interface test_sujets browser_smoke browser_terminale \
-         browser_calcul_rapide browser_evolution; do python3 tests/$t.py; done
+         browser_calcul_rapide browser_evolution browser_validation; do python3 tests/$t.py; done
 npm install --prefix /tmp/stmg-qa axe-core@4.10.3
 AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
 ```

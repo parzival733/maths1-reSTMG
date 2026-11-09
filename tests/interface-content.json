@@ -205,11 +205,11 @@
   },
   "assets/exercices-variants.js": {
     "part": "file",
-    "sha256": "c20ef53e89f782c5005b00fc966158841b0a9b79f6a12be8fe07d121de1cc81e"
+    "sha256": "b274666c5e74aae5df3c7c358aea0a1f6c17f098a7f83ef1625196ca3b7cecb5"
   },
   "assets/variants-suites.js": {
     "part": "file",
-    "sha256": "cab082aa832d1c9e43f8f353055e1023633789323fe670be8cc7892e4dd9c086"
+    "sha256": "668aad24e546f2524281c3a924ced69a69f674e5acd4288bcd3d967cbb175cd3"
   },
   "assets/graphiques-interactifs.js": {
     "part": "file",
@@ -245,7 +245,7 @@
   },
   "assets/variants-fonctions.js": {
     "part": "file",
-    "sha256": "d42ee226dabce70de5577da24daae03fca7801d4d7d533c0fdfe132b9b0e1b8f"
+    "sha256": "d12a18f6390c73dfc74f9a525dec9651bb7e7b6115dc0761d12a61d11a47f800"
   },
   "assets/variants-probabilites.js": {
     "part": "file",
@@ -273,11 +273,11 @@
   },
   "assets/exercices.js": {
     "part": "file",
-    "sha256": "b4f09c29d1e688c394ab3c6e3f62edc7b446a7555a52ac9f475bfdf60e86ae51"
+    "sha256": "75df990d8eb18c0287078a5571cc292f2e95f4dcaa8fffb1d21f10d625d1c042"
   },
   "assets/exercices-renderer.js": {
     "part": "file",
-    "sha256": "708ce7dd067e7c6351283a4d7d5cca8b80da404aa7ba12b0f736d372de292463"
+    "sha256": "bc8cc42cd9b09fa4e4d1df5ce6b0197d196016ac72d3fe38d7d924f0c879cc0f"
   },
   "assets/coaching-general.js": {
     "part": "file",

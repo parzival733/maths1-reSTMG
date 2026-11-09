@@ -264,11 +264,11 @@
   const FORBIDDEN = [
     [/\+\s*[−-]/, 'signe + suivi d’un signe −'],
     [/[−-]\s*[−-]\d/, 'double signe moins'],
-    [/(?<![\d,.])1x(?![\d,])/, 'coefficient 1 écrit'],
+    [/(^|[^\d,.])1x(?![\d,])/, 'coefficient 1 écrit'],
     [/[+−]\s*0\b(?![,.]\d)/, 'terme nul écrit'],
     [/\bNaN\b|undefined|Infinity|\[object/, 'valeur non numérique'],
     [/\d\.\d/, 'point décimal visible'],
-    [/(?<![\wÀ-ÿ])-\s?\d/, 'tiret au lieu du signe moins']
+    [/(^|[^\wÀ-ÿ])-\s?\d/, 'tiret au lieu du signe moins']
   ];
   // Texte visible : sans balises ni code Python/tableur. Les cellules de tableau
   // sont séparées pour ne pas lire « + − » entre deux colonnes.
@@ -329,11 +329,14 @@
   }
 
   // Comparaison utilisée avant et pendant la révélation des corrections.
-  function matchesAnswer(value, expected, type = 'text', tolerance, rounding) {
+  function matchesAnswer(value, expected, type = 'text', tolerance, rounding, unit) {
     if (!String(value).trim()) return false;
     const answers = String(expected).split('|');
 
     if (type === 'number') {
+      // Un suffixe n'est accepté que si l'unité est déclarée pour ce champ.
+      if (unit === '%') value = String(value).trim().replace(/\s*%$/, '');
+      if (unit === '€') value = String(value).trim().replace(/\s*(?:€|EUR|euros?)$/i, '');
       const actual = readNumber(value);
       if (!Number.isFinite(actual)) return false;
       const threshold = tolerance === '' || tolerance == null
@@ -365,6 +368,17 @@
     const normal = text => String(text).trim().toLowerCase()
       .replace(/[−–—]/g, '-').replace(/,/g, '.').replace(/\s+/g, '');
     return answers.some(item => normal(value) === normal(item));
+  }
+
+  // Un groupe de racines n'impose pas d'ordre. Une valeur ne peut toutefois
+  // pas être utilisée davantage de fois qu'elle ne figure parmi les solutions.
+  function matchesAnswerInGroup(value, expected, others, type = 'number', tolerance, rounding, unit) {
+    const matches = target => matchesAnswer(value, target, type, tolerance, rounding, unit);
+    const available = expected.filter(matches).length;
+    if (!available) return false;
+    const used = others.filter(other => expected.some(target => matches(target)
+      && matchesAnswer(other, target, type, tolerance, rounding, unit))).length;
+    return used < available;
   }
 
   /* ---------- Modèles ---------- */
@@ -518,6 +532,6 @@
   window.ExerciseVariants = {
     register, generate, original: originalOf, nextVariant, remember, memoryFor, randomSeed, rng,
     describe, count, slugs, signature, score, lint, visible, FORBIDDEN, BAND, MAX_TRIES,
-    N, S, F, FR, E, C, signTable, productSignTable, affineSignTable, variationTable, escapeHtml, fmt, matchesAnswer, readNumber
+    N, S, F, FR, E, C, signTable, productSignTable, affineSignTable, variationTable, escapeHtml, fmt, matchesAnswer, matchesAnswerInGroup, readNumber
   };
 })();

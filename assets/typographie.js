@@ -7,12 +7,12 @@
   const LETTER = 'A-Za-zÀ-ÖØ-öø-ÿŒœ';
   const UNITS = '(?:€|%|km/h|m/s|kWh|km|cm|mm|kg|min|h|L|°C|ans?|mois)';
   const RULES = [
-    [new RegExp('(?<=[' + LETTER + "])'(?=[" + LETTER + '])', 'g'), '’'],
-    [new RegExp('(?:(?<=\\S)|^)[ ' + NBSP + '](?=:(?:\\s|$))', 'g'), NBSP],
-    [new RegExp('(?:(?<=\\S)|^)[ ' + NBSP + '](?=[;!?](?:\\s|$|[»)]))', 'g'), NNBSP],
+    [new RegExp('([' + LETTER + "])'(?=[" + LETTER + '])', 'g'), '$1’'],
+    [new RegExp('(^|\\S)[ ' + NBSP + '](?=:(?:\\s|$))', 'g'), '$1' + NBSP],
+    [new RegExp('(^|\\S)[ ' + NBSP + '](?=[;!?](?:\\s|$|[»)]))', 'g'), '$1' + NNBSP],
     [new RegExp('«[ ' + NNBSP + NBSP + ']?', 'g'), '«' + NBSP],
     [new RegExp('[ ' + NNBSP + NBSP + ']?»', 'g'), NBSP + '»'],
-    [new RegExp('(?<=\\d) (?=' + UNITS + '(?![' + LETTER + '\\d/]))', 'g'), NBSP]
+    [new RegExp('(\\d) (?=' + UNITS + '(?![' + LETTER + '\\d/]))', 'g'), '$1' + NBSP]
   ];
   const SKIP = 'script, style, pre, code, textarea, svg, select, input';
   const fix = text => RULES.reduce((value, [pattern, replacement]) => value.replace(pattern, replacement), text);

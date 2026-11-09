@@ -7,12 +7,19 @@
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   })[character]);
 
+  // Les libellés existants « en % » et « en € » déclarent déjà l'unité attendue.
+  const unitForLabel = label => /\ben\s*%|^Pourcentage$/i.test(label) ? '%'
+    : /\ben\s*(?:€|euros?)(?:\s|$)/i.test(label) ? '€' : '';
+
   function makeInput(field) {
     const answer = String(field.answer);
     const expected = escapeHtml(answer);
     const label = escapeHtml(field.label);
     const tolerance = field.tolerance == null ? '' : ' data-tolerance="' + escapeHtml(field.tolerance) + '"';
     const rounding = field.rounding == null ? '' : ' data-rounding="' + escapeHtml(field.rounding) + '"';
+    const unit = field.unit || unitForLabel(field.label);
+    const unitAttribute = unit ? ' data-unit="' + escapeHtml(unit) + '"' : '';
+    const group = field.answerGroup ? ' data-answer-group="' + escapeHtml(field.answerGroup) + '"' : '';
 
     if (field.options) {
       const options = field.options.map(option => {
@@ -30,7 +37,7 @@
       + '<input type="text" autocomplete="off"'
       + (numeric ? ' inputmode="decimal" data-type="number"'
         : field.type === 'unordered-list' ? ' inputmode="text" data-type="unordered-list"' : ' inputmode="text"')
-      + ' data-expect="' + expected + '"' + tolerance + rounding
+      + ' data-expect="' + expected + '"' + tolerance + rounding + unitAttribute + group
       + ' aria-label="' + label + '" placeholder="Ta réponse">'
       + '<small class="answer-status" aria-live="polite"></small></label>';
   }
@@ -71,10 +78,30 @@
   }
 
   // Expose le même gabarit pour renouveler une question sans recharger la page.
-  window.ExerciseRenderer = {makeExercise};
+  window.ExerciseRenderer = {makeExercise, unitForLabel};
   if (!root || !dataNode || !mount) return;
 
-  const chapter = JSON.parse(dataNode.textContent);
+  let chapter;
+  try {
+    chapter = JSON.parse(dataNode.textContent);
+  } catch (error) {
+    // Si le moteur des variantes n'a pas chargé, la Terminale dispose encore
+    // des énoncés et corrigés statiques préparés pour la lecture sans JavaScript.
+    const warning = document.createElement('p');
+    warning.className = 'catalog-notice';
+    warning.setAttribute('role', 'status');
+    warning.textContent = 'Les exercices interactifs sont indisponibles. Recharge la page pour réessayer ; les énoncés et corrigés restent disponibles ci-dessous.';
+    mount.replaceChildren(warning);
+    const offline = root.querySelector('noscript[data-offline-series]');
+    if (offline) {
+      const template = document.createElement('template');
+      template.innerHTML = offline.textContent;
+      const series = template.content.querySelector('.offline-series');
+      if (series) mount.append(series);
+    }
+    root.removeAttribute('aria-busy');
+    return;
+  }
   if (!chapter || !Array.isArray(chapter.exercises) || chapter.exercises.length === 0) {
     throw new Error('Le chapitre doit contenir des exercices.');
   }

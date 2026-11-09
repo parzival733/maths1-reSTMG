@@ -6,6 +6,7 @@
   if (!root) return;
 
   const slides = Array.from(root.querySelectorAll('.exercise-block'));
+  if (!slides.length) return;
   const steps = Array.from(root.querySelectorAll('[data-step]'));
   const prev = root.querySelector('[data-nav="previous"]');
   const next = root.querySelector('[data-nav="next"]');
@@ -14,6 +15,9 @@
   const scoreText = root.querySelector('#exercise-score');
   const slug = root.dataset.chapter || 'fonctions';
   const generator = window.ExerciseVariants;
+  const validationReady = !!generator && typeof generator.matchesAnswer === 'function'
+    && typeof generator.matchesAnswerInGroup === 'function';
+  const unavailableMessage = 'La vérification est indisponible. Recharge la page pour réessayer ; le corrigé reste consultable.';
   const renderer = window.ExerciseRenderer;
   // Les énoncés initiaux des 15 autres chapitres sont dans leur JSON intégré.
   // La même fiche et ses variantes alimentent les indices sans lire les solutions.
@@ -53,22 +57,38 @@
 
   // Validation identique avant et pendant la révélation des corrections.
   function isCorrect(control) {
-    return !!generator && generator.matchesAnswer(
+    if (!validationReady) return false;
+    if (control.dataset.answerGroup) {
+      const peers = Array.from(control.form.querySelectorAll('[data-answer-group]'))
+        .filter(peer => peer.dataset.answerGroup === control.dataset.answerGroup);
+      return generator.matchesAnswerInGroup(control.value, peers.map(peer => peer.dataset.expect),
+        peers.filter(peer => peer !== control).map(peer => peer.value), control.dataset.type || 'number',
+        control.dataset.tolerance, control.dataset.rounding, control.dataset.unit);
+    }
+    return generator.matchesAnswer(
       control.value, control.dataset.expect || '', control.dataset.type || 'text',
-      control.dataset.tolerance, control.dataset.rounding
+      control.dataset.tolerance, control.dataset.rounding, control.dataset.unit
     );
   }
 
   function revealAnswers(form) {
+    // Évaluer tous les champs avant de remplacer une valeur : l'ordre de
+    // révélation ne doit pas modifier la validité d'un groupe de racines.
+    const correctness = new Map(Array.from(form.querySelectorAll('[data-expect]'))
+      .map(control => [control, isCorrect(control)]));
     form.querySelectorAll('.answer-row').forEach(row => {
       const controls = Array.from(row.querySelectorAll('[data-expect]'));
       let right = 0;
       let answered = 0;
+      const attempts = [];
       controls.forEach(control => {
         // Capturer la tentative de l'élève AVANT d'afficher la solution.
-        const wasCorrect = isCorrect(control);
+        const wasCorrect = correctness.get(control);
         if (wasCorrect) right++;
         if (control.value.trim()) answered++;
+        attempts.push(control.tagName === 'SELECT'
+          ? (control.value ? control.selectedOptions[0].textContent : 'non renseignée')
+          : (control.value.trim() || 'non renseignée'));
 
         const answer = (control.dataset.expect || '').split('|')[0].trim();
         if (control.tagName === 'SELECT') {
@@ -84,18 +104,28 @@
             : answer.replace(/;/g, ' ; ').replace(/(\d)\.(\d)/g, '$1,$2')).replace(/-/g, '\u2212');
           control.readOnly = true;
         }
-        control.classList.toggle('answer-was-correct', wasCorrect);
-        control.classList.toggle('answer-was-wrong', !wasCorrect);
+        control.classList.toggle('answer-was-correct', validationReady && wasCorrect);
+        control.classList.toggle('answer-was-wrong', validationReady && !wasCorrect);
       });
+
+      let attempt = row.querySelector('.answer-attempt');
+      if (!attempt) {
+        attempt = document.createElement('small');
+        attempt.className = 'answer-attempt';
+        row.append(attempt);
+      }
+      attempt.textContent = 'Ta réponse avant correction : ' + attempts.join(' ; ');
 
       const allRight = controls.length > 0 && right === controls.length;
       row.classList.remove('is-correct', 'is-wrong');
       row.classList.add('is-revealed');
-      row.classList.toggle('was-correct', allRight);
-      row.classList.toggle('was-wrong', !allRight);
+      row.classList.toggle('was-correct', validationReady && allRight);
+      row.classList.toggle('was-wrong', validationReady && !allRight);
       const status = row.querySelector('.answer-status');
       if (status) {
-        status.textContent = allRight
+        status.textContent = !validationReady
+          ? 'Solution affichée. Ta réponse n’a pas été évaluée.'
+          : allRight
           ? 'Tu avais juste. Solution affichée.'
           : answered === 0
             ? 'Non répondu. Solution affichée.'
@@ -221,7 +251,7 @@
   }
 
   function queueVariant(index, form, button, force = false) {
-    if (!generator || !renderer) return false;
+    if (!validationReady || typeof generator.nextVariant !== 'function' || !renderer) return false;
     const state = states[index];
     if (force || !state.pending) {
       // Graine aléatoire (crypto.getRandomValues) ; le rang de la variante
@@ -353,7 +383,7 @@
     singleColumn.addEventListener('change', place);
     let failures = 0;
     form.addEventListener('submit', () => {
-      if (form.dataset.revealed === 'true') return;
+      if (!validationReady || form.dataset.revealed === 'true') return;
       const rows = Array.from(form.querySelectorAll('.answer-row'));
       const wrong = rows.some(row => {
         const controls = Array.from(row.querySelectorAll('[data-expect]'));
@@ -386,6 +416,17 @@
     const form = slide.querySelector('.exercise-form');
     if (form) addCoaching(slide, form, index, coachingContext);
     if (!form) return;
+    form.querySelectorAll('[data-expect]').forEach(control => {
+      if (!control.dataset.unit && renderer?.unitForLabel) {
+        control.dataset.unit = renderer.unitForLabel(control.closest('.answer-row')?.querySelector('span')?.textContent || '');
+      }
+    });
+    if (!validationReady) {
+      form.dataset.validationUnavailable = 'true';
+      form.querySelectorAll('button[type="submit"]').forEach(button => { button.disabled = true; });
+      const feedback = form.querySelector('.exercise-feedback');
+      if (feedback) feedback.textContent = unavailableMessage;
+    }
     form.querySelectorAll('.answer-row').forEach((row, r) => {
       const status = row.querySelector('.answer-status');
       if (status) { status.id = slug + '-feedback-' + index + '-' + r; row.querySelectorAll('[data-expect]').forEach(c => c.setAttribute('aria-describedby', status.id)); }
@@ -414,14 +455,19 @@
         updateProgress();
         const ready = variant && queueVariant(index, form, variant);
         const summary = form.querySelector('.exercise-feedback');
-        if (summary) summary.textContent = 'Les solutions sont affichées en vert ou rouge selon ta réponse. '
-          + (ready ? 'Tu peux passer à une nouvelle variante sans gagner de point.' : 'Efface pour recommencer.');
+        if (summary) summary.textContent = !validationReady ? unavailableMessage
+          : 'Les solutions sont affichées en vert ou rouge selon ta réponse. '
+            + (ready ? 'Tu peux passer à une nouvelle variante sans gagner de point.' : 'Efface pour recommencer.');
       });
     }
 
     form.addEventListener('submit', event => {
       event.preventDefault();
       const summary = form.querySelector('.exercise-feedback');
+      if (!validationReady) {
+        if (summary) summary.textContent = unavailableMessage;
+        return;
+      }
       if (form.dataset.revealed === 'true') {
         if (summary) summary.textContent = 'Le corrigé est affiché : efface les réponses ou essaie une nouvelle variante.';
         return;
@@ -469,13 +515,15 @@
         form.querySelectorAll('[data-expect]').forEach(control => {
           control.readOnly = false;
           control.disabled = false;
+          control.removeAttribute('aria-invalid');
           control.classList.remove('answer-was-correct', 'answer-was-wrong');
         });
         form.querySelectorAll('.answer-row').forEach(row => row.classList.remove(
           'is-correct', 'is-wrong', 'is-revealed', 'was-correct', 'was-wrong'));
         form.querySelectorAll('.answer-status').forEach(status => { status.textContent = ''; });
+        form.querySelectorAll('.answer-attempt').forEach(attempt => attempt.remove());
         const summary = form.querySelector('.exercise-feedback');
-        if (summary) summary.textContent = '';
+        if (summary) summary.textContent = validationReady ? '' : unavailableMessage;
         updateProgress();
       });
     }
@@ -492,6 +540,10 @@
   steps.forEach((button, index) => button.addEventListener('click', () => showSlide(index, true)));
   if (prev) prev.addEventListener('click', () => showSlide(current - 1, true));
   if (next) next.addEventListener('click', () => showSlide(current + 1, true));
+  window.addEventListener('hashchange', () => {
+    const target = location.hash.match(/^#exercice-(\d+)$/);
+    if (target) showSlide(Number(target[1]) - 1, true);
+  });
   const hash = location.hash.match(/^#exercice-(\d+)$/);
   updateProgress();
   showSlide(hash ? Number(hash[1]) - 1 : 0);

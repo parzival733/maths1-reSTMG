@@ -266,7 +266,7 @@
           C('pour une suite arithmétique, la somme de termes consécutifs vaut : nombre de termes × (premier terme + dernier terme)/2.',
             [`S = ${last ? `${c} × (${fr(a)}${sg(last)})/2 = ${c} × ${pa(a + last)}/2` : `${c} × ${pa(a)}/2`} = ${fr(S)}.`, `Contrôle : ${t.map(fr).join(' + ').replace(/\+ −/g, '− ')} = ${fr(S)}.`],
             `la somme des ${COUNT[c]} premiers termes vaut ${fr(S)}.`),
-          tasks(`Donne le premier et le ${ORDINAL[c]} terme.`, `Calcule la somme de ces ${COUNT[c]} termes.`));
+          {title: `Somme de ${COUNT[c]} termes`, ...tasks(`Donne le premier et le ${ORDINAL[c]} terme.`, `Calcule la somme de ces ${COUNT[c]} termes.`)});
       }
     },
     { // 6. Rangs commençant à 1
@@ -402,7 +402,8 @@
         ][ctx];
         const money = k.unit === '€';
         return E(o, j ? later : k.intro,
-          [N(w(1), F(x[0], 6), undefined, money ? 2 : undefined), N(w(2), F(x[1], 6), undefined, money ? 2 : undefined), N(w(3), F(x[2], 6), undefined, money ? 2 : undefined), N('Raison q', q)],
+          [...[1, 2, 3].map(i => ({...N(w(i), F(x[i - 1], 6), undefined, money ? 2 : undefined),
+            ...(money ? {unit: '€'} : {})})), N('Raison q', q)],
           C(`augmenter de ${t} % revient à multiplier par 1 + ${t}/100 = ${fr(q)} : la suite est géométrique de raison ${fr(q)}.`,
             [`${w(1)} = ${fr(c)} × ${fr(q)} = ${fr(x[0])} ; ${w(2)} = ${fr(x[0])} × ${fr(q)} = ${fr(x[1])} ; ${w(3)} = ${fr(x[1])} × ${fr(q)} = ${fr(x[2])}.`],
             `au bout de ${j + 3} ${k.per}s, ${k.who} vaut ${fr(x[2])} ${k.unit}${money ? ` (${eur(Math.round(x[2] * 100 + 1e-9) / 100)} au centime près)` : ''}.`),

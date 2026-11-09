@@ -456,6 +456,7 @@ body { font-family: var(--font-sans); font-size: var(--text-base); line-height: 
 .answer-row input, .answer-row select { min-height: var(--target-min); border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); font-size: var(--text-base); font-variant-numeric: tabular-nums; }
 .answer-row > .answer-status { flex: 1 0 100%; display: flex; align-items: center; gap: var(--space-2); min-height: 0; font-size: var(--text-sm); font-weight: 700; }
 .answer-row > .answer-status:empty { display: none; }
+.answer-row > .answer-attempt { flex: 1 0 100%; color: var(--color-text-muted); font-size: var(--text-sm); overflow-wrap: anywhere; }
 .answer-row.is-wrong input, .answer-row.is-wrong select,
 .answer-row.is-revealed input.answer-was-wrong, .answer-row.is-revealed select.answer-was-wrong { border: 2px solid var(--color-danger); }
 .answer-row.is-wrong .answer-status, .answer-row.was-wrong .answer-status { color: var(--color-danger-strong); }
