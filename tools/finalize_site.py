@@ -82,6 +82,8 @@ def main():
         # Typographie française du texte produit par JavaScript (tools/typographie.py pour le HTML).
         if 'assets/typographie.js' not in text:text=text.replace('</head>',f'<script src="{base}assets/typographie.js" defer></script></head>',1)
         text=keep_own_generator(rel,text)
+        if template(rel)=='serie' and 'assets/saisie-nombres.js' not in text:
+            text=text.replace('</head>',f'<script src="{base}assets/saisie-nombres.js" defer></script></head>',1)
         # Icônes du site (onglet, favoris, écran d'accueil du téléphone).
         text=re.sub(r'\s*<link rel="(?:icon|apple-touch-icon)"[^>]*>','',text)
         text=text.replace('</title>',f'</title><link rel="icon" href="{base}favicon.svg" type="image/svg+xml"><link rel="icon" href="{base}favicon.ico" sizes="16x16 32x32 48x48"><link rel="apple-touch-icon" href="{base}apple-touch-icon.png">',1)
