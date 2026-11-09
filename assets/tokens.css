@@ -108,6 +108,9 @@
   /* Illustration sur papier blanc, y compris quand l’interface est sombre.
      Même violet que les leçons ; contrastes calculés sur blanc. */
   --color-figure-bg: #ffffff;
+  --color-figure-frame: #ece8f8;
+  --color-figure-frame-line: #e2dcf2;
+  --color-figure-paper-line: #e8e3f0;
   --color-figure-text: #252436;
   --color-figure-muted: #5f5d6b;
   --color-figure-line: #e4e2e9;

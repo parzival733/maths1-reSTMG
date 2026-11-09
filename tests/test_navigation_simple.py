@@ -5,7 +5,7 @@ from functools import partial
 from http.server import ThreadingHTTPServer,SimpleHTTPRequestHandler
 from threading import Thread
 from urllib.parse import urlsplit
-import re,json,hashlib,subprocess,os
+import re,json,hashlib,subprocess,os,math
 from playwright.sync_api import sync_playwright,expect
 R=Path(__file__).resolve().parents[1]
 class Quiet(SimpleHTTPRequestHandler):
@@ -33,14 +33,14 @@ def main():
  art=re.search(r'<svg class="function-graph"[\s\S]*?</svg>',text)[0]
  expected=json.loads((R/'tests/home-art-baseline.json').read_text())
  assert hashlib.sha256(art.encode()).hexdigest()==expected['sha256']
- # La géométrie mathématique est conservée ; les ornements ont été retirés
- # à la demande de l'utilisateur. Les styles restent propres à l'accueil.
+ # Le graphique et les deux inclinaisons historiques sont restaurés
+ # à la demande de l’utilisateur. Les styles restent propres à l’accueil.
  assert 'd="M40 210 240 10"' in art and 'cx="140" cy="110"' in art
  assert 'role="img"' in art and 'f(2) = 3' in art
  home=(R/'assets/accueil.css').read_text()
  others=''.join(p.read_text() for p in sorted((R/'assets').glob('*.css')) if p.name!='accueil.css')
  assert not re.search(r'\.graph-paper\s*\{|\.art-bottom\s*\{|\.hero-art\s*\{[^}]*(?:transform|rotate|background|border)',others)
- assert 'rotate(' not in home
+ assert 'rotate(1.5deg)' in home and 'rotate(-3deg)' in home
  before={p:p.read_bytes() for p in pages}
  subprocess.run(['python3','tools/finalize_site.py'],cwd=R,check=True)
  assert all(p.read_bytes()==s for p,s in before.items()),'finalization must be idempotent'
@@ -69,8 +69,10 @@ def main():
      expect(page.locator('#progress-summary')).to_contain_text('activ')
      page.locator('#mes-progres > summary').click()
     if name=='index.html':
-     for sel in ['.hero-art','.graph-paper']:
-      assert page.locator(sel).evaluate('e=>getComputedStyle(e).transform')=='none'
+     for sel,angle in [('.hero-art',1.5),('.graph-paper',-3)]:
+      actual=page.locator(sel).evaluate('e=>{const m=new DOMMatrix(getComputedStyle(e).transform);return Math.atan2(m.b,m.a)*180/Math.PI}')
+      assert math.isclose(actual,angle,abs_tol=0.001),(sel,actual)
+     assert page.locator('.graph-paper').evaluate('e=>getComputedStyle(e).backgroundColor')=='rgb(255, 255, 255)'
     if name=='sujets.html':
      expect(page.locator('#sujets-blancs a[href*="sujet-blanc-"]')).to_have_count(2)
      expect(page.locator('.subject-card')).to_have_count(41)
@@ -107,5 +109,5 @@ def main():
   page.goto(base+'sujets.html');expect(page.locator('.subject-card:visible')).to_have_count(41)
   context.close();browser.close()
  server.shutdown();server.server_close();assert not errors,errors
- print('NAVIGATION OK: five entries; direct subjects; inline optional progress, persistence/export/delete; selected level; useful graph without ornaments; no-JS and mobile.')
+ print('NAVIGATION OK: five entries; direct subjects; inline optional progress, persistence/export/delete; selected level; original graph and tilted frames; no-JS and mobile.')
 if __name__=='__main__':main()
