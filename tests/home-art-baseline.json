@@ -1,5 +1,5 @@
 {
-  "source_commit": "dd451763cd31563c65ee0777b1961a215b1ea45d",
-  "sha256": "a70f16b2d2d6cc7b7642fb6d641975a19be732c4e135ac6e9e5f3779c517f056",
-  "note": "Original HTML/SVG reused; only the two decorative fragments changed (f(2) = 3 and 2 + 1 = 3, read on the drawn line). Remove the later flattening CSS, do not generate an image."
+  "source_commit": "1ba5eefee378366cd070cfe01715a124a81b5717",
+  "sha256": "b70e3fd7ce810236f6d9c65b2b0f326944fbc6bbbd1a13cda4e668b921e1344d",
+  "note": "Présentation sobre validée : couleur violette d’origine, papier blanc dans les deux thèmes ; courbe et point conservés."
 }

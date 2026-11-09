@@ -17,7 +17,7 @@ sup { font-size: 0.65em; line-height: 0; }
 .container { margin-inline: auto; }
 a:focus-visible { outline: 3px solid var(--purple); outline-offset: 5px; }
 main:focus { outline: none; }
-.skip-link { position: fixed; left: 16px; top: 12px; z-index: 20; padding: 12px 20px; border-radius: 10px; background: var(--ink); color:var(--color-on-accent); transform: translateY(-180%); }
+.skip-link { position: fixed; left: 16px; top: 12px; z-index: 20; padding: 12px 20px; border-radius: var(--radius-md); background: var(--ink); color:var(--color-on-accent); transform: translateY(-180%); }
 .skip-link:focus { transform: translateY(0); }
 .header-inner { display: flex; align-items: center; justify-content: space-between; }
 .brand { display: inline-flex; align-items: center; gap: 11px; font-weight: 800; }
@@ -25,13 +25,13 @@ main:focus { outline: none; }
 .brand-mark span { position: absolute; color: var(--color-on-accent-soft); font-size: 22px; }
 .brand-dot { color: var(--purple); }
 .main-nav { display: flex; }
-.main-nav a { display: flex; align-items: center; font-weight: 600; border-radius: 10px; }
+.main-nav a { display: flex; align-items: center; font-weight: 600; border-radius: var(--radius-md); }
 .main-nav a:hover { color: var(--purple-dark); }
-.main-nav a[aria-current="page"] { color: var(--ink); background: var(--surface); box-shadow:0 2px 5px color-mix(in srgb, var(--color-learn-strong) 4%, transparent); }
-.level-badge { background:var(--color-line); border:1px solid var(--color-line); border-radius: 8px; padding: 6px 12px; white-space: nowrap; font-size: var(--text-caps); font-weight: 700; letter-spacing: 0.4px; }
+.main-nav a[aria-current="page"] { color: var(--ink); background: transparent; box-shadow: inset 0 -2px 0 var(--color-learn); }
+.level-badge { background:var(--color-line); border:1px solid var(--color-line); border-radius: var(--radius-md); padding: 6px 12px; white-space: nowrap; font-size: var(--text-caps); font-weight: 700; letter-spacing: 0.4px; }
 .eyebrow { display: flex; align-items: center; gap: 9px; color: var(--purple-dark); line-height: 1.6; font-weight: 750; }
 .button-primary { color:var(--color-on-accent); background: var(--purple); }
-.button-primary:hover { background: var(--purple-dark); transform: translateY(-2px); }
+.button-primary:hover { background: var(--purple-dark); }
 .site-footer { border-top: 1px solid var(--line); }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; color: var(--muted); }
 .footer-inner strong { margin-right: 10px; color: var(--ink); font-size: 17px; font-weight: 750; letter-spacing: -0.6px; }

@@ -18,7 +18,7 @@
   .sign-table.language-grid th, .sign-table.language-grid td { min-width: 0; padding: 5px; hyphens: auto; overflow-wrap: break-word; }
 }
 
-:root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
+:root { --bg: var(--color-surface); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:var(--radius-lg); }
 body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 @media print {
   body,body.lesson-immersive { background:var(--color-surface); color:var(--color-text); }
@@ -28,10 +28,10 @@ body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 .evo-page .page-intro{max-width:78ch}
 .evo-page p,.evo-page li{line-height:1.75}
 .evo-grid,.progress-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:24px 0}
-.evo-card,.progress-card,.practice-panel,.exam-block{background:var(--surface,var(--color-surface));border:1px solid var(--line,var(--color-learn-soft));border-radius:14px;padding:24px;min-width:0}
+.evo-card,.progress-card,.practice-panel,.exam-block{background:var(--surface,var(--color-surface));border:1px solid var(--line,var(--color-learn-soft));border-radius: var(--radius-md);padding:24px;min-width:0}
 .evo-card h2,.evo-card h3,.progress-card h3{margin-top:0;font-size:21px;line-height:1.4}
 .evo-card p{color:var(--muted,var(--color-text-muted))}
-.evo-note,.local-status{padding:14px 18px;background:var(--color-learn-soft);border-left:3px solid var(--purple,var(--color-learn));border-radius:8px;margin:20px 0;font-size:15px}
+.evo-note,.local-status{padding:14px 18px;background:var(--color-learn-soft);border-left:3px solid var(--purple,var(--color-learn));border-radius: var(--radius-md);margin:20px 0;font-size:15px}
 .local-status{display:flex;gap:8px 20px;flex-wrap:wrap;align-items:center;font-size: var(--text-sm)}
 .evo-page button:disabled{cursor:default;opacity:.6}
 .evo-page details{margin:16px 0;border:1px solid var(--line);padding:14px 18px;border-radius:10px}
@@ -50,7 +50,7 @@ body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
 .exam-answer-space{height:64px;border-bottom:1px solid var(--color-learn-line);margin:12px 0}
 .exam-toolbar{align-items:center;flex-wrap:wrap}
 .exam-toolbar label{display:flex;gap:10px;align-items:center}
-.exam-toolbar input[type=number]{width:86px;padding:7px;border:1px solid var(--color-text-muted);border-radius:6px;font:inherit}
+.exam-toolbar input[type=number]{width:86px;padding:7px;border:1px solid var(--color-text-muted);border-radius: var(--radius-md);font:inherit}
 @media(max-width:740px) {
   .evo-grid,.progress-grid{grid-template-columns:1fr}
   .evo-card,.progress-card,.practice-panel,.exam-block{padding:20px}

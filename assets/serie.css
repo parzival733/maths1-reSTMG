@@ -35,7 +35,7 @@
 .progress-track {
   height: 7px;
   overflow: hidden;
-  border-radius: 999px;
+  border-radius: var(--radius-md);
   background:var(--color-line);
 }
 .progress-track span {
@@ -55,7 +55,7 @@
 .exercise-stepper button {
   min-height: 44px;
   border:1px solid var(--color-line);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background:var(--color-surface);
   color: var(--ink);
   font-weight: 750;
@@ -129,12 +129,12 @@
   height: auto;
   max-height: 330px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background:var(--color-bg);
 }
 .hint {
   border:1px dashed var(--color-learn-line);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 0 15px;
   margin: 20px 0 0;
   background:var(--color-bg);
@@ -361,7 +361,7 @@
 .exercise-page .variant-refresh {
   min-height: 44px;
   border:2px solid var(--color-practice-strong);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background:var(--color-practice-soft);
   color:var(--color-practice-strong);
   font-size: var(--text-sm);
@@ -380,7 +380,7 @@
   max-height: 330px;
   margin-block: 18px 8px;
   border:1px solid var(--color-practice-line);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background:var(--color-bg);
 }
 .exercise-page .exercise-feedback {
@@ -388,14 +388,14 @@
   line-height: 1.65;
 }
 /* Aides contextualisées du chapitre Fonctions. */
-.coaching-panel { margin-top: 20px; padding: 18px; border:1px solid var(--color-practice-line); border-radius: 14px; background:var(--color-surface-sunken); }
+.coaching-panel { margin-top: 20px; padding: 18px; border:1px solid var(--color-practice-line); border-radius: var(--radius-md); background:var(--color-surface-sunken); }
 .coaching-panel h3 { margin: 0 0 8px; color:var(--color-practice-strong); font-size: 17px; }
 .coaching-panel > p { margin: 0 0 12px; line-height: 1.6; }
-.coaching-hint, .coaching-bridge { margin: 9px 0; padding: 11px 13px; background:var(--color-surface); border:1px solid var(--color-practice-line); border-radius: 10px; }
+.coaching-hint, .coaching-bridge { margin: 9px 0; padding: 11px 13px; background:var(--color-surface); border:1px solid var(--color-practice-line); border-radius: var(--radius-md); }
 .coaching-hint summary, .coaching-bridge summary { cursor: pointer; font-weight: 750; color:var(--color-practice-strong); }
 .coaching-hint p, .coaching-bridge p { margin: 10px 0 0; line-height: 1.65; }
 .coaching-diagnosis { padding: 11px; border-left:4px solid var(--color-warning-line); background:var(--color-warning-soft); color:var(--color-warning); }
-.coaching-bridge-answer { display: block; width: 100%; min-height: 44px; margin: 10px 0; padding: 10px; border:2px solid var(--color-practice); border-radius: 8px; font: inherit; }
+.coaching-bridge-answer { display: block; width: 100%; min-height: 44px; margin: 10px 0; padding: 10px; border:2px solid var(--color-practice); border-radius: var(--radius-md); font: inherit; }
 .coaching-bridge-answer:focus-visible { outline:3px solid var(--color-practice-strong); outline-offset: 2px; }
 .coaching-bridge .is-success { color:var(--color-practice-strong); font-weight: 750; }
 @media print {
@@ -413,13 +413,13 @@
   .answer-row > span:first-child { font-size: var(--text-sm); }
 }
 
-:root { --bg: var(--color-bg); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:16px; }
+:root { --bg: var(--color-surface); --surface: var(--color-surface); --ink: var(--color-text); --muted: var(--color-text-muted); --line: var(--color-line); --purple: var(--color-learn); --purple-dark: var(--color-learn-strong); --purple-soft: var(--color-learn-soft); --radius:var(--radius-lg); }
 body, body.lesson-immersive { background:var(--bg); color:var(--ink); }
-.exercise-progress,.exercise-block { border-radius:14px; box-shadow:none; }
+.exercise-progress,.exercise-block { border-radius: var(--radius-md); box-shadow:none; }
 .exercise-heading h1 { font-size:clamp(30px,3.5vw,42px); }
 .exercise-statement,.exercise-form { padding:26px; }
 .exercise-page .exercise-statement p,.exercise-page .exercise-statement li { font-size:16px; line-height:1.75; }
-.score-chip { border-radius:8px; background:var(--color-bg); }
+.score-chip { border-radius: var(--radius-md); background:var(--color-bg); }
 @media(max-width:520px) {
   .exercise-statement,.exercise-form { padding:20px; }
 }
