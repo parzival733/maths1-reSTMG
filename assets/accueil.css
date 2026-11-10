@@ -55,7 +55,6 @@ body[data-gabarit="accueil"] {
 .lessons-card { border-top: var(--rule-width) solid var(--color-learn); }
 .exercises-card { border-top: var(--rule-width) solid var(--color-practice); }
 .exercises-card .card-bottom { color: var(--color-practice); }
-.pathway-card:hover { transform: none; box-shadow: none; border-color: var(--color-line-strong); }
 .pathway-card h3 { font-size: var(--text-lg); line-height: var(--leading-tight); }
 .card-description { margin: var(--space-3) 0 var(--space-5); color: var(--muted); max-width: 40ch; }
 .card-bottom { margin-top: auto; font-size: var(--text-sm); font-weight: 700; color: var(--purple); text-decoration: underline; text-underline-offset: 4px; }

@@ -445,3 +445,24 @@ html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-correct
 :is(.lesson-card, body)[data-category="reperes"], :is(.lesson-card, body)[data-domain="reperes"] { --domain: var(--color-domain-reperes); --domain-soft: var(--color-domain-reperes-soft); }
 :is(.lesson-card, body)[data-category="atelier"], :is(.lesson-card, body)[data-domain="atelier"] { --domain: var(--color-domain-atelier); --domain-soft: var(--color-domain-atelier-soft); }
 html body[data-domain]:not(#_p) :is(.lesson-heading, .exercise-hero, main > header) .eyebrow { color: var(--domain); }
+
+/* Cartes : contour uniforme au survol, sans déplacement du contenu. */
+body :is(.lesson-card, .pathway-card) {
+  --card-accent: var(--domain, var(--color-learn));
+  transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out), border-color var(--duration-base) var(--ease-out);
+}
+body .exercises-card { --card-accent: var(--color-practice); }
+@media screen and (hover: hover) and (pointer: fine) {
+  body :is(.lesson-card, .pathway-card):hover {
+    border-color: transparent;
+    box-shadow: 0 0 0 2px var(--card-accent);
+    transform: scale(1.008);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body :is(.lesson-card, .pathway-card) { transition: none; }
+  body :is(.lesson-card, .pathway-card):hover { transform: none; }
+}
+@media print {
+  body :is(.lesson-card, .pathway-card) { transition: none; }
+}
