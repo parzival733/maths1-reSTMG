@@ -43,7 +43,8 @@ def main():
   for link in page.links:
    u=urlsplit(link)
    if u.scheme or u.netloc:continue
-   target=(path.parent/unquote(u.path)).resolve() if u.path else path
+   target=((ROOT/unquote(u.path).lstrip('/')).resolve() if u.path.startswith('/')
+           else (path.parent/unquote(u.path)).resolve() if u.path else path)
    assert target.is_relative_to(ROOT) and target.is_file(),(name,link)
    if u.fragment:assert unquote(u.fragment) in pages[target].ids,(name,link)
   canon=re.findall('<link rel="canonical" href="([^"]+)"',html)
