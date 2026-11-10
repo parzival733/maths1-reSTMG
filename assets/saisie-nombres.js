@@ -1,9 +1,32 @@
-/* Signe moins accessible avec les claviers décimaux des téléphones. */
+/* Signe moins et virgule accessibles avec les claviers des téléphones. */
 (() => {
   'use strict';
   const buttons = new WeakMap();
   let sequence = 0;
   const selector = '.answer-row input[inputmode="decimal"]';
+
+  function insertDecimal(input) {
+    if (input.disabled || input.readOnly) return;
+    const value = input.value;
+    const start = input.selectionStart == null ? value.length : input.selectionStart;
+    const end = input.selectionEnd == null ? start : input.selectionEnd;
+    // Dans une fraction, chaque opérande peut avoir son propre séparateur.
+    const from = value.slice(0, start).lastIndexOf('/') + 1;
+    const slash = value.indexOf('/', end);
+    const to = slash < 0 ? value.length : slash;
+    const left = value.slice(from, start), right = value.slice(end, to);
+    const before = left.search(/[.,]/), after = right.search(/[.,]/);
+    input.focus();
+    // Ne pas ajouter un deuxième séparateur au même nombre.
+    if (before >= 0 || after >= 0) {
+      const position = before >= 0 ? from + before + 1 : end + after + 1;
+      input.setSelectionRange(position, position);
+      return;
+    }
+    const insertion = /^\s*[+−–—-]?\s*$/.test(left) ? '0,' : ',';
+    input.setRangeText(insertion, start, end, 'end');
+    if (input.value !== value) input.dispatchEvent(new Event('input', {bubbles: true}));
+  }
 
   function enhance(input) {
     if (buttons.has(input)) return;
@@ -41,11 +64,20 @@
     button.textContent = '−';
     button.setAttribute('aria-label', 'Ajouter ou retirer le signe moins : ' + name);
     button.title = 'Ajouter ou retirer le signe moins';
-    buttons.set(input, button);
+    const decimal = document.createElement('button');
+    decimal.type = 'button';
+    decimal.className = 'answer-decimal';
+    decimal.textContent = ',';
+    decimal.setAttribute('aria-label', 'Insérer une virgule : ' + name);
+    decimal.title = 'Insérer une virgule';
+    buttons.set(input, [button, decimal]);
     input.before(group);
-    group.append(input, button);
-    const sync = () => { button.disabled = input.disabled || input.readOnly; };
+    group.append(input, button, decimal);
+    const sync = () => { [button, decimal].forEach(control => { control.disabled = input.disabled || input.readOnly; }); };
     sync();
+    // Garder le champ actif et le clavier ouvert pendant le toucher.
+    decimal.addEventListener('mousedown', event => event.preventDefault());
+    decimal.addEventListener('click', () => insertDecimal(input));
     button.addEventListener('mousedown', event => event.preventDefault());
     button.addEventListener('click', () => {
       if (input.disabled || input.readOnly) return;
@@ -86,8 +118,8 @@
     new MutationObserver(records => records.forEach(record => {
       if (record.type === 'childList') record.addedNodes.forEach(scan);
       else {
-        const button = buttons.get(record.target);
-        if (button) button.disabled = record.target.disabled || record.target.readOnly;
+        const controls = buttons.get(record.target);
+        if (controls) controls.forEach(button => { button.disabled = record.target.disabled || record.target.readOnly; });
       }
     })).observe(root, {subtree: true, childList: true, attributes: true, attributeFilter: ['readonly', 'disabled']});
   }

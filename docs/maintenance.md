@@ -103,6 +103,7 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 | `browser_*.py` | Parcours réels dans Chromium, 320 à 1 440 px, sans JavaScript, accessibilité (axe-core) |
 | `test_safari.js`, `browser_validation.py` | Absence de lookbehind bloquant, montants au centime, moteur absent ou incomplet sans faux négatif, suivi à vide et réinitialisation accessible ; `STMG_TEST_BROWSER=webkit` permet le contrôle avec WebKit |
 | `test_answer_formats.js`, `browser_global.py` | Unités explicitement demandées, fractions à l'accueil, descriptions des champs, bilan sans tentative vide, écouteurs bornés après 30 variantes ; exécution Chromium ou WebKit |
+| `browser_decimal.py` | Touche virgule sur les écrans tactiles dans toutes les séries, champs de 120 px minimum à 320 px, saisie négative, sélection, score, corrigé, effacement et nouvelles variantes ; Chromium ou WebKit |
 | `browser_visual.py` | 39 comparaisons au commit de référence : mobile, PC, thèmes clair et sombre, sans JavaScript ; aucun déplacement ni changement de style autorisé par le masque des champs |
 | `check_publication.py` | Site en ligne identique à `public/`, fichiers internes en 404 |
 

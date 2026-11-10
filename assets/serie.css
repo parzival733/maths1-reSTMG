@@ -454,10 +454,15 @@ body { font-family: var(--font-sans); font-size: var(--text-base); line-height: 
 .answer-row > input { flex: 1 1 8em; min-width: 8em; width: auto; }
 .answer-row > .answer-input { display: flex; align-items: center; gap: var(--space-2); flex: 1 1 11em; min-width: 0; }
 .answer-row .answer-input > input { flex: 1 1 0; min-width: 0; width: 0; }
-.answer-sign { flex: 0 0 var(--target-min); width: var(--target-min); min-height: var(--target-min); padding: 0; border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); font: 700 var(--text-lg)/1 var(--font-sans); cursor: pointer; }
-.answer-sign:hover:not(:disabled) { background: var(--color-surface-sunken); }
-.answer-sign:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
-@media print { .answer-sign { display: none; } }
+.answer-sign, .answer-decimal { flex: 0 0 var(--target-min); width: var(--target-min); min-height: var(--target-min); padding: 0; border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); font: 700 var(--text-lg)/1 var(--font-sans); cursor: pointer; }
+.answer-sign:hover:not(:disabled), .answer-decimal:hover:not(:disabled) { background: var(--color-surface-sunken); }
+.answer-sign:focus-visible, .answer-decimal:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+.answer-decimal { display: none; }
+@media screen and (any-pointer: coarse) {
+  .answer-decimal { display: block; }
+  .answer-row > .answer-input { min-width: min(100%, calc(120px + 2 * var(--target-min) + 2 * var(--space-2))); }
+}
+@media print { .answer-sign, .answer-decimal { display: none; } }
 .answer-row > select { flex: 1 1 12em; min-width: 12em; width: auto; }
 .answer-row input, .answer-row select { min-height: var(--target-min); border: 1px solid var(--color-line-strong); border-radius: var(--radius-md); font-size: var(--text-base); font-variant-numeric: tabular-nums; }
 .answer-row > .answer-status { flex: 1 0 100%; display: flex; align-items: center; gap: var(--space-2); min-height: 0; font-size: var(--text-sm); font-weight: 700; }
