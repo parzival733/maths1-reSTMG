@@ -10,6 +10,8 @@ from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlsplit, unquote
 import re
+import base64
+import hashlib
 import shutil
 import sys
 
@@ -94,11 +96,26 @@ def copy(rel):
     shutil.copy2(source, target)
 
 
+def check_style_policy(html_pages):
+    """Échoue avant publication si la CSP bloquerait les styles statiques."""
+    headers = (ROOT / '_headers').read_text(encoding='utf-8')
+    rule = re.search(r'(?<![\w-])style-src\s+([^;\n]+)', headers)
+    allowed = set(rule.group(1).split()) if rule else set()
+    for rel in html_pages:
+        for css in re.findall(r'<style\b[^>]*>([\s\S]*?)</style\s*>',
+                              (ROOT / rel).read_text(encoding='utf-8'), re.I):
+            digest = base64.b64encode(hashlib.sha256(css.encode('utf-8')).digest()).decode('ascii')
+            if "'sha256-" + digest + "'" not in allowed:
+                raise ValueError(f'Empreinte CSS absente de la CSP : {rel}. '
+                                 'Exécuter python3 tools/finalize_site.py avant la publication.')
+
+
 def main():
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir()
     html_pages = [p.relative_to(ROOT).as_posix() for p in pages()]
+    check_style_policy(html_pages)
     for rel in html_pages:
         copy(rel)
     for path in sorted((ROOT / 'assets').rglob('*')):

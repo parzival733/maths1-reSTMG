@@ -5,14 +5,15 @@ Par défaut Chromium ; STMG_TEST_BROWSER=webkit permet le même contrôle avec W
 import functools
 import os
 import threading
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from http.server import ThreadingHTTPServer
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
+from http_security import SecurityHandler
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class QuietHandler(SimpleHTTPRequestHandler):
+class QuietHandler(SecurityHandler):
     def log_message(self, *args):
         pass
 
@@ -35,6 +36,9 @@ def main():
             context = browser.new_context(viewport={'width': 390, 'height': 844}, is_mobile=True,
                                           has_touch=True, locale='fr-FR')
             page = context.new_page()
+            policy_errors = []
+            context.on('console', lambda message: policy_errors.append(message.text)
+                       if message.type == 'error' and 'Content Security Policy' in message.text else None)
             # Le clavier décimal iOS n'offre pas de touche moins : le raccourci
             # doit fonctionner au toucher, sans soumettre le formulaire.
             page.goto(base + 'exercices/fonctions.html#exercice-3')
@@ -61,6 +65,8 @@ def main():
             slide.locator('button[type=submit]').tap()
             expect(slide.locator('.exercise-feedback')).to_contain_text('Exercice validé')
             expect(page.locator('#exercise-score')).to_have_text('1/9')
+            assert abs(float(page.locator('#exercise-progress-fill').evaluate('e => e.style.width').rstrip('%'))
+                       - 100 / 9) < 0.001
             sign.tap()
             expect(page.locator('#exercise-score')).to_have_text('0/9')
             sign.tap()
@@ -147,6 +153,10 @@ def main():
             fields.nth(2).select_option(expected[2])
             slide.locator('button[type=submit]').tap()
             expect(slide.locator('.exercise-feedback')).to_contain_text('Exercice validé')
+            page.goto(base + 'terminale/exercices/t-suites.html')
+            expect(page.locator('.exercise-block')).to_have_count(6)
+            assert page.locator('.exercise-stepper').evaluate(
+                "e => getComputedStyle(e).getPropertyValue('--exercise-steps').trim()") == '6'
             page.close()
 
             # Deux pannes : fichier absent et moteur incomplet, même si le corrigé est disponible.
@@ -183,6 +193,7 @@ def main():
             expect(failed.locator('#exercise-mounted .offline-series .exam-block')).to_have_count(6)
             failed.locator('#exercise-mounted .offline-solution > summary').first.tap()
             expect(failed.locator('#exercise-mounted .offline-solution').first).to_have_attribute('open', '')
+            assert not policy_errors, policy_errors
             browser.close()
             print(f'VALIDATION {engine} OK : nombres français, centimes, panne sans faux négatif, suivi et reset.')
     finally:

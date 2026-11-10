@@ -5,6 +5,7 @@ Idempotent ; à relancer après toute modification d'une page ou d'un asset.
 from pathlib import Path
 from html import escape,unescape
 import hashlib
+import base64
 import re
 ROOT=Path(__file__).resolve().parents[1]
 ORIGIN='https://mathstmgdls.pages.dev'
@@ -47,6 +48,22 @@ def keep_own_generator(rel,text):
     own=GENERATOR[slug]
     return re.sub(r'[ \t]*<script src="\.\./assets/variants-(\w+)\.js[^"]*" defer></script>\n?',
                   lambda m:m.group(0) if m.group(1)==own else '',text)
+
+
+def update_style_policy():
+    """Autorise uniquement les blocs CSS statiques exacts du site par leur SHA-256."""
+    hashes=set()
+    for path in sorted(ROOT.rglob('*.html')):
+        if any(p.startswith('.') or p in ('docs', 'public', 'node_modules') for p in path.relative_to(ROOT).parts):continue
+        for css in re.findall(r'<style\b[^>]*>([\s\S]*?)</style\s*>',path.read_text(),re.I):
+            digest=base64.b64encode(hashlib.sha256(css.encode('utf-8')).digest()).decode('ascii')
+            hashes.add("'sha256-"+digest+"'")
+    path=ROOT/'_headers'
+    text=path.read_text()
+    text,count=re.subn(r'(?<![\w-])style-src\s+[^;\n]+',"style-src 'self' "+' '.join(sorted(hashes)),text)
+    if count!=1:raise ValueError('La CSP doit contenir une seule directive style-src.')
+    if any(len(line)>2000 for line in text.splitlines()):raise ValueError('Une ligne de _headers dépasse la limite de Cloudflare Pages.')
+    path.write_text(text)
 
 def main():
     simplify_navigation(ROOT)
@@ -124,6 +141,7 @@ def main():
         text=path.read_text();new=with_versions(text)
         if new!=text:path.write_text(new)
     (ROOT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join('<url><loc>'+escape(u)+'</loc></url>\n' for u in urls)+'</urlset>\n')
-    (ROOT/'robots.txt').write_text('User-agent: *\nDisallow: /tests/\nDisallow: /tools/\nDisallow: /.github/\nSitemap: '+ORIGIN+'/sitemap.xml\n')
+    (ROOT/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: '+ORIGIN+'/sitemap.xml\n')
+    update_style_policy()
     print('SEO OK:',len(urls),'canonical URLs indexed.')
 if __name__=='__main__':main()

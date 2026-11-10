@@ -119,8 +119,7 @@
       + '<span class="score-chip">Score <span id="exercise-score">0/' + length + '</span></span>'
       + '</div><div class="progress-track" aria-hidden="true">'
       + '<span id="exercise-progress-fill"></span></div>'
-      + '<nav class="exercise-stepper" style="--exercise-steps:' + length
-      + '" aria-label="Choisir un exercice">' + steps + '</nav>'
+      + '<nav class="exercise-stepper" aria-label="Choisir un exercice">' + steps + '</nav>'
       + '<p class="correction-legend">'
       + '<span class="legend-cases">Cases : <span><i class="legend-dot" aria-hidden="true"></i> juste,</span>'
       + '<span><i class="legend-dot wrong" aria-hidden="true"></i> fausse ou vide, puis corrigée.</span></span>'
@@ -137,5 +136,8 @@
       + '<a href="../cours/' + encodeURIComponent(chapter.slug) + '.html">← Revoir la leçon</a>'
       + '<a href="../exercices.html">Tous les exercices</a></div>';
 
+  // La feuille de style reste identique ; le nombre de colonnes est défini
+  // par le script autorisé, sans attribut style analysé depuis du HTML.
+  mount.querySelector('.exercise-stepper').style.setProperty('--exercise-steps', String(length));
   root.removeAttribute('aria-busy');
 })();
