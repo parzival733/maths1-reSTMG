@@ -62,7 +62,8 @@ Tests structurels et mathématiques (Node et Python 3, sans dépendance) :
 ```sh
 for f in assets/*.js; do node --check "$f"; done
 for t in test_variants test_rangs test_graphiques test_terminale test_calcul_rapide \
-         test_countdown test_acquis test_parcours test_domaines test_cloture test_safari; do node tests/$t.js; done
+         test_countdown test_acquis test_parcours test_domaines test_cloture test_safari \
+         test_answer_formats; do node tests/$t.js; done
 for t in validate_site test_notation test_typographie test_noms_liens test_terminale \
          test_calcul_rapide test_evolution test_cloture test_securite; do python3 tests/$t.py; done
 python3 tools/build_public.py
@@ -74,12 +75,15 @@ Tests dans le navigateur (Playwright et Chromium) :
 python3 -m pip install playwright==1.55.0
 python3 -m playwright install chromium
 for t in test_navigation_simple test_interface test_sujets browser_smoke browser_terminale \
-         browser_calcul_rapide browser_evolution browser_validation; do python3 tests/$t.py; done
+         browser_calcul_rapide browser_evolution browser_validation browser_global \
+         browser_visual; do python3 tests/$t.py; done
 npm install --prefix /tmp/stmg-qa axe-core@4.10.3
 AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
 ```
 
 Le workflow `.github/workflows/verification.yml` lance l'ensemble à chaque pull request et à chaque modification de `main`.
+
+`browser_visual.py` compare 39 rendus mobiles et PC, clairs, sombres et sans JavaScript au commit précédent (ou à `VISUAL_BASE_SHA`). Les captures et le rapport restent dans `.qa-visual/`. Une différence volontaire se déclare avec sa justification dans `tests/visual-changes.json` ; elle ne peut pas masquer un changement de géométrie ou de style des champs concernés. Voir la procédure dans `docs/maintenance.md`.
 
 ## Publication
 

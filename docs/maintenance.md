@@ -102,7 +102,17 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 | `test_interface.py`, `test_sujets.py`, `test_navigation_simple.py` | Interface, sujets, navigation, contenu protégé |
 | `browser_*.py` | Parcours réels dans Chromium, 320 à 1 440 px, sans JavaScript, accessibilité (axe-core) |
 | `test_safari.js`, `browser_validation.py` | Absence de lookbehind bloquant, montants au centime, moteur absent ou incomplet sans faux négatif, suivi à vide et réinitialisation accessible ; `STMG_TEST_BROWSER=webkit` permet le contrôle avec WebKit |
+| `test_answer_formats.js`, `browser_global.py` | Unités explicitement demandées, fractions à l'accueil, descriptions des champs, bilan sans tentative vide, écouteurs bornés après 30 variantes ; exécution Chromium ou WebKit |
+| `browser_visual.py` | 39 comparaisons au commit de référence : mobile, PC, thèmes clair et sombre, sans JavaScript ; aucun déplacement ni changement de style autorisé par le masque des champs |
 | `check_publication.py` | Site en ligne identique à `public/`, fichiers internes en 404 |
+
+### Comparaisons visuelles
+
+Le test construit deux versions avec `tools/build_public.py` et les sert sous la CSP réelle. La date, l'aléatoire et le navigateur sont identiques ; les polices et animations sont stabilisées avant capture. Le rapport `.qa-visual/rapport.html` montre les paires avant/après. Le seuil de différence est d'un niveau RGB sur 255.
+
+En CI, la référence est la base de la pull request ou le commit précédent le push. En local, `VISUAL_BASE_SHA=<SHA complet> python3 tests/browser_visual.py` choisit explicitement la référence. Sans cette variable, le test utilise `HEAD` si le travail est modifié, sinon `HEAD^`.
+
+Pour un changement volontaire du texte d'un champ, relire les deux captures puis renseigner dans `tests/visual-changes.json` le SHA exact de référence, la page, un sélecteur précis et la raison. Le masque ne s'applique qu'à cette référence et à l'intérieur des champs : leurs dimensions, positions et styles restent comparés. Une refonte qui modifie la géométrie doit faire évoluer le contrôle après revue ; élargir un masque pour cacher une régression n'est pas acceptable.
 
 ## Règle des empreintes
 

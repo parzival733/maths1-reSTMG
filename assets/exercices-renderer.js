@@ -8,8 +8,28 @@
   })[character]);
 
   // Les libellés existants « en % » et « en € » déclarent déjà l'unité attendue.
-  const unitForLabel = label => /\ben\s*%|^Pourcentage$/i.test(label) ? '%'
-    : /\ben\s*(?:€|euros?)(?:\s|$)/i.test(label) ? '€' : '';
+  const unitForLabel = label => window.ExerciseVariants?.unitForLabel?.(label)
+    || (/\ben\s*%|^Pourcentage$/i.test(label) ? '%'
+    : /\ben\s*(?:€|euros?)(?:\s|$)/i.test(label) ? '€' : '');
+
+  // La consigne utilise le format déclaré, jamais la valeur de la solution.
+  function answerFormat(type, rounding, unit) {
+    if (type === 'unordered-list') return {
+      placeholder: 'Valeurs séparées par ;',
+      description: 'Sépare les valeurs par un point-virgule. Leur ordre est libre.'
+    };
+    if (type !== 'number') return null;
+    let placeholder = unit ? 'En ' + unit : 'Nombre';
+    let description = 'Nombre entier, décimal (virgule ou point) ou fraction.';
+    if (unit) description += ' Unité attendue : ' + unit + '.';
+    const digits = Number(rounding);
+    if (rounding != null && rounding !== '' && Number.isInteger(digits) && digits >= 0 && digits <= 6) {
+      placeholder += digits ? ' · ' + digits + ' déc.' : ' · entier';
+      description += digits ? ' Un arrondi à ' + digits + ' décimale' + (digits > 1 ? 's' : '') + ' est accepté.'
+        : ' Un arrondi à l’unité est accepté.';
+    }
+    return {placeholder, description};
+  }
 
   function makeInput(field) {
     const answer = String(field.answer);
@@ -78,7 +98,7 @@
   }
 
   // Expose le même gabarit pour renouveler une question sans recharger la page.
-  window.ExerciseRenderer = {makeExercise, unitForLabel};
+  window.ExerciseRenderer = {makeExercise, unitForLabel, answerFormat};
   if (!root || !dataNode || !mount) return;
 
   let chapter;

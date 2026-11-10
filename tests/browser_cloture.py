@@ -4,18 +4,16 @@ All pages: axe WCAG 2.2 A/AA. Representative states: keyboard, accessible tree,
 Use the real HTTP origin in CI. No mocked browser storage, no user credentials.
 """
 from pathlib import Path
-from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
+from http.server import ThreadingHTTPServer
 from functools import partial
 from threading import Thread
 import os, json, time, statistics
 from playwright.sync_api import sync_playwright
+from http_security import SecurityHandler
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / '.qa-cloture'
-class Handler(SimpleHTTPRequestHandler):
+class Handler(SecurityHandler):
     def log_message(self, *args): pass
-    def end_headers(self):
-        self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'")
-        super().end_headers()
 def save(name, value):
     OUT.mkdir(exist_ok=True)
     (OUT/name).write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding='utf-8')
@@ -35,21 +33,22 @@ def main():
     failures=[]
     with sync_playwright() as p:
         browser=p.chromium.launch(**({'executable_path':os.environ['PLAYWRIGHT_CHROMIUM_EXECUTABLE']} if os.environ.get('PLAYWRIGHT_CHROMIUM_EXECUTABLE') else {}))
-        def inspect(page,name):
+        def inspect(page,name,theme=None):
             page.evaluate(axe)
             results=page.evaluate("async tags => await axe.run(document, {runOnly:{type:'tag',values:tags}})",report['tags'])
             issues=[{'id':x['id'],'impact':x['impact'],'help':x['help'],'nodes':[{'target':n['target'],'summary':n.get('failureSummary'),'html':n['html'][:400]} for n in x['nodes']]} for x in results['violations']]
-            report['violations'].extend({'page':name,**x} for x in issues)
-            report['pages'].append({'path':name,'violations':len(issues),'manual_review':[{ 'id':x['id'],'nodes':len(x['nodes'])} for x in results['incomplete']]})
+            report['violations'].extend({'page':name,'theme':theme,**x} for x in issues)
+            report['pages'].append({'path':name,'theme':theme,'violations':len(issues),'manual_review':[{ 'id':x['id'],'nodes':len(x['nodes'])} for x in results['incomplete']]})
         for file in sorted(ROOT.rglob('*.html')):
             name=file.relative_to(ROOT).as_posix()
             if any(x.startswith('.') or x in ('docs', 'public') for x in file.relative_to(ROOT).parts):continue
-            ctx=browser.new_context(viewport={'width':1280,'height':900})
-            page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-            page.goto(origin+name,wait_until='networkidle')
-            inspect(page,name)
-            if errors:failures.append({'path':name,'javascript':errors})
-            ctx.close()
+            for theme in ['light','dark']:
+                ctx=browser.new_context(viewport={'width':1280,'height':900},color_scheme=theme)
+                page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
+                page.goto(origin+name,wait_until='networkidle')
+                inspect(page,name,theme)
+                if errors:failures.append({'path':name,'theme':theme,'javascript':errors})
+                ctx.close()
         save('accessibility.json',report)
         for name in representative:
             ctx=browser.new_context(viewport={'width':1280,'height':900})
@@ -69,7 +68,12 @@ def main():
                 if scale==2:
                     page.evaluate("""() => { const nodes=[...document.querySelectorAll('body *')].filter(e=>!['SCRIPT','STYLE','SVG','PATH'].includes(e.tagName)); const sizes=nodes.map(e=>parseFloat(getComputedStyle(e).fontSize)); nodes.forEach((e,i)=>e.style.fontSize=(sizes[i]*2)+'px'); }""")
                 if spacing:
-                    page.add_style_tag(content='* {line-height:1.5!important;letter-spacing:.12em!important;word-spacing:.16em!important} p {margin-bottom:2em!important}')
+                    page.evaluate("""() => { for (const e of document.querySelectorAll('*')) {
+                      e.style.setProperty('line-height','1.5','important');
+                      e.style.setProperty('letter-spacing','.12em','important');
+                      e.style.setProperty('word-spacing','.16em','important');
+                      if(e.tagName==='P')e.style.setProperty('margin-bottom','2em','important');
+                    }}""")
                 overflow=page.evaluate('document.documentElement.scrollWidth>innerWidth+2')
                 row={'path':name,'width':width,'textScale':scale,'textSpacing':spacing,'no_global_overflow':not overflow}
                 report['layout'].append(row)

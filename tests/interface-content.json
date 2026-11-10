@@ -205,7 +205,7 @@
   },
   "assets/exercices-variants.js": {
     "part": "file",
-    "sha256": "b274666c5e74aae5df3c7c358aea0a1f6c17f098a7f83ef1625196ca3b7cecb5"
+    "sha256": "cc84f23ccd953c7f49c923ae64c9c8072894261f5f4904415dfa985d4639fd39"
   },
   "assets/variants-suites.js": {
     "part": "file",
@@ -273,11 +273,11 @@
   },
   "assets/exercices.js": {
     "part": "file",
-    "sha256": "75df990d8eb18c0287078a5571cc292f2e95f4dcaa8fffb1d21f10d625d1c042"
+    "sha256": "7c04da3a5f73e06a2fe4d7c3c774f489af69b2ebe938e6edb4ad767f5c99ef8f"
   },
   "assets/exercices-renderer.js": {
     "part": "file",
-    "sha256": "bd8f08582242d6b015893bc0448cce4b6e246650126182dff1f57c94bb11f7ed"
+    "sha256": "25902292ba773ce10076ae26b0b6d2e8d13c6a69910e2d00a8c7fc2954e4416d"
   },
   "assets/coaching-general.js": {
     "part": "file",

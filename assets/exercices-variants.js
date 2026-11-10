@@ -303,6 +303,24 @@
   /* ---------- Saisie ---------- */
   const decimalPattern = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
 
+  // Seule l'unité explicitement demandée par le champ peut accompagner le nombre.
+  // Aucune conversion implicite : « 7 min » ne répond pas à une question en heures.
+  const units = [
+    ['€/unité', /\ben\s*(?:€|euros?)\s*\/\s*unit[ée]s?(?:\s|$)/i,
+      /\s*(?:€|EUR|euros?)\s*(?:\/|par\s+)unit[ée]s?$/i],
+    ['€', /\ben\s*(?:€|euros?)(?:\s|$)/i, /\s*(?:€|EUR|euros?)$/i],
+    ['%', /\ben\s*%|^Pourcentage$/i, /\s*%$/],
+    ['km/h', /\ben\s+km\s*\/\s*h(?:\s|$)/i, /\s*km\s*\/\s*h$/i],
+    ['m/s', /\ben\s+m\s*\/\s*s(?:\s|$)/i, /\s*m\s*\/\s*s$/i],
+    ['min', /\ben\s+(?:min|minutes?)(?:\s|$)/i, /\s*(?:min|minutes?)$/i],
+    ['h', /\ben\s+(?:h|heures?)(?:\s|$)/i, /\s*(?:h|heures?)$/i],
+    ['m', /\ben\s+(?:m|m[èe]tres?)(?:\s|$)/i, /\s*(?:m|m[èe]tres?)$/i],
+    ['points d’indice', /\ben\s+points?\s+d['’]indice(?:\s|$)/i,
+      /\s*points?(?:\s+d['’]indice)?$/i],
+    ['points', /\ben\s+points?(?:\s|$)/i, /\s*points?$/i]
+  ];
+  const unitForLabel = label => units.find(([, pattern]) => pattern.test(String(label)))?.[0] || '';
+
   function readNumber(value) {
     const input = String(value).trim().replace(/[−–—]/g, '-')
       .replace(/\s+/g, '').replace(/,/g, '.');
@@ -317,6 +335,11 @@
       return denominator !== 0 && Number.isFinite(n) ? n : NaN;
     }
     return NaN;
+  }
+
+  function readQuantity(value, unit = '') {
+    const definition = units.find(([name]) => name === unit);
+    return readNumber(definition ? String(value).trim().replace(definition[2], '') : value);
   }
 
   function unorderedValues(value) {
@@ -334,10 +357,7 @@
     const answers = String(expected).split('|');
 
     if (type === 'number') {
-      // Un suffixe n'est accepté que si l'unité est déclarée pour ce champ.
-      if (unit === '%') value = String(value).trim().replace(/\s*%$/, '');
-      if (unit === '€') value = String(value).trim().replace(/\s*(?:€|EUR|euros?)$/i, '');
-      const actual = readNumber(value);
+      const actual = readQuantity(value, unit);
       if (!Number.isFinite(actual)) return false;
       const threshold = tolerance === '' || tolerance == null
         ? 0.000001 : Number(tolerance);
@@ -532,6 +552,6 @@
   window.ExerciseVariants = {
     register, generate, original: originalOf, nextVariant, remember, memoryFor, randomSeed, rng,
     describe, count, slugs, signature, score, lint, visible, FORBIDDEN, BAND, MAX_TRIES,
-    N, S, F, FR, E, C, signTable, productSignTable, affineSignTable, variationTable, escapeHtml, fmt, matchesAnswer, matchesAnswerInGroup, readNumber
+    N, S, F, FR, E, C, signTable, productSignTable, affineSignTable, variationTable, escapeHtml, fmt, matchesAnswer, matchesAnswerInGroup, readNumber, readQuantity, unitForLabel
   };
 })();

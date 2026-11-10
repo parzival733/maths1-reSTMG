@@ -6,11 +6,21 @@
   if (!form) return;
   const input = document.getElementById('home-try-answer');
   const feedback = document.getElementById('home-try-feedback');
+  const decimal = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
+  const readNumber = raw => {
+    const parts = raw.replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(/,/g, '.').split('/');
+    if (parts.length < 1 || parts.length > 2 || !parts.every(part => decimal.test(part))) return NaN;
+    if (parts.length === 2 && Number(parts[1]) === 0) return NaN;
+    const value = Number(parts[0]) / (parts.length === 2 ? Number(parts[1]) : 1);
+    return Number.isFinite(value) ? value : NaN;
+  };
+  input.addEventListener('input', () => input.removeAttribute('aria-invalid'));
   form.addEventListener('submit', event => {
     event.preventDefault();
-    const raw = input.value.trim().replace(/\s+/g, '').replace(',', '.');
-    if (!raw) { feedback.textContent = 'Écris un nombre, puis vérifie.'; feedback.dataset.result = 'retry'; return; }
-    const value = Number(raw);
+    const raw = input.value.trim();
+    const value = readNumber(raw);
+    input.setAttribute('aria-invalid', String(value !== 3));
+    if (!Number.isFinite(value)) { feedback.textContent = 'Écris un nombre ou une fraction valide. Le dénominateur ne peut pas être nul.'; feedback.dataset.result = 'retry'; return; }
     if (value === 3) {
       feedback.textContent = 'Bravo : f(2) = 2 + 1 = 3. Le point de la droite d’abscisse 2 a pour ordonnée 3.';
       feedback.dataset.result = 'correct';
