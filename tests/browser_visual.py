@@ -2,7 +2,8 @@
 
 Les images restent dans .qa-visual/, hors du site publié. Un changement voulu
 doit préciser le commit de référence et les éléments concernés dans
-tests/visual-changes.json. Leur géométrie et leurs styles restent contrôlés.
+tests/visual-changes.json. Les captures brutes sont conservées ; une normalisation
+explicite peut retirer les seules commandes remplacées avant comparaison du reste.
 """
 import base64
 import functools
@@ -53,6 +54,11 @@ COMPARE = """async ({before, after, regions}) => {
     else unexpected++;
   }
   return {sameSize: true, unexpectedPixels: unexpected, expectedPixels: expected, maxDelta};
+}"""
+NORMALIZE_SYMBOLS = """() => {
+  // Changement volontaire des commandes, pas du contenu de la fiche.
+  document.querySelectorAll('.answer-sign,.answer-decimal,.answer-symbols-toggle,.answer-symbols-panel').forEach(e=>e.remove());
+  document.querySelectorAll('.answer-input').forEach(e=>e.replaceWith(...e.childNodes));
 }"""
 
 
@@ -118,6 +124,7 @@ def main():
                     for name in pages:
                         policy = allowed.get(name, {})
                         selector = policy.get('selector') if policy.get('reason') else None
+                        normalized = js and policy.get('normalization') == 'answer-symbols' and bool(policy.get('reason'))
                         captures, areas, filenames = [], [], []
                         for phase, (tab, server) in enumerate(zip(tabs, servers)):
                             tab.goto(f'http://127.0.0.1:{server.server_port}/' + name, wait_until='load')
@@ -127,13 +134,18 @@ def main():
                             image = tab.screenshot(full_page=True, animations='disabled')
                             filename = '-'.join([str(width), theme, 'js' if js else 'sans-js', name.replace('/', '_'), str(phase)]) + '.png'
                             (OUT / filename).write_bytes(image)
+                            if normalized:
+                                tab.evaluate(NORMALIZE_SYMBOLS)
+                                image = tab.screenshot(full_page=True, animations='disabled')
+                                (OUT / filename.replace('.png', '-comparaison.png')).write_bytes(image)
                             captures.append(base64.b64encode(image).decode())
                             filenames.append(filename)
                         geometry = areas[0] == areas[1]
                         diff = comparator.evaluate(COMPARE, {'before': captures[0], 'after': captures[1], 'regions': areas[1] if geometry else []})
                         ok = geometry and diff['sameSize'] and diff['unexpectedPixels'] == 0
                         rows.append({'page': name, 'width': width, 'theme': theme, 'javascript': js,
-                                     'ok': ok, 'geometryUnchanged': geometry, 'expectedChange': policy.get('reason'),
+                                     'ok': ok, 'geometryUnchanged': None if normalized else geometry,
+                                     'normalizedComponent': 'answer-symbols' if normalized else None, 'expectedChange': policy.get('reason'),
                                      'images': filenames, **diff})
                     for context in contexts:
                         context.close()
@@ -155,7 +167,7 @@ def main():
     failed = [row for row in rows if not row['ok']]
     if failed:
         raise SystemExit('Changements visuels non prévus : ' + ', '.join(row['page'] for row in failed))
-    print(f'VISUEL OK : {len(rows)} comparaisons, géométrie et styles des champs conservés.', flush=True)
+    print(f'VISUEL OK : {len(rows)} comparaisons, dont {sum(bool(r["normalizedComponent"]) for r in rows)} après retrait des commandes de saisie volontairement modifiées ; captures brutes conservées.', flush=True)
 
 
 if __name__ == '__main__':

@@ -9,6 +9,7 @@ from http.server import ThreadingHTTPServer
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 from http_security import SecurityHandler
+from input_symbols import choose_symbol, symbol_button
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -44,16 +45,16 @@ def main():
             page.goto(base + 'exercices/fonctions.html#exercice-3')
             slide = page.locator('#exercice-3')
             negative = slide.locator('[data-expect]').nth(1)
-            sign = negative.locator('..').locator('.answer-sign')
-            sign.tap()
+            sign = symbol_button(negative, 'minus')
+            choose_symbol(negative, 'minus')
             expect(negative).to_have_value('−')
             expect(negative).to_be_focused()
             expect(slide.locator('.exercise-feedback')).to_have_text('')
             page.keyboard.insert_text('1')
             expect(negative).to_have_value('−1')
-            sign.tap()
+            choose_symbol(negative, 'minus')
             expect(negative).to_have_value('1')
-            sign.tap()
+            choose_symbol(negative, 'minus')
             for index, control in enumerate(slide.locator('[data-expect]').all()):
                 value = control.get_attribute('data-expect').split('|')[0]
                 if control.evaluate('e => e.tagName') == 'SELECT':
@@ -67,9 +68,9 @@ def main():
             expect(page.locator('#exercise-score')).to_have_text('1/9')
             assert abs(float(page.locator('#exercise-progress-fill').evaluate('e => e.style.width').rstrip('%'))
                        - 100 / 9) < 0.001
-            sign.tap()
+            choose_symbol(negative, 'minus')
             expect(page.locator('#exercise-score')).to_have_text('0/9')
-            sign.tap()
+            choose_symbol(negative, 'minus')
             slide.locator('button[type=submit]').tap()
             slide.locator('details.check > summary').tap()
             expect(negative).to_have_attribute('readonly', '')
@@ -82,15 +83,15 @@ def main():
             slide.locator('button[type=submit]').tap()
             slide.locator('[data-action=new-variant]').tap()
             numeric = slide.locator('input[inputmode=decimal]')
-            expect(slide.locator('.answer-sign')).to_have_count(numeric.count())
+            expect(slide.locator('.answer-symbols-toggle')).to_have_count(numeric.count())
             negative = numeric.first
-            sign = negative.locator('..').locator('.answer-sign')
+            sign = symbol_button(negative, 'minus')
             negative.fill('12,5')
             negative.evaluate('e => e.setSelectionRange(2, 2)')
-            sign.tap()
+            choose_symbol(negative, 'minus')
             expect(negative).to_have_value('−12,5')
             assert negative.evaluate('e => e.selectionStart') == 3
-            sign.tap()
+            choose_symbol(negative, 'minus')
             expect(negative).to_have_value('12,5')
             assert negative.evaluate('e => e.selectionStart') == 2
 
