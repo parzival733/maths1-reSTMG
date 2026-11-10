@@ -17,6 +17,16 @@ class QuietHandler(SimpleHTTPRequestHandler):
     def log_message(self, *args):
         pass
 
+    def translate_path(self, path):
+        translated = Path(super().translate_path(path))
+        relative = translated.relative_to(ROOT.parent)
+        # La page 404 utilise les ressources de la racine de l'hébergement,
+        # même lorsque les autres pages sont testées dans un sous-dossier.
+        if (relative.as_posix() in ('favicon.svg', 'favicon.ico', 'apple-touch-icon.png')
+                or relative.parts[:2] == ('assets', 'fonts')):
+            return str(ROOT / relative)
+        return str(translated)
+
 
 def main():
     handler = functools.partial(QuietHandler, directory=str(ROOT.parent))
@@ -33,10 +43,8 @@ def main():
             context = browser.new_context()
             page = context.new_page()
             page.on('pageerror', lambda error: errors.append(str(error)))
-            # 404.html est servie à n'importe quelle adresse : ses polices ont des chemins absolus
-            # (/assets/fonts/…), introuvables seulement quand le site est servi dans un sous-dossier.
-            page.on('response', lambda response: failed_responses.append(response.url) if response.status >= 400
-                    and not (page.url.endswith('/404.html') and '/assets/fonts/' in response.url) else None)
+            page.on('response', lambda response: failed_responses.append(response.url)
+                    if response.status >= 400 else None)
             checks = 0
             for width in [320, 390, 768, 1440]:
                 page.set_viewport_size({'width': width, 'height': 900})
