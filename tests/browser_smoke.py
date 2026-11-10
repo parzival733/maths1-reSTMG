@@ -440,6 +440,7 @@ def main():
                 expect(panel.locator('.coaching-hint')).to_have_count(3)
                 help = panel.locator('.coaching-hint').nth(2)
                 form = page.locator(f'#exercice-{i+1} .exercise-form')
+                form.locator('input[data-expect]').first.fill('0')
                 form.locator('button[type="submit"]').click()
                 form.locator('[data-action="new-variant"]').click()
                 first_generated = page.locator(f'#exercice-{i+1} .coaching-hint').nth(2).text_content()
@@ -448,6 +449,7 @@ def main():
                 generated = set()
                 for _ in range(5):
                     form = page.locator(f'#exercice-{i+1} .exercise-form')
+                    form.locator('input[data-expect]').first.fill('0')
                     form.locator('button[type="submit"]').click()
                     form.locator('[data-action="new-variant"]').click()
                     generated.add(page.locator(f'#exercice-{i+1} .coaching-hint').nth(2).text_content())
@@ -494,6 +496,13 @@ def main():
                 page.locator('#exercice-2 [data-action="reset"]').click()
                 expect(page.locator('#exercice-2 .answer-row.is-revealed')).to_have_count(0)
                 # Après une erreur ou une correction, le score ne progresse pas.
+                wrong = page.locator('#exercice-2 [data-expect]').first
+                if wrong.evaluate('e => e.tagName') == 'SELECT':
+                    choices = wrong.locator('option').evaluate_all('(xs, expected) => xs.filter(x => x.value && !expected.includes(x.value.replace(/\\s/g, ""))).map(x => x.value)',
+                        wrong.get_attribute('data-expect').replace(' ', '').split('|'))
+                    wrong.select_option(choices[0])
+                else:
+                    wrong.fill('99999')
                 page.locator('#exercice-2 button[type="submit"]').click()
                 expect(page.locator('#exercice-2 [data-action="new-variant"]')).to_be_visible()
                 expect(page.locator('#exercise-score')).to_have_text('1/8')

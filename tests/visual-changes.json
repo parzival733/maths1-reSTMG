@@ -1,0 +1,13 @@
+{
+  "base_sha": "136c5292f8c1595f9202377f26ed97f0377d2f4f",
+  "allowed": {
+    "exercices/suites.html": {
+      "selector": ".answer-row input[data-expect]",
+      "reason": "Préciser le format dans les espaces réservés des champs, sans modifier leurs dimensions ni leurs styles."
+    },
+    "terminale/exercices/t-inverse.html": {
+      "selector": ".answer-row input[data-expect]",
+      "reason": "Annoncer les unités et arrondis acceptés dans les champs, avec la même géométrie et les mêmes styles."
+    }
+  }
+}

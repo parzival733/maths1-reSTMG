@@ -19,6 +19,7 @@
     && typeof generator.matchesAnswerInGroup === 'function';
   const unavailableMessage = 'La vérification est indisponible. Recharge la page pour réessayer ; le corrigé reste consultable.';
   const renderer = window.ExerciseRenderer;
+  const singleColumn = window.matchMedia('(max-width: 900px)');
   // Les énoncés initiaux des 15 autres chapitres sont dans leur JSON intégré.
   // La même fiche et ses variantes alimentent les indices sans lire les solutions.
   const originalExercises = (() => {
@@ -144,7 +145,11 @@
     row.classList.toggle('is-correct', correct);
     row.classList.toggle('is-wrong', !correct && !hasEmpty);
     const status = row.querySelector('.answer-status');
+    const malformed = controls.find(control => control.value.trim() && control.dataset.type === 'number'
+      && generator.readQuantity && !Number.isFinite(generator.readQuantity(control.value, control.dataset.unit)));
     if (status) status.textContent = correct ? 'Correct'
+      : malformed ? 'Format non reconnu. Écris un nombre ou une fraction'
+        + (malformed.dataset.unit ? ' en ' + malformed.dataset.unit : '') + '.'
       : hasEmpty ? 'Réponse à compléter.' : 'À revoir. Essaie encore.';
     return correct;
   }
@@ -295,6 +300,15 @@
     showSlide(index, true);
   }
 
+  function placeCoaching(slide) {
+    const panel = slide.querySelector('.coaching-panel');
+    const form = slide.querySelector('.exercise-form');
+    const statement = slide.querySelector('.exercise-statement');
+    if (!panel || !form || !statement) return;
+    if (singleColumn.matches) form.after(panel);
+    else statement.append(panel);
+  }
+
   // Le chapitre Fonctions a ses propres indices (fonctions-coaching.js) ; les autres chapitres
   // utilisent leurs fiches de méthodes, avec les valeurs de la variante en cours.
   function addCoaching(slide, form, index, context) {
@@ -374,13 +388,8 @@
     if (oldHint) oldHint.hidden = true;
     // Sur une seule colonne (téléphone, tablette), les aides passent sous les réponses
     // et le bouton Vérifier : énoncé, réponses puis aides, sans défilement inutile.
-    const singleColumn = window.matchMedia('(max-width: 900px)');
-    const place = () => {
-      if (singleColumn.matches) form.after(panel);
-      else statement.append(panel);
-    };
-    place();
-    singleColumn.addEventListener('change', place);
+    statement.append(panel);
+    placeCoaching(slide);
     let failures = 0;
     form.addEventListener('submit', () => {
       if (!validationReady || form.dataset.revealed === 'true') return;
@@ -429,7 +438,23 @@
     }
     form.querySelectorAll('.answer-row').forEach((row, r) => {
       const status = row.querySelector('.answer-status');
-      if (status) { status.id = slug + '-feedback-' + index + '-' + r; row.querySelectorAll('[data-expect]').forEach(c => c.setAttribute('aria-describedby', status.id)); }
+      if (status) status.id = slug + '-feedback-' + index + '-' + r;
+      row.querySelectorAll('[data-expect]').forEach((control, c) => {
+        const described = new Set((control.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean));
+        if (status) described.add(status.id);
+        const format = renderer?.answerFormat?.(control.dataset.type, control.dataset.rounding, control.dataset.unit);
+        if (format && control.tagName === 'INPUT') {
+          control.placeholder = format.placeholder;
+          const hint = document.createElement('small');
+          hint.id = slug + '-format-' + index + '-' + r + '-' + c;
+          hint.className = 'sr-only answer-format';
+          hint.textContent = format.description + (control.dataset.answerGroup ? ' L’ordre des solutions est libre entre les champs de ce groupe.' : '');
+          row.append(hint);
+          described.add(hint.id);
+          if (!control.title) control.title = hint.textContent;
+        }
+        if (described.size) control.setAttribute('aria-describedby', Array.from(described).join(' '));
+      });
     });
     const reset = form.querySelector('[data-action="reset"]');
     const correction = form.querySelector('details.check');
@@ -476,6 +501,10 @@
       const results = rows.map(markRow);
       const correctCount = results.filter(Boolean).length;
       const allCorrect = results.length > 0 && correctCount === rows.length;
+      if (!Array.from(form.querySelectorAll('[data-expect]')).some(control => control.value.trim())) {
+        if (summary) summary.textContent = 'Complète au moins une réponse avant de vérifier. Tu peux aussi consulter les indices.';
+        return;
+      }
       const j = journey[index];
       j.attempts++;
       if (allCorrect && !completed.has(index)) j.firstTry = j.attempts === 1 && !j.helped && !j.revealed;
@@ -483,7 +512,7 @@
       else completed.delete(index);
       updateProgress();
 
-      // Chaque clic sur Vérifier prépare un nouveau tirage, même si un
+      // Chaque vérification renseignée prépare un nouveau tirage, même si un
       // précédent était en attente ; ouvrir le corrigé ne consomme rien.
       const ready = variant && queueVariant(index, form, variant, true);
       if (summary) summary.textContent = (allCorrect
@@ -537,6 +566,8 @@
     if (index >= 0) journey[index].helped = true;
   }, true);
   slides.forEach((slide, index) => wireSlide(slide, index));
+  // Un seul écouteur travaille sur les variantes présentes, sans retenir les anciennes.
+  singleColumn.addEventListener('change', () => slides.forEach(placeCoaching));
   steps.forEach((button, index) => button.addEventListener('click', () => showSlide(index, true)));
   if (prev) prev.addEventListener('click', () => showSlide(current - 1, true));
   if (next) next.addEventListener('click', () => showSlide(current + 1, true));
