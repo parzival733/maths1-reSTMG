@@ -75,7 +75,7 @@ Tests dans le navigateur (Playwright et Chromium) :
 python3 -m pip install playwright==1.55.0
 python3 -m playwright install chromium
 for t in test_navigation_simple test_interface test_sujets browser_smoke browser_terminale \
-         browser_calcul_rapide browser_evolution browser_validation browser_global \
+         browser_calcul_rapide browser_evolution browser_validation browser_global browser_decimal \
          browser_visual; do python3 tests/$t.py; done
 npm install --prefix /tmp/stmg-qa axe-core@4.10.3
 AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py

@@ -54,7 +54,7 @@ jobs:
           import subprocess, sys
           failed = []
           for name in ['test_navigation_simple.py', 'browser_smoke.py', 'browser_terminale.py', 'browser_calcul_rapide.py',
-                       'test_interface.py', 'test_sujets.py', 'browser_evolution.py', 'browser_validation.py', 'browser_global.py', 'browser_visual.py']:
+                       'test_interface.py', 'test_sujets.py', 'browser_evolution.py', 'browser_validation.py', 'browser_global.py', 'browser_decimal.py', 'browser_visual.py']:
               print('::group::' + name, flush=True)
               if subprocess.run([sys.executable, 'tests/' + name], timeout=300).returncode:
                   failed.append(name)
@@ -82,6 +82,7 @@ jobs:
             .qa-sujets/
             .qa-cloture/
             .qa-visual/
+            .qa-decimal/
           include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 7
