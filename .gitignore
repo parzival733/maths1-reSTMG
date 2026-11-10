@@ -3,3 +3,11 @@ __pycache__/
 .qa-*/
 node_modules/
 public/
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+.wrangler/
+*.pem
+*.key
+*.p12

@@ -97,8 +97,10 @@ def main():
             url = urlsplit(link)
             if url.scheme or url.netloc:
                 continue
-            assert not url.path.startswith('/'), (name, 'absolute internal path', link)
-            target = (path.parent / unquote(url.path)).resolve() if url.path else path
+            if not (name == '404.html' and url.path in ('/favicon.svg', '/favicon.ico', '/apple-touch-icon.png')):
+                assert not url.path.startswith('/'), (name, 'absolute internal path', link)
+            target = ((ROOT / url.path.lstrip('/')).resolve() if url.path.startswith('/')
+                      else (path.parent / unquote(url.path)).resolve() if url.path else path)
             assert target.is_relative_to(ROOT), (name, 'path escapes site', link)
             assert target.is_file(), (name, 'missing target', link)
             if url.fragment and target.suffix == '.html':
