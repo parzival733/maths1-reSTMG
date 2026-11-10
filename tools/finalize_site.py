@@ -60,8 +60,8 @@ def main():
             if 'assets/tokens.css' not in page:
                 page=re.sub(r'(<link rel="stylesheet" href=")', lambda m: '<link rel="stylesheet" href="/assets/tokens.css">\n'+m.group(1), page, count=1)
             page=re.sub(r'\s*<link rel="(?:icon|apple-touch-icon)"[^>]*>','',page)
-            # Servie à n'importe quelle adresse : icônes en URL complètes, comme ses liens.
-            page=page.replace('</title>',f'</title><link rel="icon" href="{ORIGIN}/favicon.svg" type="image/svg+xml"><link rel="icon" href="{ORIGIN}/favicon.ico" sizes="16x16 32x32 48x48"><link rel="apple-touch-icon" href="{ORIGIN}/apple-touch-icon.png">',1)
+            # Servie à n'importe quelle adresse, y compris sur une préversion.
+            page=page.replace('</title>','</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48"><link rel="apple-touch-icon" href="/apple-touch-icon.png">',1)
             path.write_text(page)
             continue
         text=path.read_text();rel=path.relative_to(ROOT).as_posix();base='../'*(len(path.relative_to(ROOT).parts)-1)
