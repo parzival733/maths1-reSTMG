@@ -103,8 +103,8 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 | `browser_*.py` | Parcours réels dans Chromium, 320 à 1 440 px, sans JavaScript, accessibilité (axe-core) |
 | `test_safari.js`, `browser_validation.py` | Absence de lookbehind bloquant, montants au centime, moteur absent ou incomplet sans faux négatif, suivi à vide et réinitialisation accessible ; `STMG_TEST_BROWSER=webkit` permet le contrôle avec WebKit |
 | `test_answer_formats.js`, `browser_global.py` | Unités explicitement demandées, fractions à l'accueil, descriptions des champs, bilan sans tentative vide, écouteurs bornés après 30 variantes ; exécution Chromium ou WebKit |
-| `browser_decimal.py` | Touche virgule sur les écrans tactiles dans toutes les séries, champs de 120 px minimum à 320 px, saisie négative, sélection, score, corrigé, effacement et nouvelles variantes ; Chromium ou WebKit |
-| `browser_visual.py` | 39 comparaisons au commit de référence : mobile, PC, thèmes clair et sombre, sans JavaScript ; aucun déplacement ni changement de style autorisé par le masque des champs |
+| `browser_decimal.py` | Menu Signes dans toutes les séries : moins, plus, virgule, fraction, unité déclarée ; champs de 120 px minimum à 320 px, clavier, sélection, score, corrigé, effacement et variantes ; Chromium ou WebKit |
+| `browser_visual.py` | 39 comparaisons au commit de référence : mobile, PC, thèmes clair et sombre, sans JavaScript ; captures brutes conservées et changements volontaires déclarés pour une seule référence |
 | `check_publication.py` | Site en ligne identique à `public/`, fichiers internes en 404 |
 
 ### Comparaisons visuelles
@@ -114,6 +114,8 @@ Le test construit deux versions avec `tools/build_public.py` et les sert sous la
 En CI, la référence est la base de la pull request ou le commit précédent le push. En local, `VISUAL_BASE_SHA=<SHA complet> python3 tests/browser_visual.py` choisit explicitement la référence. Sans cette variable, le test utilise `HEAD` si le travail est modifié, sinon `HEAD^`.
 
 Pour un changement volontaire du texte d'un champ, relire les deux captures puis renseigner dans `tests/visual-changes.json` le SHA exact de référence, la page, un sélecteur précis et la raison. Le masque ne s'applique qu'à cette référence et à l'intérieur des champs : leurs dimensions, positions et styles restent comparés. Une refonte qui modifie la géométrie doit faire évoluer le contrôle après revue ; élargir un masque pour cacher une régression n'est pas acceptable.
+
+Pour le remplacement explicite des touches moins/virgule par le menu Signes, `normalization: "answer-symbols"` retire uniquement les anciennes et nouvelles commandes de saisie et déplie leur conteneur dans les deux versions avant comparaison. Les captures brutes avant/après montrent le changement voulu ; les images `*-comparaison.png` contrôlent le reste de la fiche. Cette exception ne vaut que pour le SHA déclaré. Les tests de menu vérifient séparément le rendu des champs, les cibles tactiles, le clavier et les insertions ; une revue des captures brutes reste nécessaire.
 
 ## Règle des empreintes
 

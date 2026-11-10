@@ -1,13 +1,13 @@
 {
-  "base_sha": "136c5292f8c1595f9202377f26ed97f0377d2f4f",
+  "base_sha": "4b6733c2971d556d9a9c9db87a599bf5c38f169d",
   "allowed": {
     "exercices/suites.html": {
-      "selector": ".answer-row input[data-expect]",
-      "reason": "Préciser le format dans les espaces réservés des champs, sans modifier leurs dimensions ni leurs styles."
+      "normalization": "answer-symbols",
+      "reason": "Remplacer, à la demande de l’utilisateur, les touches moins et virgule par un menu Signes. Les captures brutes montrent le changement ; la comparaison retire uniquement les anciennes et nouvelles commandes et leur conteneur pour contrôler le reste de la fiche."
     },
     "terminale/exercices/t-inverse.html": {
-      "selector": ".answer-row input[data-expect]",
-      "reason": "Annoncer les unités et arrondis acceptés dans les champs, avec la même géométrie et les mêmes styles."
+      "normalization": "answer-symbols",
+      "reason": "Même remplacement volontaire des commandes par un menu Signes en Terminale. Captures brutes conservées, tests tactiles et clavier dédiés ; contrôle visuel du reste après retrait des seules commandes."
     }
   }
 }
