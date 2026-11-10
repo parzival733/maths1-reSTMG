@@ -1,5 +1,8 @@
 """La publication ne doit contenir que les ressources destinées au navigateur."""
 import importlib.util
+import base64
+import hashlib
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -86,11 +89,25 @@ class PublicationSecurity(unittest.TestCase):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 build.check_source(name)
 
+    def test_stale_style_hash_prevents_publication(self):
+        css = 'body{color:#252436}'
+        self.write('index.html', '<style>' + css + '</style>')
+        self.write('_headers', "/*\n  Content-Security-Policy: style-src 'self';\n")
+        with self.assertRaisesRegex(ValueError, 'Empreinte CSS absente'):
+            build.main()
+        digest = base64.b64encode(hashlib.sha256(css.encode()).digest()).decode('ascii')
+        self.write('_headers', "/*\n  Content-Security-Policy: style-src 'self' 'sha256-" + digest + "';\n")
+        build.main()
+        self.assertTrue((build.OUT / 'index.html').is_file())
+
 
 class SecurityHeaders(unittest.TestCase):
     def test_browser_protections(self):
         content = (ROOT / '_headers').read_text(encoding='utf-8').split('/404')[0]
-        headers = dict(line.strip().split(': ', 1) for line in content.splitlines()[1:] if line.strip())
+        headers = dict(line.strip().split(': ', 1) for line in content.splitlines()[1:]
+                       if line.strip() and not line.strip().startswith('! '))
+        self.assertIn('  ! Access-Control-Allow-Origin', content)
+        self.assertIn('  ! Access-Control-Allow-Credentials', content)
         self.assertEqual(headers['X-Content-Type-Options'], 'nosniff')
         self.assertEqual(headers['X-Frame-Options'], 'DENY')
         self.assertEqual(headers['Cross-Origin-Opener-Policy'], 'same-origin')
@@ -99,8 +116,23 @@ class SecurityHeaders(unittest.TestCase):
         csp = dict(part.strip().split(' ', 1) for part in headers['Content-Security-Policy'].split(';'))
         for name in ('script-src', 'connect-src', 'form-action'):
             self.assertEqual(csp[name], "'self'")
-        for name in ('object-src', 'base-uri', 'frame-ancestors', 'frame-src', 'worker-src'):
+        for name in ('object-src', 'base-uri', 'frame-ancestors', 'frame-src', 'worker-src', 'style-src-attr'):
             self.assertEqual(csp[name], "'none'")
+        self.assertNotIn('unsafe-inline', headers['Content-Security-Policy'])
+        self.assertNotIn('unsafe-eval', headers['Content-Security-Policy'])
+        allowed = set(csp['style-src'].split())
+        expected = {"'self'"}
+        for path in build.pages():
+            for css in re.findall(r'<style\b[^>]*>([\s\S]*?)</style\s*>', path.read_text(), re.I):
+                digest = base64.b64encode(hashlib.sha256(css.encode('utf-8')).digest()).decode('ascii')
+                expected.add("'sha256-" + digest + "'")
+        self.assertEqual(allowed, expected, 'Une empreinte CSS manque ou autorise un bloc retiré.')
+        self.assertTrue(all(len(line) <= 2000 for line in content.splitlines()))
+
+    def test_robots_does_not_list_internal_paths(self):
+        content = (ROOT / 'robots.txt').read_text()
+        self.assertNotRegex(content, r'(?im)^Disallow:\s*/(?:tests|tools|\.github|docs)')
+        self.assertIn('Sitemap: https://mathstmgdls.pages.dev/sitemap.xml', content)
 
 
 if __name__ == '__main__':

@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 import time
@@ -36,6 +37,8 @@ PRIVATE = ('docs/audit-et-arbitrages.md', 'docs/maintenance.md', 'docs/validatio
 
 
 def verify_security_headers(headers, path):
+    for name in ('Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials'):
+        assert headers.get(name) is None, (path, name, headers.get(name))
     for name, value in {
         'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY',
         'Strict-Transport-Security': 'max-age=31536000',
@@ -47,8 +50,12 @@ def verify_security_headers(headers, path):
     directives = dict(part.strip().split(' ', 1) for part in csp.split(';') if ' ' in part.strip())
     for name in ('script-src', 'connect-src', 'form-action'):
         assert directives.get(name) == "'self'", (path, name, directives.get(name))
-    for name in ('object-src', 'base-uri', 'frame-ancestors', 'frame-src', 'worker-src'):
+    for name in ('object-src', 'base-uri', 'frame-ancestors', 'frame-src', 'worker-src', 'style-src-attr'):
         assert directives.get(name) == "'none'", (path, name, directives.get(name))
+    assert 'unsafe-inline' not in csp and 'unsafe-eval' not in csp, (path, 'unsafe CSP')
+    styles = directives.get('style-src', '').split()
+    assert "'self'" in styles and all(value == "'self'" or re.fullmatch(r"'sha256-[A-Za-z0-9+/]{43}='", value)
+                                      for value in styles), (path, 'style-src', styles)
 
 
 def fetch(path: str):
