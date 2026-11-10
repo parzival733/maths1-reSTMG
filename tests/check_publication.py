@@ -52,7 +52,9 @@ def verify_security_headers(headers, path):
 
 
 def fetch(path: str):
-    request = Request(ORIGIN + '/' + path,
+    # Un paramètre unique vérifie la publication actuelle, y compris après le
+    # retrait d'un fichier auparavant public, sans relire une ancienne copie.
+    request = Request(ORIGIN + '/' + path + '?controle-publication=' + uuid.uuid4().hex,
                       headers={'User-Agent': 'MathsSTMG-DeploymentCheck/1.0', 'Cache-Control': 'no-cache'})
     try:
         with urlopen(request, timeout=20) as response:
