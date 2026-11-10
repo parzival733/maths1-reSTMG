@@ -64,7 +64,7 @@ for f in assets/*.js; do node --check "$f"; done
 for t in test_variants test_rangs test_graphiques test_terminale test_calcul_rapide \
          test_countdown test_acquis test_parcours test_domaines test_cloture test_safari; do node tests/$t.js; done
 for t in validate_site test_notation test_typographie test_noms_liens test_terminale \
-         test_calcul_rapide test_evolution test_cloture; do python3 tests/$t.py; done
+         test_calcul_rapide test_evolution test_cloture test_securite; do python3 tests/$t.py; done
 python3 tools/build_public.py
 ```
 
@@ -83,7 +83,7 @@ Le workflow `.github/workflows/verification.yml` lance l'ensemble à chaque pull
 
 ## Publication
 
-Cloudflare Pages publie la branche **`main`** sur https://mathstmgdls.pages.dev/. Seul le dossier `public/`, construit par `tools/build_public.py`, est mis en ligne : pages, `assets/`, données liées par une page, `_headers`, `robots.txt`, `sitemap.xml` et `404.html`. Les dossiers `docs/`, `tests/`, `tools/` et `.github/` ne sont jamais publiés.
+Cloudflare Pages publie la branche **`main`** sur https://mathstmgdls.pages.dev/. Le projet doit publier uniquement le dossier `public/`, construit par `tools/build_public.py` : pages, ressources du navigateur, CSV liés par une page, licences des polices et fichiers de configuration de l'hébergeur. Les dossiers `docs/`, `tests/`, `tools/` et `.github/` doivent rester hors de la publication. Le contrôle en ligne ci-dessous vérifie la configuration effective de Cloudflare.
 
 Réglage du projet dans le tableau de bord Cloudflare :
 
@@ -94,6 +94,16 @@ Réglage du projet dans le tableau de bord Cloudflare :
 5. Une fois le déploiement terminé : `python3 tests/check_publication.py`. Il vérifie que chaque fichier publié est identique à `public/` et que `/docs/…`, `/tests/…`, `/tools/…`, `/README.md` et `/.github/…` répondent 404.
 
 Le script n'utilise que la bibliothèque standard de Python, présente dans l'image de build de Cloudflare. Il échoue si une page lie un fichier local absent de `public/`. Le workflow `.github/workflows/publication.yml` lance le contrôle après chaque modification de `main`.
+
+## Protection du code et sécurité
+
+Le dépôt GitHub doit être **privé** si son historique, ses outils et ses sources ne doivent pas être librement consultables. Ce réglage se fait par le propriétaire dans **Settings → General → Danger Zone → Change repository visibility**. Conserver l'accès de l'application Cloudflare au dépôt, puis vérifier un nouveau déploiement. Les anciennes copies déjà téléchargées ne peuvent pas être retirées à distance.
+
+Le HTML, le CSS, les scripts et les réponses calculées dans le navigateur restent accessibles aux visiteurs : ils sont nécessaires au fonctionnement hors serveur des exercices. Les minifier ou bloquer le clic droit ne crée pas de protection d'accès. Aucun secret ni clé d'API ne doit être ajouté à ces fichiers.
+
+La construction refuse les liens symboliques, fichiers cachés, archives, sources Python, JSON internes et cartes de sources dans les assets. Les licences des polices restent publiées. `_headers` interdit les scripts externes ou intégrés, les plugins, les cadres et l'intégration du site dans une autre page ; il impose aussi HTTPS, l'isolation des fenêtres et le type déclaré des ressources. Les styles intégrés restent autorisés pour les graphiques, la progression et les versions sans JavaScript.
+
+`tests/test_securite.py` contrôle les exclusions de publication et les en-têtes. `tests/check_publication.py` vérifie les en-têtes réellement reçus et les réponses 404 des fichiers internes. Une réussite locale ne remplace pas ce contrôle après déploiement.
 
 Pour revenir en arrière : redéployer un déploiement Cloudflare précédent, ou ajouter un commit de retour sur `main`. Les progrès enregistrés par les élèves restent dans leur navigateur et ne sont jamais effacés par un déploiement.
 

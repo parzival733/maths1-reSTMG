@@ -17,6 +17,32 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'public'
 PAGE_DIRS = ('cours', 'exercices', 'terminale', 'entrainement', 'annexes', 'donnees')
 ROOT_FILES = ('_headers', 'robots.txt', 'sitemap.xml', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png')
+ASSET_SUFFIXES = frozenset(('.js', '.css', '.svg', '.png', '.ico', '.jpg', '.jpeg',
+                            '.webp', '.avif', '.woff', '.woff2', '.ttf', '.otf'))
+FONT_LICENSES = frozenset(('OFL-noto-sans.txt', 'OFL-noto-sans-math.txt',
+                           'OFL-source-sans-3.txt', 'OFL-source-serif-4.txt'))
+
+
+def check_source(rel):
+    """Refuse les liens symboliques, y compris dans les dossiers parents."""
+    path = Path(rel)
+    if path.is_absolute() or '..' in path.parts:
+        raise ValueError(f'Chemin de publication interdit : {rel}')
+    for item in (path, *path.parents):
+        if (ROOT / item).is_symlink():
+            raise ValueError(f'Lien symbolique interdit dans public/ : {rel}')
+
+
+def public_asset(rel):
+    path = PurePosixPath(rel)
+    if path == PurePosixPath('assets/fonts/LISEZMOI.md'):
+        return False
+    if any(part.startswith('.') for part in path.parts):
+        raise ValueError(f'Fichier caché interdit dans public/ : {rel}')
+    license_file = path.parent == PurePosixPath('assets/fonts') and path.name in FONT_LICENSES
+    if path.suffix.lower() not in ASSET_SUFFIXES and not license_file:
+        raise ValueError(f'Type de fichier non autorisé dans les assets publics : {rel}')
+    return True
 
 
 class Links(HTMLParser):
@@ -62,6 +88,7 @@ def pages():
 
 
 def copy(rel):
+    check_source(rel)
     source, target = ROOT / rel, OUT / rel
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, target)
@@ -75,8 +102,10 @@ def main():
     for rel in html_pages:
         copy(rel)
     for path in sorted((ROOT / 'assets').rglob('*')):
-        if path.is_file():
-            copy(path.relative_to(ROOT).as_posix())
+        rel = path.relative_to(ROOT).as_posix()
+        check_source(rel)
+        if path.is_file() and public_asset(rel):
+            copy(rel)
     for rel in ROOT_FILES:
         copy(rel)
 
@@ -91,6 +120,8 @@ def main():
                 linked.setdefault(target, rel)
     for target in sorted(linked):
         if target.startswith('donnees/') and (ROOT / target).is_file() and not (OUT / target).exists():
+            if PurePosixPath(target).suffix.lower() != '.csv':
+                raise ValueError(f'Donnée non autorisée dans public/ : {target}')
             copy(target)
 
     # Feuilles de style : url(...) relatives (polices, icônes).

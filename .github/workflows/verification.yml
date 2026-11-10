@@ -40,7 +40,9 @@ jobs:
           node tests/test_cloture.js
           python3 tests/test_cloture.py
       - name: Dossier publié
-        run: python3 tools/build_public.py
+        run: |
+          python3 tests/test_securite.py
+          python3 tools/build_public.py
       - name: Navigateur
         timeout-minutes: 3
         run: sh tools/prepare_browser.sh

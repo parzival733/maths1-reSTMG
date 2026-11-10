@@ -30,7 +30,25 @@ ALIASES = {'progresser.html': 'exercices.html', 'preparer-bac.html': 'sujets.htm
 PRIVATE = ('docs/audit-et-arbitrages.md', 'docs/maintenance.md', 'docs/validation-humaine.md',
            'tests/check_publication.py', 'tests/validate_site.py', 'tools/finalize_site.py',
            'tools/build_public.py', 'README.md', '.github/workflows/verification.yml',
-           'donnees/README.md', 'donnees/sujets.json', '.gitignore')
+           'donnees/README.md', 'donnees/sujets.json', 'donnees/entrainements.json',
+           'donnees/couverture-programme.json', 'assets/fonts/LISEZMOI.md',
+           '.gitignore', '.git/config', '.env', 'assets/exercices-variants.js.map')
+
+
+def verify_security_headers(headers, path):
+    for name, value in {
+        'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY',
+        'Strict-Transport-Security': 'max-age=31536000',
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Resource-Policy': 'same-origin',
+    }.items():
+        assert headers.get(name) == value, (path, name, headers.get(name))
+    csp = headers.get('Content-Security-Policy', '')
+    directives = dict(part.strip().split(' ', 1) for part in csp.split(';') if ' ' in part.strip())
+    for name in ('script-src', 'connect-src', 'form-action'):
+        assert directives.get(name) == "'self'", (path, name, directives.get(name))
+    for name in ('object-src', 'base-uri', 'frame-ancestors', 'frame-src', 'worker-src'):
+        assert directives.get(name) == "'none'", (path, name, directives.get(name))
 
 
 def fetch(path: str):
@@ -53,6 +71,7 @@ def verify():
     for path in published_files():
         status, headers, body, url = fetch(path)
         assert status == 200, (path, status)
+        verify_security_headers(headers, path)
         assert urlsplit(url).netloc == urlsplit(ORIGIN).netloc, url
         expected_body = (PUBLIC / path).read_bytes()
         if path != '404.html':
@@ -71,8 +90,9 @@ def verify():
         checked.append({'path': path, 'status': status})
     private = []
     for path in PRIVATE:
-        status, _, _, _ = fetch(path)
+        status, headers, _, _ = fetch(path)
         assert status == 404, (path, 'internal file is public', status)
+        verify_security_headers(headers, path)
         private.append({'path': path, 'status': status})
     missing = 'controle-404-' + uuid.uuid4().hex + '/introuvable'
     status, _, body, _ = fetch(missing)
