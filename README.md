@@ -83,7 +83,7 @@ AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_clo
 
 Le workflow `.github/workflows/verification.yml` lance l'ensemble à chaque pull request et à chaque modification de `main`.
 
-`browser_visual.py` compare 39 rendus mobiles et PC, clairs, sombres et sans JavaScript au commit précédent (ou à `VISUAL_BASE_SHA`). Les captures brutes et le rapport restent dans `.qa-visual/`. Une différence volontaire se déclare avec sa justification dans `tests/visual-changes.json`, pour une seule référence. Le remplacement des commandes de saisie dispose d'une normalisation ciblée et de tests de menu séparés. Voir la procédure de revue dans `docs/maintenance.md`.
+`browser_visual.py` compare 43 rendus mobiles et PC, clairs, sombres et sans JavaScript au commit précédent (ou à `VISUAL_BASE_SHA`). Les captures brutes et le rapport restent dans `.qa-visual/`. Une différence volontaire se déclare avec sa justification dans `tests/visual-changes.json`, pour une seule référence. La zone de réponses dispose d'une normalisation ciblée pour les changements de présentation explicitement demandés, et de tests séparés de menu, de curseur et de géométrie. Voir la procédure de revue dans `docs/maintenance.md`.
 
 ## Publication
 
