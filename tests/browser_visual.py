@@ -23,7 +23,7 @@ from http_security import SecurityHandler
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / '.qa-visual'
-PAGES = ['index.html', 'lecons.html', 'cours/fonctions.html', 'exercices/suites.html',
+PAGES = ['index.html', 'lecons.html', 'cours/fonctions.html', 'exercices/suites.html', 'exercices/fonctions.html',
          'terminale/exercices/t-inverse.html', 'annexes/calcul-rapide.html',
          'sujets.html', 'revisions.html', '404.html']
 FIXED = """() => {
@@ -59,6 +59,25 @@ NORMALIZE_SYMBOLS = """() => {
   // Changement volontaire des commandes, pas du contenu de la fiche.
   document.querySelectorAll('.answer-sign,.answer-decimal,.answer-symbols-toggle,.answer-symbols-panel').forEach(e=>e.remove());
   document.querySelectorAll('.answer-input').forEach(e=>e.replaceWith(...e.childNodes));
+  document.querySelectorAll('.answer-tools').forEach(e=>e.replaceWith(...e.childNodes));
+}"""
+NORMALIZE_ANSWER_LAYOUT = """() => {
+  // La mise en page des réponses est volontairement refaite : comparer leurs textes
+  // et le reste de la page dans une géométrie commune, en conservant les captures brutes.
+  const set=(e,styles)=>Object.entries(styles).forEach(([k,v])=>e.style.setProperty(k,v));
+  document.querySelectorAll('.exercise-form').forEach(form=>{
+    const heading=form.querySelector(':scope > h3');
+    if(heading)set(heading,{'display':'flex','align-items':'center','min-height':'44px','margin':'0 0 16px','font-family':'var(--font-sans)','font-size':'var(--text-base)','font-weight':'700','line-height':'1.5'});
+    form.querySelectorAll('.answer-grid').forEach(e=>set(e,{'display':'grid','grid-template-columns':'minmax(0,1fr)','gap':'16px'}));
+    form.querySelectorAll('.answer-row').forEach(e=>set(e,{'display':'grid','grid-template-columns':'minmax(0,1fr)','gap':'8px','margin':'0','padding':'0','align-items':'start'}));
+    form.querySelectorAll(':scope > :is(.answer-grid,.answer-row) + :is(.answer-grid,.answer-row)').forEach(e=>set(e,{'margin-top':'16px'}));
+    form.querySelectorAll('.answer-row > span:first-child').forEach(e=>set(e,{'display':'block','line-height':'1.5'}));
+    form.querySelectorAll('.answer-row > span:first-child > label').forEach(e=>set(e,{'display':'inline','font':'inherit','margin':'0','padding':'0'}));
+    form.querySelectorAll('.answer-row input,.answer-row select').forEach(e=>set(e,{'display':'block','width':'100%','min-width':'0','height':'48px','min-height':'48px','padding':'10px 12px','margin':'0','box-sizing':'border-box','border-width':'2px','font-size':'16px','line-height':'1.5','box-shadow':'none'}));
+    form.querySelectorAll('.exercise-actions').forEach(e=>set(e,{'margin-top':'24px','gap':'12px'}));
+    form.querySelectorAll('.exercise-feedback').forEach(e=>{set(e,{'margin-top':'16px'});if(!e.textContent.trim())set(e,{'display':'none'});});
+    form.querySelectorAll('.check').forEach(e=>set(e,{'margin-top':'24px'}));
+  });
 }"""
 
 
@@ -124,7 +143,7 @@ def main():
                     for name in pages:
                         policy = allowed.get(name, {})
                         selector = policy.get('selector') if policy.get('reason') else None
-                        normalized = js and policy.get('normalization') == 'answer-symbols' and bool(policy.get('reason'))
+                        normalized = js and policy.get('normalization') in ('answer-symbols','answer-layout') and bool(policy.get('reason'))
                         captures, areas, filenames = [], [], []
                         for phase, (tab, server) in enumerate(zip(tabs, servers)):
                             tab.goto(f'http://127.0.0.1:{server.server_port}/' + name, wait_until='load')
@@ -136,6 +155,7 @@ def main():
                             (OUT / filename).write_bytes(image)
                             if normalized:
                                 tab.evaluate(NORMALIZE_SYMBOLS)
+                                if policy.get('normalization') == 'answer-layout':tab.evaluate(NORMALIZE_ANSWER_LAYOUT)
                                 image = tab.screenshot(full_page=True, animations='disabled')
                                 (OUT / filename.replace('.png', '-comparaison.png')).write_bytes(image)
                             captures.append(base64.b64encode(image).decode())
@@ -145,7 +165,7 @@ def main():
                         ok = geometry and diff['sameSize'] and diff['unexpectedPixels'] == 0
                         rows.append({'page': name, 'width': width, 'theme': theme, 'javascript': js,
                                      'ok': ok, 'geometryUnchanged': None if normalized else geometry,
-                                     'normalizedComponent': 'answer-symbols' if normalized else None, 'expectedChange': policy.get('reason'),
+                                     'normalizedComponent': policy.get('normalization') if normalized else None, 'expectedChange': policy.get('reason'),
                                      'images': filenames, **diff})
                     for context in contexts:
                         context.close()
@@ -167,7 +187,7 @@ def main():
     failed = [row for row in rows if not row['ok']]
     if failed:
         raise SystemExit('Changements visuels non prévus : ' + ', '.join(row['page'] for row in failed))
-    print(f'VISUEL OK : {len(rows)} comparaisons, dont {sum(bool(r["normalizedComponent"]) for r in rows)} après retrait des commandes de saisie volontairement modifiées ; captures brutes conservées.', flush=True)
+    print(f'VISUEL OK : {len(rows)} comparaisons, dont {sum(bool(r["normalizedComponent"]) for r in rows)} avec normalisation déclarée de la zone de réponses ; captures brutes conservées.', flush=True)
 
 
 if __name__ == '__main__':

@@ -52,8 +52,10 @@ def main():
             expect(slide.locator('.exercise-feedback')).to_have_text('')
             page.keyboard.insert_text('1')
             expect(negative).to_have_value('−1')
-            choose_symbol(negative, 'minus')
-            expect(negative).to_have_value('1')
+            negative.evaluate('e => e.setSelectionRange(0, 1)')
+            choose_symbol(negative, 'plus')
+            expect(negative).to_have_value('+1')
+            negative.evaluate('e => e.setSelectionRange(0, 1)')
             choose_symbol(negative, 'minus')
             for index, control in enumerate(slide.locator('[data-expect]').all()):
                 value = control.get_attribute('data-expect').split('|')[0]
@@ -68,8 +70,10 @@ def main():
             expect(page.locator('#exercise-score')).to_have_text('1/9')
             assert abs(float(page.locator('#exercise-progress-fill').evaluate('e => e.style.width').rstrip('%'))
                        - 100 / 9) < 0.001
-            choose_symbol(negative, 'minus')
+            negative.evaluate('e => e.setSelectionRange(0, 1)')
+            choose_symbol(negative, 'plus')
             expect(page.locator('#exercise-score')).to_have_text('0/9')
+            negative.evaluate('e => e.setSelectionRange(0, 1)')
             choose_symbol(negative, 'minus')
             slide.locator('button[type=submit]').tap()
             slide.locator('details.check > summary').tap()
@@ -83,15 +87,15 @@ def main():
             slide.locator('button[type=submit]').tap()
             slide.locator('[data-action=new-variant]').tap()
             numeric = slide.locator('input[inputmode=decimal]')
-            expect(slide.locator('.answer-symbols-toggle')).to_have_count(numeric.count())
+            expect(slide.locator('.answer-symbols-toggle')).to_have_count(1)
             negative = numeric.first
             sign = symbol_button(negative, 'minus')
             negative.fill('12,5')
             negative.evaluate('e => e.setSelectionRange(2, 2)')
             choose_symbol(negative, 'minus')
-            expect(negative).to_have_value('−12,5')
+            expect(negative).to_have_value('12−,5')
             assert negative.evaluate('e => e.selectionStart') == 3
-            choose_symbol(negative, 'minus')
+            page.keyboard.press('Backspace')
             expect(negative).to_have_value('12,5')
             assert negative.evaluate('e => e.selectionStart') == 2
 

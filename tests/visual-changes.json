@@ -1,13 +1,17 @@
 {
-  "base_sha": "4b6733c2971d556d9a9c9db87a599bf5c38f169d",
+  "base_sha": "aa8095d15f1452f2f1accd5bd8de0ebf7c74c8d5",
   "allowed": {
+    "exercices/fonctions.html": {
+      "normalization": "answer-layout",
+      "reason": "Corriger les espacements entre la grille et les champs isolés, le double focus et les menus répétés signalés par l’utilisateur. Géométrie commune pour comparer les contenus, captures brutes et tests exacts des espacements conservés."
+    },
     "exercices/suites.html": {
-      "normalization": "answer-symbols",
-      "reason": "Remplacer, à la demande de l’utilisateur, les touches moins et virgule par un menu Signes. Les captures brutes montrent le changement ; la comparaison retire uniquement les anciennes et nouvelles commandes et leur conteneur pour contrôler le reste de la fiche."
+      "normalization": "answer-layout",
+      "reason": "Demande explicite : un menu commun en haut du bloc, champs alignés et espacements réguliers. Captures brutes relues ; pour cette référence seulement, les commandes sont retirées et la géométrie des réponses est uniformisée afin de comparer les textes et le reste de la fiche. Les tests dédiés contrôlent la nouvelle géométrie et le focus."
     },
     "terminale/exercices/t-inverse.html": {
-      "normalization": "answer-symbols",
-      "reason": "Même remplacement volontaire des commandes par un menu Signes en Terminale. Captures brutes conservées, tests tactiles et clavier dédiés ; contrôle visuel du reste après retrait des seules commandes."
+      "normalization": "answer-layout",
+      "reason": "Même évolution demandée de la zone de réponses en Terminale : menu commun, espacements fixes et contour de focus unique. Revue des captures brutes et tests de géométrie ; comparaison des textes et du reste avec une géométrie commune, pour cette seule référence."
     }
   }
 }

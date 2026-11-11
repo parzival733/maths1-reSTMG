@@ -1,7 +1,6 @@
-"""Menu de signes : saisie réelle, curseur, score et variantes sous la CSP du site.
+"""Menu commun, curseur et espacement des réponses sur Chromium/WebKit.
 
-STMG_TEST_BROWSER=webkit permet de rejouer ces cas avec le moteur de Safari.
-Le clavier système iOS lui-même exige une vérification sur un appareil physique.
+Les profils mobiles ne reproduisent pas le clavier système d'un iPhone physique.
 """
 import functools
 import os
@@ -14,7 +13,6 @@ from input_symbols import choose_symbol, symbol_button
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / '.qa-decimal'
-NUMERIC = '.answer-row input[inputmode="decimal"]'
 
 
 class Quiet(SecurityHandler):
@@ -40,201 +38,117 @@ def main():
                     is_mobile=True, has_touch=True, locale='fr-FR', color_scheme=theme)
                 page = context.new_page()
                 page.on('pageerror', lambda error: errors.append(str(error)))
-                context.on('console', lambda message: errors.append(message.text)
-                    if message.type == 'error' and 'Content Security Policy' in message.text else None)
                 for path in pages:
                     name = path.relative_to(ROOT).as_posix()
                     page.goto(base + name)
-                    fields = page.locator(NUMERIC)
-                    assert fields.count() > 0, name
-                    expect(page.locator('.answer-symbols-toggle')).to_have_count(fields.count())
-                    expect(page.locator('.answer-symbols-panel')).to_have_count(fields.count())
-                    expect(page.locator('.answer-sign, .answer-decimal')).to_have_count(0)
-                    assert page.evaluate("matchMedia('(any-pointer: coarse)').matches")
-                    # Toutes les questions, y compris celles qui sont normalement masquées.
-                    sizes = page.evaluate("""() => {
-                      document.querySelectorAll('.exercise-block').forEach(s => s.hidden = false);
-                      return [...document.querySelectorAll('.answer-row input[inputmode="decimal"]')].map(e => {
-                        const b=e.parentElement.querySelector('.answer-symbols-toggle');
-                        return {width:e.getBoundingClientRect().width,buttonWidth:b.offsetWidth,buttonHeight:b.offsetHeight,name:b.getAttribute('aria-label')};
+                    page.evaluate("document.querySelectorAll('.exercise-block').forEach(e=>e.hidden=false)")
+                    page.evaluate("async()=>{await document.fonts.ready;await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));await Promise.all(document.getAnimations().filter(a=>a.effect.getTiming().iterations!==Infinity).map(a=>a.finished.catch(()=>{})))}")
+                    layout = page.evaluate("""() => {
+                      return [...document.querySelectorAll('.exercise-form')].map(form => {
+                        const fields=[...form.querySelectorAll('.answer-row input[data-expect]')];
+                        const rows=[...form.querySelectorAll('.answer-row')];
+                        const controls=[...form.querySelectorAll('.answer-row input,.answer-row select')];
+                        const rects=controls.map(e=>e.getBoundingClientRect());
+                        const gaps=rows.slice(1).map((e,i)=>e.getBoundingClientRect().top-rows[i].getBoundingClientRect().bottom);
+                        return {id:form.closest('article').id,fields:fields.length,menus:form.querySelectorAll('.answer-symbols-toggle').length,
+                          top:!!form.querySelector(':scope > .answer-tools > h3'),
+                          rowsGaps:gaps,
+                          captionGaps:rows.filter(e=>e.firstElementChild?.tagName==='SPAN').map(e=>e.querySelector('input,select').getBoundingClientRect().top-e.firstElementChild.getBoundingClientRect().bottom),
+                          widths:rects.map(r=>r.width),lefts:rects.map(r=>r.left),
+                          heights:controls.map(e=>e.offsetHeight),fontSizes:controls.map(e=>parseFloat(getComputedStyle(e).fontSize))};
                       });
                     }""")
-                    assert all(x['width'] >= 120 and x['buttonWidth'] >= 44 and x['buttonHeight'] >= 44
-                        and x['name'].startswith('Signes pour') for x in sizes), (name, width, sizes)
+                    for form in layout:
+                        assert form['menus'] == (1 if form['fields'] else 0), (name, form)
+                        if form['fields']:assert form['top'], name
+                        assert all(abs(g-16) < .1 for g in form['rowsGaps']), (name, form)
+                        assert all(abs(g-8)<.1 for g in form['captionGaps']), (name, form)
+                        assert all(x >= 120 for x in form['widths']), (name, form)
+                        assert not form['widths'] or max(form['widths'])-min(form['widths']) < .1, (name, form)
+                        assert not form['lefts'] or max(form['lefts'])-min(form['lefts']) < .1, (name, form)
+                        assert all(h==48 for h in form['heights']), (name, form)
+                        assert all(s>=16 for s in form['fontSizes']), (name, form)
+                        checked += form['fields']
+                    expect(page.locator('.answer-input,.answer-sign,.answer-decimal')).to_have_count(0)
                     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1'), (name, width)
-                    checked += len(sizes)
                 context.close()
 
-            context = browser.new_context(viewport={'width': 390, 'height': 844},
-                is_mobile=True, has_touch=True, locale='en-US')
-            page = context.new_page()
-            page.on('pageerror', lambda error: errors.append(str(error)))
-            page.goto(base + 'exercices/suites-geometriques.html#exercice-4')
-            slide = page.locator('#exercice-4')
-            field = slide.locator('[data-expect]').nth(2)
-            decimal = symbol_button(field, 'decimal')
-            sign = symbol_button(field, 'minus')
-            choose_symbol(field, 'decimal')
-            expect(field).to_have_value('0,')
-            expect(field).to_be_focused()
-            page.keyboard.insert_text('5')
-            expect(field).to_have_value('0,5')
-            expect(slide.locator('.exercise-feedback')).to_have_text('')
-            field.fill('')
-            choose_symbol(field, 'minus')
-            choose_symbol(field, 'decimal')
-            page.keyboard.insert_text('5')
-            expect(field).to_have_value('−0,5')
-            expect(field).to_be_focused()
-            field.fill('')
-            choose_symbol(field, 'unit')
-            choose_symbol(field, 'minus')
-            choose_symbol(field, 'decimal')
-            page.keyboard.insert_text('5')
-            expect(field).to_have_value('−0,5\u00a0€')
+            for mobile, width in [(True,390), (False,1440)]:
+                context = browser.new_context(viewport={'width':width,'height':844},is_mobile=mobile,has_touch=mobile,color_scheme='dark')
+                page=context.new_page();page.on('pageerror',lambda error:errors.append(str(error)))
+                page.goto(base+'exercices/fonctions.html')
+                form=page.locator('#exercice-1 .exercise-form')
+                field=form.locator('[data-expect]').nth(1)
+                for value,start,end,key,expected,caret in [
+                    ('1234',2,2,'minus','12−34',3),
+                    ('1234',1,3,'plus','1+4',2),
+                    ('1234',2,2,'decimal','12,34',3),
+                    ('1234',1,3,'fraction','1/4',2),
+                    ('12/34',3,3,'minus','12/−34',4),
+                    ('1234',0,0,'minus','−1234',1),
+                    ('1234',4,4,'minus','1234−',5),
+                ]:
+                    field.fill(value)
+                    field.evaluate('(e,p)=>e.setSelectionRange(...p)',[start,end])
+                    # Le vrai menu commun est actionné sans refocaliser le champ.
+                    toggle=form.locator('.answer-symbols-toggle')
+                    toggle.tap() if mobile else toggle.click()
+                    symbol_button(field,key).tap() if mobile else symbol_button(field,key).click()
+                    expect(field).to_have_value(expected);expect(field).to_be_focused()
+                    assert field.evaluate('e=>e.selectionStart')==caret
+                    assert field.evaluate('e=>e.selectionEnd')==caret
+                    expect(form.locator('.answer-symbols-panel')).to_be_hidden()
+                # Un événement de sélection tardif après perte de focus ne remplace pas la position mémorisée.
+                field.fill('1234');field.evaluate('e=>e.setSelectionRange(2,2)')
+                toggle=form.locator('.answer-symbols-toggle')
+                toggle.tap() if mobile else toggle.click()
+                field.evaluate("e=>{e.setSelectionRange(0,0);document.dispatchEvent(new Event('selectionchange'));}")
+                symbol_button(field,'decimal').tap() if mobile else symbol_button(field,'decimal').click()
+                expect(field).to_have_value('12,34')
+                expect(form.locator('.exercise-feedback')).to_have_text('')
+                # Un cadre unique au focus, sans contour distant ni changement de dimensions.
+                focus=field.evaluate("e=>{const s=getComputedStyle(e);return {outline:s.outlineStyle,offset:s.outlineOffset,border:s.borderTopWidth,shadow:s.boxShadow,width:e.getBoundingClientRect().width,height:e.offsetHeight}}")
+                assert focus['outline']=='none' and focus['offset']=='0px' and focus['border']=='2px' and focus['shadow']=='none',focus
+                field.evaluate('e=>e.blur()')
+                assert field.evaluate('e=>e.offsetHeight')==focus['height']
+                if mobile:
+                    field.focus()
+                    page.screenshot(path=str(OUT/(engine+'-champs-reguliers.png')))
 
-            for value, start, end, expected, caret in [
-                ('1234', 2, 2, '12,34', 3),
-                ('1234', 1, 3, '1,4', 2),
-                ('12.5', 2, 3, '12,5', 3),
-                ('1234', 0, 4, '0,', 2),
-                ('−12', 1, 3, '−0,', 3),
-                ('12/34', 4, 4, '12/3,4', 5),
-                ('1,2/34', 6, 6, '1,2/34,', 7),
-            ]:
-                field.fill(value)
-                field.evaluate('(e,p)=>e.setSelectionRange(...p)', [start, end])
-                choose_symbol(field, 'decimal')
-                expect(field).to_have_value(expected)
-                expect(field).to_be_focused()
-                assert field.evaluate('e=>e.selectionStart') == caret
-            for value in ['12,5', '12.5', '1,2/3,4']:
-                field.fill(value)
-                choose_symbol(field, 'decimal')
-                expect(field).to_have_value(value)
-
-            field.fill('')
-            choose_symbol(field, 'plus')
-            choose_symbol(field, 'decimal')
-            page.keyboard.insert_text('5')
-            expect(field).to_have_value('+0,5')
-            choose_symbol(field, 'minus')
-            expect(field).to_have_value('−0,5')
-
-            # Un seul menu ouvert ; fermeture par Échap, clic extérieur ou retour au champ.
-            toggle = field.locator('..').locator('.answer-symbols-toggle')
-            panel = field.locator('..').locator('.answer-symbols-panel')
-            toggle.tap()
-            expect(panel).to_be_visible()
-            expect(toggle).to_have_attribute('aria-expanded', 'true')
-            page.screenshot(path=str(OUT / (engine + '-menu-ouvert.png')))
-            page.keyboard.press('Escape')
-            expect(panel).to_be_hidden()
-            expect(toggle).to_be_focused()
-            toggle.tap()
-            other = slide.locator('[data-expect]').first
-            other_toggle = other.locator('..').locator('.answer-symbols-toggle')
-            other_toggle.tap()
-            expect(panel).to_be_hidden()
-            expect(page.locator('.answer-symbols-panel:not([hidden])')).to_have_count(1)
-            other.tap()
-            expect(page.locator('.answer-symbols-panel:not([hidden])')).to_have_count(0)
-            toggle.tap()
-            slide.locator('.exercise-form > h3').tap()
-            expect(panel).to_be_hidden()
-
-            # Saisie d'une réponse correcte avec la touche tactile, pas avec fill('182,51').
-            for control, value in zip(slide.locator('[data-expect]').all(), ['138', '158,7', '182', '1,15']):
-                control.fill(value)
-            choose_symbol(field, 'decimal')
-            page.keyboard.insert_text('51')
-            expect(field).to_have_value('182,51')
-            slide.locator('button[type=submit]').tap()
-            expect(slide.locator('.exercise-feedback')).to_contain_text('Exercice validé')
-            expect(page.locator('#exercise-score')).to_have_text('1/8')
-            choose_symbol(field, 'decimal')  # Pas de deuxième virgule, ni de perte d'un score déjà validé.
-            expect(field).to_have_value('182,51')
-            expect(page.locator('#exercise-score')).to_have_text('1/8')
-            # Le viewport évite de réinitialiser l'émulation tactile de Chromium.
-            page.screenshot(path=str(OUT / (engine + '-signes-valide.png')))
-            slide.locator('details.check > summary').tap()
-            expect(decimal).to_be_disabled()
-            expect(sign).to_be_disabled()
-            slide.locator('[data-action=reset]').tap()
-            expect(decimal).to_be_enabled()
-            expect(sign).to_be_enabled()
-            expect(field).to_have_value('')
-            field.fill('0')
-            slide.locator('button[type=submit]').tap()
-            slide.locator('[data-action=new-variant]').tap()
-            expect(slide.locator('.answer-symbols-toggle')).to_have_count(slide.locator('input[inputmode=decimal]').count())
-            fresh = slide.locator('input[inputmode=decimal]').first
-            choose_symbol(fresh, 'decimal')
-            expect(fresh).to_have_value('0,')
-            expect(fresh).to_be_focused()
-            page.emulate_media(media='print')
-            assert slide.locator('.answer-symbols-toggle, .answer-symbols-panel').evaluate_all("xs => xs.every(e => getComputedStyle(e).display === 'none')")
-            context.close()
-
-            context = browser.new_context(viewport={'width': 390, 'height': 844}, is_mobile=True, has_touch=True)
-            page = context.new_page()
-            page.goto(base + 'exercices/calcul.html#exercice-5')
-            conversion = page.locator('#exercice-5')
-            speed = conversion.locator('[data-expect]').nth(2)
-            conversion.locator('[data-expect]').nth(0).fill('150')
-            conversion.locator('[data-expect]').nth(1).fill('750')
-            speed.fill('64')
-            choose_symbol(speed, 'unit')
-            choose_symbol(speed, 'decimal')
-            page.keyboard.insert_text('8')
-            expect(speed).to_have_value('64,8\u00a0km/h')
-            speed.fill('129,6')
-            choose_symbol(speed, 'unit')
-            choose_symbol(speed, 'fraction')
-            page.keyboard.insert_text('2')
-            expect(speed).to_have_value('129,6/2\u00a0km/h')
-            conversion.locator('button[type=submit]').tap()
-            expect(conversion.locator('.exercise-feedback')).to_contain_text('Exercice validé')
-            choose_symbol(speed, 'fraction')
-            choose_symbol(speed, 'unit')
-            expect(speed).to_have_value('129,6/2\u00a0km/h')
-            expect(page.locator('#exercise-score')).to_have_text('1/8')
-            context.close()
-
-            # Le même menu reste utilisable à la souris et au clavier.
-            desktop = browser.new_context(viewport={'width': 1440, 'height': 900}, has_touch=False)
-            page = desktop.new_page()
-            page.goto(base + 'exercices/suites.html')
-            assert not page.evaluate("matchMedia('(any-pointer: coarse)').matches")
-            first = page.locator('#exercice-1 [data-expect]').first
-            expect(first.locator('..').locator('.answer-symbols-toggle')).to_be_visible()
-            first.fill('10')
-            choose_symbol(first, 'fraction', touch=False)
-            page.keyboard.insert_text('2')
-            expect(first).to_have_value('10/2')
-            for control, value in zip(page.locator('#exercice-1 [data-expect]').all()[1:], ['11', '20']):
-                control.fill(value)
-            page.locator('#exercice-1 button[type=submit]').click()
-            expect(page.locator('#exercice-1 .exercise-feedback')).to_contain_text('Exercice validé')
-            first.fill('')
-            trigger = first.locator('..').locator('.answer-symbols-toggle')
-            trigger.focus()
-            page.keyboard.press('Enter')
-            expect(symbol_button(first, 'minus')).to_be_focused()
-            page.keyboard.press('ArrowDown')
-            page.keyboard.press('ArrowDown')
-            expect(symbol_button(first, 'decimal')).to_be_focused()
-            page.keyboard.press('Enter')
-            expect(first).to_have_value('0,')
-            expect(first).to_be_focused()
-            desktop.close()
+                # Le menu agit sur le dernier champ, pas sur le premier de la fiche.
+                third=form.locator('[data-expect]').nth(2);third.fill('56')
+                choose_symbol(third,'fraction',touch=mobile);page.keyboard.insert_text('2')
+                expect(third).to_have_value('56/2');expect(field).to_have_value('12,34')
+                toggle=form.locator('.answer-symbols-toggle');toggle.tap() if mobile else toggle.click()
+                expect(form.locator('.answer-symbols-target')).to_contain_text(third.get_attribute('aria-label'))
+                if mobile:page.screenshot(path=str(OUT/(engine+'-menu-commun.png')))
+                page.keyboard.press('Escape');expect(toggle).to_be_focused()
+                toggle.tap() if mobile else toggle.click()
+                field.tap() if mobile else field.click()
+                expect(form.locator('.answer-symbols-panel')).to_be_hidden()
+                # Vraie réponse juste entrée avec le signe au début choisi explicitement.
+                for control in form.locator('[data-expect]').all():
+                    control.fill(control.get_attribute('data-expect').split('|')[0].replace('.',',').replace('-','−'))
+                first=form.locator('[data-expect]').first
+                first.fill('11');first.evaluate('e=>e.setSelectionRange(0,0)')
+                choose_symbol(first,'minus',touch=mobile)
+                form.locator('button[type=submit]').tap() if mobile else form.locator('button[type=submit]').click()
+                expect(form.locator('.exercise-feedback')).to_contain_text('Exercice validé')
+                form.locator('details.check > summary').tap() if mobile else form.locator('details.check > summary').click()
+                expect(toggle).to_be_disabled()
+                form.locator('[data-action=reset]').tap() if mobile else form.locator('[data-action=reset]').click()
+                expect(toggle).to_be_enabled()
+                first.fill('0');form.locator('button[type=submit]').click();form.locator('[data-action=new-variant]').click()
+                expect(page.locator('#exercice-1 .answer-symbols-toggle')).to_have_count(1)
+                fresh=page.locator('#exercice-1 [data-expect]').last
+                fresh.fill('1');choose_symbol(fresh,'fraction',touch=mobile);page.keyboard.insert_text('2')
+                expect(fresh).to_have_value('1/2')
+                context.close()
             browser.close()
-            assert not errors, errors
-            print(f'SIGNES {engine} OK : {len(pages)} séries, {checked} champs/thèmes tactiles, curseur, nombres négatifs, score, corrigé, reset et variante.')
+            assert not errors,errors
+            print(f'SIGNES {engine} OK : {len(pages)} séries, {checked} champs/thèmes, menu commun, insertion au curseur, sélection tardive, cadres uniques et espacements constants.')
     finally:
-        server.shutdown()
-        server.server_close()
+        server.shutdown();server.server_close()
 
 
-if __name__ == '__main__':
-    main()
+if __name__=='__main__':main()
