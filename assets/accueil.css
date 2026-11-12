@@ -61,11 +61,11 @@ body[data-gabarit="accueil"] {
 .level-step--premiere { padding-top: calc(var(--space-5) + var(--riser)); background: var(--color-learn-soft); }
 .level-step--terminale { padding-top: calc(var(--space-5) + 2 * var(--riser)); }
 .level-step--terminale { border-right: 3px solid var(--purple); background: var(--color-learn-soft); }
-.level-step__name { font-family: var(--font-serif); font-size: clamp(40px, 4.6vw, 64px); font-weight: 600; line-height: 1; letter-spacing: -0.02em; color: var(--purple-dark); }
+.level-step__name { overflow-wrap: anywhere; font-family: var(--font-serif); font-size: clamp(40px, 4.6vw, 64px); font-weight: 600; line-height: 1; letter-spacing: -0.02em; color: var(--purple-dark); }
 .level-step__goal { margin-top: var(--space-3); font-weight: 700; }
 .level-step__count { margin-top: var(--space-1); color: var(--muted); font-size: var(--text-sm); }
 .level-step__links { display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-5); }
-.level-step__links .button { flex: 1 1 auto; justify-content: center; }
+.level-step__links .button { flex: 1 1 auto; justify-content: center; min-width: 0; white-space: normal; text-align: center; }
 .levels .level-step__links a.button-primary:not(#_p) { border-color: var(--color-learn-fill); background: var(--color-learn-fill); color: var(--color-on-fill); }
 .levels .level-step__links a.button-primary:not(#_p):hover { border-color: var(--color-learn-fill-hover); background: var(--color-learn-fill-hover); }
 .level-step__practice { border: 1px solid var(--color-practice); background: var(--color-surface); color: var(--color-practice); }
