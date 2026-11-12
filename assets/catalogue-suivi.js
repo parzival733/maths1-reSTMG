@@ -5,7 +5,7 @@
   const A = window.MathsAcquis;
   if (!A || !A.store || !A.store.enabled) return;
   const bySlug = {};
-  for (const skill of A.store.all('terminale')) {   // « terminale » : toutes les notions
+  for (const skill of A.store.all('tout')) {   // « tout » : les notions des trois niveaux
     const slug = skill.exercises.split('/').pop().replace('.html', '');
     // « Fractions » et « Calcul » partagent la même série : on garde la notion la plus travaillée.
     if (!bySlug[slug] || skill.attempts > bySlug[slug].attempts) bySlug[slug] = skill;

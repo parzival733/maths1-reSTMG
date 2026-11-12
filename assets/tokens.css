@@ -104,6 +104,9 @@
   --color-domain-probabilites: #a12d72; --color-domain-probabilites-soft: #faebf3;
   --color-domain-reperes: #0f6e66;      --color-domain-reperes-soft: #e3f4f1;
   --color-domain-atelier: #55526a;      --color-domain-atelier-soft: #eeedf3;
+  /* Thèmes propres à la 3e : nombres et géométrie ; les fonctions reprennent la couleur de l’analyse. */
+  --color-domain-nombres: #6a3fb0;      --color-domain-nombres-soft: #f1ebfb;
+  --color-domain-geometrie: #276b2b;    --color-domain-geometrie-soft: #e6f3e6;
 
   /* Illustration sur papier blanc, y compris quand l’interface est sombre.
      Même violet que les leçons ; contrastes calculés sur blanc. */
@@ -213,6 +216,8 @@
     --color-domain-probabilites: #f59ad0; --color-domain-probabilites-soft: #3a1b2e;
     --color-domain-reperes: #6fd6c6;      --color-domain-reperes-soft: #14322e;
     --color-domain-atelier: #c3c0d4;      --color-domain-atelier-soft: #2a2938;
+    --color-domain-nombres: #c4a8ff;      --color-domain-nombres-soft: #2a2140;
+    --color-domain-geometrie: #8fd694;    --color-domain-geometrie-soft: #18301a;
     --shadow-1: none;
     --shadow-2: none;
   }

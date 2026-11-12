@@ -12,11 +12,12 @@ def main():
     const out={};for(const slug of s.window.TerminaleExercises.slugs)out[slug]=Array.from({length:6},(_,i)=>s.window.ExerciseVariants.original(slug,i));
     process.stdout.write(JSON.stringify(out));"""
     terminal=json.loads(subprocess.check_output(['node','-e',script],cwd=ROOT,text=True))
-    for path in [*sorted((ROOT/'exercices').glob('*.html')),*sorted((ROOT/'terminale/exercices').glob('*.html'))]:
+    college=json.loads(subprocess.check_output(['node','-e',script.replace('terminale-exercices.js','troisieme-exercices.js').replace('TerminaleExercises','TroisiemeExercises')],cwd=ROOT,text=True))
+    for path in [*sorted((ROOT/'exercices').glob('*.html')),*sorted((ROOT/'terminale/exercices').glob('*.html')),*sorted((ROOT/'troisieme/exercices').glob('*.html'))]:
         if path.name=='fonctions.html':continue # Cette page contient déjà sa version de lecture.
         text=path.read_text();match=re.search(r'<script type="application/json" id="exercise-data">(.*?)</script>',text,re.S)
         if not match:continue
-        exercises=terminal[path.stem] if path.stem.startswith('t-') else json.loads(match[1])['exercises']
+        exercises=terminal[path.stem] if path.stem.startswith('t-') else college[path.stem] if path.stem.startswith('3-') else json.loads(match[1])['exercises']
         blocks=['<noscript data-offline-series><style>#exercise-mounted{display:none}</style><section class="offline-series"><h2>Exercices : version de lecture</h2><p>Travaille sur une feuille. Les variantes et la v\u00e9rification automatique n\u00e9cessitent JavaScript ; les \u00e9nonc\u00e9s initiaux sont reproduits sans modification math\u00e9matique.</p>']
         for i,ex in enumerate(exercises,1):
             blocks.append('<section class="exam-block"><h3>'+str(i)+'. '+escape(ex['title'])+'</h3><p>'+ex['statement']+'</p>')
@@ -30,5 +31,5 @@ def main():
         if 'data-offline-series' not in text:text=text.replace('</main>',''.join(blocks)+'</main>')
         text=text.replace(' aria-busy="true"','')
         path.write_text(text)
-    print('FALLBACKS OK: 24 series materialized from existing exercise data.')
+    print('FALLBACKS OK: 40 series materialized from existing exercise data.')
 if __name__=='__main__':main()

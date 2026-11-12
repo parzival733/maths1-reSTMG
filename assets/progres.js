@@ -5,6 +5,8 @@
   const $=id=>document.getElementById(id),panel=$('progress-controls');if(!panel)return;
   const embedded=panel.dataset.embedded==='true',base=panel.dataset.base||'';
   const level=$('progress-level');level.value=panel.dataset.level||(new URLSearchParams(location.search).get('niveau')==='terminale'?'terminale':'premiere');
+  // La révision guidée et le diagnostic ne couvrent pas la 3e : leurs liens restent masqués.
+  const college=()=>level.value==='troisieme';
   const link=path=>base+path;
   const say=text=>{$('progress-message').textContent=text;};
   const node=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e;};
@@ -20,7 +22,7 @@
     if(embedded){
       $('progress-state').textContent=active?'Mes r\u00e9sultats sur cet appareil':'Garder une trace de mes r\u00e9visions';
       $('progress-overview').textContent=!active?'Les exercices fonctionnent aussi sans sauvegarde.':items.length?`${items.length} notion(s) travaill\u00e9e(s), ${due.length} \u00e0 revoir.`:'Aucun r\u00e9sultat pour le moment. Choisis un chapitre ci-dessous.';
-      $('progress-review').hidden=!active||!due.length;
+      $('progress-review').hidden=!active||!due.length||college();
       $('progress-diagnostic').hidden=true;
       list.hidden=!items.length;
       const summary=$('progress-summary');if(summary)summary.textContent=active?(items.length?items.length+' notion(s) travaill\u00e9e(s)':'sauvegarde activ\u00e9e'):'facultatif';
