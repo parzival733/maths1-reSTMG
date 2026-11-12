@@ -1,25 +1,21 @@
 {
-  "base_sha": "0ce3904d5b90dfab462e76cee0922092d01f6c83",
+  "base_sha": "5d2b915e51e9ec321bf4a0c673140b134f4da71b",
   "allowed": {
     "index.html": {
       "normalization": "page-redesign",
-      "reason": "Ajout de la Seconde : quatre marches au lieu de trois sur ordinateur, quatre blocs et un indicateur à quatre barres sur téléphone. Captures brutes relues en clair, en sombre et sans JavaScript."
-    },
-    "lecons.html": {
-      "normalization": "page-redesign",
-      "reason": "Sélecteur de niveau à quatre entrées (3e, Seconde, Première STMG, Terminale STMG) au lieu de trois ; le reste de la page est inchangé."
-    },
-    "terminale/exercices/t-inverse.html": {
-      "normalization": "page-redesign",
-      "reason": "Sous le sélecteur de niveau, les liens « Revoir la leçon » et « Programme et sources » sont soulignés et espacés ; pied de page qui cite les quatre niveaux. Exercices inchangés."
-    },
-    "annexes/calcul-rapide.html": {
-      "normalization": "page-redesign",
-      "reason": "Seul le pied de page change : il cite désormais les quatre niveaux (3e, Seconde, Première et Terminale STMG)."
+      "reason": "Rôle des mathématiques au bac corrigé sous les noms des niveaux : épreuve anticipée et contrôle continu en Première, contrôle continu en Terminale."
     },
     "sujets.html": {
       "normalization": "page-redesign",
-      "reason": "Seul le pied de page change : il cite désormais les quatre niveaux (3e, Seconde, Première et Terminale STMG)."
+      "reason": "Une phrase ajoutée sur les archives de Terminale : depuis 2021, les mathématiques de Terminale STMG comptent au contrôle continu."
+    },
+    "annexes/calcul-rapide.html": {
+      "normalization": "page-redesign",
+      "reason": "Le parcours « Bac de Première » est renommé « Épreuve anticipée de Première » ; méthodes et séries inchangées."
+    },
+    "lecons.html": {
+      "normalization": "page-redesign",
+      "reason": "Encadré du calcul rapide : « pour le bac de Première » devient « pour l’épreuve anticipée de Première » ; leçons inchangées."
     }
   }
 }

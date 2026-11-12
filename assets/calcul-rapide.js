@@ -8,7 +8,7 @@
     loading.textContent = 'La série interactive n’a pas pu se charger. Les méthodes et la série papier restent disponibles ci-dessous.';
     return;
   }
-  const names = {bac:'Bac de Première', bases:'Bases du calcul', premiere:'Chapitres de Première', terminale:'Chapitres de Terminale'};
+  const names = {bac:'Épreuve anticipée de Première', bases:'Bases du calcul', premiere:'Chapitres de Première', terminale:'Chapitres de Terminale'};
   const timer = new window.QuickCountdown();
   let questions = [], states = [], current = 0, options = {}, series = 0;
   let phase = 'ready', timed = false, clock = null, warned = false, reason = '';

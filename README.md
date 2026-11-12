@@ -19,6 +19,7 @@ Site de mathématiques en français pour la 3e, la Seconde générale et technol
 - **Première, depuis 2026–2027** : arrêté du 26 février 2026, BO n° 14 du 2 avril 2026, NOR [MENE2602918A](https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602918A).
 - **Terminale, en 2026–2027** : programme de 2019, BO spécial n° 8 du 25 juillet 2019, [annexe sur Éduscol](https://eduscol.education.gouv.fr/sites/default/files/document/spe242annexe1158914pdf-84153.pdf).
 - **Terminale, à partir de 2027–2028** : arrêté du 26 février 2026, NOR [MENE2602921A](https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602921A).
+- **Mathématiques au bac STMG** : en Première, épreuve anticipée écrite (2 heures, sans calculatrice, coefficient 2, première session en juin 2026) et moyenne annuelle au contrôle continu ; en Terminale, pas d’épreuve écrite finale, la moyenne annuelle compte au contrôle continu.
 - **Épreuve anticipée de Première** : [note de service du 11 septembre 2026](https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N).
 
 `programme.html`, `terminale/programme.html`, `troisieme/programme.html`, `seconde/programme.html` et `couverture.html` relient les notions des programmes aux ressources du site. Les leçons sont des rédactions pédagogiques originales, pas des documents ministériels.
