@@ -17,7 +17,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'public'
-PAGE_DIRS = ('cours', 'exercices', 'terminale', 'troisieme', 'entrainement', 'annexes', 'donnees')
+PAGE_DIRS = ('cours', 'exercices', 'terminale', 'troisieme', 'seconde', 'entrainement', 'annexes', 'donnees')
 ROOT_FILES = ('_headers', 'robots.txt', 'sitemap.xml', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png')
 ASSET_SUFFIXES = frozenset(('.js', '.css', '.svg', '.png', '.ico', '.jpg', '.jpeg',
                             '.webp', '.avif', '.woff', '.woff2', '.ttf', '.otf'))

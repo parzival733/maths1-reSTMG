@@ -53,12 +53,12 @@ def main():
         assert f'data-troisieme-chapter="{slug}"' in series and 'troisieme-exercices.js' in series, slug
         assert series.count('data-offline-series') == 1 and series.count('<section class="exam-block">') == 6, slug
         assert 'variants-' not in series and 'terminale-exercices.js' not in series, slug
-    # Catalogues : seize cartes, domaine affiché, sélecteur des trois niveaux.
+    # Catalogues : seize cartes, domaine affiché, sélecteur des quatre niveaux.
     for name in ['lecons', 'exercices']:
         text = (folder / f'{name}.html').read_text(encoding='utf-8')
         assert text.count('<a class="lesson-card"') == 16 and text.count('class="card-domain"') == 16, name
         switch = re.search(r'<nav class="level-switch"[\s\S]*?</nav>', text).group()
-        assert switch.count('<a ') == 3 and 'aria-current="page">3e</a>' in switch, name
+        assert switch.count('<a ') == 4 and 'aria-current="page">3e</a>' in switch, name
         for other in (ROOT / f'{name}.html', ROOT / 'terminale' / f'{name}.html'):
             assert '>3e</a>' in re.search(r'<nav class="level-switch"[\s\S]*?</nav>', other.read_text(encoding='utf-8')).group(), other
     progress = (folder / 'exercices.html').read_text(encoding='utf-8')
@@ -69,7 +69,7 @@ def main():
     for href in ['troisieme/lecons.html', 'troisieme/exercices.html', 'lecons.html', 'exercices.html',
                  'terminale/lecons.html', 'terminale/exercices.html']:
         assert f'href="{href}"' in home, href
-    assert home.count('class="level-step ') == 3
+    assert home.count('class="level-step ') == 4
     print(f'TROISIEME OK: 35 pages, 16 leçons et 16 séries, {links} liens locaux vérifiés, sélecteur de niveau sur l’accueil et les catalogues.')
 
 

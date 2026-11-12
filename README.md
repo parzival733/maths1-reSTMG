@@ -1,12 +1,13 @@
-# Maths · 3e, Première et Terminale STMG
+# Maths · 3e, Seconde, Première et Terminale STMG
 
-Site de mathématiques en français pour la 3e, la Première et la Terminale STMG : leçons, séries d'exercices à variantes, calcul rapide, sujets et suivi local facultatif. HTML, CSS et JavaScript statiques, sans framework, sans compte et sans traceur.
+Site de mathématiques en français pour la 3e, la Seconde générale et technologique, la Première et la Terminale STMG : leçons, séries d'exercices à variantes, calcul rapide, sujets et suivi local facultatif. HTML, CSS et JavaScript statiques, sans framework, sans compte et sans traceur.
 
 **[Ouvrir le site](https://mathstmgdls.pages.dev/)**
 
 | Niveau | Leçons | Exercices |
 | --- | --- | --- |
 | 3e | [16 leçons](https://mathstmgdls.pages.dev/troisieme/lecons) | [16 séries](https://mathstmgdls.pages.dev/troisieme/exercices) |
+| Seconde | [16 leçons](https://mathstmgdls.pages.dev/seconde/lecons) | [16 séries](https://mathstmgdls.pages.dev/seconde/exercices) |
 | Première STMG | [16 leçons](https://mathstmgdls.pages.dev/lecons) | [16 séries](https://mathstmgdls.pages.dev/exercices) |
 | Terminale STMG | [9 leçons](https://mathstmgdls.pages.dev/terminale/lecons) | [9 séries](https://mathstmgdls.pages.dev/terminale/exercices) |
 
@@ -14,17 +15,18 @@ Site de mathématiques en français pour la 3e, la Première et la Terminale STM
 
 - **3e, en 2026–2027** : programme du cycle 4, arrêté du 17 juillet 2020, BO n° 31 du 30 juillet 2020, NOR [MENE2018714A](https://www.education.gouv.fr/bo/20/Hebdo31/MENE2018714A.htm). Le nouveau programme du cycle 4 (BO n° 10 du 5 mars 2026) s’appliquera en 3e à la rentrée 2028.
 - **Brevet, à partir de la session 2027** : épreuve de 2 heures, 20 minutes d’automatismes sans calculatrice (6 points) puis 1 h 40 de problèmes (14 points) ; voir [les épreuves du DNB sur Éduscol](https://eduscol.education.gouv.fr/5607/les-epreuves-du-dnb).
+- **Seconde, depuis 2026–2027** : arrêté du 26 février 2026, BO n° 14 du 2 avril 2026, NOR [MENE2602914A](https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602914A).
 - **Première, depuis 2026–2027** : arrêté du 26 février 2026, BO n° 14 du 2 avril 2026, NOR [MENE2602918A](https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602918A).
 - **Terminale, en 2026–2027** : programme de 2019, BO spécial n° 8 du 25 juillet 2019, [annexe sur Éduscol](https://eduscol.education.gouv.fr/sites/default/files/document/spe242annexe1158914pdf-84153.pdf).
 - **Terminale, à partir de 2027–2028** : arrêté du 26 février 2026, NOR [MENE2602921A](https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602921A).
 - **Épreuve anticipée de Première** : [note de service du 11 septembre 2026](https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N).
 
-`programme.html`, `terminale/programme.html`, `troisieme/programme.html` et `couverture.html` relient les notions des programmes aux ressources du site. Les leçons sont des rédactions pédagogiques originales, pas des documents ministériels.
+`programme.html`, `terminale/programme.html`, `troisieme/programme.html`, `seconde/programme.html` et `couverture.html` relient les notions des programmes aux ressources du site. Les leçons sont des rédactions pédagogiques originales, pas des documents ministériels.
 
 ## Contenu
 
 - **Leçons** : objectifs, encadrés (définition, méthode, formule, exemple, point de vigilance), deux pauses mémoire, application corrigée, routine de révision ; lisibles et imprimables sans JavaScript.
-- **Exercices** : 279 modèles (96 en 3e, 129 en Première, 54 en Terminale). Chaque nouvelle variante change les nombres et, si besoin, les rangs ou les abscisses demandés, avec un niveau de difficulté stable. Indices progressifs et corrigés Méthode → Calculs → Conclusion.
+- **Exercices** : 375 modèles (96 en 3e, 96 en Seconde, 129 en Première, 54 en Terminale). Chaque nouvelle variante change les nombres et, si besoin, les rangs ou les abscisses demandés, avec un niveau de difficulté stable. Indices progressifs et corrigés Méthode → Calculs → Conclusion.
 - **Calcul rapide** : séries de 5 à 20 questions sans calculatrice, avec chrono réglable et fiche imprimable.
 - **Sujets** : 41 annales en PDF, liées chez leurs éditeurs ; deux sujets blancs et des problèmes rédigés, avec corrigés et barèmes.
 - **Diagnostic, révision guidée, suivi local** : désactivé par défaut ; aucune réponse saisie n'est conservée ni transmise.
@@ -37,6 +39,7 @@ Les détails de fonctionnement (variantes, outils, tests, règle des empreintes)
 *.html, cours/, exercices/        Accueil et pages de Première
 terminale/                        Pages de Terminale
 troisieme/                        Pages de 3e
+seconde/                          Pages de Seconde
 annexes/, entrainement/           Calcul rapide, sujets blancs et problèmes
 donnees/                          CSV Insee et sa provenance ; JSON de référence des outils
 assets/                           Feuilles de style, scripts et polices
@@ -65,11 +68,11 @@ Tests structurels et mathématiques (Node et Python 3, sans dépendance) :
 
 ```sh
 for f in assets/*.js; do node --check "$f"; done
-for t in test_variants test_rangs test_graphiques test_terminale test_troisieme test_calcul_rapide \
-         test_countdown test_acquis test_parcours test_domaines test_cloture test_safari \
+for t in test_variants test_rangs test_graphiques test_terminale test_troisieme test_seconde \
+         test_calcul_rapide test_countdown test_acquis test_parcours test_domaines test_cloture test_safari \
          test_answer_formats; do node tests/$t.js; done
 for t in validate_site test_notation test_typographie test_noms_liens test_terminale test_troisieme \
-         test_calcul_rapide test_evolution test_cloture test_securite; do python3 tests/$t.py; done
+         test_seconde test_calcul_rapide test_evolution test_cloture test_securite; do python3 tests/$t.py; done
 python3 tools/build_public.py
 ```
 
