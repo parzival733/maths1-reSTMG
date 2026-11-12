@@ -90,12 +90,17 @@ body[data-gabarit="accueil"] {
   .section-heading { display: block; }
   .section-heading > p { margin-top: var(--space-2); }
   .home-resources { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
-  /* Sur téléphone, l'escalier descend vers la droite : chaque marche est décalée. */
-  .level-steps { --riser: var(--space-5); grid-template-columns: minmax(0, 1fr); border-bottom: 0; }
-  .level-steps .level-step { padding: var(--space-5); border-right: 0; }
-  .level-step__links { flex-direction: row; flex-wrap: wrap; }
-  .level-step--premiere { margin-left: var(--riser); }
-  .level-step--terminale { margin-left: calc(2 * var(--riser)); border-right: 0; border-bottom: 3px solid var(--purple); }
+  /* Sur téléphone, trois blocs alignés : le niveau à gauche, une barre de progression
+     (une, deux ou trois marches) rappelle l'ordre 3e, Première, Terminale. */
+  .level-steps { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); border-bottom: 0; }
+  .levels .level-step { position: relative; padding: var(--space-5); border: 1px solid var(--line); border-left: 4px solid var(--purple); border-radius: var(--radius-md); background: var(--color-learn-faint); }
+  .level-step__name { font-size: 36px; }
+  .level-step__name::after { content: ""; position: absolute; top: var(--space-5); right: var(--space-5); width: 36px; height: 24px;
+    background: linear-gradient(var(--purple) 0 0) 0 100% / 10px 8px no-repeat, linear-gradient(var(--line) 0 0) 13px 100% / 10px 16px no-repeat, linear-gradient(var(--line) 0 0) 26px 100% / 10px 24px no-repeat; }
+  .level-step--premiere .level-step__name::after { background: linear-gradient(var(--purple) 0 0) 0 100% / 10px 8px no-repeat, linear-gradient(var(--purple) 0 0) 13px 100% / 10px 16px no-repeat, linear-gradient(var(--line) 0 0) 26px 100% / 10px 24px no-repeat; }
+  .level-step--terminale .level-step__name::after { background: linear-gradient(var(--purple) 0 0) 0 100% / 10px 8px no-repeat, linear-gradient(var(--purple) 0 0) 13px 100% / 10px 16px no-repeat, linear-gradient(var(--purple) 0 0) 26px 100% / 10px 24px no-repeat; }
+  .level-step__goal { margin-top: var(--space-2); }
+  .level-step__links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--space-4); }
 }
 @media (max-width: 390px) {
   .hero-art { padding: 17px; }
