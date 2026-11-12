@@ -35,9 +35,9 @@ def with_versions(text):
 def template(rel):
     """Gabarit d'une page : il choisit sa feuille de style et l'attribut data-gabarit."""
     if rel=='index.html':return 'accueil'
-    if rel.startswith(('cours/','terminale/cours/')):return 'lecon'
-    if rel.startswith(('exercices/','terminale/exercices/')):return 'serie'
-    if rel in ('lecons.html','exercices.html','terminale/lecons.html','terminale/exercices.html','progresser.html'):return 'catalogue'
+    if rel.startswith(('cours/','terminale/cours/','troisieme/cours/')):return 'lecon'
+    if rel.startswith(('exercices/','terminale/exercices/','troisieme/exercices/')):return 'serie'
+    if rel in ('lecons.html','exercices.html','terminale/lecons.html','terminale/exercices.html','troisieme/lecons.html','troisieme/exercices.html','progresser.html'):return 'catalogue'
     if rel=='annexes/calcul-rapide.html':return 'calcul-rapide'
     if rel in ('sujets.html','preparer-bac.html'):return 'sujets'
     return 'page'

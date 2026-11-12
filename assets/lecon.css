@@ -470,11 +470,15 @@ body.reading-focus .lesson-content { max-width: 880px; margin-inline: auto; widt
   .support-scaffold:not([open]) > *:not(summary) { display: block !important; }
   .support-scaffold summary { display: none; }
 }
-:where(.terminal-course) .course-pagination { display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem; }
+:where(.terminal-course, .college-course) .course-pagination { display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem; }
 .terminal-course pre { overflow-x:auto; max-width:100%; }
+/* Figures des leçons de 3e : dessin au trait dans la couleur du texte, lisible en mode sombre. */
+.lesson-figure { margin: var(--space-4) 0; max-width: 100%; }
+.lesson-figure svg { display:block; width:100%; max-width:360px; height:auto; color: var(--color-text); }
+.lesson-figure figcaption { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
 /* Cartes de choix des pauses mémoire, adaptées au toucher. */
-.terminal-course .study-quiz fieldset > label { display:flex; align-items:flex-start; gap:11px; min-height:44px; min-width:0; padding:12px; margin:10px 0; border:1px solid var(--color-learn-line); border-radius: var(--radius-md); background:var(--color-surface); font-size:15px; line-height:1.5; cursor:pointer; }
-.terminal-course .study-quiz fieldset > label input { flex:0 0 auto; margin-top:4px; accent-color:var(--color-learn); }
+:is(.terminal-course, .college-course) .study-quiz fieldset > label { display:flex; align-items:flex-start; gap:11px; min-height:44px; min-width:0; padding:12px; margin:10px 0; border:1px solid var(--color-learn-line); border-radius: var(--radius-md); background:var(--color-surface); font-size:15px; line-height:1.5; cursor:pointer; }
+:is(.terminal-course, .college-course) .study-quiz fieldset > label input { flex:0 0 auto; margin-top:4px; accent-color:var(--color-learn); }
 /* Modules graphiques interactifs, accessibles sans dépendance externe. */
 .math-lab{margin:1.7rem 0;padding:1.2rem;border:1px solid var(--border,var(--color-learn-line));border-radius: var(--radius-md);background:var(--surface,var(--color-surface))}
 .math-lab__layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(210px,1fr);gap:1rem;align-items:start}

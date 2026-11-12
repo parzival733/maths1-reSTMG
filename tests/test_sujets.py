@@ -46,7 +46,9 @@ def main():
         assert len(page.ids)==len(set(page.ids)),p
         if p.name=='404.html':continue
         nav=re.search(r'<nav\b[^>]*class="main-nav"[^>]*>[\s\S]*?</nav>',text).group()
-        assert nav.count('<a ')==5 and nav.count('>Sujets</a>')==1,p
+        # En 3e, l’entrée « Brevet » remplace « Sujets » (annales de Première et de Terminale).
+        entry='>Brevet</a>' if 'troisieme' in p.relative_to(ROOT).parts else '>Sujets</a>'
+        assert nav.count('<a ')==5 and nav.count(entry)==1,p
         for link in page.links:
             u=urlsplit(link)
             if u.scheme or u.netloc:continue

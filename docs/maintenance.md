@@ -8,9 +8,11 @@ Site statique, sans framework ni serveur applicatif. Chaque page est un fichier 
 
 | Emplacement | Contenu |
 | --- | --- |
-| `index.html`, `lecons.html`, `exercices.html`, `sujets.html` | Accueil et catalogues de Première (sélecteur de niveau) |
+| `index.html` | Accueil : choix du niveau (3e, Première, Terminale) et question d’essai |
+| `lecons.html`, `exercices.html`, `sujets.html` | Catalogues de Première (sélecteur de niveau) |
 | `cours/`, `exercices/` | 16 leçons et 16 séries de Première |
 | `terminale/` | Catalogues, programme, 9 leçons et 9 séries de Terminale (`t-*`) |
+| `troisieme/` | Catalogues, programme et brevet, 16 leçons et 16 séries de 3e (`3-*`) |
 | `annexes/calcul-rapide.html` | Calcul rapide sans calculatrice |
 | `diagnostic.html`, `revisions.html`, `mes-progres.html` | Diagnostic, révision guidée, suivi local |
 | `entrainement/` | Deux sujets blancs et des problèmes rédigés, avec corrigés et barèmes |
@@ -24,7 +26,7 @@ Site statique, sans framework ni serveur applicatif. Chaque page est un fichier 
 | Fichiers | Rôle |
 | --- | --- |
 | `exercices-variants.js` | Moteur de variantes à graine |
-| `variants-*.js`, `terminale-exercices.js` | Modèles d'exercices de Première (par chapitre) et de Terminale |
+| `variants-*.js`, `terminale-exercices.js`, `troisieme-exercices.js` | Modèles d'exercices de Première (par chapitre), de Terminale et de 3e |
 | `exercices-renderer.js`, `exercices.js` | Affichage des séries, vérification, score, corrections |
 | `coaching-*.js`, `fonctions-coaching.js` | Indices progressifs, calculés sur la variante affichée |
 | `cours.js`, `apprentissage.js`, `graphiques-interactifs.js` | Sommaire, pauses mémoire, confort de lecture, graphiques |
@@ -59,11 +61,11 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 
 ## Ajouter un exercice
 
-1. Écrire le modèle dans le fichier `variants-*.js` du chapitre (ou `terminale-exercices.js`), en reprenant la forme d'un modèle voisin : `base`, `params`, `accept`, `difficulty`, `verify`, `build`.
+1. Écrire le modèle dans le fichier `variants-*.js` du chapitre (ou `terminale-exercices.js`, `troisieme-exercices.js`), en reprenant la forme d'un modèle voisin : `base`, `params`, `accept`, `difficulty`, `verify`, `build`.
 2. Ajouter l'exercice d'origine dans le JSON `exercise-data` de la page de la série, avec les mêmes valeurs que `base`.
 3. Ajouter ses indices dans le fichier `coaching-*.js` du chapitre.
 4. Lancer `python3 tools/build_fallbacks.py` (version de lecture sans JavaScript), puis `python3 tools/finalize_site.py`.
-5. Lancer `node tests/test_variants.js` (ou `test_terminale.js`), `node tests/test_rangs.js` et `node tests/test_cloture.js`, puis la batterie complète.
+5. Lancer `node tests/test_variants.js` (ou `test_terminale.js`, `test_troisieme.js`), `node tests/test_rangs.js` et `node tests/test_cloture.js`, puis la batterie complète.
 
 ## Ajouter une leçon
 
@@ -94,7 +96,8 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 | --- | --- |
 | `validate_site.py` | Structure, liens locaux, exemples des leçons, calculs |
 | `test_notation.py`, `test_typographie.py`, `test_noms_liens.py` | Écriture des formules, typographie, noms de liens uniques |
-| `test_variants.js`, `test_terminale.js`, `test_terminale.py` | Chaque modèle sur 2 000 graines : validité, reproductibilité, variété, bande de difficulté, recalcul indépendant |
+| `test_variants.js`, `test_terminale.js`, `test_terminale.py`, `test_troisieme.js` | Chaque modèle sur 2 000 graines : validité, reproductibilité, variété, bande de difficulté, recalcul indépendant |
+| `test_troisieme.py` | Pages de 3e : structure des leçons et des séries, liens, catalogues, programme et choix du niveau sur l’accueil |
 | `test_rangs.js` | Les rangs demandés changent d'une variante à l'autre |
 | `test_cloture.js`, `test_cloture.py`, `test_domaines.js` | Domaines de définition, pièges de réponses fausses, sujets blancs |
 | `test_graphiques.js`, `test_calcul_rapide.*`, `test_countdown.js` | Graphiques, calcul rapide, chrono |
@@ -113,7 +116,7 @@ Le test construit deux versions avec `tools/build_public.py` et les sert sous la
 
 En CI, la référence est la base de la pull request ou le commit précédent le push. En local, `VISUAL_BASE_SHA=<SHA complet> python3 tests/browser_visual.py` choisit explicitement la référence. Sans cette variable, le test utilise `HEAD` si le travail est modifié, sinon `HEAD^`.
 
-Pour un changement volontaire du texte d'un champ, relire les deux captures puis renseigner dans `tests/visual-changes.json` le SHA exact de référence, la page, un sélecteur précis et la raison. Le masque ne s'applique qu'à cette référence et à l'intérieur des champs : leurs dimensions, positions et styles restent comparés. Une refonte qui modifie la géométrie doit faire évoluer le contrôle après revue ; élargir un masque pour cacher une régression n'est pas acceptable.
+Pour un changement volontaire du texte d'un champ, relire les deux captures puis renseigner dans `tests/visual-changes.json` le SHA exact de référence, la page, un sélecteur précis et la raison. Le masque ne s'applique qu'à cette référence et à l'intérieur des champs : leurs dimensions, positions et styles restent comparés. Une refonte qui modifie la géométrie doit faire évoluer le contrôle après revue ; élargir un masque pour cacher une régression n'est pas acceptable. Pour une refonte d'une page entière, `normalization: "page-redesign"` suspend la comparaison au pixel de cette page pour le seul SHA déclaré : les captures avant/après restent dans le rapport et doivent être relues.
 
 Pour un déplacement explicite du menu et une correction des espacements, `normalization: "answer-layout"` retire les anciennes et nouvelles commandes, déplie leur conteneur et donne aux réponses une géométrie commune dans les deux versions. Les textes et le reste de la fiche restent comparés ; les captures brutes avant/après montrent la présentation réellement modifiée. Les images `*-comparaison.png` rendent la normalisation vérifiable. Cette exception ne vaut que pour le SHA déclaré. Les tests séparés vérifient les écarts, hauteurs, alignements, focus, curseur et insertions. Une revue des captures brutes reste nécessaire.
 
@@ -140,6 +143,15 @@ Une empreinte ne se met jamais à jour pour faire passer un test sans relecture.
 - Épreuve anticipée de Première (session 2028) : [note de service du 11 septembre 2026](https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N). Deux heures sans calculatrice : 6 points de réponses courtes, 14 points d'exercices, dont 2 points de langue.
 
 La couverture des trois cohortes est décrite dans `couverture.html` et `donnees/couverture-programme.json`. Les rappels de Première (statistiques affines, conditionnement) restent dans le parcours de Terminale pour la cohorte issue du programme de 2019. Les activités réservées à d'autres séries technologiques ne deviennent pas des prérequis STMG. Les annales de Terminale 2017–2020 sont des archives, pas des modèles de l'épreuve actuelle.
+
+## Niveau 3e
+
+- Programme applicable en 2026–2027 : cycle 4, BO n° 31 du 30 juillet 2020. Le programme du cycle 4 publié au BO n° 10 du 5 mars 2026 s’appliquera en 3e à la rentrée 2028 : les leçons seront à revoir à cette date.
+- Brevet à partir de la session 2027 : 2 heures, automatismes sans calculatrice (20 minutes, 6 points) puis raisonnement et résolution de problèmes (1 h 40, 14 points). Le détail est sur `troisieme/programme.html#brevet`.
+- Les modèles de `troisieme-exercices.js` arrondissent au centième par défaut ; un champ peut demander une autre précision dans son libellé.
+- La révision guidée et le diagnostic restent propres à la Première et à la Terminale. Le suivi local accepte les notions `3-*` (niveau « troisieme ») ; le catalogue des exercices de 3e affiche donc « Mes progrès ».
+- Dans les pages de 3e, la quatrième entrée de navigation est « Brevet » (programme et format de l’épreuve) à la place de « Sujets ».
+- Domaines propres à la 3e dans `tools/gabarits.py` : `nombres`, `fonctions` (couleur de l’analyse) et `geometrie`, avec leurs jetons dans `tokens.css`.
 
 ## Choix pédagogiques
 

@@ -1,17 +1,13 @@
 {
-  "base_sha": "aa8095d15f1452f2f1accd5bd8de0ebf7c74c8d5",
+  "base_sha": "d1e98bc1935ef617d6671abdc1bc9a3178b06ce1",
   "allowed": {
-    "exercices/fonctions.html": {
-      "normalization": "answer-layout",
-      "reason": "Corriger les espacements entre la grille et les champs isolés, le double focus et les menus répétés signalés par l’utilisateur. Géométrie commune pour comparer les contenus, captures brutes et tests exacts des espacements conservés."
+    "index.html": {
+      "normalization": "page-redesign",
+      "reason": "Ajout du niveau 3e : l’accueil propose désormais le choix entre 3e, Première et Terminale (escalier des niveaux), avec un nouveau titre. Captures brutes relues en mobile, ordinateur, thèmes clair et sombre, et sans JavaScript ; le graphique d’accueil reste identique (empreinte inchangée)."
     },
-    "exercices/suites.html": {
-      "normalization": "answer-layout",
-      "reason": "Demande explicite : un menu commun en haut du bloc, champs alignés et espacements réguliers. Captures brutes relues ; pour cette référence seulement, les commandes sont retirées et la géométrie des réponses est uniformisée afin de comparer les textes et le reste de la fiche. Les tests dédiés contrôlent la nouvelle géométrie et le focus."
-    },
-    "terminale/exercices/t-inverse.html": {
-      "normalization": "answer-layout",
-      "reason": "Même évolution demandée de la zone de réponses en Terminale : menu commun, espacements fixes et contour de focus unique. Revue des captures brutes et tests de géométrie ; comparaison des textes et du reste avec une géométrie commune, pour cette seule référence."
+    "lecons.html": {
+      "normalization": "page-redesign",
+      "reason": "Ajout du lien « 3e » dans le sélecteur de niveau du catalogue des leçons de Première. Le reste de la page est inchangé ; captures brutes relues."
     }
   }
 }

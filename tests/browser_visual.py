@@ -162,10 +162,14 @@ def main():
                             filenames.append(filename)
                         geometry = areas[0] == areas[1]
                         diff = comparator.evaluate(COMPARE, {'before': captures[0], 'after': captures[1], 'regions': areas[1] if geometry else []})
-                        ok = geometry and diff['sameSize'] and diff['unexpectedPixels'] == 0
+                        # Refonte déclarée d'une page entière, pour ce seul commit de référence : les captures
+                        # avant/après sont conservées pour la revue humaine, sans comparaison au pixel.
+                        redesign = policy.get('normalization') == 'page-redesign' and bool(policy.get('reason'))
+                        ok = redesign or (geometry and diff['sameSize'] and diff['unexpectedPixels'] == 0)
                         rows.append({'page': name, 'width': width, 'theme': theme, 'javascript': js,
                                      'ok': ok, 'geometryUnchanged': None if normalized else geometry,
                                      'normalizedComponent': policy.get('normalization') if normalized else None, 'expectedChange': policy.get('reason'),
+                                     'reviewedRedesign': redesign,
                                      'images': filenames, **diff})
                     for context in contexts:
                         context.close()

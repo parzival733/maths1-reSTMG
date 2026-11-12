@@ -50,17 +50,26 @@ body[data-gabarit="accueil"] {
 .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-5); }
 .section-heading h2 { font-size: var(--text-lg); }
 .section-heading > p { font-size: var(--text-sm); color: var(--muted); }
-.pathway-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
-.pathway-card { display: flex; flex-direction: column; padding: var(--space-6); border: 1px solid var(--line); border-radius: var(--radius-sm); }
-.lessons-card { border-top: var(--rule-width) solid var(--color-learn); }
-.exercises-card { border-top: var(--rule-width) solid var(--color-practice); }
-.exercises-card .card-bottom { color: var(--color-practice); }
-.pathway-card h3 { font-size: var(--text-lg); line-height: var(--leading-tight); }
-.card-description { margin: var(--space-3) 0 var(--space-5); color: var(--muted); max-width: 40ch; }
-.card-bottom { margin-top: auto; font-size: var(--text-sm); font-weight: 700; color: var(--purple); text-decoration: underline; text-underline-offset: 4px; }
-.home-levels { display: flex; align-items: center; flex-wrap: wrap; gap: 0 var(--space-6); padding: var(--space-3) 0 var(--space-8); }
-.home-levels p { font-weight: 700; font-size: var(--text-sm); }
-.home-levels a { display: inline-flex; align-items: center; min-height: var(--target-min); color: var(--purple); font-size: var(--text-sm); text-decoration: underline; text-underline-offset: 4px; }
+
+/* Choix du niveau : trois marches qui montent de la 3e à la Terminale. Les contremarches
+   (bord gauche) et les girons (bord supérieur) dessinent l'escalier ; seul le nom du
+   niveau est mis en valeur. */
+.levels { padding: var(--space-8) 0 var(--space-10); scroll-margin-top: var(--space-6); }
+.level-steps { --riser: 56px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; margin: 0; padding: 0; list-style: none; border-bottom: 1px solid var(--line); }
+.level-step { display: flex; flex-direction: column; min-width: 0; padding: var(--space-5) var(--space-6) var(--space-6); border-top: 3px solid var(--purple); border-left: 3px solid var(--purple); background: var(--color-learn-faint); }
+/* Chaque marche est plus haute que la précédente : le contenu reste aligné en bas. */
+.level-step--premiere { padding-top: calc(var(--space-5) + var(--riser)); background: var(--color-learn-soft); }
+.level-step--terminale { padding-top: calc(var(--space-5) + 2 * var(--riser)); }
+.level-step--terminale { border-right: 3px solid var(--purple); background: var(--color-learn-soft); }
+.level-step__name { overflow-wrap: anywhere; font-family: var(--font-serif); font-size: clamp(40px, 4.6vw, 64px); font-weight: 600; line-height: 1; letter-spacing: -0.02em; color: var(--purple-dark); }
+.level-step__goal { margin-top: var(--space-3); font-weight: 700; }
+.level-step__count { margin-top: var(--space-1); color: var(--muted); font-size: var(--text-sm); }
+.level-step__links { display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-5); }
+.level-step__links .button { flex: 1 1 auto; justify-content: center; min-width: 0; white-space: normal; text-align: center; }
+.levels .level-step__links a.button-primary:not(#_p) { border-color: var(--color-learn-fill); background: var(--color-learn-fill); color: var(--color-on-fill); }
+.levels .level-step__links a.button-primary:not(#_p):hover { border-color: var(--color-learn-fill-hover); background: var(--color-learn-fill-hover); }
+.level-step__practice { border: 1px solid var(--color-practice); background: var(--color-surface); color: var(--color-practice); }
+.level-step__practice:hover { background: var(--color-practice-soft); }
 .home-resources { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); padding-bottom: var(--space-10); }
 .home-resources .rapid-entry { border: 0; border-top: 1px solid var(--line); border-radius: 0; margin: 0; padding: var(--space-6) 0 0; background: none; }
 .home-resources .rapid-entry h2 { font-size: var(--text-md); margin: var(--space-2) 0 var(--space-3); }
@@ -80,10 +89,13 @@ body[data-gabarit="accueil"] {
   .home-try { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
   .section-heading { display: block; }
   .section-heading > p { margin-top: var(--space-2); }
-  .pathway-grid, .home-resources { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
-  .pathway-card { padding: var(--space-5); }
-  .home-levels { gap: 0 var(--space-5); }
-  .home-levels p { flex: 1 0 100%; margin-top: var(--space-3); }
+  .home-resources { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  /* Sur téléphone, l'escalier descend vers la droite : chaque marche est décalée. */
+  .level-steps { --riser: var(--space-5); grid-template-columns: minmax(0, 1fr); border-bottom: 0; }
+  .level-steps .level-step { padding: var(--space-5); border-right: 0; }
+  .level-step__links { flex-direction: row; flex-wrap: wrap; }
+  .level-step--premiere { margin-left: var(--riser); }
+  .level-step--terminale { margin-left: calc(2 * var(--riser)); border-right: 0; border-bottom: 3px solid var(--purple); }
 }
 @media (max-width: 390px) {
   .hero-art { padding: 17px; }
@@ -91,8 +103,8 @@ body[data-gabarit="accueil"] {
 }
 @media print {
   .hero { gap: var(--space-6); padding-block: var(--space-6); }
-  .hero-art, .home-try, .pathway-card { break-inside: avoid; }
+  .hero-art, .home-try, .level-step { break-inside: avoid; }
   .hero .button, .hero-note, .home-try__form { display: none; }
 }
 
-.home-levels a[href*="exercices"], .home-resources .rapid-entry:first-child a { color: var(--color-practice); }
+.home-resources .rapid-entry:first-child a { color: var(--color-practice); }

@@ -32,6 +32,8 @@ jobs:
           node tests/test_graphiques.js
           node tests/test_terminale.js
           python3 tests/test_terminale.py
+          node tests/test_troisieme.js
+          python3 tests/test_troisieme.py
           node tests/test_calcul_rapide.js
           python3 tests/test_calcul_rapide.py
           node tests/test_countdown.js
