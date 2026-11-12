@@ -1,13 +1,9 @@
 {
-  "base_sha": "d1e98bc1935ef617d6671abdc1bc9a3178b06ce1",
+  "base_sha": "eea2826a911a8b9ea060eb8b94aece89e48598d3",
   "allowed": {
     "index.html": {
       "normalization": "page-redesign",
-      "reason": "Ajout du niveau 3e : l’accueil propose désormais le choix entre 3e, Première et Terminale (escalier des niveaux), avec un nouveau titre. Captures brutes relues en mobile, ordinateur, thèmes clair et sombre, et sans JavaScript ; le graphique d’accueil reste identique (empreinte inchangée)."
-    },
-    "lecons.html": {
-      "normalization": "page-redesign",
-      "reason": "Ajout du lien « 3e » dans le sélecteur de niveau du catalogue des leçons de Première. Le reste de la page est inchangé ; captures brutes relues."
+      "reason": "Choix du niveau sur téléphone : trois blocs alignés au lieu de marches décalées, boutons « Leçons » et « Exercices » côte à côte (le niveau reste dans le nom accessible), indicateur de marche à droite du nom. Captures brutes relues en clair, en sombre et sans JavaScript."
     }
   }
 }
