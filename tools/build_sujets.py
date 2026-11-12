@@ -49,7 +49,7 @@ def build():
 <p><a href="https://www.apmep.fr/Epreuve-anticipee-2026" target="_blank" rel="noopener noreferrer">Archives APMEP de Premi\u00e8re (nouvel onglet)</a> \u00b7 <a href="https://www.apmep.fr/Mentions-legales" target="_blank" rel="noopener noreferrer">Conditions APMEP (nouvel onglet)</a></p>
 </details>
 <p class="subjects-back">Envie de travailler une notion avant le sujet ? <a href="lecons.html">Revoir une le\u00e7on</a> ou <a href="annexes/calcul-rapide.html">faire une s\u00e9rie de calcul rapide</a>.</p>
-</main><footer class="site-footer"><div class="container footer-inner"><p><strong>maths.</strong> Comprendre, puis pratiquer.</p><p>Math\u00e9matiques \u00b7 Premi\u00e8re\u2013Terminale STMG</p></div></footer></body></html>
+</main><footer class="site-footer"><div class="container footer-inner"><p><strong>maths.</strong> Comprendre, puis pratiquer.</p><p>Math\u00e9matiques \u00b7 3e, Seconde, Premi\u00e8re et Terminale STMG</p></div></footer></body></html>
 '''
     (ROOT/'sujets.html').write_text(document,encoding='utf-8')
     print('SUJETS BUILD OK: 41 links.')

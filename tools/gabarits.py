@@ -14,11 +14,12 @@ import re
 
 DOMAINS = {'analyse': 'Analyse', 'statistiques': 'Statistiques', 'probabilites': 'Probabilités',
            'reperes': 'Repères', 'atelier': 'Atelier',
-           # Domaines propres à la 3e (thèmes du programme du cycle 4).
-           'nombres': 'Nombres et calculs', 'fonctions': 'Données et fonctions', 'geometrie': 'Géométrie'}
+           # Domaines propres à la 3e et à la Seconde.
+           'nombres': 'Nombres et calculs', 'fonctions': 'Fonctions', 'geometrie': 'Géométrie'}
 CATALOGS = [('lecons.html', 'exercices.html', 'cours/', 'exercices/'),
             ('terminale/lecons.html', 'terminale/exercices.html', 'cours/', 'exercices/'),
-            ('troisieme/lecons.html', 'troisieme/exercices.html', 'cours/', 'exercices/')]
+            ('troisieme/lecons.html', 'troisieme/exercices.html', 'cours/', 'exercices/'),
+            ('seconde/lecons.html', 'seconde/exercices.html', 'cours/', 'exercices/')]
 CARD = re.compile(r'<a class="lesson-card"([^>]*)>')
 
 
@@ -87,7 +88,7 @@ def add_script(text, base, name):
 
 def tracking(root: Path):
     for lessons, exercises, _, _ in CATALOGS:
-        base = '../' if lessons.startswith(('terminale/', 'troisieme/')) else ''
+        base = '../' if lessons.startswith(('terminale/', 'troisieme/', 'seconde/')) else ''
         lesson_path, exercise_path = root / lessons, root / exercises
         counts = exercise_counts(exercise_path.read_text(encoding='utf-8'))
         for path in (lesson_path, exercise_path):

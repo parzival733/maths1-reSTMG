@@ -151,7 +151,16 @@ La couverture des trois cohortes est décrite dans `couverture.html` et `donnees
 - Les modèles de `troisieme-exercices.js` arrondissent au centième par défaut ; un champ peut demander une autre précision dans son libellé.
 - La révision guidée et le diagnostic restent propres à la Première et à la Terminale. Le suivi local accepte les notions `3-*` (niveau « troisieme ») ; le catalogue des exercices de 3e affiche donc « Mes progrès ».
 - Dans les pages de 3e, la quatrième entrée de navigation est « Brevet » (programme et format de l’épreuve) à la place de « Sujets ».
-- Domaines propres à la 3e dans `tools/gabarits.py` : `nombres`, `fonctions` (couleur de l’analyse) et `geometrie`, avec leurs jetons dans `tokens.css`.
+- Domaines propres à la 3e et à la Seconde dans `tools/gabarits.py` : `nombres`, `fonctions` (couleur de l’analyse) et `geometrie`, avec leurs jetons dans `tokens.css`.
+
+## Niveau Seconde
+
+- Programme applicable depuis la rentrée 2026 : arrêté du 26 février 2026, BO n° 14 du 2 avril 2026 (MENE2602914A). Quatre parties thématiques et trois parties transversales ; le repère « Algorithmique et logique » regroupe Python, le vocabulaire ensembliste et les raisonnements, et l'annexe de calcul rapide entretient les automatismes.
+- Les pages sont dans `seconde/` (préfixe `2-`), les modèles dans `seconde-exercices.js` (hook `data-seconde-chapter`), contrôlés par `tests/test_seconde.js` et `tests/test_seconde.py`.
+- La quatrième entrée de navigation est « Programme » (`seconde/programme.html`), à la place de « Sujets ».
+- Le suivi local accepte les notions `2-*` (niveau « seconde ») ; comme en 3e, la révision guidée et le diagnostic n'en proposent pas.
+- Les vecteurs s'écrivent `<span class="vec"><span class="sr-only">vecteur </span>AB</span>` : la flèche est dessinée en CSS (`components.css`), car la police ne contient pas la flèche combinante. Dans les libellés de champs, qui sont du texte, on écrit « vecteur AB ».
+- L'accueil présente quatre marches au-dessus de 1100 px, quatre blocs (deux par ligne, puis un par ligne sur téléphone) en dessous.
 
 ## Choix pédagogiques
 

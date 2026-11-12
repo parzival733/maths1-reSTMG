@@ -56,6 +56,6 @@ def main():
  assert len(locations)==len(set(locations)) and set(locations)==indexed
  assert 'Sitemap: https://mathstmgdls.pages.dev/sitemap.xml' in (ROOT/'robots.txt').read_text()
  assert 'noindex' in (ROOT/'404.html').read_text()
- assert sum('data-offline-series' in p.read_text() for p in pages)==40
+ assert sum('data-offline-series' in p.read_text() for p in pages)==56
  print(f'EVOLUTION OK: {len(pages)} pages, {len(locations)} canonical URLs, 10080 independent rational recalculations, original mathematical banks preserved.')
 if __name__=='__main__':main()

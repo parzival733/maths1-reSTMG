@@ -5,8 +5,8 @@
   const $=id=>document.getElementById(id),panel=$('progress-controls');if(!panel)return;
   const embedded=panel.dataset.embedded==='true',base=panel.dataset.base||'';
   const level=$('progress-level');level.value=panel.dataset.level||(new URLSearchParams(location.search).get('niveau')==='terminale'?'terminale':'premiere');
-  // La révision guidée et le diagnostic ne couvrent pas la 3e : leurs liens restent masqués.
-  const college=()=>level.value==='troisieme';
+  // La révision guidée et le diagnostic ne couvrent ni la 3e ni la Seconde : leurs liens restent masqués.
+  const college=()=>level.value==='troisieme'||level.value==='seconde';
   const link=path=>base+path;
   const say=text=>{$('progress-message').textContent=text;};
   const node=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e;};

@@ -533,3 +533,7 @@ html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-wrong {
 .correction-legend:not(#_l) { display: grid; gap: 2px; }
 .correction-legend .legend-cases, .correction-legend .legend-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; }
 .correction-legend .legend-cases > span, .correction-legend .legend-steps > span { display: inline-flex; align-items: center; gap: 4px; }
+
+/* Liens vers la leçon et le programme, sous le choix du niveau. */
+.interactive-exercise-page > .level-switch + p { margin: var(--space-3) 0 var(--space-5); }
+.interactive-exercise-page > .level-switch + p a { color: var(--color-practice); font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
