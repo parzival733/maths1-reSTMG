@@ -51,7 +51,7 @@ def reference(tokens):
 
 def main():
     samples=json.loads(subprocess.check_output(['node','tests/test_calcul_rapide.js','--export'],cwd=ROOT,text=True,encoding='utf-8'))
-    assert len(samples)==54*160
+    assert len(samples)==78*160
     for q in samples:
         value=Fraction(q['expected'])
         assert value==reference(q['ref']), (q['id'],q['prompt'],q['expected'])
@@ -59,7 +59,7 @@ def main():
             assert 0<=value<=1
         if q['id']=='t-derivee-inverse':assert value<0
         if q['id']=='p-successives':assert value<0
-        assert q['level'] in ['bases','premiere','terminale']
+        assert q['level'] in ['bases','premiere','terminale','troisieme','seconde']
         assert (ROOT/(q['course']+'.html')).is_file()
     pages={p.resolve():Page(p.read_text(encoding='utf-8')) for p in ROOT.rglob('*.html') if '.git' not in p.parts and 'docs' not in p.parts and 'public' not in p.parts}
     targets=['annexes/calcul-rapide.html','index.html','lecons.html','exercices.html','terminale/lecons.html','terminale/exercices.html']

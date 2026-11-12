@@ -8,11 +8,13 @@ if(process.argv.includes('--export')) {
   for(const t of A.templates)for(let seed=0;seed<160;seed++)samples.push(A.generate(t.id,seed));
   process.stdout.write(JSON.stringify(samples));
 } else {
-  assert.equal(A.templates.length,54);
+  assert.equal(A.templates.length,78);
   assert.equal(A.templates.filter(t=>t.level==='bases').length,18);
   assert.equal(A.templates.filter(t=>t.level==='premiere').length,24);
   assert.equal(A.templates.filter(t=>t.level==='terminale').length,12);
-  assert.equal(new Set(A.templates.map(t=>t.id)).size,54);
+  assert.equal(A.templates.filter(t=>t.level==='troisieme').length,12);
+  assert.equal(A.templates.filter(t=>t.level==='seconde').length,12);
+  assert.equal(new Set(A.templates.map(t=>t.id)).size,78);
   let total=0;
   for(const t of A.templates) {
     assert.ok(fs.existsSync(path.join(__dirname,'..',t.course+'.html')),t.course);
@@ -44,11 +46,11 @@ if(process.argv.includes('--export')) {
   assert.equal(A.check('0,333333333333',{expected:'1/3'}),false);
   assert.equal(A.check('1/-2',{expected:'-1/2'}),true);
   assert.equal(A.parse('1'.repeat(81)),null);
-  for(const level of ['bac','bases','premiere','terminale'])for(const method of ['mixte','mental','feuille'])for(let seed=0;seed<50;seed++) {
+  for(const level of ['bac','bases','premiere','terminale','troisieme','seconde'])for(const method of ['mixte','mental','feuille'])for(let seed=0;seed<50;seed++) {
     const opts={level,method,count:20,seed};
     const qs=A.session(opts);assert.equal(qs.length,20);
     assert.deepEqual(qs,A.session(opts));
-    assert.ok(qs.every(q=>level==='bac'?q.level!=='terminale':q.level===level));
+    assert.ok(qs.every(q=>level==='bac'?['bases','premiere'].includes(q.level):q.level===level));
     assert.ok(qs.every(q=>method==='mixte'||q.method===method));
     for(const topic of [...new Set(A.eligible(opts).map(t=>t.topic))]) {
       const filtered=A.session({...opts,topic,count:5});
@@ -64,5 +66,5 @@ if(process.argv.includes('--export')) {
     const code=fs.readFileSync(path.join(__dirname,'..','assets',f),'utf8');
     assert.equal(/\beval\s*\(|\bfetch\s*\(|\blocalStorage\b|\bsessionStorage\b|\bXMLHttpRequest\b/.test(code),false);
   }
-  console.log(`CALCUL RAPIDE OK: ${total} variantes, fractions exactes, filtres et aucun modele Terminale dans le parcours bac.`);
+  console.log(`CALCUL RAPIDE OK: ${total} variantes, fractions exactes, filtres et aucun modele Terminale, 3e ou Seconde dans le parcours de l'epreuve anticipee.`);
 }

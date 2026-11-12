@@ -27,10 +27,11 @@ Site de mathématiques en français pour la 3e, la Seconde générale et technol
 ## Contenu
 
 - **Leçons** : objectifs, encadrés (définition, méthode, formule, exemple, point de vigilance), deux pauses mémoire, application corrigée, routine de révision ; lisibles et imprimables sans JavaScript.
-- **Exercices** : 375 modèles (96 en 3e, 96 en Seconde, 129 en Première, 54 en Terminale). Chaque nouvelle variante change les nombres et, si besoin, les rangs ou les abscisses demandés, avec un niveau de difficulté stable. Indices progressifs et corrigés Méthode → Calculs → Conclusion.
-- **Calcul rapide** : séries de 5 à 20 questions sans calculatrice, avec chrono réglable et fiche imprimable.
+- **Exercices** : 375 modèles (96 en 3e, 96 en Seconde, 129 en Première, 54 en Terminale), plus 78 modèles de calcul rapide. Chaque nouvelle variante change les nombres et, si besoin, les rangs ou les abscisses demandés, avec un niveau de difficulté stable. Indices progressifs et corrigés Méthode → Calculs → Conclusion.
+- **Calcul rapide** : séries de 5 à 20 questions sans calculatrice, avec chrono réglable et fiche imprimable ; parcours d'automatismes de 3e, de Seconde, de Première et de Terminale.
+- **Brevet** : format de l'épreuve 2027, sujets de référence officiels et un sujet blanc corrigé (`troisieme/brevet.html`).
 - **Sujets** : 41 annales en PDF, liées chez leurs éditeurs ; deux sujets blancs et des problèmes rédigés, avec corrigés et barèmes.
-- **Diagnostic, révision guidée, suivi local** : désactivé par défaut ; aucune réponse saisie n'est conservée ni transmise.
+- **Diagnostic, révision guidée, suivi local** (quatre niveaux) : le suivi est désactivé par défaut ; aucune réponse saisie n'est conservée ni transmise.
 
 Les détails de fonctionnement (variantes, outils, tests, règle des empreintes) sont dans [`docs/maintenance.md`](docs/maintenance.md).
 

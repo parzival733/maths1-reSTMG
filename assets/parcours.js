@@ -5,7 +5,7 @@
   if(!app||!B||!A||!Q)return;
   const diagnostic=app.dataset.mode==='diagnostic';
   const params=new URLSearchParams(location.search),level=$('practice-level');
-  level.value=params.get('niveau')==='terminale'?'terminale':'premiere';
+  level.value=['troisieme','seconde','terminale'].includes(params.get('niveau'))?params.get('niveau'):'premiere';
   let questions=[],states=[],current=0,finished=false,series=0;
   const seed=()=>{if(window.crypto?.getRandomValues)return crypto.getRandomValues(new Uint32Array(1))[0];return Date.now()>>>0;};
   const node=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e;};
@@ -13,7 +13,7 @@
   function options(){
     const select=$('practice-skill');if(!select)return;
     const previous=select.value||params.get('notion');select.replaceChildren(new Option('Mes priorit\u00e9s puis un m\u00e9lange','auto'));
-    const available=[...new Set(B.templates.filter(t=>level.value==='terminale'||t.level!=='terminale').map(t=>t.skill))];
+    const available=[...new Set(B.templates.filter(t=>B.levels[level.value].includes(t.level)).map(t=>t.skill))];
     available.forEach(key=>select.add(new Option(A.skills[key].label,key)));
     if(available.includes(previous))select.value=previous;
   }

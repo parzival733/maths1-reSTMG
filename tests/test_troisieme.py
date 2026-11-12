@@ -16,7 +16,7 @@ SLUGS = ['3-arithmetique', '3-fractions', '3-puissances', '3-calcul-litteral', '
 def main():
     folder = ROOT / 'troisieme'
     paths = sorted(folder.rglob('*.html'))
-    assert len(paths) == 35, len(paths)
+    assert len(paths) == 37, len(paths)
     assert {p.stem for p in (folder / 'cours').glob('*.html')} == set(SLUGS)
     assert {p.stem for p in (folder / 'exercices').glob('*.html')} == set(SLUGS)
     pages = {p.resolve(): Page(p.read_text(encoding='utf-8')) for p in ROOT.rglob('*.html')
@@ -65,12 +65,26 @@ def main():
     assert 'data-level="troisieme"' in progress and '<option value="troisieme">' in progress
     programme = (folder / 'programme.html').read_text(encoding='utf-8')
     assert 'id="brevet"' in programme and 'MENE2018714A' in programme and programme.count('6 exercices') == 16
+    brevet = (folder / 'brevet.html').read_text(encoding='utf-8')
+    assert 'sujet-blanc.html' in brevet and 'dnb-sujet-de-reference' in brevet
+    blanc = (folder / 'sujet-blanc.html').read_text(encoding='utf-8')
+    assert blanc.count('<section class="exam-block') == 4 and 'exam-correction' in blanc and 'examen.js' in blanc
+    # Recalcul indépendant des réponses du sujet blanc.
+    from fractions import Fraction as Fr
+    import math
+    assert Fr(2, 3) + Fr(5, 6) == Fr(3, 2) and 5 - 3 * (-4) == 17 and Fr(15, 100) * 240 == 36 and Fr(13 + 7, 4) == 5
+    assert 2 * 2 * 3 * 7 == 84 and math.hypot(6, 8) == 10 and sorted([12, 3, 15, 8, 7])[2] == 8
+    assert round(math.hypot(4, 0.3), 2) == 4.01 and round(math.degrees(math.atan(0.3 / 4)), 1) == 4.3
+    assert Fr(3, 10) / 4 == Fr(75, 1000) and Fr(3, 10) / Fr(5, 100) == 6
+    assert Fr(30, Fr(45, 10) - 2) == 12 and Fr(45, 10) * 20 == 90 and 30 + 2 * 20 == 70
+    primes = [n for n in range(2, 21) if all(n % d for d in range(2, n))]
+    assert len(primes) == 8 and len([n for n in range(1, 21) if n % 5 == 0]) == 4 and len(range(13, 21)) == 8
     home = (ROOT / 'index.html').read_text(encoding='utf-8')
     for href in ['troisieme/lecons.html', 'troisieme/exercices.html', 'lecons.html', 'exercices.html',
                  'terminale/lecons.html', 'terminale/exercices.html']:
         assert f'href="{href}"' in home, href
     assert home.count('class="level-step ') == 4
-    print(f'TROISIEME OK: 35 pages, 16 leçons et 16 séries, {links} liens locaux vérifiés, sélecteur de niveau sur l’accueil et les catalogues.')
+    print(f'TROISIEME OK: 37 pages, 16 leçons et 16 séries, {links} liens locaux vérifiés, sélecteur de niveau sur l’accueil et les catalogues.')
 
 
 if __name__ == '__main__':

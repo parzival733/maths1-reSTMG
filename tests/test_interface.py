@@ -55,7 +55,7 @@ def main():
             page.clock.install()
             expect(page.locator('#rapid-app')).to_have_attribute('data-phase','ready')
             expect(page.locator('#rapid-work')).to_be_hidden()
-            expect(page.locator('input[name=level]')).to_have_count(4)
+            expect(page.locator('input[name=level]')).to_have_count(6)
             page.clock.fast_forward(600000)
             expect(page.locator('#rapid-app')).to_have_attribute('data-phase','ready')
             page.locator('#rapid-minutes').fill('0');page.locator('#rapid-seconds').fill('0')

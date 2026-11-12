@@ -1,21 +1,17 @@
 {
-  "base_sha": "5d2b915e51e9ec321bf4a0c673140b134f4da71b",
+  "base_sha": "37a12e4252d2a583ceaab2988ce860dd3d963742",
   "allowed": {
-    "index.html": {
+    "lecons.html": {
       "normalization": "page-redesign",
-      "reason": "Rôle des mathématiques au bac corrigé sous les noms des niveaux : épreuve anticipée et contrôle continu en Première, contrôle continu en Terminale."
-    },
-    "sujets.html": {
-      "normalization": "page-redesign",
-      "reason": "Une phrase ajoutée sur les archives de Terminale : depuis 2021, les mathématiques de Terminale STMG comptent au contrôle continu."
+      "reason": "Sélecteur de niveau sur téléphone : « 1re STMG » et « Tle STMG » affichés, libellés complets conservés pour les lecteurs d’écran."
     },
     "annexes/calcul-rapide.html": {
       "normalization": "page-redesign",
-      "reason": "Le parcours « Bac de Première » est renommé « Épreuve anticipée de Première » ; méthodes et séries inchangées."
+      "reason": "Deux parcours ajoutés au calcul rapide : automatismes de 3e et de Seconde."
     },
-    "lecons.html": {
+    "revisions.html": {
       "normalization": "page-redesign",
-      "reason": "Encadré du calcul rapide : « pour le bac de Première » devient « pour l’épreuve anticipée de Première » ; leçons inchangées."
+      "reason": "La révision guidée propose aussi la 3e et la Seconde (choix du niveau et liens vers leurs leçons)."
     }
   }
 }

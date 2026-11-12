@@ -7,7 +7,7 @@ from test_calcul_rapide import reference,Page
 ROOT=Path(__file__).resolve().parents[1]
 def main():
  samples=json.loads(subprocess.check_output(['node','tests/test_parcours.js','--json'],cwd=ROOT,text=True))
- assert len(samples)==10080
+ assert len(samples)==13920
  for q in samples:
   assert reference(q['ref'])==Fraction(q['expected']),(q['id'],q['prompt'],q['expected'])
   assert (ROOT/(q['course']+'.html')).is_file()
@@ -57,5 +57,5 @@ def main():
  assert 'Sitemap: https://mathstmgdls.pages.dev/sitemap.xml' in (ROOT/'robots.txt').read_text()
  assert 'noindex' in (ROOT/'404.html').read_text()
  assert sum('data-offline-series' in p.read_text() for p in pages)==56
- print(f'EVOLUTION OK: {len(pages)} pages, {len(locations)} canonical URLs, 10080 independent rational recalculations, original mathematical banks preserved.')
+ print(f'EVOLUTION OK: {len(pages)} pages, {len(locations)} canonical URLs, 13920 independent rational recalculations, original mathematical banks preserved.')
 if __name__=='__main__':main()
