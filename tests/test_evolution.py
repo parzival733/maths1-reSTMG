@@ -48,13 +48,13 @@ def main():
    assert target.is_relative_to(ROOT) and target.is_file(),(name,link)
    if u.fragment:assert unquote(u.fragment) in pages[target].ids,(name,link)
   canon=re.findall('<link rel="canonical" href="([^"]+)"',html)
-  assert (not canon if name=='404.html' else len(canon)==1 and canon[0].startswith('https://mathstmgdls.pages.dev/')),name
+  assert (not canon if name=='404.html' else len(canon)==1 and canon[0].startswith('https://revision-maths.pages.dev/')),name
   assert '<meta name="description"' in html,name
   if 'noindex' not in html:indexed.add(canon[0])
  sitemap=ET.fromstring((ROOT/'sitemap.xml').read_text())
  locations=[x.text for x in sitemap.findall('{*}url/{*}loc')]
  assert len(locations)==len(set(locations)) and set(locations)==indexed
- assert 'Sitemap: https://mathstmgdls.pages.dev/sitemap.xml' in (ROOT/'robots.txt').read_text()
+ assert 'Sitemap: https://revision-maths.pages.dev/sitemap.xml' in (ROOT/'robots.txt').read_text()
  assert 'noindex' in (ROOT/'404.html').read_text()
  assert sum('data-offline-series' in p.read_text() for p in pages)==40
  print(f'EVOLUTION OK: {len(pages)} pages, {len(locations)} canonical URLs, 10080 independent rational recalculations, original mathematical banks preserved.')

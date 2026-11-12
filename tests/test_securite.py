@@ -132,7 +132,7 @@ class SecurityHeaders(unittest.TestCase):
     def test_robots_does_not_list_internal_paths(self):
         content = (ROOT / 'robots.txt').read_text()
         self.assertNotRegex(content, r'(?im)^Disallow:\s*/(?:tests|tools|\.github|docs)')
-        self.assertIn('Sitemap: https://mathstmgdls.pages.dev/sitemap.xml', content)
+        self.assertIn('Sitemap: https://revision-maths.pages.dev/sitemap.xml', content)
 
 
 if __name__ == '__main__':

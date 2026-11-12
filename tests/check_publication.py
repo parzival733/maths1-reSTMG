@@ -25,7 +25,7 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'public'
-ORIGIN = 'https://mathstmgdls.pages.dev'
+ORIGIN = 'https://revision-maths.pages.dev'
 ALIASES = {'progresser.html': 'exercices.html', 'preparer-bac.html': 'sujets.html'}
 # Fichiers du dépôt qui ne doivent jamais être servis.
 PRIVATE = ('docs/audit-et-arbitrages.md', 'docs/maintenance.md', 'docs/validation-humaine.md',

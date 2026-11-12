@@ -2,13 +2,13 @@
 
 Site de mathématiques en français pour la 3e, la Première et la Terminale STMG : leçons, séries d'exercices à variantes, calcul rapide, sujets et suivi local facultatif. HTML, CSS et JavaScript statiques, sans framework, sans compte et sans traceur.
 
-**[Ouvrir le site](https://mathstmgdls.pages.dev/)**
+**[Ouvrir le site](https://revision-maths.pages.dev/)**
 
 | Niveau | Leçons | Exercices |
 | --- | --- | --- |
-| 3e | [16 leçons](https://mathstmgdls.pages.dev/troisieme/lecons) | [16 séries](https://mathstmgdls.pages.dev/troisieme/exercices) |
-| Première STMG | [16 leçons](https://mathstmgdls.pages.dev/lecons) | [16 séries](https://mathstmgdls.pages.dev/exercices) |
-| Terminale STMG | [9 leçons](https://mathstmgdls.pages.dev/terminale/lecons) | [9 séries](https://mathstmgdls.pages.dev/terminale/exercices) |
+| 3e | [16 leçons](https://revision-maths.pages.dev/troisieme/lecons) | [16 séries](https://revision-maths.pages.dev/troisieme/exercices) |
+| Première STMG | [16 leçons](https://revision-maths.pages.dev/lecons) | [16 séries](https://revision-maths.pages.dev/exercices) |
+| Terminale STMG | [9 leçons](https://revision-maths.pages.dev/terminale/lecons) | [9 séries](https://revision-maths.pages.dev/terminale/exercices) |
 
 ## Programmes de référence
 
@@ -91,11 +91,11 @@ Le workflow `.github/workflows/verification.yml` lance l'ensemble à chaque pull
 
 ## Publication
 
-Cloudflare Pages publie la branche **`main`** sur https://mathstmgdls.pages.dev/. Le projet doit publier uniquement le dossier `public/`, construit par `tools/build_public.py` : pages, ressources du navigateur, CSV liés par une page, licences des polices et fichiers de configuration de l'hébergeur. Les dossiers `docs/`, `tests/`, `tools/` et `.github/` doivent rester hors de la publication. Le contrôle en ligne ci-dessous vérifie la configuration effective de Cloudflare.
+Cloudflare Pages publie la branche **`main`** sur https://revision-maths.pages.dev/. Le projet doit publier uniquement le dossier `public/`, construit par `tools/build_public.py` : pages, ressources du navigateur, CSV liés par une page, licences des polices et fichiers de configuration de l'hébergeur. Les dossiers `docs/`, `tests/`, `tools/` et `.github/` doivent rester hors de la publication. Le contrôle en ligne ci-dessous vérifie la configuration effective de Cloudflare.
 
 Réglage du projet dans le tableau de bord Cloudflare :
 
-1. Ouvrir https://dash.cloudflare.com, puis **Workers & Pages** et le projet du site (`mathstmgdls`).
+1. Ouvrir https://dash.cloudflare.com, puis **Workers & Pages** et le projet du site (`revision-maths`).
 2. Onglet **Settings**, section **Build** (ou **Builds & deployments**), bouton **Edit** de **Build configuration**.
 3. **Framework preset** : `None`. **Build command** : `python3 tools/build_public.py`. **Build output directory** : `public`. **Root directory** : laisser vide.
 4. **Save**. Puis onglet **Deployments**, dernier déploiement de `main`, menu **⋯** → **Retry deployment** (ou pousser un commit sur `main`).

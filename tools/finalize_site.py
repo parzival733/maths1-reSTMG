@@ -8,7 +8,7 @@ import hashlib
 import base64
 import re
 ROOT=Path(__file__).resolve().parents[1]
-ORIGIN='https://mathstmgdls.pages.dev'
+ORIGIN='https://revision-maths.pages.dev'
 from navigation_simple import apply as simplify_navigation, ALIASES
 from lecons import apply as apply_lessons
 from typographie import apply as apply_typography
