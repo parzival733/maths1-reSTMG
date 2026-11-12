@@ -473,3 +473,10 @@ body .exercises-card { --card-accent: var(--color-practice); }
 @media print {
   body :is(.lesson-card, .pathway-card) { transition: none; }
 }
+
+/* Sélecteur de niveau : libellés courts sur téléphone, le libellé complet reste lu. */
+.level-short { display:none; }
+@media (max-width: 520px) {
+  .level-switch .level-long { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+  .level-switch .level-short { display:inline; }
+}

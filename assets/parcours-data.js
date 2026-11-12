@@ -47,13 +47,19 @@
     q.traps=traps;
     return q;
   }
+  // Niveaux pris en compte : la 3e et la Seconde ont leurs propres automatismes ; la Terminale reprend aussi la Première.
+  const LEVELS={troisieme:['troisieme'],seconde:['seconde'],premiere:['bases','premiere'],terminale:['bases','premiere','terminale']};
+  const DIAGNOSTIC={
+    troisieme:['c-fractions','c-relatifs','c-equation','c-equation','c-pourcentage','c-pourcentage','c-image','c-image','c-moyenne','c-moyenne'],
+    seconde:['s-puissances','s-racine','s-inequation','s-inequation','s-vecteur','s-milieu','s-evolutions','s-evolutions','s-distance','s-intervalle']};
   function diagnostic(level,seed){
-    const ids=['g-fraction-denominateur','g-fraction-quotient','p-retour','p-successives','p-image','p-antecedent',...(level==='terminale'?['p-arithmetique','p-arithmetique']:['g-moyenne','p-moyenne-ponderee']),'r-population','p-conditionnelle'];
-    return ids.map((id,i)=>generate(id,(seed+i*7919)>>>0));
+    const ids=DIAGNOSTIC[level]||['g-fraction-denominateur','g-fraction-quotient','p-retour','p-successives','p-image','p-antecedent',...(level==='terminale'?['p-arithmetique','p-arithmetique']:['g-moyenne','p-moyenne-ponderee']),'r-population','p-conditionnelle'];
+    const seen=new Set();
+    return ids.map((id,i)=>{let q;for(let k=0;k<40;k++){q=generate(id,(seed+i*7919+k*104729)>>>0);if(!seen.has(q.prompt))break;}seen.add(q.prompt);return q;});
   }
   function session({level='premiere',skills=[],count=10,seed=1}={}){
-    if(!['premiere','terminale'].includes(level)||!Number.isInteger(count)||count<1||count>20)throw new Error('S\u00e9rie invalide.');
-    const r=rng(seed),pool=templates.filter(t=>level==='terminale'||t.level!=='terminale'),target=pool.filter(t=>skills.includes(t.skill));
+    if(!LEVELS[level]||!Number.isInteger(count)||count<1||count>20)throw new Error('S\u00e9rie invalide.');
+    const r=rng(seed),pool=templates.filter(t=>LEVELS[level].includes(t.level)),target=pool.filter(t=>skills.includes(t.skill));
     const questions=[],seen=new Set();
     for(let i=0;i<count;i++){
       const deck=target.length&&i<Math.ceil(count*.7)?target:pool;let q;
@@ -63,6 +69,6 @@
     return questions;
   }
   function mistake(value,q){return(q.traps||[]).find(t=>Q.check(value,{expected:t.value,unit:q.unit}))||null;}
-  const api={templates,generate,diagnostic,session,mistake};root.ParcoursBank=api;
+  const api={templates,levels:LEVELS,generate,diagnostic,session,mistake};root.ParcoursBank=api;
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

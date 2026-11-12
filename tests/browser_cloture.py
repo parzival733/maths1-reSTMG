@@ -26,7 +26,9 @@ def main():
     representative=['index.html','lecons.html','terminale/lecons.html','cours/fonctions.html',
         'exercices/fonctions.html','terminale/exercices/t-inverse.html','sujets.html',
         'annexes/calcul-rapide.html','diagnostic.html','revisions.html','mes-progres.html',
-        'entrainement/sujet-blanc-1.html','entrainement/problemes.html']
+        'entrainement/sujet-blanc-1.html','entrainement/problemes.html',
+        'troisieme/lecons.html','troisieme/cours/3-thales.html','troisieme/exercices/3-pythagore.html','troisieme/brevet.html','troisieme/sujet-blanc.html',
+        'seconde/lecons.html','seconde/cours/2-vecteurs.html','seconde/exercices/2-statistiques.html','seconde/programme.html','couverture.html']
     report={'engine':'axe-core 4.10.3','tags':['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa'],
         'mode':'real local HTTP; no mock storage','pages':[],'states':[],'layout':[],
         'limitations':['Not a formal RGAA/WCAG conformance audit.', 'No human NVDA/VoiceOver or classroom study performed.'], 'violations':[]}

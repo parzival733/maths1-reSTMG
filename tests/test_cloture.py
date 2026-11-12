@@ -43,11 +43,12 @@ def main():
  xs=[1,2,3,4];ys=[12,16,18,22];a=F((18+22)-(12+16),4);b=F(12+16,2)-a*F(3,2)
  assert a==3 and b==F(19,2) and (a*6+b)*100==2750
  cov=json.loads((R/'donnees/couverture-programme.json').read_text())
- assert len(cov['cohorts'])==3 and len(cov['skills'])==26
+ assert len(cov['cohorts'])==5 and len(cov['skills'])==45
  for s in cov['skills']:
   assert s['templates'] and (R/s['course']).is_file() and (R/s['exercises']).is_file()
   assert (s['id'].startswith('t-'))==(s['level']=='terminale')
- assert set(cov['sources'])=={'premiere2026','terminale2019','terminale2027','epreuve2028'}
+  assert (s['id'].startswith('3-'))==(s['level']=='troisieme') and (s['id'].startswith('2-'))==(s['level']=='seconde')
+ assert set(cov['sources'])=={'troisieme2020','seconde2026','premiere2026','terminale2019','terminale2027','epreuve2028','brevet2027'}
  # Initial HTML/JSON questions use explicit domains too; variants alone are insufficient.
  checked_initial=0
  for path in sorted((R/'exercices').glob('*.html')):
@@ -87,5 +88,5 @@ def main():
  assert '2, 1 et 4' in ' '.join(content.text)
  for name in ['maintenance.md','validation-humaine.md']:
   assert (R/'docs'/name).is_file()
- print('CLOTURE OK: exact paper answers, domains, scores, 3 cohorts, 26 skill routes, algorithmic examples and maintenance documents.')
+ print('CLOTURE OK: exact paper answers, domains, scores, 5 cohorts, 45 skill routes, algorithmic examples and maintenance documents.')
 if __name__=='__main__':main()

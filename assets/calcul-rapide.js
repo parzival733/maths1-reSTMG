@@ -8,7 +8,7 @@
     loading.textContent = 'La série interactive n’a pas pu se charger. Les méthodes et la série papier restent disponibles ci-dessous.';
     return;
   }
-  const names = {bac:'Épreuve anticipée de Première', bases:'Bases du calcul', premiere:'Chapitres de Première', terminale:'Chapitres de Terminale'};
+  const names = {bac:'Épreuve anticipée de Première', bases:'Bases du calcul', troisieme:'Automatismes de 3e', seconde:'Automatismes de Seconde', premiere:'Chapitres de Première', terminale:'Chapitres de Terminale'};
   const timer = new window.QuickCountdown();
   let questions = [], states = [], current = 0, options = {}, series = 0;
   let phase = 'ready', timed = false, clock = null, warned = false, reason = '';
@@ -121,7 +121,7 @@
       $('rapid-session-label').textContent = `${names[options.level]} · ${questions.length} questions`;
       $('rapid-session-description').textContent = timed ? `Durée choisie : ${timeText(duration)} pour toute la série.` : 'Sans limite de temps.';
       const scope = $('rapid-scope'); scope.classList.toggle('is-terminale', options.level === 'terminale');
-      scope.textContent = options.level === 'terminale' ? 'Prolongement Terminale : ces questions ne sont pas des prérequis de l’épreuve anticipée de Première.' : `${names[options.level]} : aucune notion propre à la Terminale dans cette série.`;
+      scope.textContent = options.level === 'terminale' ? 'Prolongement Terminale : ces questions ne sont pas des prérequis de l’épreuve anticipée de Première.' : options.level === 'troisieme' ? 'Automatismes de 3e : le format de la première partie du brevet, sans calculatrice.' : options.level === 'seconde' ? 'Automatismes de Seconde : les réflexes qui préparent l’épreuve anticipée de Première.' : `${names[options.level]} : aucune notion propre à la Terminale dans cette série.`;
       $('rapid-timer').hidden = !timed; $('rapid-timer').dataset.warning = 'false';
       $('rapid-timer-message').textContent = '';
       $('rapid-pause').textContent = 'Pause'; $('rapid-pause').setAttribute('aria-label','Mettre le compte à rebours en pause');
@@ -266,5 +266,9 @@
   window.QuickCountdown.autoPause({isRunning: () => phase === 'running' && timed, pause: () => pause(true)});
   window.addEventListener('beforeprint', beforePrint);
   window.addEventListener('afterprint', () => { document.body.classList.remove('rapid-printing','rapid-print-answers'); printing = false; if (printWasRunning && phase === 'paused') resume(); printWasRunning = false; });
+  // Lien direct vers un parcours : annexes/calcul-rapide.html?niveau=troisieme, par exemple.
+  const wanted = new URLSearchParams(location.search).get('niveau');
+  const choice = wanted && /^[a-z]+$/.test(wanted) ? document.querySelector(`input[name="level"][value="${wanted}"]`) : null;
+  if (choice) choice.checked = true;
   refreshTopics(); durationControls(); setPhase('ready'); app.hidden = false; loading.hidden = true;
 })();

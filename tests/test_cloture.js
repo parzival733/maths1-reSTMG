@@ -4,7 +4,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const B=require('../assets/parcours-data.js'),Q=require('../assets/calcul-rapide-data.js'),A=require('../assets/acquis.js');
 let traps=0;const codes=new Set();
-// La révision guidée et le diagnostic couvrent la Première et la Terminale ; la 3e et la Seconde n'y figurent pas.
+// En 3e et en Seconde, les questions courtes couvrent une partie des notions ; toutes celles de Première et de Terminale sont représentées.
 for(const id of Object.keys(A.skills).filter(id=>!['troisieme','seconde'].includes(A.skills[id].level)))assert.ok(B.templates.some(t=>t.skill===id),'unrepresented skill '+id);
 for(const t of B.templates)for(let seed=0;seed<160;seed++){
  const q=B.generate(t.id,seed);

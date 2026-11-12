@@ -9,7 +9,7 @@
   const outcomes=new Set(['independent','assisted','retry','revealed','skip']);
   const sources=new Set(['chapitre','calcul','diagnostic','revision','memoire']);
   function hash(text){let h=2166136261;for(const c of String(text)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return(h>>>0).toString(36);}
-  function skillFor(q){if(q.topic==='fractions'&&q.level!=='terminale')return'fractions';return String(q.course||'').split('/').pop().replace(/\.html$/,'');}
+  function skillFor(q){if(q.topic==='fractions'&&(q.level==='bases'||q.level==='premiere'))return'fractions';return String(q.course||'').split('/').pop().replace(/\.html$/,'');}
   function validateEvent(e,now){
     if(!e||typeof e!=='object'||!Object.hasOwn(skills,e.skill)||!outcomes.has(e.outcome)||!sources.has(e.source))return null;
     if(!Number.isSafeInteger(e.at)||e.at<now-RETENTION||e.at>now+300000)return null;

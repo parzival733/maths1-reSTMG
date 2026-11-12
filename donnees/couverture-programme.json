@@ -1,23 +1,38 @@
 {
-  "verified": "2026-10-23",
+  "verified": "2026-11-12",
   "sources": {
+    "troisieme2020": "https://www.education.gouv.fr/bo/20/Hebdo31/MENE2018714A.htm",
+    "seconde2026": "https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602914A",
     "premiere2026": "https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602918A",
     "terminale2019": "https://eduscol.education.gouv.fr/sites/default/files/document/spe242annexe1158914pdf-84153.pdf",
     "terminale2027": "https://www.education.gouv.fr/bo/2026/Hebdo14/MENE2602921A",
-    "epreuve2028": "https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N"
+    "epreuve2028": "https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N",
+    "brevet2027": "https://eduscol.education.gouv.fr/5607/les-epreuves-du-dnb"
   },
   "scope": "Correspondance des familles de notions, pas certification de toutes les formulations possibles ni validation en classe.",
   "cohorts": [
     {
+      "id": "troisieme2026",
+      "year": "3e 2026-2027",
+      "exam": "Brevet 2027 ; programme du cycle 4 de 2020",
+      "source": "troisieme2020"
+    },
+    {
+      "id": "seconde2026",
+      "year": "Seconde 2026-2027",
+      "exam": "Programme 2026 ; automatismes pour l’épreuve anticipée de Première",
+      "source": "seconde2026"
+    },
+    {
       "id": "premiere2026",
       "year": "Première 2026-2027",
-      "exam": "Épreuve anticipée en 2027, bac 2028",
+      "exam": "Épreuve anticipée en juin 2027 et contrôle continu, bac 2028",
       "source": "premiere2026"
     },
     {
       "id": "terminale2026",
       "year": "Terminale 2026-2027",
-      "exam": "Programme 2019 ; consolidation et contrôle continu",
+      "exam": "Programme 2019 ; contrôle continu, sans épreuve écrite finale",
       "source": "terminale2019"
     },
     {
@@ -323,6 +338,201 @@
       "exercises": "terminale/exercices/t-outils.html",
       "templates": [
         "r-t-outils"
+      ]
+    },
+    {
+      "id": "3-fractions",
+      "label": "3e : fractions et relatifs",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-fractions.html",
+      "exercises": "troisieme/exercices/3-fractions.html",
+      "templates": [
+        "c-fractions",
+        "c-relatifs"
+      ]
+    },
+    {
+      "id": "3-puissances",
+      "label": "3e : puissances",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-puissances.html",
+      "exercises": "troisieme/exercices/3-puissances.html",
+      "templates": [
+        "c-puissances10"
+      ]
+    },
+    {
+      "id": "3-proportionnalite",
+      "label": "3e : proportionnalité",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-proportionnalite.html",
+      "exercises": "troisieme/exercices/3-proportionnalite.html",
+      "templates": [
+        "c-pourcentage"
+      ]
+    },
+    {
+      "id": "3-equations",
+      "label": "3e : équations",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-equations.html",
+      "exercises": "troisieme/exercices/3-equations.html",
+      "templates": [
+        "c-equation"
+      ]
+    },
+    {
+      "id": "3-calcul-litteral",
+      "label": "3e : calcul littéral",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-calcul-litteral.html",
+      "exercises": "troisieme/exercices/3-calcul-litteral.html",
+      "templates": [
+        "c-developpement"
+      ]
+    },
+    {
+      "id": "3-fonctions-affines",
+      "label": "3e : fonctions affines",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-fonctions-affines.html",
+      "exercises": "troisieme/exercices/3-fonctions-affines.html",
+      "templates": [
+        "c-image"
+      ]
+    },
+    {
+      "id": "3-pythagore",
+      "label": "3e : Pythagore",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-pythagore.html",
+      "exercises": "troisieme/exercices/3-pythagore.html",
+      "templates": [
+        "c-pythagore"
+      ]
+    },
+    {
+      "id": "3-statistiques",
+      "label": "3e : statistiques",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-statistiques.html",
+      "exercises": "troisieme/exercices/3-statistiques.html",
+      "templates": [
+        "c-moyenne"
+      ]
+    },
+    {
+      "id": "3-probabilites",
+      "label": "3e : probabilités",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-probabilites.html",
+      "exercises": "troisieme/exercices/3-probabilites.html",
+      "templates": [
+        "c-probabilite"
+      ]
+    },
+    {
+      "id": "3-grandeurs",
+      "label": "3e : grandeurs et volumes",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-grandeurs.html",
+      "exercises": "troisieme/exercices/3-grandeurs.html",
+      "templates": [
+        "c-vitesse"
+      ]
+    },
+    {
+      "id": "3-thales",
+      "label": "3e : Thalès",
+      "level": "troisieme",
+      "course": "troisieme/cours/3-thales.html",
+      "exercises": "troisieme/exercices/3-thales.html",
+      "templates": [
+        "c-thales"
+      ]
+    },
+    {
+      "id": "2-calcul-algebrique",
+      "label": "Seconde : calcul algébrique",
+      "level": "seconde",
+      "course": "seconde/cours/2-calcul-algebrique.html",
+      "exercises": "seconde/exercices/2-calcul-algebrique.html",
+      "templates": [
+        "s-puissances",
+        "s-racine",
+        "s-identite"
+      ]
+    },
+    {
+      "id": "2-nombres-reels",
+      "label": "Seconde : nombres réels et intervalles",
+      "level": "seconde",
+      "course": "seconde/cours/2-nombres-reels.html",
+      "exercises": "seconde/exercices/2-nombres-reels.html",
+      "templates": [
+        "s-distance",
+        "s-intervalle"
+      ]
+    },
+    {
+      "id": "2-equations",
+      "label": "Seconde : équations et inéquations",
+      "level": "seconde",
+      "course": "seconde/cours/2-equations.html",
+      "exercises": "seconde/exercices/2-equations.html",
+      "templates": [
+        "s-inequation"
+      ]
+    },
+    {
+      "id": "2-evolutions",
+      "label": "Seconde : proportions et évolutions",
+      "level": "seconde",
+      "course": "seconde/cours/2-evolutions.html",
+      "exercises": "seconde/exercices/2-evolutions.html",
+      "templates": [
+        "s-evolutions"
+      ]
+    },
+    {
+      "id": "2-vecteurs",
+      "label": "Seconde : vecteurs",
+      "level": "seconde",
+      "course": "seconde/cours/2-vecteurs.html",
+      "exercises": "seconde/exercices/2-vecteurs.html",
+      "templates": [
+        "s-vecteur",
+        "s-milieu"
+      ]
+    },
+    {
+      "id": "2-colinearite",
+      "label": "Seconde : colinéarité et géométrie repérée",
+      "level": "seconde",
+      "course": "seconde/cours/2-colinearite.html",
+      "exercises": "seconde/exercices/2-colinearite.html",
+      "templates": [
+        "s-determinant"
+      ]
+    },
+    {
+      "id": "2-droites",
+      "label": "Seconde : droites du plan",
+      "level": "seconde",
+      "course": "seconde/cours/2-droites.html",
+      "exercises": "seconde/exercices/2-droites.html",
+      "templates": [
+        "s-pente"
+      ]
+    },
+    {
+      "id": "2-probabilites",
+      "label": "Seconde : probabilités et échantillonnage",
+      "level": "seconde",
+      "course": "seconde/cours/2-probabilites.html",
+      "exercises": "seconde/exercices/2-probabilites.html",
+      "templates": [
+        "s-conditionnelle"
       ]
     }
   ]
