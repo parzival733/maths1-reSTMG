@@ -1462,10 +1462,26 @@
   const repereDe = (titre, liste) => {
     const xs = liste.map(p => p[0]).concat([0]), ys = liste.map(p => p[1]).concat([0]);
     const etendue = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) + 2, pas = etendue > 16 ? 2 : 1;
-    return FG.repere(titre, {xmin: Math.min(...xs) - 1, xmax: Math.max(...xs) + 1, ymin: Math.min(...ys) - 1, ymax: Math.max(...ys) + 1, pas_x: pas, pas_y: pas, orthonorme: true, hauteur: 300});
+    /* Quand tous les points sont à gauche ou en dessous de l'origine, les noms des deux axes se rejoindraient dans le coin : on prolonge l'axe. */
+    const haut = v => v + (v === 0 ? 2 * pas + 1 : 1);
+    return FG.repere(titre, {xmin: Math.min(...xs) - 1, xmax: haut(Math.max(...xs)), ymin: Math.min(...ys) - 1, ymax: haut(Math.max(...ys)), pas_x: pas, pas_y: pas, orthonorme: true, hauteur: 300});
   };
   const placer = (r, pts, noms) => { noms.forEach(n => r.point(pts[n][0], pts[n][1], n)); return r; };
   const liste = pts => Object.keys(pts).map(n => `${n}(${fr(pts[n][0])} ; ${fr(pts[n][1])})`).join(', ');
+  /* Pas des graduations d'une droite numérique selon son étendue. */
+  const pasDe = etendue => (etendue > 60 ? 10 : etendue > 30 ? 5 : etendue > 14 ? 2 : 1);
+  /* Cadre d'un repère qui contient l'axe des abscisses et les courbes données entre x1 et x2. */
+  const cadre = (fs, x1, x2, options, plus, de, a) => {
+    const ys = [0].concat(plus || []), u = de == null ? x1 : de, v = a == null ? x2 : a;
+    for (const f of fs) for (let i = 0; i <= 40; i++) ys.push(f(u + (v - u) * i / 40));
+    const lo = Math.min(...ys), hi = Math.max(...ys), marge = 0.08 * (hi - lo || 1);
+    return Object.assign({xmin: x1, xmax: x2, ymin: lo - marge, ymax: hi + marge}, options || {});
+  };
+  /* Parabole a(x − r1)(x − r2) avec le signe du produit de part et d'autre des racines. */
+  const parabole = (a, r1, r2, titre, t) => { const f = x => a * (x - r1) * (x - r2), e = Math.max(2, (r2 - r1) / 2), dehors = a > 0 ? '+' : '-', dedans = a > 0 ? '-' : '+', texte = s => (s === '+' ? '+' : '−');
+    const x1 = Math.min(r1 - e, -1, t == null ? 0 : t - 1), x2 = Math.max(r2 + e, 1, t == null ? 0 : t + 1);
+    return FG.repere(titre, cadre([f], x1, x2, {hauteur: 280}, [], r1 - e, r2 + e)).courbe(`(${a})*(x-(${r1}))*(x-(${r2}))`)
+      .zone_signe(null, r1, texte(dehors), {signe: dehors}).zone_signe(r1, r2, texte(dedans), {signe: dedans}).zone_signe(r2, null, texte(dehors), {signe: dehors}).point(r1, 0).point(r2, 0).description(); };
   const FIGURES = {
     '2-vecteurs': [
       (p, ex) => { const pts = pointsDe(ex.statement);
@@ -1494,7 +1510,117 @@
     ],
     '2-droites': [
       (p, ex) => { const pts = pointsDe(ex.statement);
-        return {e: placer(repereDe(`Points ${liste(pts)} et droite (AB)`, [pts.A, pts.B]).segment(pts.A[0], pts.A[1], pts.B[0], pts.B[1]), pts, ['A', 'B']).description()}; }
+        return {e: placer(repereDe(`Points ${liste(pts)} et droite (AB)`, [pts.A, pts.B]).segment(pts.A[0], pts.A[1], pts.B[0], pts.B[1]), pts, ['A', 'B']).description()}; },
+      ({x0, y0, u1, u2}) => { const m = u2 / u1, base = titre => repereDe(titre, [[x0, y0], [x0 + u1, y0 + u2]]).vecteur(x0, y0, x0 + u1, y0 + u2, 'u').point(x0, y0, 'A');
+        return {e: base(`Point A(${fr(x0)} ; ${fr(y0)}) et vecteur directeur u(${fr(u1)} ; ${fr(u2)}), tracé à partir de A`).description(),
+          c: base(`La droite d passe par A et suit la direction du vecteur u`).droite_affine(m, y0 - m * x0, {pointilles: true, fin: true, nom: 'd'}).description()}; },
+      ({a, b, c, x, on, s}) => { const yd = -(a * x + c) / b, y = yd + (on ? 0 : s);
+        return {c: repereDe(on ? `Le point M est sur la droite d` : `Le point M n’est pas sur la droite d`, [[x, y], [x, yd], [x - 2, y], [x + 2, y]]).droite_affine(-a / b, -c / b, {nom: 'd'}).point(x, y, 'M').description()}; },
+      ({m, p, k, on, s}) => { const m2 = (k * m + (on ? 0 : s)) / k;
+        if (on && p === 3) return {};
+        return {c: FG.repere(on ? `Les droites d₁ et d₂ ont la même pente : elles sont parallèles` : `Les droites d₁ et d₂ n’ont pas la même pente : elles sont sécantes`, cadre([x => m * x + p, x => m2 * x + 3], -4, 4, {hauteur: 280}))
+          .droite_affine(m, p, {nom: 'd₁'}).droite_affine(m2, 3, {nom: 'd₂', pointilles: true}).description()}; },
+      null,
+      ({x, y, a, b, c, d}) => { const e = a * x + b * y, f = c * x + d * y, r = repereDe(`Les droites d₁ et d₂ se coupent au point (${fr(x)} ; ${fr(y)})`, [[x, y], [x - 3, y - 3], [x + 3, y + 3]]);
+        const droite = (u, v, w, nom, pointilles) => (v !== 0 ? r.droite_affine(-u / v, w / v, {nom, pointilles}) : r.droite_verticale(w / u, {nom, pointilles}));
+        droite(a, b, e, 'd₁', false); droite(c, d, f, 'd₂', true);
+        return {c: r.lecture(x, y).description()}; }
+    ],
+    '2-nombres-reels': [
+      ({a, b, x}) => { const lo = Math.min(a, x) - 2, hi = Math.max(b, x) + 2, ok = x >= a && x < b;
+        const base = titre => FG.droite_numerique(titre, {min: lo, max: hi, pas: pasDe(hi - lo)}).intervalle(a, b, {ouvert_b: true});
+        return {e: base(`L’intervalle I = [${fr(a)} ; ${fr(b)}[ sur la droite numérique`).description(),
+          c: base(`Le réel ${fr(x)} ${ok ? 'appartient' : 'n’appartient pas'} à I`).point(x, null, {ligne: 0, haut: true}).description()}; },
+      ({a, b}) => { const lo = Math.min(a, b) - 2, hi = Math.max(a, b) + 2, base = titre => FG.droite_numerique(titre, {min: lo, max: hi, pas: pasDe(hi - lo)}).point(a, 'A').point(b, 'B');
+        return {e: base(`Points A et B d’abscisses ${fr(a)} et ${fr(b)}`).description(),
+          c: base(`La distance AB est l’écart entre les deux abscisses`).distance(a, b, 'AB = ' + fr(Math.abs(a - b))).description()}; },
+      ({a, r}) => ({c: FG.droite_numerique(`Les réels situés à une distance au plus ${fr(r)} de ${fr(a)}`, {min: a - r - 2, max: a + r + 2, pas: pasDe(2 * r + 4)}).centre_rayon(a, r).description()}),
+      null, null,
+      ({a, b, c, d}) => { const lo = Math.min(a, c) - 1, hi = Math.max(b, d) + 1, m = Math.max(a, c), M2 = Math.min(b, d), options = noms => ({min: lo, max: hi, pas: pasDe(hi - lo), noms_lignes: noms});
+        const base = (titre, noms) => FG.droite_numerique(titre, options(noms)).intervalle(a, b, {ligne: 0}).intervalle(c, d, {ligne: 1});
+        return {e: base(`Les intervalles I = [${fr(a)} ; ${fr(b)}] et J = [${fr(c)} ; ${fr(d)}]`, ['I', 'J']).description(),
+          c: m <= M2 ? base(`Intersection : la partie commune à I et J ; réunion : tout ce qui est couvert par I ou J`, ['I', 'J', 'I ∩ J', 'I ∪ J']).intervalle(m, M2, {ligne: 2}).intervalle(Math.min(a, c), Math.max(b, d), {ligne: 3}).description() : null}; }
+    ],
+    '2-fonctions': [null, null,
+      ({kind, a, b}) => { const f = x => [a * x * x + b, a * x ** 3 + b * x, a * x * x + b * x][kind], src = [`(${a})*x^2+(${b})`, `(${a})*x^3+(${b})*x`, `(${a})*x^2+(${b})*x`][kind];
+        const titre = f(2) === f(-2) ? `f(−2) = f(2) : la courbe est symétrique par rapport à l’axe des ordonnées` : f(2) === -f(-2) ? `f(−2) = −f(2) : la courbe est symétrique par rapport à l’origine` : `f(−2) n’est égal ni à f(2) ni à −f(2) : la courbe n’a aucune de ces deux symétries`;
+        return {c: FG.repere(titre, cadre([f], -2.6, 2.6, {hauteur: 280})).courbe(src).lecture(2, f(2)).lecture(-2, f(-2)).description()}; },
+      ({c, k}) => { const s = Math.sqrt(k + c), src = `x^2-(${c})`;
+        return {c: FG.repere(`La droite y = ${fr(k)} coupe la courbe de f en deux points : deux solutions`, {xmin: -s - 2, xmax: s + 2, ymin: Math.min(-c, 0) - 0.08 * (k + c), ymax: Math.max(k, 0) + 0.25 * (k + c), hauteur: 280})
+          .courbe(src, {nom: 'C_f'}).antecedents(k, {f: src}).description()}; },
+      ({a, b, c, d}) => { const s = (d - b) / (a - c), x1 = Math.min(0, s) - 3, x2 = Math.max(0, s) + 3;
+        return {c: FG.repere(`La courbe de f est sous celle de g ${a > c ? 'avant' : 'après'} le point d’intersection, d’abscisse ${fr(s)}`, cadre([x => a * x + b, x => c * x + d], x1, x2, {hauteur: 280}))
+          .droite_affine(a, b, {nom: 'f'}).droite_affine(c, d, {nom: 'g', pointilles: true}).lecture(s, a * s + b, {vy: false}).intervalle_solutions(a > c ? null : s, a > c ? s : null, {ouvert_a: true, ouvert_b: true}).description()}; },
+      ({P, k}) => { const h = P / 2;
+        return {c: FG.repere(`Aire A(x) du rectangle selon sa largeur x, pour x entre 0 et ${fr(h)}`, {xmin: 0, xmax: h, ymin: 0, ymax: 1.12 * h * h / 4, nom_x: 'x (cm)', nom_y: 'aire (cm²)', hauteur: 260})
+          .courbe(`x*(${h}-x)`).lecture(k, k * (h - k)).description()}; }
+    ],
+    '2-fonctions-reference': [
+      ({s}) => ({c: FG.repere(`x² ≤ ${s * s} : la parabole est sous la droite y = ${s * s} entre ${fr(-s)} et ${s}`, {xmin: -s - 2, xmax: s + 2, ymin: 0, ymax: 1.3 * s * s, hauteur: 260})
+        .courbe('x^2', {nom: 'y = x²'}).antecedents(s * s, {f: 'x^2'}).intervalle_solutions(-s, s).description()}),
+      ({k}) => ({c: FG.repere(`Sur ]0 ; +∞[, 1/x dépasse ${fr(k)} avant ${fr(1 / k)}`, {xmin: 0, xmax: 3 / k, ymin: 0, ymax: 2.6 * k, hauteur: 260})
+        .courbe('1/x', {de: 0.05 / k, nom: 'y = 1/x'}).antecedents(k, {f: '1/x', xs: [1 / k]}).intervalle_solutions(0, 1 / k, {ouvert_a: true, ouvert_b: true}).description()}),
+      ({k, m}) => { const g = Math.max(k, m);
+        return {c: FG.repere(`√x = ${k} pour x = ${k * k} ; √x ≤ ${m} jusqu’à x = ${m * m}`, {xmin: 0, xmax: 1.15 * g * g, ymin: 0, ymax: g + 1, hauteur: 260})
+          .courbe('sqrt(x)', {nom: 'y = √x'}).lecture(k * k, k).lecture(m * m, m).intervalle_solutions(0, m * m).description()}; },
+      ({a, b}) => { const etendue = Math.max(a, b, 0) ** 3 - Math.min(a, b, 0) ** 3, visible = v => Math.abs(v ** 3) > 0.12 * etendue && undefined;
+        return {c: FG.repere(`Chaque nombre a un seul antécédent par la fonction cube : ${fr(a)} pour ${fr(a ** 3)}, ${fr(b)} pour ${fr(b ** 3)}`, cadre([x => x ** 3], Math.min(a, b, 0) - 0.6, Math.max(a, b, 0) + 0.6, {hauteur: 280}))
+        .courbe('x^3', {nom: 'y = x³'}).lecture(a, a ** 3, {vy: visible(a)}).lecture(b, b ** 3, {vy: visible(b)}).description()}; },
+      ({a, r}) => ({c: FG.droite_numerique(`Les deux réels situés à la distance ${fr(r)} de ${fr(a)}`, {min: a - r - 2, max: a + r + 2, pas: pasDe(2 * r + 4)})
+        .point(a - r).point(a).point(a + r).distance(a - r, a, fr(r)).distance(a, a + r, fr(r)).description()})
+    ],
+    '2-variations': [
+      ({a, al, be}) => { const f = x => a * (x - al) ** 2 + be;
+        return {c: FG.repere(`${a > 0 ? 'Minimum' : 'Maximum'} ${fr(be)}, atteint en x = ${fr(al)}`, cadre([f], Math.min(al - 3, -1), Math.max(al + 3, 1), {hauteur: 280}))
+          .courbe(`(${a})*(x-(${al}))^2+(${be})`, {nom: 'C_f'}).lecture(al, be).description()}; },
+      null,
+      ({P}) => { const h = P / 2, s = P / 4;
+        return {c: FG.repere(`L’aire est maximale pour x = ${fr(s)} : elle vaut alors ${fr(s * s)} cm²`, {xmin: 0, xmax: h, ymin: 0, ymax: 1.14 * s * s, nom_x: 'x (cm)', nom_y: 'aire (cm²)', hauteur: 260})
+          .courbe(`x*(${h}-x)`).lecture(s, s * s).description()}; },
+      null,
+      ({m, p, a, b}) => { const f = x => m * x + p;
+        return {c: FG.repere(`Sur [${fr(a)} ; ${fr(b)}], f est ${m > 0 ? 'croissante' : 'décroissante'} : ses extremums sont atteints aux bornes`, cadre([f], Math.min(a, 0) - 1, Math.max(b, 0) + 1, {hauteur: 280}, [f(a), f(b)], a, b))
+          .segment(a, f(a), b, f(b), {epais: true}).lecture(a, f(a)).lecture(b, f(b)).description()}; },
+      ({x0, x1, x2, y0, y1, y2}) => ({c: FG.repere(`Une courbe possible : elle monte jusqu’au point (${fr(x1)} ; ${fr(y1)}), puis redescend`,
+        {xmin: Math.min(x0, 0) - 1, xmax: Math.max(x2, 0) + 1, ymin: Math.min(y0, y2, 0) - 1, ymax: Math.max(y1, 0) + 1, hauteur: 280})
+        .ligne_brisee([[x0, y0], [x1, y1], [x2, y2]]).point(x0, y0).point(x2, y2).lecture(x1, y1).description()})
+    ],
+    '2-signes': [
+      ({a, b}) => { const x0 = -b / a, f = x => a * x + b;
+        return {c: FG.repere(`f s’annule en ${fr(x0)} : elle est ${a > 0 ? 'négative avant, positive après' : 'positive avant, négative après'}`, cadre([f], Math.min(x0 - 4, -1), Math.max(x0 + 4, 1), {hauteur: 280}))
+          .droite_affine(a, b).zone_signe(null, x0, a > 0 ? '−' : '+', {signe: a > 0 ? '-' : '+'}).zone_signe(x0, null, a > 0 ? '+' : '−', {signe: a > 0 ? '+' : '-'}).point(x0, 0).description()}; },
+      ({r1, r2, a}) => ({c: parabole(a, r1, r2, `P(x) est ${a > 0 ? 'négatif' : 'positif'} entre les racines ${fr(r1)} et ${fr(r2)}, ${a > 0 ? 'positif' : 'négatif'} à l’extérieur`)}),
+      ({r1, r2}) => ({c: parabole(1, r1, r2, `Le produit est négatif entre ${fr(r1)} et ${fr(r2)}, positif à l’extérieur`)}),
+      null,
+      ({s, t}) => ({c: parabole(1, -s, s, `x² − ${s * s} est négatif entre ${fr(-s)} et ${s}, positif à l’extérieur`, t)}),
+      ({a, b}) => { const d = (b - a) / 4, f = x => (x - a) * (b - x), x1 = a - d <= 2 * d ? Math.min(0, a - d) : a - d;
+        return {c: FG.repere(`Le bénéfice est positif entre ${fr(a)} et ${fr(b)} objets vendus`, cadre([f], x1, b + d, {hauteur: 280, nom_x: 'x', nom_y: 'B(x)'}))
+          .courbe(`(x-(${a}))*((${b})-x)`).zone_signe(null, a, '−', {signe: '-'}).zone_signe(a, b, '+', {signe: '+'}).zone_signe(b, null, '−', {signe: '-'}).point(a, 0).point(b, 0).description()}; }
+    ],
+    '2-statistiques': [null, null,
+      ({e}) => ({e: FG.statistiques(`Histogramme des durées : effectif de chaque classe`).histogramme([0, 10, 20, 30, 40], e, {nom_x: 'durée (min)', nom_y: 'effectif'}).description()}),
+      ({v}) => { const t = [...v].sort((x, y) => x - y), n = t.length, [q1, q3] = quartiles(v), med = n % 2 ? t[(n - 1) / 2] : (t[n / 2 - 1] + t[n / 2]) / 2;
+        return {c: FG.statistiques(`Diagramme en boîte : minimum, Q₁, médiane, Q₃ et maximum de la série`).boite(t[0], q1, med, q3, t[n - 1]).description()}; },
+      null,
+      ({a, b, swap}) => { const [x, y] = swap ? [b, a] : [a, b], tous = x.concat(y), lo = Math.floor(Math.min(...tous)), hi = Math.ceil(Math.max(...tous));
+        const d = FG.droite_numerique(`Moyennes des classes A et B : plus les points sont resserrés, plus l’écart type est petit`, {min: lo - 1, max: hi + 1, pas: pasDe(hi - lo + 2), noms_lignes: ['A', 'B']});
+        [x, y].forEach((serie, ligne) => { const vus = {};
+          serie.forEach(v => { d.point(v, null, {ligne, valeur: false, empile: vus[v] || 0}); vus[v] = (vus[v] || 0) + 1; }); });
+        return {c: d.description()}; }
+    ],
+    '2-probabilites': [null,
+      ({p, q}) => { const P = p / 100, Q = q / 100, non = [{nom: 'B'}, {nom: 'B̄'}];
+        return {e: FG.arbre(`Arbre pondéré : P(A) = ${fr(P)} et, parmi ceux qui prennent le car, ${q} % de retards`,
+            [{nom: 'A', p: fr(P), enfants: [{nom: 'B', p: q + ' %'}, {nom: 'B̄', p: '?'}]}, {nom: 'Ā', p: '?', enfants: non}], {largeur: 340}).description(),
+          c: FG.arbre(`On multiplie les probabilités le long de chaque chemin : P(A ∩ B) en haut, P(A ∩ B̄) en dessous`,
+            [{nom: 'A', p: fr(P), enfants: [{nom: 'B', p: fr(Q), feuille: '→ ' + fr(r2(P * Q, 4))}, {nom: 'B̄', p: fr(r2(1 - Q, 4)), feuille: '→ ' + fr(r2(P * (1 - Q), 4))}]},
+              {nom: 'Ā', p: fr(r2(1 - P, 4)), enfants: non}], {chemins: [['A', 'B'], ['A', 'B̄']], largeur: 340}).description()}; },
+      null,
+      ({m, se, sp}) => ({c: FG.arbre(`Arbre du dépistage : M pour « malade », + pour « test positif »`,
+        [{nom: 'M', p: fr(m / 100), enfants: [{nom: '+', p: fr(se / 100)}, {nom: '−', p: fr(r2(1 - se / 100, 4))}]},
+          {nom: 'M̄', p: fr(r2(1 - m / 100, 4)), enfants: [{nom: '+', p: fr(r2(1 - sp / 100, 4))}, {nom: '−', p: fr(sp / 100)}]}], {chemins: [['M', '+'], ['M̄', '+']], largeur: 340}).description()}),
+      ({p}) => { const q = p / 100, niveau = suite => [{nom: 'R', p: fr(q), enfants: suite}, {nom: 'R̄', p: fr(r2(1 - q, 4)), enfants: suite}];
+        return {c: FG.arbre(`Arbre des trois tirs : R pour « réussi », probabilité ${fr(q)} à chaque tir`, niveau(niveau(niveau(undefined))), {chemin: ['R', 'R', 'R'], hauteur: 300, largeur: 340}).description()}; }
     ]
   };
 

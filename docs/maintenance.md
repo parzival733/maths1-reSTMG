@@ -187,6 +187,9 @@ Règles propres aux exercices :
 - la figure de l'énoncé montre les données, jamais la réponse : inconnue notée « ? », pas d'angle droit ni de parallélisme codé dans une réciproque, triangle dessiné à l'échelle de ses vraies longueurs ;
 - alignement, parallélisme, nature d'un triangle, point cherché : figure dans le corrigé seulement ;
 - un triangle impossible ou trop plat pour être lisible n'est pas dessiné (la variante garde son énoncé, sans figure) : la bande de difficulté n'est pas modifiée.
+- intersection de droites, solutions lues sur une courbe, signe, extremum, arbre complété : figure dans le corrigé ; l'énoncé ne reçoit que les données (points, intervalles, arbre avec « ? » sur les branches à calculer) ;
+- quand l'énoncé ne fixe pas la forme (pyramide connue par son aire et son volume, triangle OAB d'une homothétie), la légende annonce un schéma ou « une figure possible » ;
+- dans une figure graduée (repère, droite numérique, diagramme sur des axes), les nombres écrits sont des graduations : le contrôle « réponse absente » ne s'y applique pas, et la règle est vérifiée modèle par modèle dans la fonction `coherence` des tests.
 
 `tests/test_troisieme.js` et `tests/test_seconde.js` contrôlent chaque figure sur les 2 000 graines de chaque modèle : SVG valide et dans son cadre, étiquettes sans chevauchement, réponse absente de la figure d'énoncé, longueurs et angles recalculés à partir du SVG, liste des modèles illustrés.
 
