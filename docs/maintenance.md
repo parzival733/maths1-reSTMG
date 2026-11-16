@@ -30,6 +30,7 @@ Site statique, sans framework ni serveur applicatif. Chaque page est un fichier 
 | `exercices-renderer.js`, `exercices.js` | Affichage des séries, vérification, score, corrections |
 | `coaching-*.js`, `fonctions-coaching.js` | Indices progressifs, calculés sur la variante affichée |
 | `cours.js`, `apprentissage.js`, `graphiques-interactifs.js` | Sommaire, pauses mémoire, confort de lecture, graphiques |
+| `figures.js` | Moteur de figures : SVG calculés à partir de coordonnées mathématiques (voir « Figures ») |
 | `acquis.js`, `suivi-exercices.js`, `progres.js`, `catalogue-suivi.js` | Suivi local facultatif et son affichage |
 | `parcours.js`, `parcours-data.js` | Diagnostic et révision guidée |
 | `calcul-rapide*.js`, `compte-rebours.js`, `examen.js` | Calcul rapide, chrono, impression des sujets |
@@ -85,6 +86,7 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 | `liens_accessibles.py` | Nom accessible unique pour les liens génériques répétés |
 | `typographie.py` | Typographie française du HTML (apostrophes, espaces insécables) |
 | `build_fallbacks.py` | Version de lecture sans JavaScript des séries |
+| `figures.py` | Pont vers `assets/figures.js` pour les pages générées en Python ; lancé seul, écrit la galerie de relecture `.qa-figures/galerie.html` |
 | `build_sujets.py` | Catalogue des sujets à partir de `donnees/sujets.json` |
 | `build_public.py` | Dossier `public/` publié par Cloudflare Pages (pages, assets, icônes, données liées) ; échoue sur un lien local cassé |
 | `update_fingerprints.py` | Liste ou réécrit les empreintes du contenu protégé |
@@ -101,6 +103,7 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 | `test_rangs.js` | Les rangs demandés changent d'une variante à l'autre |
 | `test_cloture.js`, `test_cloture.py`, `test_domaines.js` | Domaines de définition, pièges de réponses fausses, sujets blancs |
 | `test_graphiques.js`, `test_calcul_rapide.*`, `test_countdown.js` | Graphiques, calcul rapide, chrono |
+| `test_figures.js`, `test_figures.py` | Moteur de figures : SVG valides et dans leur cadre, étiquettes sans chevauchement, longueurs, angles et points recalculés à partir du SVG, reproductibilité ; pont Python identique au moteur ; figures des pages (identifiants, titre et légende) |
 | `test_acquis.js`, `test_parcours.js`, `test_evolution.py` | Suivi local, diagnostic, révision, empreintes mathématiques |
 | `test_interface.py`, `test_sujets.py`, `test_navigation_simple.py` | Interface, sujets, navigation, contenu protégé |
 | `browser_*.py` | Parcours réels dans Chromium, 320 à 1 440 px, sans JavaScript, accessibilité (axe-core) |
@@ -121,6 +124,55 @@ Pour un changement volontaire du texte d'un champ, relire les deux captures puis
 Pour un déplacement explicite du menu et une correction des espacements, `normalization: "answer-layout"` retire les anciennes et nouvelles commandes, déplie leur conteneur et donne aux réponses une géométrie commune dans les deux versions. Les textes et le reste de la fiche restent comparés ; les captures brutes avant/après montrent la présentation réellement modifiée. Les images `*-comparaison.png` rendent la normalisation vérifiable. Cette exception ne vaut que pour le SHA déclaré. Les tests séparés vérifient les écarts, hauteurs, alignements, focus, curseur et insertions. Une revue des captures brutes reste nécessaire.
 
 Le menu Signes est unique par formulaire et agit sur le dernier champ utilisé. Les positions de sélection sont mémorisées pendant la saisie et avant le flou, puis copiées avant le retour du focus : un événement de sélection tardif lors de l'ouverture du menu ne doit pas remettre le curseur au début. Les touches insèrent à la position choisie, comme un clavier, sans déplacer automatiquement les signes au début du nombre.
+
+## Figures
+
+Toutes les figures sont calculées par `assets/figures.js` à partir de coordonnées mathématiques : le moteur choisit l'échelle, retourne l'axe des ordonnées, place la figure dans son cadre (320 × 200 par défaut, marge de 24 px) et choisit pour chaque nom la place qui ne recouvre aucune autre étiquette et le moins de traits possible. Une figure est décrite par un objet sérialisable en JSON ; la même description donne toujours le même SVG (aucun aléatoire, coordonnées arrondies à 0,1 px). Le fichier fonctionne dans le navigateur (`window.Figures`) et dans Node (`require`), sans dépendance.
+
+| Famille | Contenu |
+| --- | --- |
+| `figure(titre, options)` | Géométrie plane à échelle uniforme : `point`, `segment`, `polygone`, `droite`, `demi_droite`, `cercle`, `arc_cercle`, `angle_droit`, `angle`, `cote`, `cote_fleche`, `codage`, `parallele`, `vecteur`, `rotation_fleche`, `texte`, `hachures`, et des objets concrets (`sol`, `mur`, `echelle`, `baton`, `ombre`, `immeuble`, `sapin`, `observateur`, `rampe`) |
+| `repere(titre, {xmin, xmax, ymin, ymax, pas_x, pas_y, grille, orthonorme, nom_x, nom_y})` | Axes gradués (coupure automatique si un axe ne part pas de 0), `courbe`, `droite_affine`, `droite_verticale`, `asymptote_h`, `asymptote_v`, `point`, `nuage`, `point_moyen`, `lecture`, `antecedents`, `tangente`, `secante`, `escalier`, `zone_signe`, `intervalle_solutions`, `suite_points`, `vecteur`, `texte` |
+| `droite_numerique(titre, {min, max, pas})` | `point`, `intervalle` (crochets ouverts ou fermés), `distance`, `centre_rayon`, plusieurs lignes pour une réunion ou une intersection |
+| `espace(titre)` | Perspective cavalière (45°, coefficient 0,5), arêtes cachées en pointillés : `pave`, `cube`, `pyramide_carree`, `cylindre`, `cone`, `boule`, `section_pyramide` |
+| `arbre(titre, niveaux, {chemin, feuilles})` | Arbre pondéré horizontal, probabilités sur les branches, chemin en trait épais |
+| `statistiques(titre)` | `diagramme_barres`, `diagramme_batons`, `histogramme`, `boite`, `diagramme_circulaire`, `courbe_indices`, `diagramme_venn` |
+| `pascal(titre, n)`, `programme_trace(titre, cotes, angle)`, `groupe(titre, figures)` | Triangle de Pascal, polygone tracé par le lutin, deux figures côte à côte |
+
+Les fonctions à tracer s'écrivent comme dans une leçon (`'x^2 - 14'`, `'1/x'`, `'sqrt(x)'`, `'1,5^n'`) : elles sont lues par un petit analyseur, sans `eval`, pour rester compatibles avec la CSP. Chaque famille est illustrée dans `tests/figures_exemples.js`.
+
+**Écrire une figure.** En JavaScript, chaque famille a un constructeur chaîné :
+
+```js
+Figures.figure('Triangle ABC rectangle en A')
+  .point('A', 0, 0).point('B', 6, 0).point('C', 0, 8)
+  .polygone(['A', 'B', 'C']).angle_droit('A', 'B', 'C')
+  .cote('A', 'B', '6 cm').cote('A', 'C', '8 cm').cote('B', 'C', '?')
+  .html();            // bloc <figure> ; .svg() pour le SVG seul ; .description() pour l'objet JSON
+```
+
+En Python (pages de 3e, de Seconde, brevet), `tools/figures.py` envoie la même description à node :
+
+```python
+from figures import figure_html
+figure_html({'type': 'repere', 'titre': 'Droite d’équation y = 2x + 1',
+             'options': {'xmin': -3, 'xmax': 4, 'ymin': -3, 'ymax': 8},
+             'elements': [{'t': 'droite_affine', 'm': 2, 'p': 1, 'nom': 'y = 2x + 1'},
+                          {'t': 'escalier', 'x': 1, 'y': 3, 'dx': 1, 'dy': 2}]})
+```
+
+Dans une description, chaque élément porte son nom dans `t` et ses arguments sous les noms listés dans `Figures.SIGNATURES`.
+
+**Règles.**
+
+- Les coordonnées viennent des nombres du texte ou de l'exercice, jamais d'un placement à l'œil : une longueur de 6 et une longueur de 8 sont dessinées dans le rapport 3/4.
+- Aucun attribut `style` ni balise `<style>` (CSP) : uniquement des attributs de présentation. Le trait et le texte utilisent `currentColor`, pour le thème sombre et l'impression.
+- Une couleur n'est jamais la seule information : une seconde courbe est en pointillés ou porte son nom ; deux séries d'un nuage se distinguent par la forme des points.
+- Accessibilité : `role="img"`, `<title>` et `<figcaption>` identiques, identifiant unique dans la page ; pour un graphique à lire, le champ `description` devient une balise `<desc>` qui donne les valeurs clés.
+- Le moteur applique lui-même la typographie française (espaces insécables, apostrophe) au titre, à la légende et aux étiquettes ; `tools/typographie.py` ne modifie donc plus une figure.
+- **La figure d'un énoncé ne donne jamais la réponse** : elle montre les données (noms, longueurs connues, angle connu), l'inconnue est notée « ? » ; un angle droit ou un parallélisme à démontrer n'est pas codé.
+
+**Relire les figures.** `python3 tools/figures.py` écrit `.qa-figures/galerie.html` (exemples de chaque famille, thèmes clair et sombre). Après une modification du moteur : regarder la galerie, puis lancer `node tests/test_figures.js` et `python3 tests/test_figures.py`. Les contrôles communs (`tests/figures_controle.js`) mesurent le SVG produit, pas les données internes du moteur : ils servent aussi à vérifier les figures des pages et des exercices.
 
 ## Règle des empreintes
 
