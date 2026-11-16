@@ -10,7 +10,8 @@ const root = path.resolve(__dirname, '..');
 const SEEDS = 2000;
 const sandbox = {window: {}};
 vm.createContext(sandbox);
-for (const filename of ['assets/exercices-variants.js', 'assets/terminale-exercices.js']) {
+/* Le socle du moteur de figures suffit aux séries de Terminale (repères, arbres, diagrammes, triangle de Pascal). */
+for (const filename of ['assets/figures.js', 'assets/exercices-variants.js', 'assets/terminale-exercices.js']) {
   vm.runInContext(fs.readFileSync(path.join(root, filename), 'utf8'), sandbox, {filename});
 }
 const V = sandbox.window.ExerciseVariants;
@@ -19,6 +20,22 @@ assert.equal(T.slugs.length, 9);
 assert.equal(T.count, 6);
 const clean = (problems, where) => assert.equal(problems.length, 0, where + ' : ' + Array.from(problems).join(' | '));
 const MISSION_PATTERNS = [/\+\s*[−-]/, /[−-]\s*[−-]\d/, /(?<![\d,.])1x/, /[+−]\s*0\b(?![,.]\d)/, /\bNaN\b|undefined|Infinity/, /\d\.\d/];
+const FC = require('./figures_controle.js');
+const avecFigure = new Set();
+let figures = 0;
+/* Règles propres à chaque modèle, vérifiées sur le SVG : l'énoncé ne montre que les données, le corrigé place les points sur leurs courbes. */
+function coherence(slug, index, e, where) {
+  const cle = slug + '/' + index, lire = d => FC.analyser(sandbox.window.Figures.svg(d));
+  const pointsDe = a => a.cercles.filter(c => c.f === 'point' || c.f === 'nuage'), traces = a => a.chemins.filter(c => ['courbe', 'droite', 'tangente'].indexOf(c.f) >= 0).length + a.lignes.filter(l => ['droite', 'tangente'].indexOf(l.f) >= 0).length;
+  const DONNEES = {'t-exponentielles/5': 2, 't-statistiques/0': 4, 't-statistiques/5': 3};
+  if (e.figure && cle in DONNEES) { const a = lire(e.figure);
+    assert.equal(pointsDe(a).length, DONNEES[cle], where + ' : seuls les points donnés sont placés');
+    assert.equal(traces(a), 0, where + ' : aucune courbe ni droite dans l’énoncé'); }
+  if (e.figure && cle === 't-statistiques/1') assert.equal(traces(lire(e.figure)), 0, where + ' : la droite cherchée n’est pas tracée dans l’énoncé');
+  if (e.figure && /^t-conditionnelles/.test(slug)) assert.ok(lire(e.figure).textes.some(t => t.texte === '?'), where + ' : branches à calculer notées « ? »');
+  if (e.figure_correction && ['t-inverse/3', 't-inverse/4', 't-exponentielles/5'].indexOf(cle) >= 0) { const a = lire(e.figure_correction);
+    for (const c of a.cercles.filter(c => c.f === 'point' || c.f === 'lecture')) assert.ok(FC.ecartCourbes(a, [c.x, c.y], ["courbe"]) <= 1.5, where + ' : point hors de la courbe'); }
+}
 const cases = [];
 let variants = 0, choiceFields = 0;
 for (const slug of T.slugs) {
@@ -63,6 +80,12 @@ for (const slug of T.slugs) {
       statements.add(e.statement + '|' + e.fields.map(f => f.label).join('|'));
       if (seed <= 48) cases.push({slug, index, seed, params: e.params, answers: e.fields.map(x => x.answer)});
       variants++;
+      if (e.figure || e.figure_correction) {
+        clean(FC.controlerExercice(sandbox.window.Figures, e, V.visible), where + ' : figure');
+        figures += (e.figure ? 1 : 0) + (e.figure_correction ? 1 : 0);
+        avecFigure.add(slug + '/' + index);
+        coherence(slug, index, e, where);
+      }
     }
     assert.ok(statements.size >= Math.min(40, d.space || 40), slug + '/' + index + ' : ' + statements.size + ' énoncés distincts');
     for (const [j, counts] of Object.entries(freq)) {
@@ -89,5 +112,13 @@ for (let n = 1; n <= 10; n++) {
     assert.ok(Math.abs(expectation - n * p) < 1e-10);
   }
 }
+assert.deepEqual(Array.from(avecFigure).sort(), ['t-exponentielles/5', 't-inverse/2', 't-inverse/3', 't-inverse/4', 't-statistiques/0', 't-statistiques/1', 't-statistiques/2', 't-statistiques/5', 't-conditionnelles/1', 't-conditionnelles/2', 't-conditionnelles/3', 't-conditionnelles/5', 't-binomiale/1', 't-variables/0', 't-variables/5'].sort(), 'modèles illustrés');
+for (const slug of T.slugs) {
+  const head = fs.readFileSync(path.join(root, 'terminale', 'exercices', slug + '.html'), 'utf8').split('</head>')[0];
+  const illustree = Array.from(avecFigure).some(c => c.split('/')[0] === slug);
+  assert.equal(/assets\/figures\.js/.test(head), illustree, slug + ' : chargement du moteur de figures');
+  if (illustree) assert.ok(head.indexOf('assets/figures.js') < head.indexOf('assets/exercices-variants.js'), slug + ' : figures.js avant les variantes');
+}
 if (process.argv.includes('--json')) process.stdout.write(JSON.stringify(cases));
 else console.log(`TERMINALE OK: 54 modèles × ${SEEDS} graines = ${variants} variantes ; bande de difficulté, ${choiceFields} champs à choix équilibrés, mise en forme, arrondis, recalcul, aides et lois binomiales.`);
+if (!process.argv.includes('--json')) console.log(`Figures des exercices : ${figures} figures contrôlées sur ${avecFigure.size} modèles.`);

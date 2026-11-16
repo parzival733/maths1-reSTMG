@@ -457,4 +457,56 @@
       }
     }
   ]);
+  /* ---------- Figures : calculées avec les paramètres de chaque variante ---------- */
+  const FG = window.Figures, {frame, sample, pointsIn} = V;
+  const xy = pts => pts.map(p => [p[0], p[1]]);
+  const liste = pts => pts.map(p => `${p[2]}(${fr(p[0])} ; ${fr(p[1])})`).join(', ');
+  /* Parabole ax² + c et sa tangente au point d'abscisse x0. */
+  const tangenteFig = ({a, x0, c}) => { const f = x => a * x * x + c, e = Math.abs(x0) + 2, m = 2 * a * x0, t = x => m * (x - x0) + f(x0), expr = `(${a})*x^2+(${c})`;
+    return {c: FG.repere(`Courbe de f et sa tangente au point d’abscisse ${fr(x0)}`, frame([-e, e], sample(f, -e, e).concat([t(-e / 2), t(e / 2), t(0)])))
+      .courbe(expr).tangente(expr, x0).point(x0, f(x0)).description()}; };
+  /* Courbe sur [x1 ; x2] et lecture de son extremum (h ; k). */
+  const extremumFig = (titre, expr, f, x1, x2, h, k, options) => ({c: FG.repere(titre, frame([x1, x2], sample(f, x1, x2), options)).courbe(expr, {de: x1, a: x2}).lecture(h, k).description()});
+  V.illustrate('derivees', [
+    ({a, b, x1, x2}) => { const f = x => a * x * x + b, u = Math.min(x1, -x2) - 1, v = Math.max(x2, -x1) + 1, expr = `(${a})*x^2+(${b})`;
+      return {c: FG.repere(`La sécante passe par les points de la courbe d’abscisses ${fr(x1)} et ${fr(x2)}`, frame([u, v], sample(f, u, v))).courbe(expr).secante(expr, x1, x2).description()}; },
+    null,
+    ({m, p, x}) => { const k = (m > 0 ? -1 : 1) * Math.max(1, Math.abs(m) / 2) / 2, g = t => m * t + p + k * (t - x) * (t - x), u = Math.min(-1, x - 3), v = Math.max(1, x + 3), expr = `(${m})*x+(${p})+(${k})*(x-(${x}))^2`;
+      return {e: FG.repere(`Une courbe possible pour f et sa tangente au point d’abscisse ${fr(x)}`, frame([u, v], sample(g, u, v).concat([m * u + p, m * v + p])))
+        .courbe(expr).tangente(expr, x).point(x, m * x + p).description()}; },
+    tangenteFig, null, null, tangenteFig, null
+  ]);
+  V.illustrate('variations', [null, null,
+    ({a, h, k}) => { const f = x => a * (x - h) ** 2 + k;
+      return extremumFig(`Courbe de f : ${a > 0 ? 'minimum' : 'maximum'} ${fr(k)}, atteint en x = ${fr(h)}`, `(${a})*(x-(${h}))^2+(${k})`, f, h - 3, h + 3, h, k); },
+    ({m, h, k}) => extremumFig(`Courbe de B sur [0 ; ${2 * h}] : maximum ${fr(k)}, atteint en x = ${h}`, `(${-m})*(x-(${h}))^2+(${k})`, x => -m * (x - h) ** 2 + k, 0, 2 * h, h, k, {nom_x: 'x', nom_y: 'B(x)'}),
+    ({a, d, c}) => { const h = x => a * x ** 3 - 3 * a * d * d * x + c, L = d + 1;
+      return {c: FG.repere(`Courbe de h sur [${fr(-L)} ; ${L}] : la variation change en x = ${fr(-d)} et en x = ${d}`, frame([-L, L], sample(h, -L, L)))
+        .courbe(`(${a})*x^3+(${-3 * a * d * d})*x+(${c})`, {de: -L, a: L}).lecture(-d, h(-d)).lecture(d, h(d)).description()}; },
+    null, null,
+    ({m, h, c}) => extremumFig(`Courbe de R sur [0 ; ${2 * h}] : maximum ${fr(c + m * h * h)}, atteint en x = ${h}`, `(${-m})*x^2+(${2 * m * h})*x+(${c})`, x => -m * x * x + 2 * m * h * x + c, 0, 2 * h, h, c + m * h * h, {nom_x: 'x', nom_y: 'R(x)'})
+  ]);
+  /* Nuage des points de l'énoncé ; le corrigé y ajoute une droite, le point moyen ou une lecture. */
+  const nuageFig = (statement, plus, titre, corrige) => { const pts = pointsIn(statement), cadre = frame(pts.map(p => p[0] + 1).concat(plus ? [plus[0]] : []), pts.map(p => p[1]).concat(plus ? [plus[1]] : []));
+    const base = t => FG.repere(t, cadre).nuage(xy(pts)), f = {e: base(`Nuage des points ${liste(pts)}`).description()};
+    if (corrige) f.c = corrige(base(titre)).description();
+    return f; };
+  V.illustrate('statistiques-deux-variables', [
+    ({s}, ex) => { const pts = pointsIn(ex.statement), my = pts.reduce((t, p) => t + p[1], 0) / 4;
+      return nuageFig(ex.statement, null, 'Le point moyen G est au centre du nuage', r => r.point_moyen(s + 2.5, my, 'G')); },
+    (p, ex) => { const [A, B] = pointsIn(ex.statement), m = (B[1] - A[1]) / (B[0] - A[0]), b = A[1] - m * A[0], cadre = frame([B[0] + 1], [A[1], B[1], b]);
+      const base = t => FG.repere(t, cadre);
+      return {e: base(`Points ${liste([A, B])}`).point(A[0], A[1], 'A').point(B[0], B[1], 'B').description(),
+        c: base('Droite (AB) : sa pente et son ordonnée à l’origine').droite_affine(m, b).point(A[0], A[1], 'A').point(B[0], B[1], 'B').description()}; },
+    null,
+    ({a, b, xp}, ex) => nuageFig(ex.statement, [xp + 1, a * xp + b], `Les points sont alignés : la droite se prolonge jusqu’à x = ${xp}`, r => r.droite_affine(a, b).lecture(xp, a * xp + b)),
+    null,
+    ({x0}, ex) => { const xs = [0, 1, 2, 3].map(i => x0 + i), ys = ex.statement.match(/y : <strong>([^<]+)</)[1].split(' ; ').map(Number), my = ys.reduce((t, v) => t + v, 0) / 4, mx = x0 + 1.5;
+      const a = xs.reduce((t, x, i) => t + (x - mx) * (ys[i] - my), 0) / 5, b = my - mx * a, pts = xs.map((x, i) => [x, ys[i]]), cadre = frame([x0 + 6], ys.concat([b, a * (x0 + 6) + b]));
+      const base = t => FG.repere(t, cadre).nuage(pts);
+      return {e: base(`Nuage des quatre données : x de ${x0} à ${x0 + 3}`).description(),
+        c: base('La droite d’ajustement passe par le point moyen G').droite_affine(a, b).point_moyen(mx, my, 'G').description()}; },
+    null,
+    (p, ex) => nuageFig(ex.statement)
+  ]);
 })();

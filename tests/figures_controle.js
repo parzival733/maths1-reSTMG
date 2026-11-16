@@ -187,8 +187,10 @@ function controlerExercice(F, e, visible) {
     for (const champ of e.fields) {
       if (champ.options) continue;
       const valeur = String(champ.answer).replace('.', ',').replace('-', '−');
-      if (new RegExp('(^|[^\\d,])' + valeur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^\\d,])').test(enonce)) continue;
-      if (textes.some(t => new RegExp('(^|[^\\d,])' + valeur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^\\d,])').test(t))) defauts.push('la figure de l’énoncé affiche la réponse ' + valeur);
+      /* Le nombre entier, pas un morceau d'un autre ; une virgule de ponctuation peut le suivre (« P(A) = 0,5, puis… »). */
+      const motif = new RegExp('(^|[^\\d,])' + valeur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^\\d,]|,(?!\\d))');
+      if (motif.test(enonce)) continue;
+      if (textes.some(t => motif.test(t))) defauts.push('la figure de l’énoncé affiche la réponse ' + valeur);
     }
   }
   return defauts;

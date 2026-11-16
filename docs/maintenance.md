@@ -30,7 +30,7 @@ Site statique, sans framework ni serveur applicatif. Chaque page est un fichier 
 | `exercices-renderer.js`, `exercices.js` | Affichage des séries, vérification, score, corrections |
 | `coaching-*.js`, `fonctions-coaching.js` | Indices progressifs, calculés sur la variante affichée |
 | `cours.js`, `apprentissage.js`, `graphiques-interactifs.js` | Sommaire, pauses mémoire, confort de lecture, graphiques |
-| `figures.js` | Moteur de figures : SVG calculés à partir de coordonnées mathématiques (voir « Figures ») |
+| `figures.js`, `figures-geometrie.js` | Moteur de figures : SVG calculés à partir de coordonnées mathématiques (voir « Figures »). Le premier fichier dessine repères, arbres, diagrammes sur des axes et triangle de Pascal ; le second ajoute la géométrie plane, la droite numérique, les solides, les diagrammes circulaires et de Venn |
 | `acquis.js`, `suivi-exercices.js`, `progres.js`, `catalogue-suivi.js` | Suivi local facultatif et son affichage |
 | `parcours.js`, `parcours-data.js` | Diagnostic et révision guidée |
 | `calcul-rapide*.js`, `compte-rebours.js`, `examen.js` | Calcul rapide, chrono, impression des sujets |
@@ -182,6 +182,12 @@ Dans une description, chaque élément porte son nom dans `t` et ses arguments s
 
 **Ajouter une figure dans un exercice à variantes.** Un exercice peut porter deux champs facultatifs : `figure` (affichée après l'énoncé) et `figure_correction` (affichée avec le corrigé). Ce sont des descriptions pour `assets/figures.js`, calculées avec les paramètres de la variante. En 3e et en Seconde, elles sont regroupées à la fin de `assets/troisieme-exercices.js` et `assets/seconde-exercices.js`, dans le tableau `FIGURES` : pour chaque série, une fonction par modèle (ou `null`), qui reçoit les paramètres et l'exercice construit et renvoie `{e: figure d'énoncé, c: figure de corrigé}`. `pointsDe(énoncé)` relit les points affichés (« A(1 ; −2) ») pour que la figure reprenne exactement les données de l'énoncé. `assets/exercices-renderer.js` place la figure dans un `<figure class="exercise-figure">` après le paragraphe d'énoncé, jamais dedans ; `tools/build_fallbacks.py` l'intègre à la version sans JavaScript ; les pages de séries de 3e et de Seconde chargent `figures.js` avant les modèles (liste des scripts dans `tools/niveaux/troisieme.py` et `seconde.py`) ; une série sans figure ne le charge pas, pour rester dans le budget de poids de `tests/browser_cloture.py`.
 
+En Première et en Terminale, les figures suivent le même principe, avec le premier fichier du moteur seulement (`figures.js`) :
+
+- Première : à la fin de chaque fichier `assets/variants-*.js`, `V.illustrate('série', [fonction ou null, …])` associe une fonction à chaque modèle ; elle reçoit les paramètres et l'exercice construit et renvoie `{e, c}`. `V.frame` cadre un repère autour de l'origine et des valeurs données, `V.sample` échantillonne une fonction pour ce cadrage, `V.pointsIn(énoncé)` relit les points écrits dans l'énoncé. L'énoncé initial de chaque exercice vient du JSON de la page : `assets/exercices-renderer.js` lui ajoute la figure calculée par le modèle avec les paramètres d'origine, ce qui impose de charger le rendu après les modèles ;
+- Terminale : tableau `FIGURES` à la fin de `assets/terminale-exercices.js`, comme en 3e et en Seconde ;
+- la liste des séries illustrées est dans `SERIES_ILLUSTREES` (`tools/finalize_site.py`), qui ajoute `figures.js` avant le moteur de variantes sur ces pages seulement. `tests/test_variants.js` et `tests/test_terminale.js` vérifient que cette liste correspond aux modèles illustrés.
+
 Règles propres aux exercices :
 
 - la figure de l'énoncé montre les données, jamais la réponse : inconnue notée « ? », pas d'angle droit ni de parallélisme codé dans une réciproque, triangle dessiné à l'échelle de ses vraies longueurs ;
@@ -191,7 +197,7 @@ Règles propres aux exercices :
 - quand l'énoncé ne fixe pas la forme (pyramide connue par son aire et son volume, triangle OAB d'une homothétie), la légende annonce un schéma ou « une figure possible » ;
 - dans une figure graduée (repère, droite numérique, diagramme sur des axes), les nombres écrits sont des graduations : le contrôle « réponse absente » ne s'y applique pas, et la règle est vérifiée modèle par modèle dans la fonction `coherence` des tests.
 
-`tests/test_troisieme.js` et `tests/test_seconde.js` contrôlent chaque figure sur les 2 000 graines de chaque modèle : SVG valide et dans son cadre, étiquettes sans chevauchement, réponse absente de la figure d'énoncé, longueurs et angles recalculés à partir du SVG, liste des modèles illustrés.
+`tests/test_troisieme.js`, `tests/test_seconde.js`, `tests/test_variants.js` et `tests/test_terminale.js` contrôlent chaque figure sur les 2 000 graines de chaque modèle : SVG valide et dans son cadre, étiquettes sans chevauchement, réponse absente de la figure d'énoncé, longueurs et angles recalculés à partir du SVG, liste des modèles illustrés.
 
 **Relire les figures.** `python3 tools/figures.py` écrit `.qa-figures/galerie.html` (exemples de chaque famille, thèmes clair et sombre). Après une modification du moteur : regarder la galerie, puis lancer `node tests/test_figures.js` et `python3 tests/test_figures.py`. Les contrôles communs (`tests/figures_controle.js`) mesurent le SVG produit, pas les données internes du moteur : ils servent aussi à vérifier les figures des pages et des exercices.
 
