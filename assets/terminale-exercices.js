@@ -821,7 +821,31 @@
   };
   const clean = s => V.visible(s).replace(/⟨code⟩/g, '').replace(/\s+/g, ' ').trim();
   for (const [slug, list] of Object.entries(models)) V.register(slug, list);
-  window.TerminaleExercises = {slugs: Object.keys(models), count: 6, binom, mass, cumulative};
+  /* Figures calculées avec les paramètres de chaque variante. Celles des séries de statistiques
+     et de probabilités sont dans assets/terminale-figures.js. */
+  const FG = window.Figures;
+  if (FG) {
+    V.illustrate('t-exponentielles', [null, null, null, null, null,
+    ({k, q, x0}) => { const cadre = V.frame([x0 + 2.4], [k * q * q * 1.05], {xmin: Math.min(0, x0 - 0.4)});
+      return {e: FG.repere(`Points A(${x0} ; ${k}) et B(${x0 + 2} ; ${k * q * q})`, cadre).point(x0, k, 'A').point(x0 + 2, k * q * q, 'B').description(),
+        c: FG.repere(`La courbe passe par A et B ; à mi-chemin, l’ordonnée est la moyenne géométrique ${k * q}`, cadre).courbe(`(${k})*(${q})^(x-(${x0}))`)
+          .point(x0, k, 'A').point(x0 + 2, k * q * q, 'B').lecture(x0 + 1, k * q).description()}; }
+  ]);
+    V.illustrate('t-inverse', [null, null,
+    ({b, k, c}) => { const e = Math.max(4, 2 * Math.abs(k));
+      return {c: FG.repere(`Asymptotes de la courbe : la droite verticale x = ${fr(c)} et la droite horizontale y = ${fr(b)}`,
+        {xmin: Math.min(c - 5, -1), xmax: Math.max(c + 5, 1), ymin: Math.min(b - e, -1), ymax: Math.max(b + e, 1), hauteur: 280})
+        .courbe(`(${b})+(${k})/(x-(${c}))`).asymptote_v(c, {nom: 'x = ' + fr(c)}).asymptote_h(b, Math.abs(b) < 0.3 * e ? {} : {nom: 'y = ' + fr(b)}).description()}; },
+    ({m, b}) => ({c: FG.repere(`Coût moyen C(x) = x + ${m * m}/x + ${b} : minimum ${2 * m + b}, atteint pour x = ${m}`,
+      {xmin: 0, xmax: 3 * m, ymin: 0, ymax: Math.ceil((2 * m + b) * 1.6 + 2), hauteur: 280, nom_x: 'x', nom_y: 'coût moyen'})
+      .courbe(`x+(${m * m})/x+(${b})`, {de: m / 8}).lecture(m, 2 * m + b).description()}),
+    ({a, k}) => ({c: FG.repere(`Courbe de f(x) = ${k}/x et sa tangente au point d’abscisse ${a}`,
+      {xmin: 0, xmax: 2 * a + 1, ymin: 0, ymax: 2.3 * k / a, hauteur: 280})
+      .courbe(`(${k})/x`, {de: a / 8}).tangente(`(${k})/x`, a).point(a, k / a, 'A').description()}),
+    null
+  ]);
+  }
+  window.TerminaleExercises = {slugs: Object.keys(models), count: 6, binom, mass, cumulative, PATTERNS, LAWS};
   window.ExerciseCoaching = {
     context: exercise => (exercise ? exercise.statement : ''),
     build: (slug, index, exercise) => {

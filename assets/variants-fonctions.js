@@ -418,4 +418,25 @@
       }
     }
   ]);
+  /* ---------- Figures : calculées avec les paramètres de chaque variante ---------- */
+  const FG = window.Figures, {frame, sample} = V;
+  /* Parabole k(x − r)(x − s) : racines, signe de part et d'autre, et sommet si demandé. */
+  const paraboleFig = (titre, k, r, s, options) => { const o = options || {}, f = x => k * (x - r) * (x - s), e = Math.max(2, (s - r) / 2), x1 = o.de == null ? r - e : o.de, x2 = o.a == null ? s + e : o.a;
+    const dehors = k > 0 ? '+' : '-', dedans = k > 0 ? '-' : '+', texte = t => (t === '+' ? '+' : M);
+    const fig = FG.repere(titre, frame([x1, x2], sample(f, x1, x2))).courbe(`(${k})*(x-(${r}))*(x-(${s}))`, {de: x1, a: x2});
+    if (o.signes) fig.zone_signe(x1 < r ? null : r, r, texte(dehors), {signe: dehors}).zone_signe(r, s, texte(dedans), {signe: dedans}).zone_signe(s, null, texte(dehors), {signe: dehors});
+    if (o.axe) fig.droite_verticale((r + s) / 2, {pointilles: true, fin: true});
+    if (o.sommet) fig.lecture((r + s) / 2, f((r + s) / 2));
+    if (o.solutions) o.solutions.forEach(i => fig.intervalle_solutions(i[0], i[1]));
+    return {c: fig.point(r, 0).point(s, 0).description()}; };
+  V.illustrate('second-degre', [null,
+    ({k, r, s}) => paraboleFig(`Courbe de g : elle coupe l’axe des abscisses en ${fr(r)} et en ${fr(s)}`, k, r, s, {signes: true}),
+    null,
+    ({h, d, dir}) => paraboleFig(`Courbe de p : axe de symétrie x = ${fr(h)} en pointillés, sommet et racines`, dir, h - d, h + d, {axe: true, sommet: true}),
+    ({m, r, s}) => paraboleFig(`Courbe de f : signe de f(x) de part et d’autre des racines ${fr(r)} et ${fr(s)}`, m, r, s, {signes: true}),
+    ({m, r, half}) => paraboleFig(`Courbe de B sur [0 ; ${2 * r + 2 * half}] : bénéfice nul aux deux racines, maximal au sommet`, -m, r, r + 2 * half, {sommet: true, de: 0, a: 2 * r + 2 * half}),
+    ({dir, r, half}) => paraboleFig(`Courbe de q : le sommet est au milieu des racines ${fr(r)} et ${fr(r + 2 * half)}`, dir, r, r + 2 * half, {sommet: true}),
+    ({r, half, extra, op}) => { const s = r + 2 * half, R = s + extra;
+      return paraboleFig(`Courbe du produit sur [0 ; ${R}] : en trait épais sur l’axe, les solutions`, 1, r, s, {de: 0, a: R, solutions: op ? [[0, r], [s, R]] : [[r, s]]}); }
+  ]);
 })();

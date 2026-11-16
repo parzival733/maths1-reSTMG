@@ -307,4 +307,12 @@
       }
     }
   ]);
+  /* ---------- Figures : calculées avec les paramètres de chaque variante ---------- */
+  const FG = window.Figures;
+  V.illustrate('statistiques-descriptives', [null, null, null,
+    ({vals}) => { const n = vals.length;
+      return {c: FG.statistiques('Diagramme en boîte : minimum, Q₁, médiane, Q₃ et maximum de la série')
+        .boite(vals[0], vals[Math.ceil(n / 4) - 1], (vals[n / 2 - 1] + vals[n / 2]) / 2, vals[Math.ceil(3 * n / 4) - 1], vals[n - 1]).description()}; },
+    null, null, null, null
+  ]);
 })();

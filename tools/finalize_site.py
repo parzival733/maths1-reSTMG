@@ -51,6 +51,43 @@ def keep_own_generator(rel,text):
                   lambda m:m.group(0) if m.group(1)==own else '',text)
 
 
+# Séries de Première et de Terminale dont au moins un exercice porte une figure : elles seules
+# chargent le moteur (les séries de 3e et de Seconde le reçoivent de leur générateur).
+SERIES_ILLUSTREES={'exercices/':{'second-degre','suites','suites-geometriques','derivees','variations','statistiques-deux-variables',
+    'probabilites-conditionnelles','bernoulli','variables-aleatoires','statistiques-descriptives'},
+  'terminale/exercices/':{'t-exponentielles','t-inverse','t-statistiques','t-conditionnelles','t-binomiale','t-variables'}}
+
+# Parmi elles, celles dont les figures sont des arbres, des diagrammes ou un triangle de Pascal.
+SERIES_STATISTIQUES={'statistiques-descriptives','variables-aleatoires','probabilites-conditionnelles','bernoulli','t-conditionnelles','t-binomiale','t-variables'}
+# Séries de Terminale dont les figures sont décrites dans assets/terminale-figures.js.
+SERIES_TERMINALE_FIGURES={'t-statistiques','t-conditionnelles','t-binomiale','t-variables'}
+
+def series_figures(rel,text):
+    """Charge le moteur de figures (et sa partie statistique si la série s'en sert) avant le moteur de variantes sur les séries illustrées ; en Première, le
+    rendu passe après les modèles, qui calculent les figures des énoncés initiaux."""
+    for prefix,slugs in SERIES_ILLUSTREES.items():
+        if not rel.startswith(prefix):continue
+        base='../'*rel.count('/')
+        text=re.sub(r'[ \t]*<script src="[^"]*assets/(figures|figures-statistiques|terminale-figures)\.js[^"]*" defer></script>\n?','',text)
+        slug=rel.removeprefix(prefix).removesuffix('.html')
+        if slug in slugs:
+            files=['figures.js']+(['figures-statistiques.js'] if slug in SERIES_STATISTIQUES else [])
+            text,count=re.subn(r'([ \t]*)(<script src="[^"]*assets/exercices-variants\.js)',
+                lambda m:''.join(f'{m.group(1)}<script src="{base}assets/{f}" defer></script>\n' for f in files)+m.group(1)+m.group(2),text,count=1)
+            if count!=1:raise ValueError(f'{rel} : moteur de variantes introuvable.')
+            if slug in SERIES_TERMINALE_FIGURES:
+                text,count=re.subn(r'([ \t]*)(<script src="[^"]*assets/terminale-exercices\.js[^"]*" defer></script>\n?)',
+                    lambda m:f'{m.group(1)}{m.group(2)}{m.group(1)}<script src="{base}assets/terminale-figures.js" defer></script>\n',text,count=1)
+                if count!=1:raise ValueError(f'{rel} : modèles de Terminale introuvables.')
+        renderer=re.search(r'[ \t]*<script src="[^"]*assets/exercices-renderer\.js[^"]*" defer></script>\n?',text)
+        runner=re.search(r'<script src="[^"]*assets/exercices\.js',text)
+        if prefix=='exercices/' and renderer and runner and renderer.start()<text.find('assets/exercices-variants.js')<runner.start():
+            text=text[:renderer.start()]+text[renderer.end():]
+            at=re.search(r'<script src="[^"]*assets/exercices\.js',text).start()
+            text=text[:at]+renderer.group(0).strip()+text[at:]
+    return text
+
+
 def update_style_policy():
     """Autorise uniquement les blocs CSS statiques exacts du site par leur SHA-256."""
     hashes=set()
@@ -100,7 +137,7 @@ def main():
             text=text.replace('</title>',f'</title><script src="{base}assets/menu.js"></script>',1)
         # Typographie française du texte produit par JavaScript (tools/typographie.py pour le HTML).
         if 'assets/typographie.js' not in text:text=text.replace('</head>',f'<script src="{base}assets/typographie.js" defer></script></head>',1)
-        text=keep_own_generator(rel,text)
+        text=series_figures(rel,keep_own_generator(rel,text))
         if template(rel)=='serie' and 'assets/saisie-nombres.js' not in text:
             text=text.replace('</head>',f'<script src="{base}assets/saisie-nombres.js" defer></script></head>',1)
         # Icônes du site (onglet, favoris, écran d'accueil du téléphone).

@@ -549,8 +549,41 @@
   const slugs = () => Array.from(factories.keys());
 
   const fmt = {num, FR, paren, signed, diff, term, times, poly, fact, bare, affine, frac, pct, eur, interval, gcd, signOf, MINUS, NBSP, NNBSP};
+  /* ---------- Figures ---------- */
+  // Associe des figures aux modèles d'une série : figures[i] reçoit les paramètres et
+  // l'exercice construit, et renvoie {e: figure d'énoncé, c: figure de corrigé}.
+  // Sans le moteur de figures (assets/figures.js), les exercices restent inchangés.
+  function illustrate(slug, figures) {
+    const models = factories.get(slug);
+    if (!models || !window.Figures) return;
+    figures.forEach((figure, i) => {
+      if (!figure) return;
+      const build = models[i].build;
+      models[i].build = (params, original) => {
+        const exercise = build(params, original), f = figure(params, exercise) || {};
+        if (f.e) exercise.figure = f.e;
+        if (f.c) exercise.figure_correction = f.c;
+        return exercise;
+      };
+    });
+  }
+  // Fenêtre d'un repère qui contient l'origine, les abscisses xs et les ordonnées ys, avec une marge.
+  function frame(xs, ys, options) {
+    const lo = v => Math.min(0, ...v), hi = v => Math.max(0, ...v), m = v => 0.08 * (hi(v) - lo(v) || 1);
+    return Object.assign({xmin: lo(xs) - (lo(xs) < 0 ? m(xs) : 0), xmax: hi(xs) + m(xs),
+      ymin: lo(ys) - (lo(ys) < 0 ? m(ys) : 0), ymax: hi(ys) + m(ys), hauteur: 280}, options || {});
+  }
+  // Valeurs de f sur [a ; b], pour cadrer une courbe.
+  const sample = (f, a, b) => Array.from({length: 41}, (_, i) => f(a + (b - a) * i / 40));
+  // Points « (1 ; 12) » ou « A(2 ; 7) » écrits dans un énoncé, dans l'ordre : [[x, y, nom], …].
+  function pointsIn(statement) {
+    const number = t => Number(t.replace('−', '-').replace(',', '.')), list = [];
+    visible(statement).replace(/([A-Z][₀-₉]?)?\((−?\d+(?:,\d+)?) ; (−?\d+(?:,\d+)?)\)/g, (_, name, x, y) => { list.push([number(x), number(y), name || '']); return ''; });
+    return list;
+  }
+
   window.ExerciseVariants = {
-    register, generate, original: originalOf, nextVariant, remember, memoryFor, randomSeed, rng,
+    register, illustrate, frame, sample, pointsIn, generate, original: originalOf, nextVariant, remember, memoryFor, randomSeed, rng,
     describe, count, slugs, signature, score, lint, visible, FORBIDDEN, BAND, MAX_TRIES,
     N, S, F, FR, E, C, signTable, productSignTable, affineSignTable, variationTable, escapeHtml, fmt, matchesAnswer, matchesAnswerInGroup, readNumber, readQuantity, unitForLabel
   };

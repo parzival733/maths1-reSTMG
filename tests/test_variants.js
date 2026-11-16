@@ -10,7 +10,10 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const SEEDS = 2000;
+/* Les séries de Première n'utilisent que le socle du moteur de figures (repères) et sa partie « statistiques et probabilités ». */
 const files = [
+  'assets/figures.js',
+  'assets/figures-statistiques.js',
   'assets/exercices-variants.js',
   'assets/variants-fonctions.js',
   'assets/fonctions-coaching.js',
@@ -109,6 +112,22 @@ const numeric = f => !f.options && f.type !== 'text' && f.type !== 'unordered-li
 const valuesOf = e => e.fields.map(f => (f.options || f.type ? f.answer : Number(f.answer)));
 const decimalsOf = x => { const t = String(Number(Number(x).toFixed(9))); return t.includes('.') ? t.split('.')[1].length : 0; };
 let models = 0, variants = 0, choiceFields = 0;
+const FC = require('./figures_controle.js');
+const avecFigure = new Set(), diagrammes = new Set();
+let figures = 0;
+/* Règles propres à chaque modèle, vérifiées sur le SVG : l'énoncé ne montre que les données. */
+function coherence(slug, index, e, where) {
+  if (!e.figure) return;
+  const cle = slug + '/' + index, a = FC.analyser(sandbox.window.Figures.svg(e.figure));
+  const traces = a.chemins.filter(c => ['courbe', 'droite', 'tangente'].indexOf(c.f) >= 0).length + a.lignes.filter(l => ['droite', 'tangente'].indexOf(l.f) >= 0).length;
+  const NUAGES = {'statistiques-deux-variables/0': 4, 'statistiques-deux-variables/1': 2, 'statistiques-deux-variables/3': 4, 'statistiques-deux-variables/5': 4, 'statistiques-deux-variables/7': 4};
+  if (cle in NUAGES) {
+    assert.equal(a.cercles.filter(c => c.f === 'point' || c.f === 'nuage').length, NUAGES[cle], where + ' : seuls les points donnés sont placés');
+    assert.equal(traces, 0, where + ' : aucune droite dans l’énoncé');
+  }
+  if (cle === 'derivees/2') assert.equal(traces, 2, where + ' : une courbe et sa tangente');
+  if (cle === 'probabilites-conditionnelles/3') assert.ok(a.textes.some(t => t.texte === '?'), where + ' : branches à calculer notées « ? »');
+}
 const report = [];
 for (const slug of slugs) {
   const page = fs.readFileSync(path.join(ROOT, 'exercices', slug + '.html'), 'utf8');
@@ -164,6 +183,13 @@ for (const slug of slugs) {
       assert.ok(d.verify(e.params, valuesOf(e)), where + ' : recalcul indépendant');
       statements.add(e.statement + '|' + e.fields.map(f => f.label).join('|'));
       variants++;
+      if (e.figure || e.figure_correction) {
+        clean(FC.controlerExercice(sandbox.window.Figures, e, V.visible), where + ' : figure');
+        figures += (e.figure ? 1 : 0) + (e.figure_correction ? 1 : 0);
+        avecFigure.add(slug + '/' + index);
+        if ([e.figure, e.figure_correction].some(d => d && ['statistiques', 'pascal', 'arbre'].indexOf(d.type) >= 0)) diagrammes.add(slug);
+        coherence(slug, index, e, where);
+      }
     }
     // Variété : au moins 40 énoncés distincts, ou le maximum combinatoire documenté.
     const need = Math.min(40, d.space || 40);
@@ -293,7 +319,23 @@ for (const [slug, solutions] of Object.entries(expectedBridges)) {
   }
 }
 
+assert.deepEqual(Array.from(avecFigure).sort(), ['second-degre/1', 'second-degre/3', 'second-degre/4', 'second-degre/5', 'second-degre/6', 'second-degre/7',
+  'suites/5', 'suites/6', 'suites/7', 'suites-geometriques/6', 'derivees/0', 'derivees/2', 'derivees/3', 'derivees/6',
+  'variations/2', 'variations/3', 'variations/4', 'variations/7',
+  'statistiques-deux-variables/0', 'statistiques-deux-variables/1', 'statistiques-deux-variables/3', 'statistiques-deux-variables/5', 'statistiques-deux-variables/7',
+  'probabilites-conditionnelles/3', 'probabilites-conditionnelles/7', 'bernoulli/1', 'bernoulli/3', 'bernoulli/7', 'variables-aleatoires/1',
+  'statistiques-descriptives/3'].sort(), 'modèles illustrés');
+/* Seules les séries illustrées chargent le moteur de figures, avant le moteur de variantes ; le rendu vient après les modèles. */
+for (const slug of slugs) {
+  const head = fs.readFileSync(path.join(ROOT, 'exercices', slug + '.html'), 'utf8').split('</head>')[0];
+  const illustree = Array.from(avecFigure).some(c => c.split('/')[0] === slug);
+  assert.equal(/assets\/figures\.js/.test(head), illustree, slug + ' : chargement du moteur de figures');
+  if (illustree) assert.ok(head.indexOf('assets/figures.js') < head.indexOf('assets/exercices-variants.js'), slug + ' : figures.js avant les variantes');
+  assert.equal(/assets\/figures-statistiques\.js/.test(head), diagrammes.has(slug), slug + ' : chargement de la partie « statistiques et probabilités » du moteur');
+  if (slug !== 'fonctions') assert.ok(head.indexOf('assets/variants-') < head.indexOf('assets/exercices-renderer.js'), slug + ' : rendu après les modèles');
+}
 console.log('VARIANTS OK: ' + models + ' modèles × ' + SEEDS + ' graines = ' + variants + ' variantes ; difficulté dans la bande ±20 % à 100 %, '
   + choiceFields + ' champs à choix équilibrés (30–70 %), aucun motif interdit, recalcul indépendant, 10 variantes consécutives sans répétition.');
 console.log('AIDES OK: ' + coachingCases + ' situations Fonctions et ' + otherCases + ' situations des 120 autres modèles, indices conformes à chaque tirage.');
+console.log('Figures des exercices : ' + figures + ' figures contrôlées sur ' + avecFigure.size + ' modèles.');
 if (process.argv.includes('--report')) console.log(report.join('\n'));

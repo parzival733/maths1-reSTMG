@@ -128,6 +128,23 @@
   if (!chapter || !Array.isArray(chapter.exercises) || chapter.exercises.length === 0) {
     throw new Error('Le chapitre doit contenir des exercices.');
   }
+  // Quand les énoncés initiaux arrivent sans figure (JSON écrit dans la page en Première,
+  // figures décrites dans un fichier à part en Terminale), le modèle correspondant les
+  // calcule avec les mêmes paramètres.
+  const variants = window.ExerciseVariants;
+  if (variants && window.Figures && typeof variants.count === 'function' && typeof variants.original === 'function'
+    && variants.count(chapter.slug) === chapter.exercises.length) {
+    chapter.exercises.forEach((exercise, index) => {
+      if (exercise.figure || exercise.figure_correction) return;
+      try {
+        const model = variants.original(chapter.slug, index, exercise);
+        if (model.figure) exercise.figure = model.figure;
+        if (model.figure_correction) exercise.figure_correction = model.figure_correction;
+      } catch (error) {
+        console.error('Figure indisponible pour l’exercice ' + (index + 1), error);
+      }
+    });
+  }
   root.dataset.chapter = chapter.slug;
 
   const length = chapter.exercises.length;

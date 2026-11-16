@@ -457,4 +457,33 @@
       }
     }
   ]);
+  /* ---------- Figures : calculées avec les paramètres de chaque variante ---------- */
+  const FG = window.Figures, d4 = x => fr(F(x, 4));
+  /* Arbre à deux niveaux : A ou non A, puis B ou non B ; `complet` écrit les compléments et le poids des chemins vers B. */
+  const arbreFig = (titre, noms, pA, pBA, pBnA, complet) => { const [A, nA, B, nB] = noms;
+    const branche = (nom, p, q) => ({nom, p: p == null ? '?' : d4(p), enfants: [{nom: B, p: d4(q), feuille: complet ? '→ ' + d4(p * q) : undefined}, {nom: nB, p: complet ? d4(1 - q) : '?'}]});
+    return FG.arbre(titre, [branche(A, pA, pBA), branche(nA, complet ? 1 - pA : null, pBnA)], Object.assign({largeur: 340}, complet ? {chemins: [[A, B], [nA, B]]} : {})).description(); };
+  V.illustrate('probabilites-conditionnelles', [null, null, null,
+    ({pA, pBA, pBnA}) => ({e: arbreFig(`Arbre pondéré avec les données : P(A) = ${fr(pA)}, puis B sachant A et B sachant Ā`, ['A', 'Ā', 'B', 'B̄'], pA, pBA, pBnA),
+      c: arbreFig('On multiplie le long de chaque chemin qui mène à B, puis on additionne', ['A', 'Ā', 'B', 'B̄'], pA, pBA, pBnA, true)}),
+    null, null, null,
+    ({d, se, fp}) => ({c: arbreFig('Arbre du test : les deux chemins qui mènent à un test positif T', ['D', 'D̄', 'T', 'T̄'], d, se, fp, true)})
+  ]);
+  /* Arbre de n essais indépendants : S pour « succès » (probabilité p), E pour « échec ». */
+  const essais = (p, n) => (n ? [{nom: 'S', p: d4(p), enfants: essais(p, n - 1)}, {nom: 'E', p: d4(1 - p), enfants: essais(p, n - 1)}] : undefined);
+  const chemins = (n, garder) => { let tous = [[]];
+    for (let i = 0; i < n; i++) tous = tous.flatMap(c => [c.concat('S'), c.concat('E')]);
+    return tous.filter(c => garder(c.filter(x => x === 'S').length)); };
+  const essaisFig = (titre, p, n, garder) => ({c: FG.arbre(titre, essais(p, n), {chemins: chemins(n, garder), largeur: 340, hauteur: n > 2 ? 300 : 220}).description()});
+  V.illustrate('bernoulli', [null,
+    ({p}) => essaisFig('Arbre des deux essais : en trait épais, les deux chemins avec exactement un succès', p, 2, k => k === 1),
+    null,
+    ({p}) => essaisFig('Arbre des trois essais : en trait épais, les trois chemins avec exactement deux succès', p, 3, k => k === 2),
+    null, null, null,
+    ({p}) => essaisFig('Arbre des trois essais : en trait épais, les quatre chemins avec au moins deux succès', p, 3, k => k >= 2)
+  ]);
+  V.illustrate('variables-aleatoires', [null,
+    ({s, p0, p1}) => ({e: FG.statistiques('Loi de X : un bâton par valeur, de hauteur égale à sa probabilité').diagramme_batons([s, s + 1, s + 2], [p0, p1, F(1 - p0 - p1, 6)], {nom_x: 'valeur de X', nom_y: 'probabilité'}).description()}),
+    null, null, null, null, null, null
+  ]);
 })();

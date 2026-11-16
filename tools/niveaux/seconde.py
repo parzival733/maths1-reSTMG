@@ -74,7 +74,7 @@ def series_page(i, L):
     slug, title = L['slug'], L['title']
     description = f'{title} : 6 exercices interactifs de Seconde, avec variantes tirées au hasard, indices et corrigés rédigés.'
     h = head(f'Exercices · {title} · Seconde', description, '../../', 'serie',
-             ['figures.js', 'exercices-variants.js', 'seconde-exercices.js', 'exercices-renderer.js', 'exercices.js', 'interface.js', 'acquis.js', 'suivi-exercices.js'])
+             ['figures.js', 'figures-statistiques.js', 'figures-geometrie.js', 'exercices-variants.js', 'seconde-exercices.js', 'exercices-renderer.js', 'exercices.js', 'interface.js', 'acquis.js', 'suivi-exercices.js'])
     code = 'REPÈRE' if L.get('transversal') else num(i)
     body = [f'<body class="exercise-page">', BRAND('../../'), nav('../../', '../', ('exercices', 'location')),
             f'<main id="contenu" class="container interactive-exercise-page" tabindex="-1" data-interactive-exercises data-generated-exercises data-seconde-chapter="{slug}">'

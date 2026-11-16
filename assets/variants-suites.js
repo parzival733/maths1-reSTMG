@@ -498,4 +498,21 @@
       }
     }
   ]);
+  /* ---------- Figures : calculées avec les paramètres de chaque variante ---------- */
+  const FG = window.Figures, {frame} = V;
+  /* Points (n ; uₙ) d'une suite arithmétique de premier terme a et de raison r, du rang 0 au rang N. */
+  const pointsFig = (titre, a, r, N) => ({c: FG.repere(titre, frame([N + 0.6], [a, a + r * N], {nom_x: 'n', nom_y: 'uₙ'})).suite_points(`(${a})+(${r})*n`, 0, N).description()});
+  /* Deux croissances sur le même repère : ajout constant (ronds) et multiplication constante (croix). */
+  const comparerFig = (a, q, r, R, noms) => { const g = Array.from({length: R + 1}, (_, n) => [n, a * q ** n]);
+    return {c: FG.repere(`Les deux suites du rang 0 au rang ${R} : ajout constant en ronds, multiplication constante en croix`, frame([R + 0.6], [a + r * R, a * q ** R], {nom_x: 'n', nom_y: 'valeur'}))
+      .suite_points(`(${a})+(${r})*n`, 0, R).nuage(g, {forme: 'croix'}).legende([{forme: 'rond', texte: noms[0]}, {forme: 'croix', texte: noms[1]}]).description()}; };
+  V.illustrate('suites', [null, null, null, null, null,
+    ({start, r, k, m}) => pointsFig(`Points (n ; uₙ) : alignés, on monte de ${r} à chaque rang`, start, r, Math.max(k, m) + 1),
+    ({a, b}) => pointsFig('Points (n ; uₙ) du rang 0 au rang 6 : isolés et alignés', b, a, 6),
+    ({a, q, r, R}) => comparerFig(a, q, r, R, ['uₙ', 'vₙ'])
+  ]);
+  V.illustrate('suites-geometriques', [null, null, null, null, null, null,
+    ({a, q, r, R}) => comparerFig(a, q, r, R, ['Aₙ', 'Gₙ']),
+    null
+  ]);
 })();
