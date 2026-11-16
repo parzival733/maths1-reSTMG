@@ -69,7 +69,7 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 2. Ajouter l'exercice d'origine dans le JSON `exercise-data` de la page de la série, avec les mêmes valeurs que `base`.
 3. Ajouter ses indices dans le fichier `coaching-*.js` du chapitre.
 4. Lancer `python3 tools/build_fallbacks.py` (version de lecture sans JavaScript), puis `python3 tools/finalize_site.py`.
-5. Lancer `node tests/test_variants.js` (ou `test_terminale.js`, `test_troisieme.js`), `node tests/test_rangs.js` et `node tests/test_cloture.js`, puis la batterie complète.
+5. Lancer `node tests/test_variants.js` (ou `test_terminale.js`, `test_troisieme.js`), `node tests/test_rangs.js` et `node tests/test_cloture.js`, puis la batterie complète (`python3 tests/lancer.py`, dont la liste `TESTS` est à compléter quand on ajoute un test).
 
 ## Ajouter une leçon
 
