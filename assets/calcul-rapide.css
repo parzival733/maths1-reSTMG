@@ -209,3 +209,7 @@ html body:not(#_page) :is(#_btn, #rapid-next, #rapid-previous) { background: var
 .rapid-figure .exercise-figure { margin: var(--space-4) 0; max-width: 100%; break-inside: avoid; }
 .rapid-figure .exercise-figure svg { display: block; width: 100%; max-width: 360px; height: auto; color: var(--color-text); }
 .rapid-figure .exercise-figure figcaption { margin-top: var(--space-2); color: var(--color-text-muted); font-size: var(--text-sm); }
+/* Grand écran : figures plus larges, leur texte reste proche de la taille du texte courant. */
+@media (min-width: 900px) {
+  .rapid-figure .exercise-figure svg { max-width: 440px; }
+}

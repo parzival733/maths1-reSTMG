@@ -32,6 +32,7 @@ Site statique, sans framework ni serveur applicatif. Chaque page est un fichier 
 | `cours.js`, `apprentissage.js`, `graphiques-interactifs.js` | Sommaire, pauses mémoire, confort de lecture, graphiques |
 | `figures.js`, `figures-statistiques.js`, `figures-geometrie.js` | Moteur de figures : SVG calculés à partir de coordonnées mathématiques (voir « Figures »). Le premier fichier dessine les repères ; le deuxième ajoute les arbres pondérés, les diagrammes statistiques et le triangle de Pascal ; le troisième la géométrie plane, la droite numérique, les solides et les tracés. Une page ne charge que les fichiers dont ses figures ont besoin |
 | `terminale-figures.js` | Figures des séries de Terminale sur les statistiques et les probabilités, chargé par ces seules séries |
+| `tableaux.js` | Sur les pages qui ont un tableau défilant : estompe le bord droit d'un tableau plus large que l'écran tant qu'il reste des colonnes à faire défiler |
 | `acquis.js`, `suivi-exercices.js`, `progres.js`, `catalogue-suivi.js` | Suivi local facultatif et son affichage |
 | `parcours.js`, `parcours-data.js` | Diagnostic et révision guidée |
 | `calcul-rapide*.js`, `compte-rebours.js`, `examen.js` | Calcul rapide, chrono, impression des sujets |

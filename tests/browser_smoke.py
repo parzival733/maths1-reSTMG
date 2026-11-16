@@ -722,6 +722,21 @@ def main():
                 assert not issues, (target, issues)
             print('TYPOGRAPHIE BROWSER OK : texte généré par JavaScript (variantes, aides, retours) conforme.')
 
+            # Tableau plus large qu'un petit écran : le bord droit s'estompe tant qu'il reste des colonnes, plus après le défilement.
+            narrow = browser.new_context(viewport={'width': 320, 'height': 800})
+            page = narrow.new_page()
+            page.goto(base + 'exercices/second-degre.html', wait_until='networkidle')
+            page.click('[data-step="4"]')
+            page.evaluate("document.querySelectorAll('.exercise-stage > :not([hidden]) details').forEach(d => { d.open = true; })")
+            page.wait_for_timeout(300)
+            table = "document.querySelector('.exercise-stage > :not([hidden]) .table-scroll')"
+            assert page.evaluate(f"(() => {{ const t = {table}; return t.scrollWidth > t.clientWidth && t.classList.contains('is-clipped'); }})()"), 'tableau large non signalé'
+            page.evaluate(f"{table}.scrollLeft = 9999")
+            page.wait_for_timeout(300)
+            assert not page.evaluate(f"{table}.classList.contains('is-clipped')"), 'signal encore présent en fin de défilement'
+            narrow.close()
+            print('TABLEAUX OK : défilement signalé sur petit écran.')
+
             browser.close()
             print(f'BROWSER OK: {checks} page/width combinations (320, 390, 768, 1440 px); search, filters, TOCs, corrections, print events, navigation, simulation and no-JavaScript fallback.')
             print('No JavaScript exceptions, no HTTP errors, no global horizontal overflow.')
