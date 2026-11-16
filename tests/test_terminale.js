@@ -126,7 +126,7 @@ for (const slug of T.slugs) {
   const head = fs.readFileSync(path.join(root, 'terminale', 'exercices', slug + '.html'), 'utf8').split('</head>')[0];
   const attendu = Array.from(avecFigure).some(c => c.split('/')[0] === slug) && ['t-exponentielles', 't-inverse'].indexOf(slug) < 0;
   assert.equal(/assets\/terminale-figures\.js/.test(head), attendu, slug + ' : chargement de terminale-figures.js');
-  if (attendu) assert.ok(head.indexOf('assets/terminale-exercices.js') < head.indexOf('assets/terminale-figures.js') && head.indexOf('assets/terminale-figures.js') < head.indexOf('assets/exercices-renderer.js'), slug + ' : ordre des scripts');
+  if (attendu) assert.ok(head.indexOf('assets/serie-' + slug + '.js') < head.indexOf('assets/terminale-figures.js') && head.indexOf('assets/terminale-figures.js') < head.indexOf('assets/exercices-renderer.js'), slug + ' : ordre des scripts');
 }
 if (process.argv.includes('--json')) process.stdout.write(JSON.stringify(cases));
 else console.log(`TERMINALE OK: 54 modèles × ${SEEDS} graines = ${variants} variantes ; bande de difficulté, ${choiceFields} champs à choix équilibrés, mise en forme, arrondis, recalcul, aides et lois binomiales.`);

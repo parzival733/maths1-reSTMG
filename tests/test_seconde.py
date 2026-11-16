@@ -50,7 +50,7 @@ def main():
         assert words >= 550, (slug, words)
         assert f'href="../exercices/{slug}.html"' in text, slug
         series = (folder / 'exercices' / f'{slug}.html').read_text(encoding='utf-8')
-        assert f'data-seconde-chapter="{slug}"' in series and 'seconde-exercices.js' in series, slug
+        assert f'data-seconde-chapter="{slug}"' in series and f'serie-{slug}.js' in series and 'seconde-exercices.js' not in series, slug
         assert series.count('data-offline-series') == 1 and series.count('<section class="exam-block">') == 6, slug
         assert 'variants-' not in series and 'terminale-exercices.js' not in series, slug
     # Catalogues : seize cartes, domaine affiché, sélecteur des quatre niveaux.

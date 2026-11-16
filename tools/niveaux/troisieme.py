@@ -4,6 +4,10 @@ import sys, re
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lecons_troisieme import LESSONS
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from build_series import besoins
+# Fichiers du moteur de figures dont chaque série a besoin ; une série sans figure n'en charge aucun.
+FIGURES_SERIES = besoins()
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'troisieme'
@@ -112,7 +116,7 @@ def series_page(i, L):
     slug, title = L['slug'], L['title']
     description = f'{title} : 6 exercices interactifs de 3e, avec variantes tirées au hasard, indices et corrigés rédigés.'
     h = head(f'Exercices · {title} · 3e', description, '../../', 'serie',
-             ['figures.js', 'figures-statistiques.js', 'figures-geometrie.js', 'exercices-variants.js', 'troisieme-exercices.js', 'exercices-renderer.js', 'exercices.js', 'interface.js', 'acquis.js', 'suivi-exercices.js'])
+             FIGURES_SERIES[slug] + ['exercices-variants.js', f'serie-{slug}.js', 'exercices-renderer.js', 'exercices.js', 'interface.js', 'acquis.js', 'suivi-exercices.js'])
     code = 'REPÈRE' if L.get('transversal') else num(i)
     body = [f'<body class="exercise-page">', BRAND('../../'), nav('../../', '../', ('exercices', 'location')),
             f'<main id="contenu" class="container interactive-exercise-page" tabindex="-1" data-interactive-exercises data-generated-exercises data-troisieme-chapter="{slug}">'
