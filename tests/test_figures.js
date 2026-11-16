@@ -39,8 +39,14 @@ function hasard(graine) {
   vm.createContext(bac);
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'assets', 'figures.js'), 'utf8'), bac, {filename: 'figures.js'});
   assert.equal(typeof bac.window.Figures.svg, 'function');
-  assert.equal(bac.window.Figures.svg(exemples[0]), F.svg(exemples[0]), 'même SVG dans le navigateur et dans Node');
-  const source = fs.readFileSync(path.join(ROOT, 'assets', 'figures.js'), 'utf8');
+  /* Le socle seul dessine repères, arbres, diagrammes sur des axes et triangle de Pascal ; il signale la partie manquante pour le reste. */
+  const socle = d => ['repere', 'arbre', 'pascal'].indexOf(d.type) >= 0 || (d.type === 'statistiques' && !/circulaire|venn/.test(d.elements[0].t));
+  for (const exemple of exemples.filter(socle)) assert.equal(bac.window.Figures.svg(exemple), F.svg(exemple), 'socle seul : même SVG dans le navigateur et dans Node');
+  assert.ok(exemples.filter(socle).length >= 10, 'exemples dessinés par le socle seul');
+  assert.throws(() => bac.window.Figures.svg(exemples.find(d => d.type === 'figure')), /figures-geometrie\.js/, 'géométrie demandée au socle seul');
+  vm.runInContext(fs.readFileSync(path.join(ROOT, 'assets', 'figures-geometrie.js'), 'utf8'), bac, {filename: 'figures-geometrie.js'});
+  for (const exemple of exemples) assert.equal(bac.window.Figures.svg(exemple), F.svg(exemple), 'moteur complet : même SVG dans le navigateur et dans Node');
+  const source = fs.readFileSync(path.join(ROOT, 'assets', 'figures.js'), 'utf8') + fs.readFileSync(path.join(ROOT, 'assets', 'figures-geometrie.js'), 'utf8');
   assert.ok(!/\beval\s*\(|new Function|Math\.random|Date\.now|\(\?<[=!]/.test(source), 'ni eval, ni aléatoire, ni date, ni lookbehind');
   assert.ok(!/style=|<style|<marker/.test(source), 'aucun attribut style ni marqueur dans le moteur');
 }

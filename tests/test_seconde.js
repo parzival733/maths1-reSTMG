@@ -10,7 +10,7 @@ const root = path.resolve(__dirname, '..');
 const SEEDS = 2000;
 const sandbox = {window: {}};
 vm.createContext(sandbox);
-for (const filename of ['assets/figures.js', 'assets/exercices-variants.js', 'assets/seconde-exercices.js']) {
+for (const filename of ['assets/figures.js', 'assets/figures-geometrie.js', 'assets/exercices-variants.js', 'assets/seconde-exercices.js']) {
   vm.runInContext(fs.readFileSync(path.join(root, filename), 'utf8'), sandbox, {filename});
 }
 const V = sandbox.window.ExerciseVariants;
