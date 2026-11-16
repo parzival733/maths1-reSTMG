@@ -1,5 +1,7 @@
 /* Annexe de calcul rapide. Donnees et calculs locaux, sans dependance.
-   78 modeles : 18 bases, 24 Premiere, 12 Terminale, 12 en 3e et 12 en Seconde.
+   83 modeles : 18 bases, 24 Premiere, 12 Terminale, 14 en 3e et 15 en Seconde.
+   Cinq d'entre eux sont des lectures graphiques : leur question porte une figure,
+   decrite pour assets/figures.js.
    Les expressions ref sont reservees aux tests independants en Python. */
 (() => {
   'use strict';
@@ -30,7 +32,7 @@
     const next=()=>{a=(a+0x6D2B79F5)>>>0;let t=Math.imul(a^(a>>>15),1|a);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296;};
     return {int:(a,b)=>a+Math.floor(next()*(b-a+1)),pick:xs=>xs[Math.floor(next()*xs.length)],next};
   }
-  function add(id,level,topic,method,course,fn) { registry.push({id,level,topic,method,course,fn}); }
+  function add(id,level,topic,method,course,fn,figure=false) { registry.push({id,level,topic,method,course,fn,...(figure?{figure:true}:{})}); }
   // Une reponse est toujours numerique, entiere, decimale exacte ou fraction.
   const Q=(prompt,n,d,hint,solution,ref,unit='')=>({prompt,expected:fraction(n,d),hint,solution,ref,unit});
   const calc='cours/calcul';
@@ -104,6 +106,11 @@
   add('c-vitesse','troisieme','unites','feuille',c3('grandeurs'),r=>{const t=r.pick([15,20,30,45]),d=r.int(2,30);return Q(`Un trajet de ${d} km dure ${t} min. Vitesse moyenne en km/h ?`,d*60,t,'Convertis la durée en heures ou ramène-toi à 60 minutes.',`En 60 min, on parcourt ${d} × 60 ÷ ${t} = ${frac(d*60,t)} km : v = ${frac(d*60,t)} km/h.`,[d,60,'*',t,'/'],'km/h');});
   add('c-thales','troisieme','geometrie','feuille',c3('thales'),r=>{const b=r.pick([4,5,6,8,10]),a=r.int(1,b-1),c=r.int(2,12);return Q(`(MN) // (BC), M sur [AB], N sur [AC], AM = ${a}, AB = ${b} et AC = ${c}. Donne AN.`,a*c,b,'Thalès : AM/AB = AN/AC.',`AN = AC × AM ÷ AB = ${c} × ${a} ÷ ${b} = ${frac(a*c,b)}.`,[a,c,'*',b,'/']);});
   // Seconde : automatismes du programme 2026.
+  // Lectures graphiques : droite y = (n/d)x + p dans un repère quadrillé de −6 à 6. La légende ne donne aucune valeur à lire.
+  const graph=(n,d,p,points=[])=>({type:'repere',titre:'Droite représentant la fonction f',options:{xmin:-6,xmax:6,ymin:-6,ymax:6,pas_x:1,pas_y:1,hauteur:300},elements:[{t:'droite_affine',m:n/d,p},...points.map(([x,y,nom])=>({t:'point',x,y,nom}))]});
+  const slopes=[-2,-1,1,2];
+  add('c-lire-image','troisieme','droites','mental',c3('fonctions'),r=>{let m,x,p;do{m=r.pick(slopes);x=other(r,-3,3,0);p=r.int(-3,3);}while(Math.abs(m*x+p)>5);const y=m*x+p;return {...Q(`Lis sur le graphique l’image de ${fr(x)} par la fonction f.`,y,1,'Pars de la valeur sur l’axe des abscisses, rejoins la droite, puis lis l’ordonnée.',`Le point de la droite d’abscisse ${fr(x)} a pour ordonnée ${fr(y)} : f(${fr(x)}) = ${fr(y)}.`,[m,x,'*',p,'+']),figure:graph(m,1,p)};},true);
+  add('c-lire-antecedent','troisieme','droites','mental',c3('fonctions'),r=>{let m,x,p;do{m=r.pick(slopes);x=other(r,-3,3,0);p=r.int(-3,3);}while(Math.abs(m*x+p)>5);const y=m*x+p;return {...Q(`Lis sur le graphique l’antécédent de ${fr(y)} par la fonction f.`,x,1,'Pars de la valeur sur l’axe des ordonnées, rejoins la droite, puis lis l’abscisse.',`Le point de la droite d’ordonnée ${fr(y)} a pour abscisse ${fr(x)} : l’antécédent de ${fr(y)} est ${fr(x)}.`,[y,p,'-',m,'/']),figure:graph(m,1,p)};},true);
   const c2=s=>'seconde/cours/2-'+s;
   add('s-puissances','seconde','nombres','mental',c2('calcul-algebrique'),r=>{const a=r.int(2,7),m=r.int(-5,6)||4,n=r.int(-6,5)||-2;return Q(`${a}${sup(m)} × ${a}${sup(n)} = ${a}ᵏ. Donne k.`,m+n,1,'aᵐ × aⁿ = aᵐ⁺ⁿ : on additionne les exposants.',`k = ${fr(m)} + ${pa(n)} = ${fr(m+n)}.`,[m,n,'+']);});
   add('s-racine','seconde','nombres','mental',c2('calcul-algebrique'),r=>{const k=r.int(2,9),m=r.pick([2,3,5,6,7]);return Q(`√${k*k*m} = a√${m}. Donne a.`,k,1,'Fais apparaître un carré parfait sous la racine : √(ab) = √a × √b.',`${k*k*m} = ${k*k} × ${m}, donc √${k*k*m} = ${k}√${m}.`,[k*k*m,m,'/','sqrt']);});
@@ -117,6 +124,9 @@
   add('s-determinant','seconde','geometrie','feuille',c2('colinearite'),r=>{const x=r.int(-6,6)||3,y=r.int(-6,6),x2=r.int(-6,6),y2=r.int(-6,6)||2;return Q(`u(${fr(x)} ; ${fr(y)}) et v(${fr(x2)} ; ${fr(y2)}). Calcule det(u, v).`,x*y2-x2*y,1,'det(u, v) = xy′ − x′y.',`${fr(x)} × ${pa(y2)} − ${pa(x2)} × ${pa(y)} = ${fr(x*y2-x2*y)}.`,[x,y2,'*',x2,y,'*','-']);});
   add('s-pente','seconde','droites','feuille',c2('droites'),r=>{const xa=r.int(-6,4),xb=r.int(xa+1,8),ya=r.int(-9,9),yb=r.int(-9,9);return Q(`Donne la pente de la droite passant par A(${fr(xa)} ; ${fr(ya)}) et B(${fr(xb)} ; ${fr(yb)}).`,yb-ya,xb-xa,'Pente : (y_B − y_A) ÷ (x_B − x_A).',`(${dif(yb,ya)}) ÷ (${dif(xb,xa)}) = ${frac(yb-ya,xb-xa)}.`,[yb,ya,'-',xb,xa,'-','/']);});
   add('s-conditionnelle','seconde','probabilites','feuille',c2('probabilites'),r=>{const a=r.int(2,8),b=r.int(1,a*10-1);return Q(`P(A) = ${fr(a/10)} et P(A ∩ B) = ${fr(b/100)}. Calcule P_A(B).`,b,10*a,'P_A(B) = P(A ∩ B) ÷ P(A).',`${fr(b/100)} ÷ ${fr(a/10)} = ${frac(b,10*a)}.`,[b,100,'/',a,10,'/','/']);});
+  add('s-lire-pente','seconde','droites','mental',c2('droites'),r=>{const [n,d]=r.pick([[-3,1],[-2,1],[-1,1],[-1,2],[1,2],[1,1],[2,1],[3,1]]),xa=r.int(-2,2),ya=r.int(-2,2);return {...Q(`La droite tracée passe par A(${fr(xa)} ; ${fr(ya)}). Lis son coefficient directeur.`,n,d,'Pars de A, avance vers la droite jusqu’à un autre point du quadrillage, puis compte la montée ou la descente.',`De A, on avance de ${d} vers la droite et on ${n>0?'monte':'descend'} de ${Math.abs(n)} : le coefficient directeur est ${frac(n,d)}.`,[ya+n,ya,'-',xa+d,xa,'-','/']),figure:graph(n,d,ya-n*xa/d,[[xa,ya,'A']])};},true);
+  add('s-lire-ordonnee','seconde','droites','mental',c2('droites'),r=>{const m=r.pick([-3,-2,-1,1,2,3]),p=r.int(-4,4),x=r.pick([-1,1]);return {...Q(`La droite tracée a pour coefficient directeur ${fr(m)}. Lis son ordonnée à l’origine.`,p,1,'Repère le point où la droite coupe l’axe des ordonnées, puis lis son ordonnée.',`La droite coupe l’axe des ordonnées au point (0 ; ${fr(p)}) : l’ordonnée à l’origine est ${fr(p)}.`,[m*x+p,m,x,'*','-']),figure:graph(m,1,p)};},true);
+  add('s-lire-zero','seconde','droites','mental',c2('signes'),r=>{let m,x;do{m=r.pick([-3,-2,-1,1,2,3]);x=other(r,-4,4,0);}while(Math.abs(m*x)>5);const p=-m*x;return {...Q(`La droite tracée représente une fonction affine f, avec f(0) = ${fr(p)}. Lis la valeur de x où f(x) change de signe.`,x,1,'Une fonction affine change de signe là où sa droite coupe l’axe des abscisses.',`La droite coupe l’axe des abscisses en x = ${fr(x)} : f(x) change de signe en ${fr(x)}.`,[0,p,'-',m,'/']),figure:graph(m,1,p)};},true);
 
   function bigintGcd(a,b) { a=a<0n?-a:a;b=b<0n?-b:b;while(b)[a,b]=[b,a%b];return a||1n; }
   function decimal(s) {
@@ -141,7 +151,9 @@
   function eligible({level='bac',method='mixte',topic='all'}={}) {
     if(!['bac','bases','premiere','terminale','troisieme','seconde'].includes(level))throw new Error('Niveau inconnu');
     if(!['mixte','mental','feuille'].includes(method))throw new Error('Méthode inconnue');
-    return registry.filter(t=>(level==='bac'?(t.level==='bases'||t.level==='premiere'):t.level===level)&&(method==='mixte'||t.method===method)&&(topic==='all'||t.topic===topic));
+    // Une lecture graphique n'est proposée dans une page que si le moteur de figures y est chargé.
+    const drawable=typeof window==='undefined'||!!window.Figures;
+    return registry.filter(t=>(drawable||!t.figure)&&(level==='bac'?(t.level==='bases'||t.level==='premiere'):t.level===level)&&(method==='mixte'||t.method===method)&&(topic==='all'||t.topic===topic));
   }
   function generate(id,seed=1) {
     const t=registry.find(t=>t.id===id);if(!t)throw new Error('Modèle inconnu');

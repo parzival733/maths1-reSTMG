@@ -8,14 +8,28 @@ if(process.argv.includes('--export')) {
   for(const t of A.templates)for(let seed=0;seed<160;seed++)samples.push(A.generate(t.id,seed));
   process.stdout.write(JSON.stringify(samples));
 } else {
-  assert.equal(A.templates.length,78);
+  assert.equal(A.templates.length,83);
   assert.equal(A.templates.filter(t=>t.level==='bases').length,18);
   assert.equal(A.templates.filter(t=>t.level==='premiere').length,24);
   assert.equal(A.templates.filter(t=>t.level==='terminale').length,12);
-  assert.equal(A.templates.filter(t=>t.level==='troisieme').length,12);
-  assert.equal(A.templates.filter(t=>t.level==='seconde').length,12);
-  assert.equal(new Set(A.templates.map(t=>t.id)).size,78);
-  let total=0;
+  assert.equal(A.templates.filter(t=>t.level==='troisieme').length,14);
+  assert.equal(A.templates.filter(t=>t.level==='seconde').length,15);
+  assert.equal(new Set(A.templates.map(t=>t.id)).size,83);
+  /* Lectures graphiques : figure valide, droite passant par le point à lire, valeur lisible sur le quadrillage, réponse absente de la légende. */
+  const F=require('../assets/figures.js'),FC=require('./figures_controle.js');
+  const lecture=(q,where)=>{
+    const svg=F.svg(q.figure),defauts=FC.controler(svg);
+    assert.deepEqual(defauts,[],where+' : '+defauts.join(' ; '));
+    const o=q.figure.options,droite=q.figure.elements.find(e=>e.t==='droite_affine'),[n,d]=A.parse(q.expected),v=Number(n)/Number(d);
+    const dans=(x,y)=>x>=o.xmin&&x<=o.xmax&&y>=o.ymin&&y<=o.ymax,entier=x=>Math.abs(x-Math.round(x))<1e-9;
+    const point={'c-lire-image':()=>[q.ref[1],v],'c-lire-antecedent':()=>[v,q.ref[0]],'s-lire-ordonnee':()=>[0,v],'s-lire-zero':()=>[v,0]}[q.id];
+    if(point){const [x,y]=point();assert.ok(entier(x)&&entier(y)&&dans(x,y)&&Math.abs(droite.m*x+droite.p-y)<1e-9,where+' : point à lire sur la droite, sur un nœud du quadrillage');}
+    else{assert.equal(q.id,'s-lire-pente');assert.ok(Math.abs(droite.m-v)<1e-9,where+' : pente de la droite');
+      const A0=q.figure.elements.find(e=>e.t==='point');assert.ok(Math.abs(droite.m*A0.x+droite.p-A0.y)<1e-9&&dans(A0.x+Number(d),A0.y+Number(n)),where+' : A et le point suivant du quadrillage sont sur la droite');}
+    assert.ok(!/\d/.test(q.figure.titre),where+' : la légende ne donne aucune valeur');
+    return 1;
+  };
+  let total=0,lectures=0;
   for(const t of A.templates) {
     assert.ok(fs.existsSync(path.join(__dirname,'..',t.course+'.html')),t.course);
     assert.ok(A.topics[t.topic]);
@@ -30,10 +44,20 @@ if(process.argv.includes('--export')) {
       assert.ok(q.solution.length>=8&&q.hint.length>12&&q.prompt.length>=10,`${q.id}/${seed}: incomplete pedagogical content`);
       assert.ok(Array.isArray(q.ref)&&q.ref.length>0);
       assert.deepEqual(q,A.generate(t.id,seed));
+      assert.equal(!!q.figure,!!t.figure,`${q.id}: figure annoncée par le modèle`);
+      if(q.figure) lectures+=lecture(q,`${q.id}/${seed}`);
       for(const v of ['','   ','Infinity','NaN','0x10','1/0','1//2','1/2/3','alert(1)','<script>'])assert.equal(A.check(v,q),false,[q.id,v]);
       total++;
     }
   }
+  assert.equal(lectures,5*192);
+  /* Sans le moteur de figures dans la page, les lectures graphiques ne sont pas proposées ; les parcours de révision ne les reprennent pas. */
+  global.window={};
+  assert.ok(A.eligible({level:'troisieme'}).every(t=>!t.figure)&&A.eligible({level:'troisieme'}).length===12);
+  global.window={Figures:F};
+  assert.equal(A.eligible({level:'seconde'}).length,15);
+  delete global.window;
+  assert.ok(require('../assets/parcours-data.js').templates.every(t=>!t.figure));
   assert.equal(A.check('2/4',{expected:'1/2'}),true);
   assert.equal(A.check('0,5',{expected:'1/2'}),true);
   assert.equal(A.check('−1,25',{expected:'-5/4'}),true);

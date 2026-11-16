@@ -51,7 +51,7 @@ def reference(tokens):
 
 def main():
     samples=json.loads(subprocess.check_output(['node','tests/test_calcul_rapide.js','--export'],cwd=ROOT,text=True,encoding='utf-8'))
-    assert len(samples)==78*160
+    assert len(samples)==83*160
     for q in samples:
         value=Fraction(q['expected'])
         assert value==reference(q['ref']), (q['id'],q['prompt'],q['expected'])

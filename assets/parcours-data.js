@@ -24,7 +24,8 @@
     {id:'r-t-outils',level:'terminale',course:'terminale/cours/t-outils',topic:'algebre',fn:r=>{
       const a=r(2,8),n=r(2,5);return{prompt:`On pose u = ${a} et s = 0. On r\u00e9p\u00e8te ${n} fois : d'abord s = s + u, puis u = 2u. Quelle est la valeur finale de s ?`,expected:String(a*(2**n-1)),hint:'Note la valeur ajout\u00e9e AVANT chaque doublement.',solution:`s = ${Array.from({length:n},(_,i)=>a*2**i).join(' + ')} = ${a*(2**n-1)}. Le dernier u, calcul\u00e9 apr\u00e8s la derni\u00e8re addition, n'est pas ajout\u00e9.`,ref:[a,2,n,'pow',1,'-','*']};}}
   ];
-  const templates=[...Q.templates,...extras.map(({fn,...t})=>({...t,method:'feuille'}))].map(t=>({...t,skill:P.skillFor(t)}));
+  // Les lectures graphiques du calcul rapide demandent une figure : elles restent dans cette annexe.
+  const templates=[...Q.templates.filter(t=>!t.figure),...extras.map(({fn,...t})=>({...t,method:'feuille'}))].map(t=>({...t,skill:P.skillFor(t)}));
   function generate(id,seed){
     const extra=extras.find(t=>t.id===id),q=extra?{...extra.fn(rng(seed)),id:extra.id,level:extra.level,course:extra.course,topic:extra.topic,method:'feuille',unit:''}:Q.generate(id,seed);
     q.skill=P.skillFor(q);q.variant=P.hash(q.prompt);q.seed=seed;

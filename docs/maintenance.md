@@ -193,6 +193,8 @@ En Première et en Terminale, les figures suivent le même principe, sans la gé
 - quand l'énoncé initial arrive sans figure (JSON écrit dans la page en Première, figures de `terminale-figures.js`), `assets/exercices-renderer.js` lui ajoute celle que calcule le modèle avec les paramètres d'origine : le rendu est chargé après les modèles ;
 - `tools/finalize_site.py` ajoute ces scripts aux seules pages concernées : `SERIES_ILLUSTREES` (moteur), `SERIES_STATISTIQUES` (partie « statistiques et probabilités »), `SERIES_TERMINALE_FIGURES`. `tests/test_variants.js` et `tests/test_terminale.js` vérifient que ces listes correspondent aux modèles illustrés.
 
+**Lectures graphiques du calcul rapide.** Dans `assets/calcul-rapide-data.js`, un modèle déclaré avec `figure` (dernier argument de `add`) renvoie, en plus de sa question, une description de figure écrite à la main (fonction `graph`) ; `assets/calcul-rapide.js` la dessine sous la question et sur la fiche à imprimer. La légende ne donne aucune valeur à lire. Ces modèles ne sont proposés que si `figures.js` est chargé dans la page, et les parcours de révision (`assets/parcours-data.js`) ne les reprennent pas. `tests/test_calcul_rapide.js` vérifie chaque figure et que le point à lire est sur un nœud du quadrillage.
+
 Ce découpage tient au budget de poids de `tests/browser_cloture.py` (400 ko transférés sans compression) : la série de Terminale sur la fonction inverse, qui sert de témoin, en est à environ 396 ko. Avant d'y ajouter une figure ou un modèle, mesurer la page ; le fichier `terminale-exercices.js` (80 ko pour les neuf séries) est le premier poste à découper si la marge manque.
 
 Règles propres aux exercices :
