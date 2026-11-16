@@ -38,6 +38,8 @@ jobs:
           python3 tests/test_troisieme.py
           node tests/test_seconde.js
           python3 tests/test_seconde.py
+          python3 tools/build_series.py --check
+          node tests/test_series.js
           node tests/test_calcul_rapide.js
           python3 tests/test_calcul_rapide.py
           node tests/test_countdown.js

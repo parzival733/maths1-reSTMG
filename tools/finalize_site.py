@@ -12,6 +12,7 @@ ORIGIN='https://mathstmgdls.pages.dev'
 from navigation_simple import apply as simplify_navigation, ALIASES
 from lecons import apply as apply_lessons
 from figures_lecons import apply as apply_figures
+from build_series import main as build_series
 from typographie import apply as apply_typography
 from liens_accessibles import apply as apply_link_names
 from gabarits import apply as apply_templates
@@ -70,13 +71,15 @@ def series_figures(rel,text):
         base='../'*rel.count('/')
         text=re.sub(r'[ \t]*<script src="[^"]*assets/(figures|figures-statistiques|terminale-figures)\.js[^"]*" defer></script>\n?','',text)
         slug=rel.removeprefix(prefix).removesuffix('.html')
+        # Une série de Terminale ne charge que ses propres modèles (tools/build_series.py).
+        if prefix=='terminale/exercices/':text=re.sub(r'assets/(?:terminale-exercices|serie-t-[\w-]+)\.js',f'assets/serie-{slug}.js',text)
         if slug in slugs:
             files=['figures.js']+(['figures-statistiques.js'] if slug in SERIES_STATISTIQUES else [])
             text,count=re.subn(r'([ \t]*)(<script src="[^"]*assets/exercices-variants\.js)',
                 lambda m:''.join(f'{m.group(1)}<script src="{base}assets/{f}" defer></script>\n' for f in files)+m.group(1)+m.group(2),text,count=1)
             if count!=1:raise ValueError(f'{rel} : moteur de variantes introuvable.')
             if slug in SERIES_TERMINALE_FIGURES:
-                text,count=re.subn(r'([ \t]*)(<script src="[^"]*assets/terminale-exercices\.js[^"]*" defer></script>\n?)',
+                text,count=re.subn(r'([ \t]*)(<script src="[^"]*assets/serie-t-[\w-]+\.js[^"]*" defer></script>\n?)',
                     lambda m:f'{m.group(1)}{m.group(2)}{m.group(1)}<script src="{base}assets/terminale-figures.js" defer></script>\n',text,count=1)
                 if count!=1:raise ValueError(f'{rel} : modèles de Terminale introuvables.')
         renderer=re.search(r'[ \t]*<script src="[^"]*assets/exercices-renderer\.js[^"]*" defer></script>\n?',text)
@@ -104,6 +107,7 @@ def update_style_policy():
     path.write_text(text)
 
 def main():
+    build_series()
     simplify_navigation(ROOT)
     apply_lessons(ROOT)
     apply_figures(ROOT)

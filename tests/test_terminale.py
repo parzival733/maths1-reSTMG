@@ -62,7 +62,7 @@ def check_structure():
             compile(block, str(lesson_path) + ':' + str(i), 'exec')
         text = exercise_path.read_text(encoding='utf-8')
         assert 'data-terminale-chapter="' + slug + '"' in text
-        scripts = ['exercices-variants.js','terminale-exercices.js','exercices-renderer.js','exercices.js']
+        scripts = ['exercices-variants.js','serie-' + slug + '.js','exercices-renderer.js','exercices.js']
         positions = [text.index('../../assets/' + script) for script in scripts]
         assert positions == sorted(positions), slug
         assert 'exercise-data' in exercise.ids and 'exercise-mounted' in exercise.ids
