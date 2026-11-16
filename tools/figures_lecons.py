@@ -1,4 +1,4 @@
-"""Figures des leçons : remplit chaque <figure class="lesson-figure" data-figure="nom">.
+"""Figures des leçons et des sujets : remplit chaque <figure class="lesson-figure" data-figure="nom">.
 
 Les figures sont décrites dans tools/figures_lecons.js avec les nombres du texte.
 Une leçon ne contient que l'emplacement :
@@ -22,7 +22,8 @@ import figures
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'tools' / 'figures_lecons.js'
 EMPLACEMENT = re.compile(r'<figure class="lesson-figure(?: figure-large)?" data-figure="([^"]+)">[\s\S]*?</figure>')
-DOSSIERS = ('cours', 'terminale/cours', 'troisieme/cours', 'seconde/cours')
+# Leçons des quatre niveaux, puis sujets blancs et problèmes (entrainement/) et brevet blanc (troisieme/).
+DOSSIERS = ('cours', 'terminale/cours', 'troisieme/cours', 'seconde/cours', 'entrainement', 'troisieme')
 _descriptions = None
 
 

@@ -386,7 +386,7 @@
           const r = e.r, cs = e.cotes || [], O = projeter(e.centre || [0, 0, 0]);
           out.push({t: 'cercle', centre: O, rayon: r}, {t: 'ellipse', centre: O, rx: r, ry: 0.3 * r, arriere: true});
           out.push({t: 'point', nom: '_c' + (++auto), x: O[0], y: O[1], marque: true}, {t: 'segment', a: O, b: [O[0] + r, O[1]], pointilles: true, fin: true});
-          cote([O[0], O[1] + 0.3 * r], [O[0] + r, O[1] + 0.3 * r], cs[0], ['n', 's']);
+          cote([O[0], O[1]], [O[0] + 0.76 * r, O[1]], cs[0], ['n', 's']);
           break;
         }
         case 'point': cree([e.x, e.y, e.z], e.nom, {pos: e.pos, marque: e.marque, muet: e.muet}); break;

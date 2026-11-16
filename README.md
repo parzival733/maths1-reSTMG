@@ -22,7 +22,7 @@ Site de mathématiques en français pour la 3e, la Seconde générale et technol
 - **Mathématiques au bac STMG** : en Première, épreuve anticipée écrite (2 heures, sans calculatrice, coefficient 2, première session en juin 2026) et moyenne annuelle au contrôle continu ; en Terminale, pas d’épreuve écrite finale, la moyenne annuelle compte au contrôle continu.
 - **Épreuve anticipée de Première** : [note de service du 11 septembre 2026](https://www.education.gouv.fr/bo/2026/Special4/MENE2622640N).
 
-Les leçons contiennent 102 figures (géométrie, courbes, arbres, diagrammes) calculées par `assets/figures.js` à partir des nombres du texte ; elles sont intégrées au HTML et restent lisibles et imprimables sans JavaScript. Dans les séries d'exercices, 120 modèles ont une figure recalculée à chaque variante, dans l'énoncé ou dans le corrigé : 75 en 3e et en Seconde, 30 en Première, 15 en Terminale.
+Les leçons contiennent 103 figures (géométrie, courbes, arbres, diagrammes) calculées par `assets/figures.js` à partir des nombres du texte ; elles sont intégrées au HTML et restent lisibles et imprimables sans JavaScript. Le brevet blanc, les deux sujets blancs de Première et la page de problèmes en contiennent 7 de plus, dans l'énoncé ou dans le corrigé. Dans les séries d'exercices, 120 modèles ont une figure recalculée à chaque variante, dans l'énoncé ou dans le corrigé : 75 en 3e et en Seconde, 30 en Première, 15 en Terminale.
 
 `programme.html`, `terminale/programme.html`, `troisieme/programme.html`, `seconde/programme.html` et `couverture.html` relient les notions des programmes aux ressources du site. Les leçons sont des rédactions pédagogiques originales, pas des documents ministériels.
 

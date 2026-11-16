@@ -494,5 +494,37 @@ def('t-binomiale-pascal', F.pascal('Triangle de Pascal jusqu’à n = 5 : 10 che
 def('t-variables-loi', F.statistiques('Loi de X : P(X = −2) = 0,2, P(X = 0) = 0,5, P(X = 4) = 0,3')
   .diagramme_batons([-2, 0, 4], [0.2, 0.5, 0.3], {nom_x: 'valeur de X', nom_y: 'probabilité', pas_y: 0.1}));
 
+/* Sujets blancs, brevet blanc et problèmes : les nombres sont ceux de chaque sujet. */
+def('3-brevet-rampe', F.figure('Triangle ABC rectangle en B, à l’échelle : AB = 4 m et BC = 0,3 m', {largeur: 340, hauteur: 110})
+  .point('A', 0, 0).point('B', 4, 0).point('C', 4, 0.3).polygone(['A', 'B', 'C']).angle_droit('B', 'A', 'C', {taille: 7})
+  .cote('A', 'B', '4 m').cote_fleche('B', 'C', '0,3 m'));
+def('3-brevet-tarifs', F.repere('Tarif A en trait plein, tarif B en pointillés : même prix, 54 €, pour 12 entrées',
+  {xmin: 0, xmax: 24, ymin: 0, ymax: 110, pas_x: 4, pas_y: 20, nom_x: 'entrées', nom_y: 'prix (€)', hauteur: 260})
+  .droite_affine(4.5, 0, {nom: 'A'}).droite_affine(2, 30, {nom: 'B', pointilles: true}).lecture(12, 54),
+'La droite du tarif A part de l’origine ; celle du tarif B part de 30 €. Elles se coupent au point (12 ; 54) ; au-delà de 12 entrées, la droite du tarif B est en dessous.');
+def('s-blanc1-benefice', F.repere('Courbe de B sur [0 ; 10] : bénéfice nul pour x = 2 et x = 10, maximal en x = 6',
+  {xmin: 0, xmax: 11, ymin: -22, ymax: 20, pas_x: 2, pas_y: 5, nom_x: 'x', nom_y: 'B(x)', hauteur: 260})
+  .courbe('-x^2+12x-20', {de: 0, a: 10}).point(2, 0).point(10, 0).lecture(6, 16),
+'La courbe part du point (0 ; −20), coupe l’axe des abscisses en 2, monte jusqu’au point (6 ; 16), puis redescend jusqu’au point (10 ; 0).');
+{
+  const donnees = [[1, 12], [2, 16], [3, 18], [4, 22]], cadre = {xmin: 0, xmax: 7, ymin: 0, ymax: 32, pas_x: 1, pas_y: 5, nom_x: 'période', nom_y: 'visites (centaines)', hauteur: 260};
+  def('s-blanc2-nuage', F.repere('Nuage des quatre observations (1 ; 12), (2 ; 16), (3 ; 18), (4 ; 22)', cadre).nuage(donnees));
+  def('s-blanc2-droite', F.repere('La droite (G₁G₂), d’équation y = 3x + 9,5, prolongée jusqu’à x = 6', cadre)
+    .droite_affine(3, 9.5).nuage(donnees).point_moyen(1.5, 14, 'G₁', {pos: ['no', 'n']}).point_moyen(3.5, 20, 'G₂', {pos: ['no', 'n']}).lecture(6, 27.5),
+  'La droite passe par G₁(1,5 ; 14) et G₂(3,5 ; 20). En x = 6, hors de la plage des observations, elle donne 27,5.');
+}
+def('s-probleme-tarifs', F.repere('A(t) = 12 + 3t en trait plein, B(t) = 5t en pointillés : même prix, 30 €, pour 6 heures',
+  {xmin: 0, xmax: 10, ymin: 0, ymax: 52, pas_x: 2, pas_y: 10, nom_x: 'heures', nom_y: 'prix (€)', hauteur: 260})
+  .droite_affine(3, 12, {nom: 'A'}).droite_affine(5, 0, {nom: 'B', pointilles: true}).lecture(6, 30),
+'La droite de A part de 12 € ; celle de B part de l’origine. Elles se coupent au point (6 ; 30) ; au-delà de 6 heures, la droite de A est en dessous.');
+def('s-probleme-extrapolation', F.repere('Droite y = 3x + 20 : en trait épais sur l’axe, la plage observée de 1 à 4',
+  {xmin: 0, xmax: 7, ymin: 0, ymax: 45, pas_x: 1, pas_y: 10, nom_x: 'période', nom_y: 'visites (centaines)', hauteur: 260})
+  .droite_affine(3, 20).intervalle_solutions(1, 4).lecture(3, 29).lecture(6, 38),
+'En x = 3, dans la plage observée, la droite donne 29 : c’est une interpolation. En x = 6, hors de cette plage, elle donne 38 : c’est une extrapolation.');
+/* Version sans JavaScript du graphique à manipuler : la droite de départ, f(x) = x + 1. */
+def('1-fonctions-affine', F.repere('Droite de f(x) = x + 1 : pente 1, ordonnée à l’origine 1, image f(2) = 3',
+  {xmin: -6, xmax: 6, ymin: -6, ymax: 8, pas_x: 2, pas_y: 2, hauteur: 260}).droite_affine(1, 1).escalier(0, 1, 1, 1).lecture(2, 3),
+'La droite coupe l’axe des ordonnées en 1 et l’axe des abscisses en −1 ; elle monte de 1 quand x augmente de 1.');
+
 module.exports = figures;
 if (require.main === module) process.stdout.write(JSON.stringify(figures));

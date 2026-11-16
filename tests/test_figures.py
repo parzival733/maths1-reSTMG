@@ -75,7 +75,7 @@ for page in figures_lecons.pages(ROOT):
     for nom in re.findall(r'data-figure="([^"]+)"', texte):
         assert nom not in placees, f'figure {nom} placée deux fois ({placees.get(nom)} et {page.name})'
         placees[nom] = page.name
-        assert nom.split('-')[0] == {'cours': '1', 'terminale/cours': 't', 'troisieme/cours': '3', 'seconde/cours': '2'}[str(page.parent.relative_to(ROOT))], f'{nom} : préfixe de niveau'
+        assert nom.split('-')[0] == {'cours': '1', 'terminale/cours': 't', 'troisieme/cours': '3', 'seconde/cours': '2', 'entrainement': 's', 'troisieme': '3'}[str(page.parent.relative_to(ROOT))], f'{nom} : préfixe de niveau'
 assert set(placees) == set(descriptions), 'figures décrites mais jamais placées : ' + ', '.join(sorted(set(descriptions) - set(placees)))
 assert not list(ROOT.glob('cours/*.html')) or all('class="figure"' not in p.read_text(encoding='utf-8') for p in figures_lecons.pages(ROOT)), 'figure dessinée à la main dans une leçon'
 
