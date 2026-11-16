@@ -354,7 +354,48 @@ for (const desc of exemples) {
   }
 }
 
-/* ---------- 8. Le contrôle lui-même repère les défauts ---------- */
+/* ---------- 8. Figures des leçons : contrôles généraux et nombres du texte ---------- */
+{
+  const lecons = require(path.join(ROOT, 'tools', 'figures_lecons.js'));
+  const noms = Object.keys(lecons);
+  assert.ok(noms.length >= 100, 'figures des quatre niveaux');
+  for (const n of noms) {
+    const html = F.html(lecons[n], {id: 'fig-' + n, nom: n});
+    controles++;
+    assert.deepEqual(C.controler(html), [], n);
+    assert.ok(html.indexOf('data-figure="' + n + '"') > 0 && html.indexOf('id="fig-' + n + '"') > 0, n + ' : nom et identifiant');
+    assert.equal(F.html(JSON.parse(JSON.stringify(lecons[n])), {id: 'fig-' + n, nom: n}), html, n + ' : description sérialisable');
+  }
+  const mesure = n => { const a = C.analyser(F.svg(lecons[n])); return [a, C.pointsNommes(a)]; };
+  /* Pythagore : 6 et 8 dans le rapport 3/4, angle droit en A. */
+  let [a, p] = mesure('3-pythagore');
+  proche(C.distance(p.A, p.B) / C.distance(p.A, p.C), 6 / 8, 0.01, 'AB/AC');
+  proche(C.angle(p.A, p.B, p.C), 90, 0.5, 'angle droit en A');
+  [a, p] = mesure('3-pythagore-cote');
+  proche(C.distance(p.F, p.G) / C.distance(p.E, p.F), 13 / 5, 0.03, 'FG/EF');
+  /* Thalès : AM/AB = AN/AC = 3/5, (MN) parallèle à (BC), BC/AB = 7/5. */
+  [a, p] = mesure('3-thales');
+  proche(C.distance(p.A, p.M) / C.distance(p.A, p.B), 0.6, 0.01, 'AM/AB');
+  proche(C.distance(p.A, p.N) / C.distance(p.A, p.C), 0.6, 0.01, 'AN/AC');
+  proche(C.distance(p.B, p.C) / C.distance(p.A, p.B), 7 / 5, 0.02, 'BC/AB');
+  proche(C.ecartDroite(p.M, p.A, p.B), 0, 0.5, 'M sur [AB]');
+  proche(Math.abs((p.N[1] - p.M[1]) / (p.N[0] - p.M[0]) - (p.C[1] - p.B[1]) / (p.C[0] - p.B[0])), 0, 0.01, '(MN) parallèle à (BC)');
+  /* Trigonométrie : angle de 35° dessiné à 35°. */
+  [a, p] = mesure('3-trigo-longueur');
+  proche(C.angle(p.A, p.B, p.C), 35, 0.5, 'angle de 35°');
+  proche(C.angle(p.B, p.A, p.C), 90, 0.5, 'angle droit en B');
+  /* Projeté orthogonal : angle droit en H. */
+  [a, p] = mesure('2-projete');
+  proche(C.angle(p.H, p.M, p.P), 90, 0.6, 'angle droit en H');
+  /* Points annoncés sur leur courbe. */
+  for (const n of ['3-fonctions-image', '3-affine', '2-droite-reduite', '2-minimum', '2-optimisation', '1-fonctions-courbe', '1-derivee-tangente', 't-exp-intermediaire', 't-inverse-tangente', 't-inverse-cout', 't-log-courbe']) {
+    const fig = C.analyser(F.svg(lecons[n])), points = fig.cercles.filter(c => c.f === 'point');
+    assert.ok(points.length >= 1, n + ' : au moins un point');
+    for (const c of points) proche(C.ecartCourbes(fig, [c.x, c.y]), 0, 0.6, n + ' : point sur la courbe');
+  }
+}
+
+/* ---------- 9. Le contrôle lui-même repère les défauts ---------- */
 {
   const bon = F.html(F.figure('Segment').point('A', 0, 0).point('B', 4, 2).segment('A', 'B').description());
   assert.ok(C.controler(bon.replace('<figcaption>', '<figcaption>Autre ')).some(d => /figcaption/.test(d)), 'titre et légende différents détectés');

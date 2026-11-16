@@ -1,5 +1,5 @@
 # Contenu des 16 leçons de Seconde générale et technologique (programme 2026).
-from lecons_troisieme import D, F, EX, W, MTH, fig, txt
+from lecons_troisieme import D, F, EX, W, MTH, FIG
 
 LESSONS2 = [
   dict(slug='2-arithmetique', title='Arithmétique', domain='nombres',
@@ -39,11 +39,11 @@ LESSONS2 = [
     sections=[
       ('Les ensembles de nombres', '<p>On distingue ℕ ⊂ ℤ ⊂ 𝔻 ⊂ ℚ ⊂ ℝ. 𝔻 contient les <strong>décimaux</strong> (écriture décimale finie), ℚ les <strong>rationnels</strong> (quotients d’entiers) et ℝ tous les nombres de la droite numérique.</p>'
         + EX('Des exemples', '<p>1/3 est rationnel mais pas décimal : 3 × 0,333…3 ne vaut jamais 1. √2 et π sont <strong>irrationnels</strong> : ils ne s’écrivent pas comme quotient de deux entiers.</p>')),
-      ('Intervalles', '<p>[a ; b] contient les réels x tels que a ≤ x ≤ b ; ]a ; b[ ceux tels que a < x < b. Un crochet tourné vers l’extérieur exclut la borne. [a ; +∞[ contient les réels supérieurs ou égaux à a.</p>'
-        + EX('Intersection et réunion', '<p>[−3 ; 5] ∩ [−1 ; 15] = [−1 ; 5] (les réels communs) et [−3 ; 5] ∪ [−1 ; 15] = [−3 ; 15] (les réels de l’un au moins).</p>')),
+      ('Intervalles', '<p>[a ; b] contient les réels x tels que a ≤ x ≤ b ; ]a ; b[ ceux tels que a < x < b. Un crochet tourné vers l’extérieur exclut la borne. [a ; +∞[ contient les réels supérieurs ou égaux à a.</p>' + FIG('2-intervalles-bornes')
+        + EX('Intersection et réunion', '<p>[−3 ; 5] ∩ [−1 ; 15] = [−1 ; 5] (les réels communs) et [−3 ; 5] ∪ [−1 ; 15] = [−3 ; 15] (les réels de l’un au moins).</p>') + FIG('2-intervalles')),
       ('Valeur absolue et distance', D('<p>La <strong>valeur absolue</strong> |a| est la distance entre a et 0. La distance entre deux réels a et b vaut |a − b|.</p>')
         + F('|x − a| ≤ r  ⟺  x ∈ [a − r ; a + r]')
-        + EX('Un intervalle centré', '<p>|x − 3| ≤ 7 signifie que x est à une distance au plus 7 de 3 : x ∈ [−4 ; 10].</p>')),
+        + EX('Un intervalle centré', '<p>|x − 3| ≤ 7 signifie que x est à une distance au plus 7 de 3 : x ∈ [−4 ; 10].</p>') + FIG('2-valeur-absolue')),
       ('Encadrer et arrondir', '<p>Un <strong>encadrement décimal</strong> à 10<sup>−n</sup> près encadre un réel par deux décimaux consécutifs à n chiffres après la virgule. Par exemple 1,41 ≤ √2 < 1,42, car 1,41² = 1,9881 et 1,42² = 2,0164. Un algorithme de <strong>balayage</strong> obtient cet encadrement : on augmente x par pas de 0,01 tant que x² reste inférieur à 2.</p>'
         + MTH('<p>Arrondir à n <strong>chiffres significatifs</strong> : on compte à partir du premier chiffre non nul et on arrondit au dernier chiffre conservé. 0,004 618 ≈ 0,0046 avec 2 chiffres significatifs.</p>')
         + W('Les zéros de tête', '<p>Dans 0,004 618, les zéros situés avant le 4 ne sont pas significatifs.</p>')),
@@ -112,16 +112,16 @@ LESSONS2 = [
     steps=['Fais une figure et place les vecteurs.', 'Traduis la relation vectorielle en coordonnées.', 'Calcule abscisses et ordonnées séparément.'],
     sections=[
       ('Vecteurs et translations', D('<p>La translation qui transforme A en B est associée au <strong>vecteur</strong> <span class="vec"><span class="sr-only">vecteur </span>AB</span>, défini par sa direction (celle de la droite (AB)), son sens (de A vers B) et sa <strong>norme</strong> (la longueur AB).</p>')
-        + '<p><span class="vec"><span class="sr-only">vecteur </span>AB</span> = <span class="vec"><span class="sr-only">vecteur </span>CD</span> si et seulement si ABDC est un parallélogramme (éventuellement aplati). Le vecteur nul <span class="vec"><span class="sr-only">vecteur </span>0</span> est associé à la translation qui ne déplace aucun point.</p>'),
+        + '<p><span class="vec"><span class="sr-only">vecteur </span>AB</span> = <span class="vec"><span class="sr-only">vecteur </span>CD</span> si et seulement si ABDC est un parallélogramme (éventuellement aplati). Le vecteur nul <span class="vec"><span class="sr-only">vecteur </span>0</span> est associé à la translation qui ne déplace aucun point.</p>' + FIG('2-vecteurs-egaux')),
       ('Somme et relation de Chasles', F('<span class="vec"><span class="sr-only">vecteur </span>AB</span> + <span class="vec"><span class="sr-only">vecteur </span>BC</span> = <span class="vec"><span class="sr-only">vecteur </span>AC</span>')
-        + '<p>Pour additionner deux vecteurs, on les place « bout à bout ». Le produit d’un vecteur <span class="vec"><span class="sr-only">vecteur </span>u</span> non nul par un réel k a la même direction, le même sens si k > 0, le sens contraire si k < 0, et une norme multipliée par |k|.</p>'
+        + '<p>Pour additionner deux vecteurs, on les place « bout à bout ». Le produit d’un vecteur <span class="vec"><span class="sr-only">vecteur </span>u</span> non nul par un réel k a la même direction, le même sens si k > 0, le sens contraire si k < 0, et une norme multipliée par |k|.</p>' + FIG('2-chasles')
         + EX('Un parallélogramme', '<p>ABCD est un parallélogramme si et seulement si <span class="vec"><span class="sr-only">vecteur </span>AB</span> = <span class="vec"><span class="sr-only">vecteur </span>DC</span>, ou encore <span class="vec"><span class="sr-only">vecteur </span>AB</span> + <span class="vec"><span class="sr-only">vecteur </span>AD</span> = <span class="vec"><span class="sr-only">vecteur </span>AC</span>.</p>')),
       ('Coordonnées', F('<span class="vec"><span class="sr-only">vecteur </span>AB</span>(x<sub>B</sub> − x<sub>A</sub> ; y<sub>B</sub> − y<sub>A</sub>)')
         + '<p>Si <span class="vec"><span class="sr-only">vecteur </span>u</span>(x ; y) et <span class="vec"><span class="sr-only">vecteur </span>v</span>(x′ ; y′), alors <span class="vec"><span class="sr-only">vecteur </span>u</span> + <span class="vec"><span class="sr-only">vecteur </span>v</span>(x + x′ ; y + y′) et k<span class="vec"><span class="sr-only">vecteur </span>u</span>(kx ; ky).</p>'
-        + EX('Calculer', '<p>A(1 ; −2) et B(4 ; 3) : <span class="vec"><span class="sr-only">vecteur </span>AB</span>(3 ; 5). Avec <span class="vec"><span class="sr-only">vecteur </span>u</span>(2 ; −1) et <span class="vec"><span class="sr-only">vecteur </span>v</span>(3 ; 4) : 2<span class="vec"><span class="sr-only">vecteur </span>u</span> − <span class="vec"><span class="sr-only">vecteur </span>v</span>(1 ; −6).</p>')),
+        + EX('Calculer', '<p>A(1 ; −2) et B(4 ; 3) : <span class="vec"><span class="sr-only">vecteur </span>AB</span>(3 ; 5). Avec <span class="vec"><span class="sr-only">vecteur </span>u</span>(2 ; −1) et <span class="vec"><span class="sr-only">vecteur </span>v</span>(3 ; 4) : 2<span class="vec"><span class="sr-only">vecteur </span>u</span> − <span class="vec"><span class="sr-only">vecteur </span>v</span>(1 ; −6).</p>') + FIG('2-coordonnees')),
       ('Norme et milieu', F('‖<span class="vec"><span class="sr-only">vecteur </span>u</span>‖ = √(x² + y²)   I((x<sub>A</sub> + x<sub>B</sub>)/2 ; (y<sub>A</sub> + y<sub>B</sub>)/2)')
         + '<p>Ces formules sont valables dans un repère orthonormé. La norme découle du théorème de Pythagore. I est le milieu de [AB] si et seulement si <span class="vec"><span class="sr-only">vecteur </span>AI</span> = <span class="vec"><span class="sr-only">vecteur </span>IB</span>.</p>'
-        + EX('Une distance', '<p>A(−1 ; 2) et B(5 ; 10) : AB = √(6² + 8²) = 10 et le milieu est I(2 ; 6).</p>')),
+        + EX('Une distance', '<p>A(−1 ; 2) et B(5 ; 10) : AB = √(6² + 8²) = 10 et le milieu est I(2 ; 6).</p>') + FIG('2-norme-milieu')),
     ],
     quiz1=(2, 'Chasles', 'Que vaut <span class="vec"><span class="sr-only">vecteur </span>AB</span> + <span class="vec"><span class="sr-only">vecteur </span>BC</span> + <span class="vec"><span class="sr-only">vecteur </span>CA</span> ?', ['<span class="vec"><span class="sr-only">vecteur </span>AC</span>', 'le vecteur nul', '2<span class="vec"><span class="sr-only">vecteur </span>AB</span>'], 'b', 'Enchaîne les vecteurs.', '<span class="vec"><span class="sr-only">vecteur </span>AB</span> + <span class="vec"><span class="sr-only">vecteur </span>BC</span> = <span class="vec"><span class="sr-only">vecteur </span>AC</span>, et <span class="vec"><span class="sr-only">vecteur </span>AC</span> + <span class="vec"><span class="sr-only">vecteur </span>CA</span> = <span class="vec"><span class="sr-only">vecteur </span>AA</span> = <span class="vec"><span class="sr-only">vecteur </span>0</span>.'),
     quiz2=(3, 'Coordonnées', 'A(2 ; 5) et B(−1 ; 9). Quelles sont les coordonnées de <span class="vec"><span class="sr-only">vecteur </span>AB</span> ?', ['(−3 ; 4)', '(3 ; −4)', '(1 ; 14)'], 'a', 'Arrivée moins départ.', '(−1 − 2 ; 9 − 5) = (−3 ; 4).'),
@@ -140,10 +140,10 @@ LESSONS2 = [
         + F('det(<span class="vec"><span class="sr-only">vecteur </span>u</span>, <span class="vec"><span class="sr-only">vecteur </span>v</span>) = xy′ − x′y')
         + '<p>Dans une base orthonormée, <span class="vec"><span class="sr-only">vecteur </span>u</span>(x ; y) et <span class="vec"><span class="sr-only">vecteur </span>v</span>(x′ ; y′) sont colinéaires si et seulement si det(<span class="vec"><span class="sr-only">vecteur </span>u</span>, <span class="vec"><span class="sr-only">vecteur </span>v</span>) = 0, c’est-à-dire si leurs coordonnées sont proportionnelles.</p>'),
       ('Alignement et parallélisme', '<p>A, B et C sont alignés si et seulement si <span class="vec"><span class="sr-only">vecteur </span>AB</span> et <span class="vec"><span class="sr-only">vecteur </span>AC</span> sont colinéaires. (AB) et (CD) sont parallèles si et seulement si <span class="vec"><span class="sr-only">vecteur </span>AB</span> et <span class="vec"><span class="sr-only">vecteur </span>CD</span> sont colinéaires.</p>'
-        + EX('Trois points', '<p>A(0 ; 1), B(2 ; 5), C(6 ; 13) : <span class="vec"><span class="sr-only">vecteur </span>AB</span>(2 ; 4) et <span class="vec"><span class="sr-only">vecteur </span>AC</span>(6 ; 12), det = 2 × 12 − 6 × 4 = 0 : les points sont alignés.</p>')),
+        + EX('Trois points', '<p>A(0 ; 1), B(2 ; 5), C(6 ; 13) : <span class="vec"><span class="sr-only">vecteur </span>AB</span>(2 ; 4) et <span class="vec"><span class="sr-only">vecteur </span>AC</span>(6 ; 12), det = 2 × 12 − 6 × 4 = 0 : les points sont alignés.</p>') + FIG('2-alignes')),
       ('Distances et nature d’une figure', '<p>Dans un repère orthonormé, AB² = (x<sub>B</sub> − x<sub>A</sub>)² + (y<sub>B</sub> − y<sub>A</sub>)². On compare des carrés de distances pour prouver qu’un triangle est isocèle, ou qu’il est rectangle grâce à la réciproque du théorème de Pythagore.</p>'),
       ('Projeté orthogonal', D('<p>Le <strong>projeté orthogonal</strong> d’un point M sur une droite d est le point H de d tel que (MH) soit perpendiculaire à d. C’est le point de d le plus proche de M : pour tout point P de d, MP ≥ MH.</p>')
-        + fig('Le projeté orthogonal H de M sur la droite d', '<path d="M20 160L300 160" /><path d="M150 40L150 160" stroke-dasharray="5 5" stroke-width="1.5"/><path d="M150 40L240 160" stroke-width="1.2"/><path d="M150 148H162V160" stroke-width="1.5"/>' + txt(150, 30, 'M') + txt(150, 182, 'H') + txt(245, 182, 'P') + txt(290, 150, 'd'))
+        + FIG('2-projete')
         + '<p>Dans le triangle MHP rectangle en H, l’hypoténuse MP est plus longue que MH. On en déduit aussi cos²(α) + sin²(α) = 1 pour un angle aigu α d’un triangle rectangle.</p>'),
     ],
     quiz1=(1, 'Déterminant', 'Que vaut det((2 ; 3), (4 ; 6)) ?', ['0', '24', '−12'], 'a', 'Calcule 2 × 6 − 4 × 3.', '12 − 12 = 0 : les vecteurs sont colinéaires.'),
@@ -163,10 +163,10 @@ LESSONS2 = [
         + '<p>Un point appartient à d si et seulement si ses coordonnées vérifient l’équation.</p>'),
       ('Équation réduite et pente', F('y = mx + p   avec   m = (y<sub>B</sub> − y<sub>A</sub>)/(x<sub>B</sub> − x<sub>A</sub>)')
         + '<p>Toute droite non parallèle à l’axe des ordonnées a une <strong>équation réduite</strong> y = mx + p : m est la <strong>pente</strong> (ou coefficient directeur), p l’ordonnée à l’origine. Le vecteur (1 ; m) dirige la droite. Une droite parallèle à l’axe des ordonnées a une équation x = c.</p>'
-        + EX('Deux points', '<p>A(2 ; 14) et B(5 ; 23) : m = 9/3 = 3 et p = 14 − 3 × 2 = 8. (AB) : y = 3x + 8.</p>')),
-      ('Position de deux droites', '<p>Deux droites d’équations réduites y = mx + p et y = m′x + p′ sont parallèles si et seulement si m = m′ ; sinon, elles sont sécantes. Avec des équations cartésiennes, on compare les vecteurs directeurs à l’aide du déterminant.</p>'),
+        + EX('Deux points', '<p>A(2 ; 14) et B(5 ; 23) : m = 9/3 = 3 et p = 14 − 3 × 2 = 8. (AB) : y = 3x + 8.</p>') + FIG('2-droite-reduite')),
+      ('Position de deux droites', '<p>Deux droites d’équations réduites y = mx + p et y = m′x + p′ sont parallèles si et seulement si m = m′ ; sinon, elles sont sécantes. Avec des équations cartésiennes, on compare les vecteurs directeurs à l’aide du déterminant.</p>' + FIG('2-positions')),
       ('Systèmes linéaires', '<p>Les coordonnées du point d’intersection de deux droites sécantes sont la solution d’un système de deux équations à deux inconnues. On le résout par substitution ou par combinaison.</p>'
-        + EX('Cahiers et stylos', '<p>2x + 6y = 78 et 5x + 4y = 107 : 4 × (1) − 6 × (2) donne −22x = −330, donc x = 15 et y = 8.</p>')
+        + EX('Cahiers et stylos', '<p>2x + 6y = 78 et 5x + 4y = 107 : 4 × (1) − 6 × (2) donne −22x = −330, donc x = 15 et y = 8.</p>') + FIG('2-systeme')
         + W('Vérifier', '<p>On remplace toujours la solution dans les <strong>deux</strong> équations.</p>')),
     ],
     quiz1=(2, 'Une pente', 'Quelle est la pente de la droite 3x − y + 2 = 0 ?', ['3', '−3', '2'], 'a', 'Isole y.', 'y = 3x + 2 : la pente vaut 3.'),
@@ -185,11 +185,11 @@ LESSONS2 = [
       ('Ensemble de définition', '<p>Une fonction f associe à chaque réel x d’un ensemble D un unique réel f(x). D est l’<strong>ensemble de définition</strong>, souvent un intervalle ou une réunion d’intervalles.</p>'
         + EX('Deux contraintes', '<p>f(x) = 1/(x − 6) est définie pour x ≠ 6. g(x) = √(x − 4) est définie pour x ≥ 4, sur [4 ; +∞[.</p>')),
       ('Courbe représentative', D('<p>La courbe de f est l’ensemble des points M(x ; y) tels que x ∈ D et y = f(x). On dit que y = f(x) est une équation de la courbe.</p>')
-        + '<p>Pour savoir si un point est sur la courbe, on calcule l’image de son abscisse et on la compare à son ordonnée.</p>'),
+        + '<p>Pour savoir si un point est sur la courbe, on calcule l’image de son abscisse et on la compare à son ordonnée.</p>' + FIG('2-courbe')),
       ('Parité', D('<p>f définie sur un ensemble symétrique par rapport à 0 est <strong>paire</strong> si f(−x) = f(x) : sa courbe est symétrique par rapport à l’axe des ordonnées. Elle est <strong>impaire</strong> si f(−x) = −f(x) : sa courbe est symétrique par rapport à l’origine.</p>')
-        + EX('Trois cas', '<p>x² + 1 est paire, x³ − 2x est impaire, x² + x n’est ni paire ni impaire (f(1) = 2 et f(−1) = 0).</p>')),
+        + EX('Trois cas', '<p>x² + 1 est paire, x³ − 2x est impaire, x² + x n’est ni paire ni impaire (f(1) = 2 et f(−1) = 0).</p>') + FIG('2-parite')),
       ('Résoudre des équations et inéquations', MTH('<p>Graphiquement, les solutions de f(x) = k sont les abscisses des points de la courbe d’ordonnée k ; celles de f(x) < g(x) sont les abscisses où la courbe de f est sous celle de g. Algébriquement, on se ramène à une forme connue.</p>')
-        + EX('Avec la fonction carré', '<p>x² − 14 = 2 équivaut à x² = 16, soit x = 4 ou x = −4.</p>')),
+        + EX('Avec la fonction carré', '<p>x² − 14 = 2 équivaut à x² = 16, soit x = 4 ou x = −4.</p>') + FIG('2-resoudre')),
       ('Modéliser', '<p>Une fonction traduit la dépendance entre deux grandeurs. L’aire d’un rectangle de périmètre 38 cm et de largeur x est A(x) = x(19 − x), pour x ∈ ]0 ; 19[ : l’ensemble de définition vient du contexte.</p>'),
     ],
     quiz1=(1, 'Domaine', 'Sur quel ensemble est définie x ↦ √(x + 3) ?', ['[−3 ; +∞[', ']−∞ ; −3]', '[3 ; +∞['], 'a', 'Il faut x + 3 ≥ 0.', 'x + 3 ≥ 0 équivaut à x ≥ −3.'),
@@ -206,14 +206,14 @@ LESSONS2 = [
     steps=['Identifie la fonction de référence en jeu.', 'Utilise sa courbe ou son sens de variation.', 'Écris les solutions, en tenant compte de l’ensemble de définition.'],
     sections=[
       ('Fonction carré', '<p>x ↦ x², définie sur ℝ, est décroissante sur ]−∞ ; 0] et croissante sur [0 ; +∞[. Sa courbe est une <strong>parabole</strong> symétrique par rapport à l’axe des ordonnées : la fonction est paire.</p>'
-        + fig('Courbes des fonctions carré (trait plein) et cube (pointillés)', '<path d="M20 160H300M160 190V10" stroke-width="1.2"/><path d="M80 20Q160 300 240 20" stroke-width="2.5"/><path d="M100 190C140 140 150 160 160 160S180 180 220 130" stroke-dasharray="6 4" stroke-width="2"/>' + txt(292, 150, 'x') + txt(172, 20, 'y'))
+        + FIG('2-carre')
         + EX('Une inéquation', '<p>x² ≤ 64 équivaut à −8 ≤ x ≤ 8. x² > 9 équivaut à x < −3 ou x > 3.</p>')
         + MTH('<p>Si 0 ≤ a < b, alors b² − a² = (b − a)(b + a) > 0, donc a² < b² : la fonction carré est croissante sur [0 ; +∞[.</p>', 'Démontrer une variation')),
-      ('Fonction inverse', '<p>x ↦ 1/x, définie sur ℝ privé de 0, est décroissante sur ]−∞ ; 0[ et sur ]0 ; +∞[. Sa courbe est une <strong>hyperbole</strong>, symétrique par rapport à l’origine : la fonction est impaire.</p>'
+      ('Fonction inverse', '<p>x ↦ 1/x, définie sur ℝ privé de 0, est décroissante sur ]−∞ ; 0[ et sur ]0 ; +∞[. Sa courbe est une <strong>hyperbole</strong>, symétrique par rapport à l’origine : la fonction est impaire.</p>' + FIG('2-inverse')
         + W('Pas de décroissance sur ℝ privé de 0', '<p>−1 < 1, et pourtant 1/(−1) = −1 < 1/1 = 1 : la fonction inverse n’est pas décroissante sur ℝ privé de 0 tout entier.</p>')),
-      ('Fonction racine carrée', '<p>x ↦ √x, définie sur [0 ; +∞[, est croissante. Pour x ∈ [0 ; 1], √x ≥ x ; pour x ≥ 1, √x ≤ x.</p>'
+      ('Fonction racine carrée', '<p>x ↦ √x, définie sur [0 ; +∞[, est croissante. Pour x ∈ [0 ; 1], √x ≥ x ; pour x ≥ 1, √x ≤ x.</p>' + FIG('2-racine')
         + EX('Une équation', '<p>√x = 6 pour x = 36 ; √x ≤ 4 pour x ∈ [0 ; 16].</p>')),
-      ('Fonctions cube et valeur absolue', '<p>x ↦ x³, définie sur ℝ, est croissante et impaire. Pour x ≥ 1, x³ ≥ x², et pour x ∈ [0 ; 1], x³ ≤ x².</p>'
+      ('Fonctions cube et valeur absolue', '<p>x ↦ x³, définie sur ℝ, est croissante et impaire. Pour x ≥ 1, x³ ≥ x², et pour x ∈ [0 ; 1], x³ ≤ x².</p>' + FIG('2-cube-abs')
         + '<p>x ↦ |x| vaut x si x ≥ 0 et −x si x < 0 : décroissante sur ]−∞ ; 0], croissante sur [0 ; +∞[, paire. |x − a| = r a pour solutions a − r et a + r.</p>'),
     ],
     quiz1=(1, 'Carré', 'Quelles sont les solutions de x² = 25 ?', ['5', '−5 et 5', '12,5'], 'b', 'Deux nombres opposés ont le même carré.', 'x = 5 ou x = −5.'),
@@ -230,13 +230,13 @@ LESSONS2 = [
     steps=['Établis ou lis le sens de variation sur chaque intervalle.', 'Repère les changements de sens et les bornes.', 'Compare les valeurs pour conclure sur l’extremum.'],
     sections=[
       ('Sens de variation', D('<p>f est <strong>croissante</strong> sur un intervalle I si, pour tous a ≤ b dans I, f(a) ≤ f(b) : elle conserve l’ordre. Elle est <strong>décroissante</strong> si elle inverse l’ordre. Monotone signifie croissante ou décroissante.</p>')
-        + '<p>Un <strong>tableau de variations</strong> résume ces informations avec des flèches et les valeurs remarquables.</p>'),
+        + '<p>Un <strong>tableau de variations</strong> résume ces informations avec des flèches et les valeurs remarquables.</p>' + FIG('2-variation')),
       ('Maximum et minimum', D('<p>M est le <strong>maximum</strong> de f sur I s’il existe a dans I tel que f(a) = M et f(x) ≤ M pour tout x de I. On définit de même un minimum.</p>')
-        + EX('Avec un carré', '<p>f(x) = (x − 2)² − 3 : comme (x − 2)² ≥ 0, f(x) ≥ −3 pour tout x, et f(2) = −3. Le minimum vaut −3, atteint en 2.</p>')),
+        + EX('Avec un carré', '<p>f(x) = (x − 2)² − 3 : comme (x − 2)² ≥ 0, f(x) ≥ −3 pour tout x, et f(2) = −3. Le minimum vaut −3, atteint en 2.</p>') + FIG('2-minimum')),
       ('Fonctions affines', F('f(x) = mx + p   m = (f(b) − f(a))/(b − a)')
         + '<p>m est le <strong>taux d’accroissement</strong> : quand x augmente de 1, f(x) varie de m. f est croissante si m > 0, décroissante si m < 0, constante si m = 0. Sur un intervalle fermé, ses extremums sont aux bornes.</p>'),
       ('Optimisation', '<p>On modélise la grandeur à optimiser par une fonction, puis on cherche son extremum, par le calcul, par lecture graphique ou à l’aide d’un algorithme de balayage ou de dichotomie.</p>'
-        + EX('Le rectangle d’aire maximale', '<p>Périmètre 36 cm : A(x) = x(18 − x) = 81 − (x − 9)². L’aire est maximale, égale à 81 cm², pour x = 9 : c’est un carré.</p>')),
+        + EX('Le rectangle d’aire maximale', '<p>Périmètre 36 cm : A(x) = x(18 − x) = 81 − (x − 9)². L’aire est maximale, égale à 81 cm², pour x = 9 : c’est un carré.</p>') + FIG('2-optimisation')),
     ],
     quiz1=(1, 'Conserver l’ordre', 'f est décroissante sur [0 ; 5]. Que peut-on dire de f(1) et f(4) ?', ['f(1) ≤ f(4)', 'f(1) ≥ f(4)', 'On ne peut rien dire'], 'b', 'Décroissante : l’ordre est inversé.', '1 ≤ 4, donc f(1) ≥ f(4).'),
     quiz2=(2, 'Un extremum', 'Quel est le maximum de f(x) = 5 − (x + 1)² ?', ['5, atteint en −1', '−1, atteint en 5', '5, atteint en 1'], 'a', 'Un carré est positif ou nul.', 'f(x) ≤ 5 et f(−1) = 5.'),
@@ -252,9 +252,9 @@ LESSONS2 = [
     steps=['Factorise l’expression si nécessaire.', 'Étudie le signe de chaque facteur sur une ligne du tableau.', 'Applique la règle des signes, puis lis les solutions.'],
     sections=[
       ('Signe d’une fonction affine', '<p>f(x) = mx + p (m ≠ 0) s’annule en x₀ = −p/m. Elle est du signe de m à droite de x₀ et du signe contraire à gauche.</p>'
-        + '<div class="table-scroll" tabindex="0" role="region" aria-label="Signe de 2x − 6"><table><caption>Signe de 2x − 6</caption><thead><tr><th scope="col">x</th><th scope="col">−∞ ; 3</th><th scope="col">3</th><th scope="col">3 ; +∞</th></tr></thead><tbody><tr><th scope="row">2x − 6</th><td>−</td><td>0</td><td>+</td></tr></tbody></table></div>'),
+        + '<div class="table-scroll" tabindex="0" role="region" aria-label="Signe de 2x − 6"><table><caption>Signe de 2x − 6</caption><thead><tr><th scope="col">x</th><th scope="col">−∞ ; 3</th><th scope="col">3</th><th scope="col">3 ; +∞</th></tr></thead><tbody><tr><th scope="row">2x − 6</th><td>−</td><td>0</td><td>+</td></tr></tbody></table></div>' + FIG('2-signe-affine')),
       ('Tableau de signes d’un produit', MTH('<p>Une ligne par facteur, puis une dernière ligne pour le produit : il est positif quand le nombre de facteurs négatifs est pair.</p>')
-        + EX('Un produit', '<p>(x + 1)(x − 4) est positif sur ]−∞ ; −1] ∪ [4 ; +∞[ et négatif sur [−1 ; 4] : l’inéquation (x + 1)(x − 4) ≥ 0 a pour solutions ]−∞ ; −1] ∪ [4 ; +∞[.</p>')),
+        + EX('Un produit', '<p>(x + 1)(x − 4) est positif sur ]−∞ ; −1] ∪ [4 ; +∞[ et négatif sur [−1 ; 4] : l’inéquation (x + 1)(x − 4) ≥ 0 a pour solutions ]−∞ ; −1] ∪ [4 ; +∞[.</p>') + FIG('2-signe-produit')),
       ('Signe d’un quotient', '<p>A(x)/B(x) a le même signe que A(x)B(x), mais n’est pas défini là où B(x) = 0 : on marque cette <strong>valeur interdite</strong> par une double barre dans le tableau.</p>'
         + W('La valeur interdite', '<p>(x − 2)/(x + 5) > 0 a pour solutions ]−∞ ; −5[ ∪ ]2 ; +∞[ : −5 est toujours exclu, même avec une inégalité large.</p>')),
       ('Interpréter en contexte', '<p>Le signe d’un bénéfice, d’une différence de coûts ou d’une vitesse indique un gain ou une perte, un tarif plus avantageux, un sens de déplacement.</p>'
@@ -302,7 +302,7 @@ LESSONS2 = [
         + EX('12 valeurs', '<p>12 × 0,25 = 3 : Q₁ est la 3e valeur ; 12 × 0,75 = 9 : Q₃ est la 9e.</p>')
         + W('Sensibilité', '<p>Ajouter une valeur très grande modifie beaucoup la moyenne, très peu la médiane.</p>')),
       ('Séries regroupées en classes', '<p>Avec des classes de même amplitude, on représente la série par un histogramme. Le polygone des fréquences cumulées permet de lire une estimation de la médiane et des quartiles. Pour la moyenne, on remplace chaque classe par son centre. La <strong>classe médiane</strong> contient la valeur de rang N/2, repérée avec les effectifs cumulés croissants ; on peut estimer la médiane en supposant la répartition uniforme dans cette classe.</p>'),
-      ('Comparer deux séries', '<p>On compare la position (moyennes ou médianes) et la dispersion (écarts types, ou écarts interquartiles). À moyenne égale, la série de plus petit écart type est la plus homogène.</p>'
+      ('Comparer deux séries', '<p>On compare la position (moyennes ou médianes) et la dispersion (écarts types, ou écarts interquartiles). À moyenne égale, la série de plus petit écart type est la plus homogène.</p>' + FIG('2-stat-dispersion')
         + MTH('<p>Une fonction Python peut renvoyer la moyenne m et l’écart type s d’une série, puis compter la proportion de valeurs dans [m − 2s ; m + 2s].</p>')),
     ],
     quiz1=(1, 'Linéarité', 'Une série a pour moyenne 12 et écart type 3. On ajoute 5 à chaque valeur. Nouvel écart type ?', ['3', '8', '15'], 'a', 'Ajouter une constante décale sans disperser.', 'L’écart type reste 3 ; la moyenne devient 17.'),
@@ -343,7 +343,7 @@ LESSONS2 = [
         + F('P(A ∪ B) + P(A ∩ B) = P(A) + P(B)   P(Ā) = 1 − P(A)')),
       ('Probabilités conditionnelles', D('<p>Si P(A) ≠ 0, la probabilité de B <strong>sachant</strong> A est P_A(B) = P(A ∩ B)/P(A).</p>')
         + '<p>Sur un arbre pondéré, les branches issues de A portent des probabilités conditionnelles, et P(A ∩ B) = P(A) × P_A(B) : on multiplie le long d’un chemin.</p>'
-        + EX('Un arbre', '<p>P(A) = 0,6 et P_A(B) = 0,3 : P(A ∩ B) = 0,18 et P(A ∩ B̄) = 0,6 × 0,7 = 0,42.</p>')),
+        + EX('Un arbre', '<p>P(A) = 0,6 et P_A(B) = 0,3 : P(A ∩ B) = 0,18 et P(A ∩ B̄) = 0,6 × 0,7 = 0,42.</p>') + FIG('2-proba-arbre')),
       ('Ne pas confondre P_A(B) et P_B(A)', '<p>Dans un dépistage, P(positif sachant malade) peut être élevée alors que P(malade sachant positif) est faible, si la maladie est rare : les faux positifs sont nombreux parmi les tests positifs. Un tableau croisé d’effectifs rend le calcul clair.</p>'
         + W('Le dénominateur', '<p>« Sachant positif » : on divise par le nombre total de tests positifs, vrais et faux.</p>')),
       ('Plusieurs épreuves et échantillonnage', '<p>Pour trois épreuves indépendantes de même probabilité de succès p, P(trois succès) = p³ et P(au moins un succès) = 1 − (1 − p)³.</p>'

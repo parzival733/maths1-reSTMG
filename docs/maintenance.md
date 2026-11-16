@@ -86,6 +86,7 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 | `liens_accessibles.py` | Nom accessible unique pour les liens génériques répétés |
 | `typographie.py` | Typographie française du HTML (apostrophes, espaces insécables) |
 | `build_fallbacks.py` | Version de lecture sans JavaScript des séries |
+| `figures_lecons.js`, `figures_lecons.py` | Descriptions des figures des leçons et remplissage des emplacements `data-figure` |
 | `figures.py` | Pont vers `assets/figures.js` pour les pages générées en Python ; lancé seul, écrit la galerie de relecture `.qa-figures/galerie.html` |
 | `build_sujets.py` | Catalogue des sujets à partir de `donnees/sujets.json` |
 | `build_public.py` | Dossier `public/` publié par Cloudflare Pages (pages, assets, icônes, données liées) ; échoue sur un lien local cassé |
@@ -171,6 +172,13 @@ Dans une description, chaque élément porte son nom dans `t` et ses arguments s
 - Accessibilité : `role="img"`, `<title>` et `<figcaption>` identiques, identifiant unique dans la page ; pour un graphique à lire, le champ `description` devient une balise `<desc>` qui donne les valeurs clés.
 - Le moteur applique lui-même la typographie française (espaces insécables, apostrophe) au titre, à la légende et aux étiquettes ; `tools/typographie.py` ne modifie donc plus une figure.
 - **La figure d'un énoncé ne donne jamais la réponse** : elle montre les données (noms, longueurs connues, angle connu), l'inconnue est notée « ? » ; un angle droit ou un parallélisme à démontrer n'est pas codé.
+
+**Ajouter une figure dans une leçon.** Les figures des leçons des quatre niveaux sont décrites dans `tools/figures_lecons.js`, sous un nom qui commence par le niveau (`3-`, `2-`, `1-`, `t-`), avec les nombres du texte qu'elles accompagnent. La leçon ne contient que l'emplacement :
+
+- 3e et Seconde : `+ FIG('3-pythagore')` dans `tools/niveaux/lecons_troisieme.py` ou `lecons_seconde.py`, puis `python3 tools/niveaux/generer.py` ;
+- Première et Terminale : `<figure class="lesson-figure" data-figure="1-second-sommet"></figure>` dans le HTML de la leçon, puis `python3 tools/finalize_site.py`.
+
+`tools/figures_lecons.py`, appelé par `finalize_site.py`, calcule le SVG et remplit chaque emplacement (opération idempotente ; un nom inconnu arrête la normalisation). Ne jamais retoucher le SVG dans la page : modifier la description, puis régénérer. `python3 tools/figures_lecons.py` écrit `.qa-figures/lecons.html`, la galerie de toutes les figures des leçons. `tests/test_figures.py` vérifie que chaque page contient exactement la figure décrite et que chaque figure décrite est placée une seule fois ; `tests/test_figures.js` recalcule sur le SVG les nombres des figures clés (Pythagore, Thalès, angle de 35°, points sur leur courbe).
 
 **Relire les figures.** `python3 tools/figures.py` écrit `.qa-figures/galerie.html` (exemples de chaque famille, thèmes clair et sombre). Après une modification du moteur : regarder la galerie, puis lancer `node tests/test_figures.js` et `python3 tests/test_figures.py`. Les contrôles communs (`tests/figures_controle.js`) mesurent le SVG produit, pas les données internes du moteur : ils servent aussi à vérifier les figures des pages et des exercices.
 

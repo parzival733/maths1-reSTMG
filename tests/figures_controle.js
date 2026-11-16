@@ -35,15 +35,15 @@ function analyser(svg) {
   const re = /<(\/?)([a-zA-Z]+)((?:\s+[\w:-]+="[^"]*")*)\s*(\/?)>/g;
   let m, dernier = 0, texte = null;
   const contexte = () => {
-    let dx = 0, taille = 14, ancre = 'start', panneau = 0;
+    let dx = 0, dy = 0, taille = 14, ancre = 'start', panneau = 0;
     for (const p of pile) {
       const t = /translate\(([-\d.]+)[ ,]([-\d.]+)\)/.exec(attr(p.attrs, 'transform') || '');
-      if (t) dx += num(t[1]);
+      if (t) { dx += num(t[1]); dy += num(t[2]); }
       if (attr(p.attrs, 'font-size')) taille = num(attr(p.attrs, 'font-size'));
       if (attr(p.attrs, 'text-anchor')) ancre = attr(p.attrs, 'text-anchor');
       if (attr(p.attrs, 'data-panneau')) panneau = num(attr(p.attrs, 'data-panneau'));
     }
-    return {dx, taille, ancre, panneau};
+    return {dx, dy, taille, ancre, panneau};
   };
   while ((m = re.exec(svg))) {
     const entre = svg.slice(dernier, m.index);
@@ -62,11 +62,11 @@ function analyser(svg) {
     }
     const c = contexte();
     const donnees = {f: attr(attrs, 'data-f'), pts: attr(attrs, 'data-pts'), panneau: c.panneau, attrs};
-    if (nom === 'line') out.lignes.push(Object.assign(donnees, {x1: num(attr(attrs, 'x1')) + c.dx, y1: num(attr(attrs, 'y1')), x2: num(attr(attrs, 'x2')) + c.dx, y2: num(attr(attrs, 'y2'))}));
-    else if (nom === 'path') out.chemins.push(Object.assign(donnees, {d: attr(attrs, 'd'), points: pointsChemin(attr(attrs, 'd') || '').map(p => [p[0] + c.dx, p[1]])}));
-    else if (nom === 'circle') out.cercles.push(Object.assign(donnees, {x: num(attr(attrs, 'cx')) + c.dx, y: num(attr(attrs, 'cy')), r: num(attr(attrs, 'r'))}));
+    if (nom === 'line') out.lignes.push(Object.assign(donnees, {x1: num(attr(attrs, 'x1')) + c.dx, y1: num(attr(attrs, 'y1')) + c.dy, x2: num(attr(attrs, 'x2')) + c.dx, y2: num(attr(attrs, 'y2')) + c.dy}));
+    else if (nom === 'path') out.chemins.push(Object.assign(donnees, {d: attr(attrs, 'd'), points: pointsChemin(attr(attrs, 'd') || '').map(p => [p[0] + c.dx, p[1] + c.dy])}));
+    else if (nom === 'circle') out.cercles.push(Object.assign(donnees, {x: num(attr(attrs, 'cx')) + c.dx, y: num(attr(attrs, 'cy')) + c.dy, r: num(attr(attrs, 'r'))}));
     else if (nom === 'text') {
-      texte = {x: num(attr(attrs, 'x')) + c.dx, y: num(attr(attrs, 'y')), taille: attr(attrs, 'font-size') ? num(attr(attrs, 'font-size')) : c.taille,
+      texte = {x: num(attr(attrs, 'x')) + c.dx, y: num(attr(attrs, 'y')) + c.dy, taille: attr(attrs, 'font-size') ? num(attr(attrs, 'font-size')) : c.taille,
         ancre: attr(attrs, 'text-anchor') || c.ancre, panneau: c.panneau, sousTitre: !!attr(attrs, 'data-sous-titre'), debut: re.lastIndex};
     }
     if (!auto) pile.push({nom, attrs});
