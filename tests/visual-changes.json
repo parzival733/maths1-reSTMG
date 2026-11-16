@@ -1,9 +1,9 @@
 {
-  "base_sha": "ec7487122f95a61062e5c6d4caef55a2fe497f2c",
+  "base_sha": "3eba43388eba31d44d36240669c6cc8d712cd9e0",
   "allowed": {
     "cours/fonctions.html": {
       "normalization": "page-redesign",
-      "reason": "Figure de la courbe de (x − 2)² − 1 recalculée par le moteur de figures et figure des sécantes ajoutée à la section sur le taux de variation."
+      "reason": "Sans JavaScript, une figure statique de la droite f(x) = x + 1 apparaît sous le graphique à manipuler."
     }
   }
 }

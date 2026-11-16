@@ -141,3 +141,7 @@ body { font-family: var(--font-sans); font-size: var(--text-base); line-height: 
 #practice-result > .action-row a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 /* Corrections : une liste à filets. */
 #practice-corrections { border-top: 1px solid var(--color-line); }
+/* Figures des sujets blancs et des problèmes : mêmes règles que dans les leçons. */
+.lesson-figure { margin: var(--space-4) 0; max-width: 100%; break-inside: avoid; }
+.lesson-figure svg { display: block; width: 100%; max-width: 360px; height: auto; color: var(--color-text); }
+.lesson-figure figcaption { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
