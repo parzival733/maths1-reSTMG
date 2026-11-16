@@ -75,6 +75,8 @@
     $('rapid-card').dataset.template = q.id;
     $('rapid-meta').textContent = `${names[q.level]} · ${A.topics[q.topic]} · ${q.method === 'mental' ? 'De tête' : 'Sur feuille'}`;
     $('rapid-question-title').textContent = q.prompt;
+    const figure = $('rapid-figure'); figure.hidden = !q.figure;
+    figure.innerHTML = q.figure ? window.Figures.html(q.figure,{classe:'exercise-figure',id:'figure-question'}) : '';
     const input = $('rapid-answer'); input.value = s.value; input.readOnly = s.revealed || frozen || paused;
     input.classList.toggle('is-correct', s.correct === true);
     input.classList.toggle('is-wrong', s.correct === false && s.first !== null);
@@ -205,9 +207,11 @@
   function buildSheet() {
     const qlist = $('rapid-paper-questions'), alist = $('rapid-paper-answers'); qlist.replaceChildren(); alist.replaceChildren();
     $('rapid-sheet-meta').textContent = `${names[options.level]} · ${questions.length} questions · série ${options.seed}`;
-    questions.forEach(q => {
+    questions.forEach((q,i) => {
       const li = node('li',''), blank = node('div','Réponse et étapes :'); blank.className = 'rapid-blank';
-      li.append(node('p',q.prompt + (q.unit ? ` Réponse en ${q.unit}.` : '')),blank); qlist.append(li);
+      li.append(node('p',q.prompt + (q.unit ? ` Réponse en ${q.unit}.` : '')));
+      if (q.figure) { const figure = node('div',''); figure.className = 'rapid-figure'; figure.innerHTML = window.Figures.html(q.figure,{classe:'exercise-figure',id:'figure-fiche-'+(i+1)}); li.append(figure); }
+      li.append(blank); qlist.append(li);
       const answer = node('li',''); answer.append(node('strong',`${A.display(q.expected)}${q.unit ? ' '+q.unit : ''}. `),node('span',q.solution)); alist.append(answer);
     });
   }

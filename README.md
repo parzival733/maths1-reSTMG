@@ -29,7 +29,7 @@ Les leçons contiennent 103 figures (géométrie, courbes, arbres, diagrammes) c
 ## Contenu
 
 - **Leçons** : objectifs, encadrés (définition, méthode, formule, exemple, point de vigilance), deux pauses mémoire, application corrigée, routine de révision ; lisibles et imprimables sans JavaScript.
-- **Exercices** : 375 modèles (96 en 3e, 96 en Seconde, 129 en Première, 54 en Terminale), plus 78 modèles de calcul rapide. Chaque nouvelle variante change les nombres et, si besoin, les rangs ou les abscisses demandés, avec un niveau de difficulté stable. Indices progressifs et corrigés Méthode → Calculs → Conclusion.
+- **Exercices** : 375 modèles (96 en 3e, 96 en Seconde, 129 en Première, 54 en Terminale), plus 83 modèles de calcul rapide, dont 5 lectures graphiques (image, antécédent, coefficient directeur, ordonnée à l'origine, changement de signe). Chaque nouvelle variante change les nombres et, si besoin, les rangs ou les abscisses demandés, avec un niveau de difficulté stable. Indices progressifs et corrigés Méthode → Calculs → Conclusion.
 - **Calcul rapide** : séries de 5 à 20 questions sans calculatrice, avec chrono réglable et fiche imprimable ; parcours d'automatismes de 3e, de Seconde, de Première et de Terminale.
 - **Brevet** : format de l'épreuve 2027, sujets de référence officiels et un sujet blanc corrigé (`troisieme/brevet.html`).
 - **Sujets** : 41 annales en PDF, liées chez leurs éditeurs ; deux sujets blancs et des problèmes rédigés, avec corrigés et barèmes.

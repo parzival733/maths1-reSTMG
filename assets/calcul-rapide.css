@@ -205,3 +205,7 @@ html body:not(#_page) :is(#_btn, #rapid-next, #rapid-previous) { background: var
 .rapid-result h3 { margin: 0 0 var(--space-2); font: 600 var(--text-lg)/1.25 var(--font-serif); }
 #rapid-score { margin: 0 0 var(--space-4); font: 400 var(--text-base)/1.4 var(--font-sans); color: var(--color-text-muted); }
 #rapid-review { margin: 0; }
+/* Lectures graphiques : figure sous la question, à l'écran et sur la fiche. */
+.rapid-figure .exercise-figure { margin: var(--space-4) 0; max-width: 100%; break-inside: avoid; }
+.rapid-figure .exercise-figure svg { display: block; width: 100%; max-width: 360px; height: auto; color: var(--color-text); }
+.rapid-figure .exercise-figure figcaption { margin-top: var(--space-2); color: var(--color-text-muted); font-size: var(--text-sm); }
