@@ -537,3 +537,10 @@ html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-wrong {
 /* Liens vers la leçon et le programme, sous le choix du niveau. */
 .interactive-exercise-page > .level-switch + p { margin: var(--space-3) 0 var(--space-5); }
 .interactive-exercise-page > .level-switch + p a { color: var(--color-practice); font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Figures des exercices, calculées par figures.js avec les nombres de la variante :
+   dessin au trait dans la couleur du texte, lisible en mode sombre et à l'impression. */
+.exercise-figure { margin: var(--space-4) 0; max-width: 100%; break-inside: avoid; }
+.exercise-figure svg { display: block; width: 100%; max-width: 360px; height: auto; color: var(--color-text); }
+.exercise-figure.figure-large svg { max-width: 540px; }
+.exercise-figure figcaption { margin-top: var(--space-2); color: var(--color-text-muted); font-size: var(--text-sm); }

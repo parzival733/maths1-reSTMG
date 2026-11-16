@@ -168,4 +168,26 @@ function anglesDroits(a) {
   return a.chemins.filter(c => c.f === 'angle-droit').map(c => Math.abs(angle(c.points[1], c.points[0], c.points[2]) - 90));
 }
 
-module.exports = {analyser, controler, pointsNommes, pointsChemin, distance, angle, ecartDroite, ecartLigne, ecartCourbes, anglesDroits};
+/* Figures d'un exercice à variantes. `F` est le moteur, `e` l'exercice produit, `visible` rend le texte lisible
+   d'un énoncé. Renvoie la liste des défauts : figure invalide, illisible, ou réponse attendue affichée dans la
+   figure de l'énoncé (hors graduations d'un repère) alors qu'elle n'est pas une donnée de l'énoncé. */
+function controlerExercice(F, e, visible) {
+  const defauts = [];
+  for (const cle of ['figure', 'figure_correction']) {
+    if (!e[cle]) continue;
+    let html;
+    try { html = F.html(e[cle], {classe: 'exercise-figure', id: 'figure-' + cle}); } catch (erreur) { defauts.push(cle + ' : ' + erreur.message); continue; }
+    controler(html).forEach(d => defauts.push(cle + ' : ' + d));
+    if (cle !== 'figure' || e[cle].type === 'repere') continue;
+    const enonce = visible(e.statement), textes = analyser(html).textes.map(t => t.texte);
+    for (const champ of e.fields) {
+      if (champ.options) continue;
+      const valeur = String(champ.answer).replace('.', ',').replace('-', '−');
+      if (new RegExp('(^|[^\\d,])' + valeur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^\\d,])').test(enonce)) continue;
+      if (textes.some(t => new RegExp('(^|[^\\d,])' + valeur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^\\d,])').test(t))) defauts.push('la figure de l’énoncé affiche la réponse ' + valeur);
+    }
+  }
+  return defauts;
+}
+
+module.exports = {controlerExercice, analyser, controler, pointsNommes, pointsChemin, distance, angle, ecartDroite, ecartLigne, ecartCourbes, anglesDroits};

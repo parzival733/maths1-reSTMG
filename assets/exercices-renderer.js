@@ -79,13 +79,16 @@
     // Un tableau (tableau de signes ou de variations) n'est pas placé dans un paragraphe.
     const paragraphs = correction.map(p => (/^\s*<(div|table)\b/i.test(p) ? p : '<p>' + p + '</p>')).join('');
     const fields = exercise.fields.map(makeInput).join('');
+    // Figure calculée avec les nombres de la variante : après l'énoncé (données seulement) ou dans le corrigé.
+    const figure = (description, suffixe) => (description && window.Figures
+      ? window.Figures.html(description, {classe: 'exercise-figure', id: 'figure-' + suffixe + '-' + (index + 1)}) : '');
     return '<article class="exercise-block" id="exercice-' + (index + 1) + '">'
       + '<div class="exercise-workspace">'
       + '<section class="exercise-statement"><div class="exercise-head">'
       + '<span class="exercise-number">' + String(index + 1).padStart(2, '0') + '</span>'
       + '<div><p class="exercise-kicker">' + escapeHtml(exercise.level || 'S’entraîner') + '</p>'
       + '<h2>' + escapeHtml(exercise.title) + '</h2></div></div>'
-      + '<p>' + mathify(exercise.statement) + '</p>' + questions + hint + '</section>'
+      + '<p>' + mathify(exercise.statement) + '</p>' + figure(exercise.figure, 'enonce') + questions + hint + '</section>'
       + '<form class="exercise-form" novalidate><h3>Tes réponses</h3>'
       + '<div class="answer-grid two">' + fields + '</div>'
       + '<div class="exercise-actions">'
@@ -94,7 +97,7 @@
       + '<button class="button variant-refresh" type="button" data-action="new-variant" hidden>Nouvelle variante ↻</button>'
       + '</div><p class="exercise-feedback" role="status" aria-live="polite"></p>'
       + '<details class="check"><summary>Voir la correction détaillée</summary>'
-      + paragraphs + '</details></form></div></article>';
+      + paragraphs + figure(exercise.figure_correction, 'corrige') + '</details></form></div></article>';
   }
 
   // Expose le même gabarit pour renouveler une question sans recharger la page.

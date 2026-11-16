@@ -599,7 +599,7 @@
         }
         case 'texte': {
           const p = px([e.x, e.y]), taille = e.taille || TAILLE;
-          if (e.pos != null) T.etiquette(p[0], p[1], e.texte, {dirs: [direction(e.pos)], dist: e.dist == null ? 5 : e.dist, taille});
+          if (e.pos != null) T.etiquette(p[0], p[1], e.texte, {dirs: liste(e.pos), dist: e.dist == null ? 5 : e.dist, taille});
           else T.texte(p[0], p[1] + 0.3 * taille, e.texte, {prio: 6, taille, ancre: e.ancre});
           break;
         }
@@ -1193,8 +1193,11 @@
         for (const c of e.secteurs) {
           const ang = parValeur ? 360 * c.valeur / total : c.angle, r0 = a * Math.PI / 180, mi = a - ang / 2;
           els.push({t: 'segment', a: [0, 0], b: [Math.cos(r0), Math.sin(r0)]});
-          if (e.angles !== false) els.push({t: 'texte', x: 0.6 * Math.cos(mi * Math.PI / 180), y: 0.6 * Math.sin(mi * Math.PI / 180), texte: nb(ang, 1) + '°', taille: PETIT});
-          if (c.nom) els.push({t: 'texte', x: Math.cos(mi * Math.PI / 180), y: Math.sin(mi * Math.PI / 180), texte: c.nom, pos: ((mi % 360) + 360) % 360, taille: PETIT + 1});
+          /* Un secteur étroit n'a pas la place d'accueillir son angle : il est écrit avec le nom, à l'extérieur. */
+          const mesure = c.texte != null ? c.texte : nb(ang, 1) + '°', etroit = ang < 45, mr = mi * Math.PI / 180;
+          if (e.angles !== false && !etroit) els.push({t: 'texte', x: 0.6 * Math.cos(mr), y: 0.6 * Math.sin(mr), texte: mesure, taille: PETIT});
+          const nom = e.angles !== false && etroit ? (c.nom ? c.nom + ' (' + mesure + ')' : mesure) : c.nom;
+          if (nom) els.push({t: 'texte', x: Math.cos(mr), y: Math.sin(mr), texte: nom, pos: [mi, mi + 22, mi - 22, mi + 40, mi - 40], taille: PETIT + 1});
           a -= ang;
         }
         return {type: 'figure', options: Object.assign({marge: 30}, o), elements: els};

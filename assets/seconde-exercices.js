@@ -1446,6 +1446,68 @@
     '2-algorithmique': ['Exécute le programme ligne par ligne en notant les variables.', 'x = 3 puis x = x * 2 + 1 : que vaut x ?', '7', '3 × 2 + 1.']
   };
   const clean = s => V.visible(s).replace(/⟨code⟩/g, '').replace(/\s+/g, ' ').trim();
+  /* ---------- Figures des exercices ----------
+     Chaque figure est calculée avec les données de la variante. La figure de l'énoncé montre
+     les données, jamais la réponse ; `c` est une figure réservée au corrigé (alignement,
+     parallélisme, nature d'un triangle, point cherché). */
+  const FG = window.Figures;
+
+  /* Points nommés lus dans l'énoncé : « A(1 ; −2) » donne A = [1, −2]. La figure reprend ainsi exactement les données affichées. */
+  const pointsDe = texte => {
+    const out = {};
+    for (const m of V.visible(texte).matchAll(/([A-Z]′?)\s*\(\s*([−-]?\d+(?:,\d+)?)\s*;\s*([−-]?\d+(?:,\d+)?)\s*\)/g)) out[m[1]] = [m[2], m[3]].map(t => parseFloat(t.replace('−', '-').replace(',', '.')));
+    return out;
+  };
+  /* Repère orthonormé qui contient l'origine et tous les points donnés, avec une marge d'une unité. */
+  const repereDe = (titre, liste) => {
+    const xs = liste.map(p => p[0]).concat([0]), ys = liste.map(p => p[1]).concat([0]);
+    const etendue = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) + 2, pas = etendue > 16 ? 2 : 1;
+    return FG.repere(titre, {xmin: Math.min(...xs) - 1, xmax: Math.max(...xs) + 1, ymin: Math.min(...ys) - 1, ymax: Math.max(...ys) + 1, pas_x: pas, pas_y: pas, orthonorme: true, hauteur: 300});
+  };
+  const placer = (r, pts, noms) => { noms.forEach(n => r.point(pts[n][0], pts[n][1], n)); return r; };
+  const liste = pts => Object.keys(pts).map(n => `${n}(${fr(pts[n][0])} ; ${fr(pts[n][1])})`).join(', ');
+  const FIGURES = {
+    '2-vecteurs': [
+      (p, ex) => { const pts = pointsDe(ex.statement);
+        return {e: placer(repereDe(`Points ${liste(pts)} et vecteur AB`, [pts.A, pts.B]).vecteur(pts.A[0], pts.A[1], pts.B[0], pts.B[1]), pts, ['A', 'B']).description()}; },
+      null, null,
+      (p, ex) => { const pts = pointsDe(ex.statement), base = titre => placer(repereDe(titre, [pts.A, pts.B]).segment(pts.A[0], pts.A[1], pts.B[0], pts.B[1]), pts, ['A', 'B']);
+        return {e: base(`Points ${liste(pts)} et segment [AB]`).description(),
+          c: base(`Le milieu I du segment [AB]`).point((pts.A[0] + pts.B[0]) / 2, (pts.A[1] + pts.B[1]) / 2, 'I').description()}; },
+      (p, ex) => { const pts = pointsDe(ex.statement), D = [pts.A[0] + pts.C[0] - pts.B[0], pts.A[1] + pts.C[1] - pts.B[1]];
+        const base = titre => placer(repereDe(titre, [pts.A, pts.B, pts.C, D]).segment(pts.A[0], pts.A[1], pts.B[0], pts.B[1]).segment(pts.B[0], pts.B[1], pts.C[0], pts.C[1]), pts, ['A', 'B', 'C']);
+        return {e: base(`Points ${liste(pts)} et segments [AB] et [BC]`).description(),
+          c: base(`Parallélogramme ABCD : les vecteurs AB et DC sont égaux`).segment(pts.C[0], pts.C[1], D[0], D[1], {pointilles: true}).segment(D[0], D[1], pts.A[0], pts.A[1], {pointilles: true}).point(D[0], D[1], 'D').description()}; }
+    ],
+    '2-colinearite': [null,
+      (p, ex) => { const pts = pointsDe(ex.statement);
+        return {c: placer(repereDe(`Points ${liste(pts)} et droite (AB)`, [pts.A, pts.B, pts.C]), pts, ['A', 'B', 'C']).polygone([pts.A, pts.B], {pointilles: true, fin: true}).description()}; },
+      null,
+      (p, ex) => { const pts = pointsDe(ex.statement);
+        return {c: placer(repereDe(`Triangle ABC : ${liste(pts)}`, [pts.A, pts.B, pts.C]).polygone([pts.A, pts.B, pts.C]), pts, ['A', 'B', 'C']).description()}; },
+      ({x, y}) => { const h = (x + y) / 2, cadre = [[x, y], [h, h], [Math.min(x, y) - 1, Math.min(x, y) - 1], [Math.max(x, y) + 1, Math.max(x, y) + 1]];
+        const base = titre => repereDe(titre, cadre).droite_affine(1, 0, {nom: 'Δ'}).point(x, y, 'M');
+        return {e: base(`Droite Δ d’équation y = x et point M(${fr(x)} ; ${fr(y)})`).description(),
+          c: base(`Le projeté orthogonal H de M sur Δ : (MH) est perpendiculaire à Δ`).segment(x, y, h, h, {pointilles: true}).point(h, h, 'H').description()}; },
+      (p, ex) => { const pts = pointsDe(ex.statement);
+        return {c: placer(repereDe(`Droites (AB) et (CD) : ${liste(pts)}`, [pts.A, pts.B, pts.C, pts.D]).segment(pts.A[0], pts.A[1], pts.B[0], pts.B[1]).segment(pts.C[0], pts.C[1], pts.D[0], pts.D[1]), pts, ['A', 'B', 'C', 'D']).description()}; }
+    ],
+    '2-droites': [
+      (p, ex) => { const pts = pointsDe(ex.statement);
+        return {e: placer(repereDe(`Points ${liste(pts)} et droite (AB)`, [pts.A, pts.B]).segment(pts.A[0], pts.A[1], pts.B[0], pts.B[1]), pts, ['A', 'B']).description()}; }
+    ]
+  };
+
+  if (FG) for (const [slug, liste] of Object.entries(FIGURES)) liste.forEach((figure, i) => {
+    if (!figure) return;
+    const modele = models[slug][i];
+    models[slug][i] = Object.assign({}, modele, {build: p => {
+      const exercice = modele.build(p), f = figure(p, exercice) || {};
+      if (f.e) exercice.figure = f.e;
+      if (f.c) exercice.figure_correction = f.c;
+      return exercice;
+    }});
+  });
   for (const [slug, list] of Object.entries(models)) V.register(slug, list);
   window.SecondeExercises = {slugs: Object.keys(models), count: 6};
   window.ExerciseCoaching = {

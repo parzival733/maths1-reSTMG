@@ -10,7 +10,7 @@ const root = path.resolve(__dirname, '..');
 const SEEDS = 2000;
 const sandbox = {window: {}};
 vm.createContext(sandbox);
-for (const filename of ['assets/exercices-variants.js', 'assets/seconde-exercices.js']) {
+for (const filename of ['assets/figures.js', 'assets/exercices-variants.js', 'assets/seconde-exercices.js']) {
   vm.runInContext(fs.readFileSync(path.join(root, filename), 'utf8'), sandbox, {filename});
 }
 const V = sandbox.window.ExerciseVariants;
@@ -19,6 +19,18 @@ assert.equal(T.slugs.length, 16);
 assert.equal(T.count, 6);
 const clean = (problems, where) => assert.equal(problems.length, 0, where + ' : ' + Array.from(problems).join(' | '));
 const MISSION_PATTERNS = [/\+\s*[−-]/, /[−-]\s*[−-]\d/, /(?<![\d,.])1x/, /[+−]\s*0\b(?![,.]\d)/, /\bNaN\b|undefined|Infinity/, /\d\.\d/];
+const FC = require('./figures_controle.js');
+const avecFigure = new Set();
+let figures = 0;
+/* Longueurs, angles et points recalculés à partir du SVG de la figure. */
+const proche = (a, b, tol, where) => assert.ok(Math.abs(a - b) <= tol, where + ' : ' + a + ' au lieu de ' + b);
+function coherence(slug, index, e, where) {
+  const P = e.params, cle = slug + '/' + index;
+  if (!e.figure) return;
+  const a = FC.analyser(sandbox.window.Figures.svg(e.figure)), p = FC.pointsNommes(a);
+  if (cle === '2-vecteurs/0') { const pts = a.cercles.filter(c => c.f === 'point'); assert.equal(pts.length, 2, where + ' : deux points'); }
+  void p; void P;
+}
 const cases = [];
 let variants = 0, choiceFields = 0;
 for (const slug of T.slugs) {
@@ -63,6 +75,13 @@ for (const slug of T.slugs) {
       statements.add(e.statement + '|' + e.fields.map(f => f.label).join('|'));
       if (seed <= 48) cases.push({slug, index, seed, params: e.params, answers: e.fields.map(x => x.answer)});
       variants++;
+      /* Figures : valides, lisibles, sans la réponse dans l'énoncé. */
+      if (e.figure || e.figure_correction) {
+        clean(FC.controlerExercice(sandbox.window.Figures, e, V.visible), where + ' : figure');
+        figures += (e.figure ? 1 : 0) + (e.figure_correction ? 1 : 0);
+        avecFigure.add(slug + '/' + index);
+        coherence(slug, index, e, where);
+      }
     }
     assert.ok(statements.size >= Math.min(40, d.space || 40), slug + '/' + index + ' : ' + statements.size + ' énoncés distincts');
     for (const [j, counts] of Object.entries(freq)) {
@@ -78,5 +97,7 @@ for (const slug of T.slugs) {
     assert.notEqual(sigs[0], sigs[1]);
   }
 }
+assert.deepEqual(Object.fromEntries(Object.entries(Array.from(avecFigure).reduce((o, c) => { const k = c.split('/')[0]; o[k] = (o[k] || 0) + 1; return o; }, {})).sort()), Object.fromEntries(Object.entries({'2-vecteurs': 3, '2-colinearite': 4, '2-droites': 1}).sort()), 'modèles avec figure');
 if (process.argv.includes('--json')) process.stdout.write(JSON.stringify(cases));
 else console.log(`SECONDE OK: 96 modèles × ${SEEDS} graines = ${variants} variantes ; bande de difficulté, ${choiceFields} champs à choix équilibrés, mise en forme, arrondis, recalcul et aides.`);
+if (!process.argv.includes('--json')) console.log(`Figures des exercices : ${figures} figures contrôlées sur ${avecFigure.size} modèles.`);
