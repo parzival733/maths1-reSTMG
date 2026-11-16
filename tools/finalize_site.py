@@ -99,9 +99,6 @@ def main():
         if 'class="menu-toggle"' in text:
             text=text.replace('</title>',f'</title><script src="{base}assets/menu.js"></script>',1)
         # Typographie française du texte produit par JavaScript (tools/typographie.py pour le HTML).
-        # Séries d'exercices : le moteur de figures est chargé avant les modèles, qui décrivent leurs figures.
-        if 'assets/exercices-variants.js' in text and 'assets/figures.js' not in text:
-            text=re.sub(r'([ \t]*)<script src="([^"]*)assets/exercices-variants\.js',lambda m:f'{m.group(1)}<script src="{m.group(2)}assets/figures.js" defer></script>{m.group(1) and chr(10)+m.group(1)}<script src="{m.group(2)}assets/exercices-variants.js',text,count=1)
         if 'assets/typographie.js' not in text:text=text.replace('</head>',f'<script src="{base}assets/typographie.js" defer></script></head>',1)
         text=keep_own_generator(rel,text)
         if template(rel)=='serie' and 'assets/saisie-nombres.js' not in text:
