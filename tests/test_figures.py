@@ -43,11 +43,9 @@ phrase = "Le point d'intersection : A ; B ? « oui » à 40 cm, 12 % et 3 h"
 assert figures.figure_html({'type': 'figure', 'titre': phrase, 'elements': [{'t': 'point', 'nom': 'A', 'x': 0, 'y': 0}]}).count(
     typographie.fix_text(phrase).replace('&', '&amp;')) == 2, 'mêmes règles que tools/typographie.py'
 
-# 3. Figures des pages : identifiants uniques, aucun style intégré, titre et légende identiques.
-#    Les figures écrites avant le moteur gardent un titre sans espaces insécables : la comparaison les ignore.
-def simple(texte):
-    return texte.replace('\u00a0', ' ').replace('\u202f', ' ').replace('\u2019', "'")
-
+# 3. Figures des pages : identifiants uniques, aucun style intégré, titre et légende identiques,
+#    et chaque figure de leçon est exactement celle que décrit tools/figures_lecons.js.
+import figures_lecons  # noqa: E402
 
 pages = sorted(p for p in ROOT.rglob('*.html') if not any(part in ('public', 'node_modules', 'tools') or part.startswith('.') for part in p.relative_to(ROOT).parts))
 total = 0
@@ -55,7 +53,7 @@ for page in pages:
     texte = page.read_text(encoding='utf-8')
     texte = re.sub(r'<noscript[\s\S]*?</noscript>', '', texte)
     ids = re.findall(r'\sid="([^"]+)"', texte)
-    for bloc in re.findall(r'<figure class="(?:lesson|exercise)-figure"[\s\S]*?</figure>', texte):
+    for bloc in re.findall(r'<figure class="(?:lesson|exercise)-figure[^>]*>[\s\S]*?</figure>', texte):
         total += 1
         nom = str(page.relative_to(ROOT))
         svg = re.search(r'<svg[\s\S]*?</svg>', bloc)
@@ -64,9 +62,21 @@ for page in pages:
         assert 'role="img"' in svg.group(0), nom + ' : role="img" absent'
         titre = re.search(r'<title id="([^"]+)">([^<]*)</title>', svg.group(0))
         legende = re.search(r'<figcaption>([^<]*)</figcaption>', bloc)
-        assert titre and legende and simple(titre.group(2)) == simple(legende.group(1)), nom + ' : titre et légende différents'
+        assert titre and legende and titre.group(2) == legende.group(1), nom + ' : titre et légende différents'
         assert re.search(r'aria-labelledby="' + re.escape(titre.group(1)) + r'[" ]', svg.group(0)), nom + ' : aria-labelledby'
         assert ids.count(titre.group(1)) == 1, nom + ' : identifiant de figure répété (' + titre.group(1) + ')'
         assert not re.search(r'NaN|Infinity|undefined', svg.group(0)), nom + ' : valeur invalide'
 
-print(f'Figures : pont Python identique au moteur pour {len(exemples)} exemples ; {total} figures contrôlées dans {len(pages)} pages.')
+descriptions = figures_lecons.descriptions()
+placees = {}
+for page in figures_lecons.pages(ROOT):
+    texte = page.read_text(encoding='utf-8')
+    assert figures_lecons.remplir(texte) == texte, f'{page.relative_to(ROOT)} : figures à recalculer (python3 tools/finalize_site.py)'
+    for nom in re.findall(r'data-figure="([^"]+)"', texte):
+        assert nom not in placees, f'figure {nom} placée deux fois ({placees.get(nom)} et {page.name})'
+        placees[nom] = page.name
+        assert nom.split('-')[0] == {'cours': '1', 'terminale/cours': 't', 'troisieme/cours': '3', 'seconde/cours': '2'}[str(page.parent.relative_to(ROOT))], f'{nom} : préfixe de niveau'
+assert set(placees) == set(descriptions), 'figures décrites mais jamais placées : ' + ', '.join(sorted(set(descriptions) - set(placees)))
+assert not list(ROOT.glob('cours/*.html')) or all('class="figure"' not in p.read_text(encoding='utf-8') for p in figures_lecons.pages(ROOT)), 'figure dessinée à la main dans une leçon'
+
+print(f'Figures : pont Python identique au moteur pour {len(exemples)} exemples ; {total} figures contrôlées dans {len(pages)} pages, dont {len(placees)} figures de leçon.')

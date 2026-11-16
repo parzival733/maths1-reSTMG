@@ -472,8 +472,9 @@ body.reading-focus .lesson-content { max-width: 880px; margin-inline: auto; widt
 }
 :where(.terminal-course, .college-course) .course-pagination { display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem; }
 .terminal-course pre { overflow-x:auto; max-width:100%; }
-/* Figures des leçons de 3e : dessin au trait dans la couleur du texte, lisible en mode sombre. */
-.lesson-figure { margin: var(--space-4) 0; max-width: 100%; }
+/* Figures des leçons, calculées par figures.js : dessin au trait dans la couleur du texte, lisible en mode sombre et à l'impression. */
+.lesson-figure { margin: var(--space-4) 0; max-width: 100%; break-inside: avoid; }
+.lesson-figure.figure-large svg { max-width: 540px; }
 .lesson-figure svg { display:block; width:100%; max-width:360px; height:auto; color: var(--color-text); }
 .lesson-figure figcaption { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
 /* Cartes de choix des pauses mémoire, adaptées au toucher. */

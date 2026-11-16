@@ -11,6 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 ORIGIN='https://mathstmgdls.pages.dev'
 from navigation_simple import apply as simplify_navigation, ALIASES
 from lecons import apply as apply_lessons
+from figures_lecons import apply as apply_figures
 from typographie import apply as apply_typography
 from liens_accessibles import apply as apply_link_names
 from gabarits import apply as apply_templates
@@ -68,6 +69,7 @@ def update_style_policy():
 def main():
     simplify_navigation(ROOT)
     apply_lessons(ROOT)
+    apply_figures(ROOT)
     urls=[]
     for path in sorted(ROOT.rglob('*.html')):
         if any(p.startswith('.') or p in ('docs', 'public') for p in path.relative_to(ROOT).parts):continue

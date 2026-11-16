@@ -149,6 +149,8 @@
   const unite = v => { const l = Math.hypot(v[0], v[1]) || 1; return [v[0] / l, v[1] / l]; };
   const chevauche = (a, b) => a[0] < b[2] + 1 && b[0] < a[2] + 1 && a[1] < b[3] + 0.5 && b[1] < a[3] + 0.5;
 
+  const arcPoints = (c, r, a1, a2, n) => { const out = []; for (let i = 0; i <= n; i++) { const a = a1 + (a2 - a1) * i / n; out.push([c[0] + r * Math.cos(a), c[1] + r * Math.sin(a)]); } return out; };
+
   function couper(x1, y1, x2, y2, a, b, c, d) {
     let t0 = 0, t1 = 1;
     const dx = x2 - x1, dy = y2 - y1;
@@ -199,6 +201,8 @@
     return ROSE[pos] || null;
   }
   const liste = pos => (Array.isArray(pos) ? pos : [pos]).map(direction);
+  /* Position imposée (une valeur) ou préférences suivies des autres directions (une liste). */
+  const places = (pos, defaut) => (pos == null ? defaut : Array.isArray(pos) ? liste(pos).concat(HUIT) : [direction(pos)]);
   function autour(pref) {
     const tri = HUIT.map((d, i) => [d, d[0] * pref[0] + d[1] * pref[1], i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map(t => t[0]);
     return [pref].concat(tri);
@@ -508,6 +512,7 @@
         case 'arc_cercle': { const c = Q(e.centre); T.arc(c[0], c[1], e.rayon * k, e.rayon * k, e.debut * Math.PI / 180, e.fin * Math.PI / 180, trait(e)); break; }
         case 'ellipse': {
           const c = Q(e.centre), rx = e.rx * k, ry = e.ry * k;
+          if (e.plein) T.fond(arcPoints(c, 1, 0, 2 * Math.PI, 36).map(p => [c[0] + (p[0] - c[0]) * rx, c[1] + (p[1] - c[1]) * ry]), typeof e.plein === 'number' ? e.plein : 0.12);
           if (e.arriere) { T.arc(c[0], c[1], rx, ry, Math.PI, 2 * Math.PI, trait(e)); T.arc(c[0], c[1], rx, ry, 0, Math.PI, {t: TIRETS, e: 1.2}); }
           else { T.arc(c[0], c[1], rx, ry, 0, Math.PI, trait(e)); T.arc(c[0], c[1], rx, ry, Math.PI, 2 * Math.PI, trait(e)); }
           break;
@@ -730,7 +735,7 @@
     const dedans = y => y >= ymin - 1e-9 && y <= ymax + 1e-9;
     const coupeMath = (x1, y1, x2, y2) => couper(x1, y1, x2, y2, xmin, ymin, xmax, ymax);
     const segment = (x1, y1, x2, y2, opt) => { const c = coupeMath(x1, y1, x2, y2); if (c) T.ligne(X(c[0]), Y(c[1]), X(c[2]), Y(c[3]), opt); return c; };
-    const nommer = (p, texte, e) => T.etiquette(p[0], p[1], texte, {dirs: e && e.pos != null ? [direction(e.pos)] : [ROSE.no, ROSE.se, ROSE.n, ROSE.s, ROSE.ne, ROSE.so, ROSE.o, ROSE.e], dist: 5, taille: PETIT + 1, c: e && e.couleur});
+    const nommer = (p, texte, e) => T.etiquette(p[0], p[1], texte, {dirs: places(e && e.pos, [ROSE.no, ROSE.se, ROSE.n, ROSE.s, ROSE.ne, ROSE.so, ROSE.o, ROSE.e]), dist: 5, taille: PETIT + 1, c: e && e.couleur});
     const surAxeX = (x, texte) => T.texte(X(x), ay + 15, texte == null ? nb(x) : texte, {prio: 3, taille: PETIT, repli: [0, 13]});
     const surAxeY = (y, texte) => T.texte(ax - 6, Y(y) + 4, texte == null ? nb(y) : texte, {prio: 3, taille: PETIT, ancre: 'end', cede: true});
     const tirets = {e: 1.2, t: '4 3'};
@@ -791,7 +796,7 @@
           const p = [X(e.x), Y(e.y)];
           if (e.creux) T.cercle(p[0], p[1], 3, {e: 1.4, f: 'point'});
           else T.disque(p[0], p[1], 2.8, {f: 'point', c: e.couleur});
-          if (e.nom) T.etiquette(p[0], p[1], e.nom, {dirs: e.pos != null ? [direction(e.pos)] : HUIT, dist: 4});
+          if (e.nom) T.etiquette(p[0], p[1], e.nom, {dirs: places(e.pos, HUIT), dist: 4});
           break;
         }
         case 'nuage': {
@@ -807,7 +812,7 @@
           const p = [X(e.x), Y(e.y)];
           T.cercle(p[0], p[1], 4.5, {e: 2, f: 'point-moyen'});
           T.disque(p[0], p[1], 1.6, {f: 'point'});
-          T.etiquette(p[0], p[1], e.nom || 'G', {dirs: e.pos != null ? [direction(e.pos)] : HUIT, dist: 6});
+          T.etiquette(p[0], p[1], e.nom || 'G', {dirs: places(e.pos, HUIT), dist: 6});
           break;
         }
         case 'lecture': {
@@ -944,7 +949,7 @@
     const lignes = 1 + Math.max.apply(null, [0].concat(els.map(e => e.ligne || 0)));
     const g = m[0] + 10, d = T.w - m[2] - 14;
     const X = x => g + (x - min) * (d - g) / (max - min);
-    const yL = i => T.h / 2 + (i - (lignes - 1) / 2) * 50 + 2;
+    const yL = i => T.h / 2 + (i - (lignes - 1) / 2) * 58 + 2;
     const dec = decimales(pas);
     for (let i = 0; i < lignes; i++) {
       const y = yL(i);
@@ -954,7 +959,7 @@
       const saut = Math.max(1, Math.ceil(large / (pas * (d - g) / (max - min))));
       for (const v of gr) {
         T.ligne(X(v), y - 3, X(v), y + 3, {e: 1.2, leger: true});
-        if (Math.round(v / pas) % saut === 0) T.texte(X(v), y + 17, nb(v, dec), {prio: 1, souple: true, taille: PETIT});
+        if (o.graduations !== false && Math.round(v / pas) % saut === 0) T.texte(X(v), y + 17, nb(v, dec), {prio: 1, souple: true, taille: PETIT});
       }
       if (o.noms_lignes && o.noms_lignes[i]) T.texte(g - 10, y - 16, o.noms_lignes[i], {prio: 6, taille: PETIT + 1, ancre: 'start'});
     }
@@ -969,11 +974,12 @@
     const intervalle = (e, y) => {
       const xa = e.a == null ? g - 10 : X(e.a), xb = e.b == null ? d + 4 : X(e.b);
       T.ligne(xa, y, xb, y, {e: 4, f: 'intervalle'});
-      if (e.a != null) { T.crochet(xa, y, e.ouvert_a ? -1 : 1); if (e.valeurs !== false) valeur(e.a, y); }
-      if (e.b != null) { T.crochet(xb, y, e.ouvert_b ? 1 : -1); if (e.valeurs !== false) valeur(e.b, y); }
+      const tx = e.textes || [];
+      if (e.a != null) { T.crochet(xa, y, e.ouvert_a ? -1 : 1); if (e.valeurs !== false) valeur(e.a, y, tx[0]); }
+      if (e.b != null) { T.crochet(xb, y, e.ouvert_b ? 1 : -1); if (e.valeurs !== false) valeur(e.b, y, tx[1]); }
     };
     const point = (e, y) => {
-      T.disque(X(e.x), y, 3, {f: 'point'});
+      T.disque(X(e.x), y - 7 * (e.empile || 0), 3, {f: 'point'});
       if (e.nom) T.etiquette(X(e.x), y, e.nom, {dirs: [ROSE.n, ROSE.ne, ROSE.no], dist: 6});
       if (e.valeur !== false) valeur(e.x, y, typeof e.valeur === 'string' ? e.valeur : null);
     };
@@ -1076,6 +1082,7 @@
           break;
         }
         case 'point': cree([e.x, e.y, e.z], e.nom, {pos: e.pos, marque: e.marque, muet: e.muet}); break;
+        case 'ellipse': out.push(Object.assign({}, e, {centre: ref(e.centre), ry: e.ry == null ? 0.3 * e.rx : e.ry})); break;
         case 'texte': { const p = projeter([e.x, e.y, e.z]); out.push({t: 'texte', x: p[0], y: p[1], texte: e.texte, pos: e.pos}); break; }
         case 'polygone': out.push(Object.assign({}, e, {points: e.points.map(ref)})); break;
         default: {
@@ -1128,7 +1135,6 @@
   }
 
   /* ---------- Diagrammes statistiques ---------- */
-  const arcPoints = (c, r, a1, a2, n) => { const out = []; for (let i = 0; i <= n; i++) { const a = a1 + (a2 - a1) * i / n; out.push([c[0] + r * Math.cos(a), c[1] + r * Math.sin(a)]); } return out; };
   const plafond = (v, pas) => Math.ceil(v / pas - 1e-9) * pas;
 
   function statistiquesVers(desc) {
@@ -1202,6 +1208,7 @@
           A_seul: arcPoints(cA, r, th, 2 * PI - th, 2 * N).concat(arcPoints(cB, r, PI + th, PI - th, N)),
           B_seul: arcPoints(cB, r, -(PI - th), PI - th, 2 * N).concat(arcPoints(cA, r, th, -th, N))};
         if (e.zone === 'hors') els.push({t: 'polygone', points: cadre, trou: union, plein: 0.16, sans_contour: true});
+        else if (e.zone === 'hors_a') els.push({t: 'polygone', points: cadre, trou: zones.A, plein: 0.16, sans_contour: true});
         else if (zones[e.zone]) els.push({t: 'polygone', points: zones[e.zone], plein: 0.16, sans_contour: true});
         els.push({t: 'polygone', points: cadre}, {t: 'cercle', centre: cA, rayon: r}, {t: 'cercle', centre: cB, rayon: r});
         els.push({t: 'texte', x: cA[0] - 0.75, y: 0.75, texte: e.nom_a || 'A', pos: 'no', dist: 1}, {t: 'texte', x: cB[0] + 0.75, y: 0.75, texte: e.nom_b || 'B', pos: 'ne', dist: 1});
@@ -1272,7 +1279,7 @@
     const o = desc.options || {};
     let w = 320, h = 200;
     switch (desc.type) {
-      case 'droite_numerique': h = 96 + 50 * Math.max.apply(null, [0].concat((desc.elements || []).map(e => e.ligne || 0))); break;
+      case 'droite_numerique': h = 96 + 58 * Math.max.apply(null, [0].concat((desc.elements || []).map(e => e.ligne || 0))); break;
       case 'arbre': { const r = {enfants: desc.niveaux || []}; h = Math.max(110, feuillesDe(r) * 30 + 44); w = profondeur(r) > 2 ? 400 : 320; break; }
       case 'pascal': w = Math.max(320, (o.n + 1) * 30 + 120); h = (o.n + 1) * 24 + 24; break;
       case 'statistiques': { const e = (desc.elements || [])[0]; if (e && e.t === 'boite') h = (e.boites || [e]).length === 1 ? 120 : 170; if (e && e.t === 'diagramme_venn') h = 210; break; }
@@ -1307,16 +1314,16 @@
   function assembler(desc, id) {
     let w, h, corps;
     if (desc.type === 'groupe') {
-      const toiles = desc.figures.map(construire), ecart = 12, sous = desc.figures.some(f => f.titre);
-      const haut = Math.max.apply(null, toiles.map(t => t.h));
-      let x = 0;
+      const toiles = desc.figures.map(construire), ecart = 12, sous = desc.figures.some(f => f.titre), vertical = !!(desc.options && desc.options.vertical);
+      const haut = Math.max.apply(null, toiles.map(t => t.h)), large = Math.max.apply(null, toiles.map(t => t.w));
+      let x = 0, y = 0;
       corps = '';
       toiles.forEach((t, i) => {
-        corps += '<g data-panneau="' + (i + 1) + '" transform="translate(' + P(x) + ' 0)">' + t.corps() + '</g>';
-        if (desc.figures[i].titre) corps += '<text x="' + P(x + t.w / 2) + '" y="' + P(haut + 13) + '" fill="currentColor" font-size="' + (PETIT + 1) + '" text-anchor="middle" data-sous-titre="' + (i + 1) + '">' + ech(typo(desc.figures[i].titre)) + '</text>';
-        x += t.w + ecart;
+        corps += '<g data-panneau="' + (i + 1) + '" transform="translate(' + P(x) + ' ' + P(y) + ')">' + t.corps() + '</g>';
+        if (desc.figures[i].titre) corps += '<text x="' + P(x + t.w / 2) + '" y="' + P((vertical ? y + t.h : haut) + 13) + '" fill="currentColor" font-size="' + (PETIT + 1) + '" text-anchor="middle" data-sous-titre="' + (i + 1) + '">' + ech(typo(desc.figures[i].titre)) + '</text>';
+        if (vertical) y += t.h + (sous ? 20 : 0) + 4; else x += t.w + ecart;
       });
-      w = x - ecart; h = haut + (sous ? 20 : 0);
+      w = vertical ? large : x - ecart; h = vertical ? y - 4 : haut + (sous ? 20 : 0);
     } else { const t = construire(desc); w = t.w; h = t.h; corps = t.corps(); }
     const titre = ech(typo(desc.titre || ''));
     return '<svg viewBox="0 0 ' + P(w) + ' ' + P(h) + '" width="' + P(w) + '" height="' + P(h) + '" role="img" aria-labelledby="' + id + (desc.description ? ' ' + id + '-d' : '') + '">'
@@ -1326,7 +1333,8 @@
   const identifiant = (desc, o) => (o && o.id) || 'fig-' + empreinte(desc);
   function svg(desc, o) { return assembler(desc, identifiant(desc, o)); }
   function html(desc, o) {
-    return '<figure class="' + ((o && o.classe) || 'lesson-figure') + '">' + svg(desc, o) + '<figcaption>' + ech(typo(desc.titre || '')) + '</figcaption></figure>';
+    const dessin = svg(desc, o), large = parseFloat(/viewBox="0 0 ([\d.]+)/.exec(dessin)[1]) > 340;
+    return '<figure class="' + ((o && o.classe) || 'lesson-figure') + (large ? ' figure-large' : '') + '"' + (o && o.nom ? ' data-figure="' + ech(o.nom) + '"' : '') + '>' + dessin + '<figcaption>' + ech(typo(desc.titre || '')) + '</figcaption></figure>';
   }
 
   /* ---------- Constructeurs : Figures.repere('Titre', {…}).courbe('x^2').point(2, 4, 'A').html() ---------- */
@@ -1350,7 +1358,7 @@
     droite_numerique: {point: ['x', 'nom'], intervalle: ['a', 'b'], distance: ['a', 'b', 'texte'], centre_rayon: ['a', 'r'], texte: ['x', 'texte']},
     espace: {
       pave: ['L', 'l', 'h'], cube: ['a'], pyramide_carree: ['c', 'h'], cylindre: ['r', 'h'], cone: ['r', 'h'], boule: ['r'], section_pyramide: ['c', 'h', 'k'],
-      point: ['nom', 'x', 'y', 'z'], segment: ['a', 'b'], polygone: ['points'], cote: ['a', 'b', 'texte'], angle_droit: ['sommet', 'p', 'q'], texte: ['x', 'y', 'z', 'texte']
+      point: ['nom', 'x', 'y', 'z'], segment: ['a', 'b'], polygone: ['points'], ellipse: ['centre', 'rx', 'ry'], cote: ['a', 'b', 'texte'], cote_fleche: ['a', 'b', 'texte'], angle_droit: ['sommet', 'p', 'q'], texte: ['x', 'y', 'z', 'texte']
     },
     statistiques: {
       diagramme_barres: ['categories', 'valeurs'], diagramme_batons: ['valeurs', 'probabilites'], histogramme: ['bornes', 'effectifs'],
@@ -1387,6 +1395,6 @@
     arbre: (titre, niveaux, options) => sorties({type: 'arbre', titre, niveaux, options: options || {}}),
     pascal: (titre, n, options) => sorties({type: 'pascal', titre, options: Object.assign({n}, options || {})}),
     programme_trace: (titre, cotes, angle, options) => sorties({type: 'programme_trace', titre, options: Object.assign({cotes, angle}, options || {})}),
-    groupe: (titre, figures) => sorties({type: 'groupe', titre, figures: figures.map(f => (f && typeof f.description === 'function' ? f.description() : f))})
+    groupe: (titre, figures, options) => sorties({type: 'groupe', titre, options: options || {}, figures: figures.map(f => (f && typeof f.description === 'function' ? f.description() : f))})
   };
 });

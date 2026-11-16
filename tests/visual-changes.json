@@ -1,17 +1,9 @@
 {
-  "base_sha": "37a12e4252d2a583ceaab2988ce860dd3d963742",
+  "base_sha": "ec7487122f95a61062e5c6d4caef55a2fe497f2c",
   "allowed": {
-    "lecons.html": {
+    "cours/fonctions.html": {
       "normalization": "page-redesign",
-      "reason": "Sélecteur de niveau sur téléphone : « 1re STMG » et « Tle STMG » affichés, libellés complets conservés pour les lecteurs d’écran."
-    },
-    "annexes/calcul-rapide.html": {
-      "normalization": "page-redesign",
-      "reason": "Deux parcours ajoutés au calcul rapide : automatismes de 3e et de Seconde."
-    },
-    "revisions.html": {
-      "normalization": "page-redesign",
-      "reason": "La révision guidée propose aussi la 3e et la Seconde (choix du niveau et liens vers leurs leçons)."
+      "reason": "Figure de la courbe de (x − 2)² − 1 recalculée par le moteur de figures et figure des sécantes ajoutée à la section sur le taux de variation."
     }
   }
 }
