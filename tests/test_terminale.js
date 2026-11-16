@@ -10,8 +10,8 @@ const root = path.resolve(__dirname, '..');
 const SEEDS = 2000;
 const sandbox = {window: {}};
 vm.createContext(sandbox);
-/* Le socle du moteur de figures suffit aux séries de Terminale (repères, arbres, diagrammes, triangle de Pascal). */
-for (const filename of ['assets/figures.js', 'assets/exercices-variants.js', 'assets/terminale-exercices.js']) {
+/* Les séries de Terminale n'utilisent que le socle du moteur de figures (repères) et sa partie « statistiques et probabilités ». */
+for (const filename of ['assets/figures.js', 'assets/figures-statistiques.js', 'assets/exercices-variants.js', 'assets/terminale-exercices.js', 'assets/terminale-figures.js']) {
   vm.runInContext(fs.readFileSync(path.join(root, filename), 'utf8'), sandbox, {filename});
 }
 const V = sandbox.window.ExerciseVariants;
@@ -21,7 +21,7 @@ assert.equal(T.count, 6);
 const clean = (problems, where) => assert.equal(problems.length, 0, where + ' : ' + Array.from(problems).join(' | '));
 const MISSION_PATTERNS = [/\+\s*[−-]/, /[−-]\s*[−-]\d/, /(?<![\d,.])1x/, /[+−]\s*0\b(?![,.]\d)/, /\bNaN\b|undefined|Infinity/, /\d\.\d/];
 const FC = require('./figures_controle.js');
-const avecFigure = new Set();
+const avecFigure = new Set(), diagrammes = new Set();
 let figures = 0;
 /* Règles propres à chaque modèle, vérifiées sur le SVG : l'énoncé ne montre que les données, le corrigé place les points sur leurs courbes. */
 function coherence(slug, index, e, where) {
@@ -84,6 +84,7 @@ for (const slug of T.slugs) {
         clean(FC.controlerExercice(sandbox.window.Figures, e, V.visible), where + ' : figure');
         figures += (e.figure ? 1 : 0) + (e.figure_correction ? 1 : 0);
         avecFigure.add(slug + '/' + index);
+        if ([e.figure, e.figure_correction].some(d => d && ['statistiques', 'pascal', 'arbre'].indexOf(d.type) >= 0)) diagrammes.add(slug);
         coherence(slug, index, e, where);
       }
     }
@@ -118,6 +119,14 @@ for (const slug of T.slugs) {
   const illustree = Array.from(avecFigure).some(c => c.split('/')[0] === slug);
   assert.equal(/assets\/figures\.js/.test(head), illustree, slug + ' : chargement du moteur de figures');
   if (illustree) assert.ok(head.indexOf('assets/figures.js') < head.indexOf('assets/exercices-variants.js'), slug + ' : figures.js avant les variantes');
+  assert.equal(/assets\/figures-statistiques\.js/.test(head), diagrammes.has(slug), slug + ' : chargement de la partie « statistiques et probabilités » du moteur');
+}
+/* Les figures des séries de statistiques et de probabilités sont dans un fichier à part, chargé par ces seules séries. */
+for (const slug of T.slugs) {
+  const head = fs.readFileSync(path.join(root, 'terminale', 'exercices', slug + '.html'), 'utf8').split('</head>')[0];
+  const attendu = Array.from(avecFigure).some(c => c.split('/')[0] === slug) && ['t-exponentielles', 't-inverse'].indexOf(slug) < 0;
+  assert.equal(/assets\/terminale-figures\.js/.test(head), attendu, slug + ' : chargement de terminale-figures.js');
+  if (attendu) assert.ok(head.indexOf('assets/terminale-exercices.js') < head.indexOf('assets/terminale-figures.js') && head.indexOf('assets/terminale-figures.js') < head.indexOf('assets/exercices-renderer.js'), slug + ' : ordre des scripts');
 }
 if (process.argv.includes('--json')) process.stdout.write(JSON.stringify(cases));
 else console.log(`TERMINALE OK: 54 modèles × ${SEEDS} graines = ${variants} variantes ; bande de difficulté, ${choiceFields} champs à choix équilibrés, mise en forme, arrondis, recalcul, aides et lois binomiales.`);

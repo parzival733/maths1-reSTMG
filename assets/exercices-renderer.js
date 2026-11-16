@@ -128,8 +128,9 @@
   if (!chapter || !Array.isArray(chapter.exercises) || chapter.exercises.length === 0) {
     throw new Error('Le chapitre doit contenir des exercices.');
   }
-  // Première : les énoncés initiaux viennent du JSON de la page ; leurs figures sont
-  // calculées par le modèle correspondant, avec les mêmes paramètres.
+  // Quand les énoncés initiaux arrivent sans figure (JSON écrit dans la page en Première,
+  // figures décrites dans un fichier à part en Terminale), le modèle correspondant les
+  // calcule avec les mêmes paramètres.
   const variants = window.ExerciseVariants;
   if (variants && window.Figures && typeof variants.count === 'function' && typeof variants.original === 'function'
     && variants.count(chapter.slug) === chapter.exercises.length) {

@@ -225,7 +225,7 @@
   },
   "assets/terminale-exercices.js": {
     "part": "file",
-    "sha256": "6552ffe6bdaa1e4d4357119c3627493a5d43068d36b0055ad61735d4a996af2a"
+    "sha256": "ca8d840a32674e77b42c8f22dfad0ecdc34b24f36d0e29770ff32ea01000ffda"
   },
   "assets/apprentissage.js": {
     "part": "file",
@@ -277,7 +277,7 @@
   },
   "assets/exercices-renderer.js": {
     "part": "file",
-    "sha256": "c3b8a14c0a7967c54f61cd6497ea20b9e2bde000fb4dc64d6b81c270909de5ad"
+    "sha256": "ec72c16ece9b0b72f646811ceb546f27686e1ca4aeed8c6a529344d2538117d6"
   },
   "assets/coaching-general.js": {
     "part": "file",

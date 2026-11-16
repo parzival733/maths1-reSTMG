@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def main():
     script="""const fs=require('fs'),vm=require('vm');const s={window:{},console};vm.createContext(s);
-    for(const f of ['figures.js','figures-geometrie.js','exercices-variants.js','terminale-exercices.js'])vm.runInContext(fs.readFileSync('assets/'+f,'utf8'),s);
+    for(const f of ['figures.js','figures-statistiques.js','figures-geometrie.js','exercices-variants.js','terminale-exercices.js','terminale-figures.js'])vm.runInContext(fs.readFileSync('assets/'+f,'utf8'),s);
     const fig=(d,id)=>d?s.window.Figures.html(d,{classe:'exercise-figure',id}):'';
     const out={};for(const slug of s.window.TerminaleExercises.slugs)out[slug]=Array.from({length:6},(_,i)=>{const e=s.window.ExerciseVariants.original(slug,i);return Object.assign({},e,{figure:fig(e.figure,'lecture-enonce-'+(i+1)),figure_correction:fig(e.figure_correction,'lecture-corrige-'+(i+1))});});
     process.stdout.write(JSON.stringify(out));"""
@@ -17,7 +17,7 @@ def main():
     lycee=json.loads(subprocess.check_output(['node','-e',script.replace('terminale-exercices.js','seconde-exercices.js').replace('TerminaleExercises','SecondeExercises')],cwd=ROOT,text=True))
     # Première : les énoncés viennent du JSON de chaque page ; les figures de la variante 1 sont calculées par les modèles.
     premiere=json.loads(subprocess.check_output(['node','-e',"""const fs=require('fs'),vm=require('vm');const s={window:{},console};vm.createContext(s);
-    for(const f of ['figures.js','exercices-variants.js','variants-fonctions.js','variants-suites.js','variants-analyse.js','variants-probabilites.js','variants-reperes.js','variants-donnees.js'])vm.runInContext(fs.readFileSync('assets/'+f,'utf8'),s);
+    for(const f of ['figures.js','figures-statistiques.js','exercices-variants.js','variants-fonctions.js','variants-suites.js','variants-analyse.js','variants-probabilites.js','variants-reperes.js','variants-donnees.js'])vm.runInContext(fs.readFileSync('assets/'+f,'utf8'),s);
     const V=s.window.ExerciseVariants,fig=(d,id)=>d?s.window.Figures.html(d,{classe:'exercise-figure',id}):'';
     const out={};for(const slug of V.slugs())out[slug]=Array.from({length:V.count(slug)},(_,i)=>{const e=V.original(slug,i);return {figure:fig(e.figure,'lecture-enonce-'+(i+1)),figure_correction:fig(e.figure_correction,'lecture-corrige-'+(i+1))};});
     process.stdout.write(JSON.stringify(out));"""],cwd=ROOT,text=True))

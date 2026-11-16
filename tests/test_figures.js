@@ -39,14 +39,21 @@ function hasard(graine) {
   vm.createContext(bac);
   vm.runInContext(fs.readFileSync(path.join(ROOT, 'assets', 'figures.js'), 'utf8'), bac, {filename: 'figures.js'});
   assert.equal(typeof bac.window.Figures.svg, 'function');
-  /* Le socle seul dessine repères, arbres, diagrammes sur des axes et triangle de Pascal ; il signale la partie manquante pour le reste. */
-  const socle = d => ['repere', 'arbre', 'pascal'].indexOf(d.type) >= 0 || (d.type === 'statistiques' && !/circulaire|venn/.test(d.elements[0].t));
-  for (const exemple of exemples.filter(socle)) assert.equal(bac.window.Figures.svg(exemple), F.svg(exemple), 'socle seul : même SVG dans le navigateur et dans Node');
-  assert.ok(exemples.filter(socle).length >= 10, 'exemples dessinés par le socle seul');
+  /* Le socle seul dessine les repères ; il nomme le fichier manquant pour le reste. */
+  const charger = nom => vm.runInContext(fs.readFileSync(path.join(ROOT, 'assets', nom), 'utf8'), bac, {filename: nom});
+  const identiques = (liste, quoi) => { for (const exemple of liste) assert.equal(bac.window.Figures.svg(exemple), F.svg(exemple), quoi + ' : même SVG dans le navigateur et dans Node'); };
+  const socle = d => d.type === 'repere';
+  const axes = d => socle(d) || d.type === 'arbre' || d.type === 'pascal' || (d.type === 'statistiques' && !/circulaire|venn/.test(d.elements[0].t));
+  identiques(exemples.filter(socle), 'socle seul');
+  assert.ok(exemples.filter(socle).length >= 5, 'exemples dessinés par le socle seul');
   assert.throws(() => bac.window.Figures.svg(exemples.find(d => d.type === 'figure')), /figures-geometrie\.js/, 'géométrie demandée au socle seul');
-  vm.runInContext(fs.readFileSync(path.join(ROOT, 'assets', 'figures-geometrie.js'), 'utf8'), bac, {filename: 'figures-geometrie.js'});
-  for (const exemple of exemples) assert.equal(bac.window.Figures.svg(exemple), F.svg(exemple), 'moteur complet : même SVG dans le navigateur et dans Node');
-  const source = fs.readFileSync(path.join(ROOT, 'assets', 'figures.js'), 'utf8') + fs.readFileSync(path.join(ROOT, 'assets', 'figures-geometrie.js'), 'utf8');
+  assert.throws(() => bac.window.Figures.svg(exemples.find(d => d.type === 'statistiques')), /figures-statistiques\.js/, 'diagramme demandé au socle seul');
+  charger('figures-statistiques.js');
+  identiques(exemples.filter(axes), 'socle, statistiques et probabilités');
+  assert.ok(exemples.filter(axes).length > exemples.filter(socle).length, 'diagrammes dessinés sans la géométrie');
+  charger('figures-geometrie.js');
+  identiques(exemples, 'moteur complet');
+  const source = ['figures.js', 'figures-statistiques.js', 'figures-geometrie.js'].map(nom => fs.readFileSync(path.join(ROOT, 'assets', nom), 'utf8')).join('');
   assert.ok(!/\beval\s*\(|new Function|Math\.random|Date\.now|\(\?<[=!]/.test(source), 'ni eval, ni aléatoire, ni date, ni lookbehind');
   assert.ok(!/style=|<style|<marker/.test(source), 'aucun attribut style ni marqueur dans le moteur');
 }

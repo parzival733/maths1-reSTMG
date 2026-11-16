@@ -10,9 +10,10 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const SEEDS = 2000;
-/* Le socle du moteur de figures suffit aux séries de Première (repères, arbres, diagrammes). */
+/* Les séries de Première n'utilisent que le socle du moteur de figures (repères) et sa partie « statistiques et probabilités ». */
 const files = [
   'assets/figures.js',
+  'assets/figures-statistiques.js',
   'assets/exercices-variants.js',
   'assets/variants-fonctions.js',
   'assets/fonctions-coaching.js',
@@ -112,7 +113,7 @@ const valuesOf = e => e.fields.map(f => (f.options || f.type ? f.answer : Number
 const decimalsOf = x => { const t = String(Number(Number(x).toFixed(9))); return t.includes('.') ? t.split('.')[1].length : 0; };
 let models = 0, variants = 0, choiceFields = 0;
 const FC = require('./figures_controle.js');
-const avecFigure = new Set();
+const avecFigure = new Set(), diagrammes = new Set();
 let figures = 0;
 /* Règles propres à chaque modèle, vérifiées sur le SVG : l'énoncé ne montre que les données. */
 function coherence(slug, index, e, where) {
@@ -186,6 +187,7 @@ for (const slug of slugs) {
         clean(FC.controlerExercice(sandbox.window.Figures, e, V.visible), where + ' : figure');
         figures += (e.figure ? 1 : 0) + (e.figure_correction ? 1 : 0);
         avecFigure.add(slug + '/' + index);
+        if ([e.figure, e.figure_correction].some(d => d && ['statistiques', 'pascal', 'arbre'].indexOf(d.type) >= 0)) diagrammes.add(slug);
         coherence(slug, index, e, where);
       }
     }
@@ -329,6 +331,7 @@ for (const slug of slugs) {
   const illustree = Array.from(avecFigure).some(c => c.split('/')[0] === slug);
   assert.equal(/assets\/figures\.js/.test(head), illustree, slug + ' : chargement du moteur de figures');
   if (illustree) assert.ok(head.indexOf('assets/figures.js') < head.indexOf('assets/exercices-variants.js'), slug + ' : figures.js avant les variantes');
+  assert.equal(/assets\/figures-statistiques\.js/.test(head), diagrammes.has(slug), slug + ' : chargement de la partie « statistiques et probabilités » du moteur');
   if (slug !== 'fonctions') assert.ok(head.indexOf('assets/variants-') < head.indexOf('assets/exercices-renderer.js'), slug + ' : rendu après les modèles');
 }
 console.log('VARIANTS OK: ' + models + ' modèles × ' + SEEDS + ' graines = ' + variants + ' variantes ; difficulté dans la bande ±20 % à 100 %, '
