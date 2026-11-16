@@ -70,10 +70,10 @@ Tests structurels et mathématiques (Node et Python 3, sans dépendance) :
 
 ```sh
 for f in assets/*.js; do node --check "$f"; done
-for t in test_variants test_rangs test_graphiques test_terminale test_troisieme test_seconde \
+for t in test_variants test_rangs test_graphiques test_figures test_terminale test_troisieme test_seconde \
          test_calcul_rapide test_countdown test_acquis test_parcours test_domaines test_cloture test_safari \
          test_answer_formats; do node tests/$t.js; done
-for t in validate_site test_notation test_typographie test_noms_liens test_terminale test_troisieme \
+for t in validate_site test_notation test_typographie test_noms_liens test_figures test_terminale test_troisieme \
          test_seconde test_calcul_rapide test_evolution test_cloture test_securite; do python3 tests/$t.py; done
 python3 tools/build_public.py
 ```

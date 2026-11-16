@@ -30,6 +30,8 @@ jobs:
           node tests/test_answer_formats.js
           node tests/test_rangs.js
           node tests/test_graphiques.js
+          node tests/test_figures.js
+          python3 tests/test_figures.py
           node tests/test_terminale.js
           python3 tests/test_terminale.py
           node tests/test_troisieme.js
@@ -87,6 +89,7 @@ jobs:
             .qa-cloture/
             .qa-visual/
             .qa-decimal/
+            .qa-figures/
           include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 7
