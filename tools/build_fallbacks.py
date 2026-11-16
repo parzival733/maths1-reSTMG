@@ -8,8 +8,9 @@ ROOT=Path(__file__).resolve().parents[1]
 
 def main():
     script="""const fs=require('fs'),vm=require('vm');const s={window:{},console};vm.createContext(s);
-    for(const f of ['exercices-variants.js','terminale-exercices.js'])vm.runInContext(fs.readFileSync('assets/'+f,'utf8'),s);
-    const out={};for(const slug of s.window.TerminaleExercises.slugs)out[slug]=Array.from({length:6},(_,i)=>s.window.ExerciseVariants.original(slug,i));
+    for(const f of ['figures.js','exercices-variants.js','terminale-exercices.js'])vm.runInContext(fs.readFileSync('assets/'+f,'utf8'),s);
+    const fig=(d,id)=>d?s.window.Figures.html(d,{classe:'exercise-figure',id}):'';
+    const out={};for(const slug of s.window.TerminaleExercises.slugs)out[slug]=Array.from({length:6},(_,i)=>{const e=s.window.ExerciseVariants.original(slug,i);return Object.assign({},e,{figure:fig(e.figure,'lecture-enonce-'+(i+1)),figure_correction:fig(e.figure_correction,'lecture-corrige-'+(i+1))});});
     process.stdout.write(JSON.stringify(out));"""
     terminal=json.loads(subprocess.check_output(['node','-e',script],cwd=ROOT,text=True))
     college=json.loads(subprocess.check_output(['node','-e',script.replace('terminale-exercices.js','troisieme-exercices.js').replace('TerminaleExercises','TroisiemeExercises')],cwd=ROOT,text=True))
@@ -21,10 +22,10 @@ def main():
         exercises=terminal[path.stem] if path.stem.startswith('t-') else college[path.stem] if path.stem.startswith('3-') else lycee[path.stem] if path.stem.startswith('2-') else json.loads(match[1])['exercises']
         blocks=['<noscript data-offline-series><style>#exercise-mounted{display:none}</style><section class="offline-series"><h2>Exercices : version de lecture</h2><p>Travaille sur une feuille. Les variantes et la v\u00e9rification automatique n\u00e9cessitent JavaScript ; les \u00e9nonc\u00e9s initiaux sont reproduits sans modification math\u00e9matique.</p>']
         for i,ex in enumerate(exercises,1):
-            blocks.append('<section class="exam-block"><h3>'+str(i)+'. '+escape(ex['title'])+'</h3><p>'+ex['statement']+'</p>')
+            blocks.append('<section class="exam-block"><h3>'+str(i)+'. '+escape(ex['title'])+'</h3><p>'+ex['statement']+'</p>'+ex.get('figure',''))
             blocks.append('<ol>'+''.join('<li>'+t+'</li>' for t in ex.get('tasks',[]))+'</ol>')
             blocks.append('<p>R\u00e9ponses demand\u00e9es : '+ ' ; '.join(escape(f['label']) for f in ex['fields'])+'.</p>')
-            blocks.append('<details class="offline-solution"><summary>Voir le corrig\u00e9</summary>'+''.join(x if re.match(r'\s*<(div|table)\b',x) else '<p>'+x+'</p>' for x in ex['correction'])+'</details></section>')
+            blocks.append('<details class="offline-solution"><summary>Voir le corrig\u00e9</summary>'+''.join(x if re.match(r'\s*<(div|table)\b',x) else '<p>'+x+'</p>' for x in ex['correction'])+ex.get('figure_correction','')+'</details></section>')
         blocks.append('<p><a href="../cours/'+path.stem+'.html">Revoir la lecon</a></p></section></noscript>')
         text=re.sub(r'<noscript data-offline-series>[\s\S]*?</noscript>','',text)
         # Une seule version de lecture sans JavaScript par série.

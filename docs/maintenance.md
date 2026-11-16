@@ -180,6 +180,16 @@ Dans une description, chaque élément porte son nom dans `t` et ses arguments s
 
 `tools/figures_lecons.py`, appelé par `finalize_site.py`, calcule le SVG et remplit chaque emplacement (opération idempotente ; un nom inconnu arrête la normalisation). Ne jamais retoucher le SVG dans la page : modifier la description, puis régénérer. `python3 tools/figures_lecons.py` écrit `.qa-figures/lecons.html`, la galerie de toutes les figures des leçons. `tests/test_figures.py` vérifie que chaque page contient exactement la figure décrite et que chaque figure décrite est placée une seule fois ; `tests/test_figures.js` recalcule sur le SVG les nombres des figures clés (Pythagore, Thalès, angle de 35°, points sur leur courbe).
 
+**Ajouter une figure dans un exercice à variantes.** Un exercice peut porter deux champs facultatifs : `figure` (affichée après l'énoncé) et `figure_correction` (affichée avec le corrigé). Ce sont des descriptions pour `assets/figures.js`, calculées avec les paramètres de la variante. En 3e et en Seconde, elles sont regroupées à la fin de `assets/troisieme-exercices.js` et `assets/seconde-exercices.js`, dans le tableau `FIGURES` : pour chaque série, une fonction par modèle (ou `null`), qui reçoit les paramètres et l'exercice construit et renvoie `{e: figure d'énoncé, c: figure de corrigé}`. `pointsDe(énoncé)` relit les points affichés (« A(1 ; −2) ») pour que la figure reprenne exactement les données de l'énoncé. `assets/exercices-renderer.js` place la figure dans un `<figure class="exercise-figure">` après le paragraphe d'énoncé, jamais dedans ; `tools/build_fallbacks.py` l'intègre à la version sans JavaScript ; `finalize_site.py` charge `figures.js` avant les modèles sur les pages de séries.
+
+Règles propres aux exercices :
+
+- la figure de l'énoncé montre les données, jamais la réponse : inconnue notée « ? », pas d'angle droit ni de parallélisme codé dans une réciproque, triangle dessiné à l'échelle de ses vraies longueurs ;
+- alignement, parallélisme, nature d'un triangle, point cherché : figure dans le corrigé seulement ;
+- un triangle impossible ou trop plat pour être lisible n'est pas dessiné (la variante garde son énoncé, sans figure) : la bande de difficulté n'est pas modifiée.
+
+`tests/test_troisieme.js` et `tests/test_seconde.js` contrôlent chaque figure sur les 2 000 graines de chaque modèle : SVG valide et dans son cadre, étiquettes sans chevauchement, réponse absente de la figure d'énoncé, longueurs et angles recalculés à partir du SVG, liste des modèles illustrés.
+
 **Relire les figures.** `python3 tools/figures.py` écrit `.qa-figures/galerie.html` (exemples de chaque famille, thèmes clair et sombre). Après une modification du moteur : regarder la galerie, puis lancer `node tests/test_figures.js` et `python3 tests/test_figures.py`. Les contrôles communs (`tests/figures_controle.js`) mesurent le SVG produit, pas les données internes du moteur : ils servent aussi à vérifier les figures des pages et des exercices.
 
 ## Règle des empreintes

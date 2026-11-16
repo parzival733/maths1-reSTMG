@@ -1460,6 +1460,135 @@
     '3-algorithmique': ['Exécute le programme ligne par ligne en notant la valeur des variables.', 'x vaut 4 ; on lui ajoute 3 deux fois. Que vaut x ?', '10', '4 puis 7 puis 10.']
   };
   const clean = s => V.visible(s).replace(/⟨code⟩/g, '').replace(/\s+/g, ' ').trim();
+
+  /* ---------- Figures des exercices ----------
+     Chaque figure est calculée avec les paramètres de la variante. La figure de l'énoncé
+     montre les données, jamais la réponse : l'inconnue est notée « ? », un angle droit ou
+     un parallélisme à démontrer n'est pas codé. `c` est une figure réservée au corrigé. */
+  const FG = window.Figures;
+  const tri = (a, b, c) => { const x = (a * a + b * b - c * c) / (2 * b); return a + b > c && a + c > b && b + c > a ? [x, Math.sqrt(Math.max(0, a * a - x * x))] : null; };
+  const lisible = pts => { /* triangle ni trop plat ni dégénéré */
+    const [A, B, D] = pts, aire = Math.abs((B[0] - A[0]) * (D[1] - A[1]) - (D[0] - A[0]) * (B[1] - A[1])) / 2;
+    const per = Math.hypot(B[0] - A[0], B[1] - A[1]) + Math.hypot(D[0] - B[0], D[1] - B[1]) + Math.hypot(A[0] - D[0], A[1] - D[1]);
+    return aire / (per * per) > 0.012;
+  };
+  const rectangle = (titre, noms, droit, p1, p2, cotes, extra) => { /* triangle rectangle : sommet de l'angle droit, puis les deux autres */
+    if (!lisible([[0, 0], [p1, 0], [0, p2]])) return null;
+    const f = FG.figure(titre, {hauteur: 210}).point(droit, 0, 0).point(noms[0], p1, 0).point(noms[1], 0, p2)
+      .polygone([droit, noms[0], noms[1]]).angle_droit(droit, noms[0], noms[1]);
+    cotes.forEach(c => f.cote(c[0], c[1], c[2]));
+    if (extra) extra(f);
+    return f.description();
+  };
+  /* Points nommés lus dans l'énoncé : « A(1 ; −2) » donne A = [1, −2]. La figure reprend ainsi exactement les données affichées. */
+  const pointsDe = texte => {
+    const out = {};
+    for (const m of V.visible(texte).matchAll(/([A-Z]′?)\s*\(\s*([−-]?\d+(?:,\d+)?)\s*;\s*([−-]?\d+(?:,\d+)?)\s*\)/g)) out[m[1]] = [m[2], m[3]].map(t => parseFloat(t.replace('−', '-').replace(',', '.')));
+    return out;
+  };
+  /* Repère orthonormé qui contient l'origine et tous les points donnés, avec une marge d'une unité. */
+  const repereDe = (titre, liste) => {
+    const xs = liste.map(p => p[0]).concat([0]), ys = liste.map(p => p[1]).concat([0]);
+    const etendue = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) + 2, pas = etendue > 16 ? 2 : 1;
+    return FG.repere(titre, {xmin: Math.min(...xs) - 1, xmax: Math.max(...xs) + 1, ymin: Math.min(...ys) - 1, ymax: Math.max(...ys) + 1, pas_x: pas, pas_y: pas, orthonorme: true, hauteur: 300});
+  };
+  const placer = (r, pts, noms) => { noms.forEach(n => r.point(pts[n][0], pts[n][1], n)); return r; };
+  const liste = pts => Object.keys(pts).map(n => `${n}(${fr(pts[n][0])} ; ${fr(pts[n][1])})`).join(', ');
+  const FIGURES = {
+    '3-pythagore': [
+      ({a, b}) => ({e: rectangle(`Triangle ABC rectangle en A : AB = ${a} cm, AC = ${b} cm`, ['C', 'B'], 'A', b, a, [['A', 'B', a + ' cm'], ['A', 'C', b + ' cm'], ['B', 'C', '?']])}),
+      ({a, c}) => ({e: rectangle(`Triangle EFG rectangle en E : EF = ${a} cm, FG = ${c} cm`, ['G', 'F'], 'E', Math.sqrt(c * c - a * a), a, [['E', 'F', a + ' cm'], ['F', 'G', c + ' cm'], ['E', 'G', '?']])}),
+      ({t, k, on, s}) => { const [a, b, c0] = [[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29], [9, 40, 41]][t].map(x => x * k), c = on ? c0 : c0 + s, R = tri(a, b, c);
+        if (!R || !lisible([[0, 0], [b, 0], R])) return {};
+        return {e: FG.figure(`Triangle RST : RS = ${a} cm, ST = ${b} cm, RT = ${c} cm`, {hauteur: 210}).point('S', 0, 0).point('T', b, 0).point('R', R[0], R[1])
+          .polygone(['R', 'S', 'T']).cote('R', 'S', a + ' cm').cote('S', 'T', b + ' cm').cote('R', 'T', c + ' cm').description()}; },
+      ({L, d}) => { const l = L / 10, x = d / 10, h = Math.sqrt(l * l - x * x);
+        return {e: FG.figure(`Échelle de ${fr(l)} m, pied à ${fr(x)} m du mur`, {hauteur: 230}).sol(-0.25 * l, x + 0.3 * l, 0).mur(0, 0, h * 1.08, {cote: 'g'})
+          .point('P', x, 0, {muet: true}).point('S', 0, h, {muet: true}).point('O', 0, 0, {muet: true}).echelle('P', 'S').angle_droit('O', 'P', 'S')
+          .cote_fleche('O', 'P', fr(x) + ' m', {pos: 's', decalage: 14}).cote('P', 'S', fr(l) + ' m', {pos: 'ne'}).cote_fleche('O', 'S', '?', {pos: 'o', decalage: 16}).description()}; },
+      ({w, h}) => ({e: FG.figure(`Écran de ${w} cm de large et de ${h} cm de haut, avec sa diagonale`).polygone([[0, 0], [w, 0], [w, h], [0, h]])
+        .segment([0, 0], [w, h], {pointilles: true}).angle_droit([w, 0], [0, 0], [w, h]).cote([0, 0], [w, 0], w + ' cm', {pos: 's'}).cote([w, 0], [w, h], h + ' cm', {pos: 'e'}).cote([0, 0], [w, h], '?', {pos: 'no'}).description()}),
+      ({x1, y1, x2, y2}) => { const base = (titre) => FG.repere(titre, {xmin: -7, xmax: 7, ymin: -7, ymax: 7, pas_x: 1, pas_y: 1, orthonorme: true, hauteur: 300})
+          .segment(x1, y1, x2, y2, {epais: true}).point(x1, y1, 'A').point(x2, y2, 'B');
+        return {e: base(`Points A(${fr(x1)} ; ${fr(y1)}) et B(${fr(x2)} ; ${fr(y2)}) dans un repère orthonormé`).description(),
+          c: base(`Triangle rectangle d’hypoténuse [AB] : écarts ${Math.abs(x2 - x1)} et ${Math.abs(y2 - y1)}`).segment(x1, y1, x2, y1, {pointilles: true}).segment(x2, y1, x2, y2, {pointilles: true})
+            .texte((x1 + x2) / 2, y1, String(Math.abs(x2 - x1)), {pos: y2 > y1 ? 's' : 'n'}).texte(x2, (y1 + y2) / 2, String(Math.abs(y2 - y1)), {pos: x2 > x1 ? 'e' : 'o'}).description()}; }
+    ],
+    '3-thales': [
+      ({am, ab, an, bc}) => { const ac = an * ab / am, A = tri(ab, bc, ac);
+        if (!A || !lisible([[0, 0], [bc, 0], A])) return {};
+        return {e: FG.figure(`Triangle ABC avec M sur [AB] et N sur [AC] : (MN) parallèle à (BC)`, {hauteur: 220}).point('B', 0, 0).point('C', bc, 0).point('A', A[0], A[1])
+          .point('M', null, null, {sur: ['A', 'B'], k: am / ab}).point('N', null, null, {sur: ['A', 'C'], k: am / ab})
+          .polygone(['A', 'B', 'C']).segment('M', 'N').parallele('M', 'N').parallele('B', 'C')
+          .cote('A', 'M', am + ' cm').cote('A', 'N', an + ' cm').cote('B', 'C', bc + ' cm').cote_fleche('A', 'B', 'AB = ' + ab + ' cm', {decalage: 26}).description()}; },
+      ({ab, am, bc, ac}) => { const A = tri(ab, bc, ac);
+        if (!A || !lisible([[0, 0], [bc, 0], A])) return {};
+        return {e: FG.figure(`Configuration papillon : (BC) parallèle à (MN), droites sécantes en A`, {hauteur: 230}).point('B', 0, 0).point('C', bc, 0).point('A', A[0], A[1])
+          .point('M', null, null, {sur: ['A', 'B'], k: -am / ab}).point('N', null, null, {sur: ['A', 'C'], k: -am / ab})
+          .segment('B', 'M').segment('C', 'N').segment('B', 'C').segment('M', 'N').parallele('B', 'C').parallele('N', 'M')
+          .cote('A', 'B', ab + ' cm').cote('A', 'M', am + ' cm').cote('B', 'C', bc + ' cm').cote('A', 'C', ac + ' cm').cote('M', 'N', '?').description()}; },
+      ({am, ab, k, on, s}) => { const an = am * k + (on ? 0 : s), ac = ab * k, u = [Math.cos(-2.0), Math.sin(-2.0)], v = [Math.cos(-0.9), Math.sin(-0.9)];
+        return {e: FG.figure(`Points A, M, B alignés et A, N, C alignés : AM = ${am} cm, AB = ${ab} cm, AN = ${an} cm, AC = ${ac} cm`, {hauteur: 230})
+          .point('A', 0, 0).point('B', ab * u[0], ab * u[1]).point('C', ac * v[0], ac * v[1]).point('M', am * u[0], am * u[1]).point('N', an * v[0], an * v[1])
+          .polygone(['A', 'B', 'C']).segment('M', 'N').cote('A', 'M', am + ' cm').cote('A', 'N', an + ' cm')
+          .cote_fleche('A', 'B', 'AB = ' + ab + ' cm', {decalage: 26}).cote_fleche('A', 'C', 'AC = ' + ac + ' cm', {decalage: 26}).description()}; },
+      ({h, s, S}) => { const bh = h / 10, bs = s / 10, as = S / 10, H = bh * as / bs, x = bs + 0.25 * as;
+        return {e: FG.figure(`Bâton de ${fr(bh)} m et son ombre de ${fr(bs)} m ; arbre et son ombre de ${fr(as)} m`, {hauteur: 250})
+          .sol(-0.08 * as, x + as * 1.06, 0).baton([0, 0], [0, bh]).sapin(x, 0, H, {l: Math.min(0.45 * H, 0.4 * as)})
+          .segment([0, bh], [bs, 0], {pointilles: true, fin: true}).segment([x, H], [x + as, 0], {pointilles: true, fin: true}).ombre([0, 0], [bs, 0]).ombre([x, 0], [x + as, 0])
+          .cote([0, 0], [0, bh], fr(bh) + ' m', {pos: 'no'}).cote_fleche([0, 0], [bs, 0], fr(bs) + ' m', {pos: 's', decalage: 12})
+          .cote_fleche([x, 0], [x + as, 0], fr(as) + ' m', {pos: 's', decalage: 12}).cote([x, 0], [x, H], '?', {pos: 'e'}).description()}; },
+      null,
+      ({a, b, c, k}) => { const q = k / 10, P = tri(a, c, b), d = c + Math.max(1.5, 0.25 * c);
+        if (!P || !lisible([[0, 0], [c, 0], P])) return {};
+        return {e: FG.figure(`Triangles semblables ABC et DEF : AB = ${a} cm, AC = ${b} cm, BC = ${c} cm, DE = ${fr(a * q)} cm`, {hauteur: 200})
+          .point('B', 0, 0).point('C', c, 0).point('A', P[0], P[1]).point('E', d, 0).point('F', d + c * q, 0).point('D', d + P[0] * q, P[1] * q)
+          .polygone(['A', 'B', 'C']).polygone(['D', 'E', 'F']).cote('A', 'B', a + ' cm').cote('A', 'C', b + ' cm').cote('B', 'C', c + ' cm')
+          .cote('D', 'E', fr(a * q) + ' cm').cote('D', 'F', '?').cote('E', 'F', '?').description()}; }
+    ],
+    '3-trigonometrie': [
+      ({h, a}) => ({e: rectangle(`Triangle ABC rectangle en B : AC = ${h} cm, angle BAC de ${a}°`, ['A', 'C'], 'B', h * Math.cos(a * deg), h * Math.sin(a * deg), [['A', 'C', h + ' cm'], ['A', 'B', '?']], f => f.angle('A', 'B', 'C', {texte: a + '°', rayon: 26}))}),
+      ({h, a}) => ({e: rectangle(`Triangle DEF rectangle en E : DF = ${h} cm, angle EDF de ${a}°`, ['D', 'F'], 'E', h * Math.cos(a * deg), h * Math.sin(a * deg), [['D', 'F', h + ' cm'], ['E', 'F', '?']], f => f.angle('D', 'E', 'F', {texte: a + '°', rayon: 26}))}),
+      ({d, a}) => ({e: rectangle(`Triangle RST rectangle en S : RS = ${d} cm, angle SRT de ${a}°`, ['R', 'T'], 'S', d, d * Math.tan(a * deg), [['R', 'S', d + ' cm'], ['S', 'T', '?']], f => f.angle('R', 'S', 'T', {texte: a + '°', rayon: 26}))}),
+      ({adj, hyp}) => ({e: rectangle(`Triangle KLM rectangle en L : KL = ${adj} cm, KM = ${hyp} cm`, ['K', 'M'], 'L', adj, Math.sqrt(hyp * hyp - adj * adj), [['K', 'L', adj + ' cm'], ['K', 'M', hyp + ' cm']], f => f.angle('K', 'L', 'M', {texte: '?', rayon: 26}))}),
+      ({h, d}) => ({e: FG.figure(`Rampe : ${h} cm de dénivelé pour ${d} cm à l’horizontale`, {hauteur: 120, marge: 30}).rampe([[0, 0], [d, 0], [d, h]]).angle_droit([d, 0], [0, 0], [d, h], {taille: 6})
+        .cote([0, 0], [d, 0], d + ' cm', {pos: 's'}).cote([d, 0], [d, h], h + ' cm', {pos: 'e'}).description()}),
+      ({d, a, e}) => { const eye = e / 10, H = d * Math.tan(a * deg) + eye, l = Math.max(4, 0.18 * d);
+        return {e: FG.figure(`Immeuble vu à ${d} m sous un angle de ${a}°, les yeux à ${fr(eye)} m du sol`, {hauteur: 240})
+          .sol(-0.1 * d, d + l * 1.2, 0).immeuble(d, 0, l, H).observateur(0, 0, eye)
+          .segment([0, eye], [d, eye], {pointilles: true, fin: true}).segment([0, eye], [d, H], {pointilles: true, fin: true}).angle([0, eye], [d, eye], [d, H], {texte: a + '°', rayon: 34})
+          .cote_fleche([0, 0], [d, 0], d + ' m', {pos: 's', decalage: 14}).cote_fleche([d + l, 0], [d + l, H], '?', {pos: 'e', decalage: 10}).description()}; }
+    ],
+    '3-transformations': [null, null,
+      (p, ex) => { const pts = pointsDe(ex.statement), image = [pts.A[0] + pts.C[0] - pts.B[0], pts.A[1] + pts.C[1] - pts.B[1]];
+        const base = titre => placer(repereDe(titre, [pts.A, pts.B, pts.C, image]).vecteur(pts.B[0], pts.B[1], pts.C[0], pts.C[1]), pts, ['A', 'B', 'C']);
+        return {e: base(`Points ${liste(pts)} et vecteur de la translation, de B vers C`).description(),
+          c: base(`Le même déplacement que de B vers C, appliqué à partir de A, donne A′`).vecteur(pts.A[0], pts.A[1], image[0], image[1], null, {pointilles: true}).point(image[0], image[1], 'A′').description()}; }
+    ],
+    '3-probabilites': [null, null,
+      ({r, b}) => { const t = r + b, niveau = () => [{nom: 'R', p: r + '/' + t}, {nom: 'B', p: b + '/' + t}];
+        return {c: FG.arbre(`Arbre des deux tirages avec remise : ${r} rouges et ${b} bleus`, niveau().map(n => Object.assign(n, {enfants: niveau()})), {chemin: ['R', 'R']}).description()}; },
+      null, null,
+      ({a, b}) => ({e: FG.statistiques(`Roue à trois secteurs : rouge ${a}°, jaune ${b}°, bleu pour le reste`)
+        .diagramme_circulaire([{nom: 'rouge', angle: a}, {nom: 'jaune', angle: b}, {nom: 'bleu', angle: 360 - a - b, texte: '?'}]).description()})
+    ],
+    '3-grandeurs': [null, null,
+      ({L, l, h}) => ({e: FG.espace(`Pavé droit de ${L} cm sur ${l} cm, de hauteur ${h} cm`, {hauteur: 210}).pave(L, l, h, {cotes: [L + ' cm', l + ' cm', h + ' cm']}).description()}),
+      ({r, h}) => ({e: FG.espace(`Cylindre de rayon ${r} cm et de hauteur ${h} cm`, {hauteur: 210}).cylindre(r, h, {cotes: [r + ' cm', h + ' cm']}).description()}),
+      ({c, h}) => ({e: FG.espace(`Pyramide à base carrée de ${c} cm de côté et de hauteur ${h} cm`, {hauteur: 230}).pyramide_carree(c, h, {cotes: [c + ' cm', h + ' cm']}).description()}),
+      ({h}) => ({e: FG.espace(`Boule de rayon ${fr(h / 2)} cm dans un cube d’arête ${h} cm`, {hauteur: 220}).cube(h, {cotes: [h + ' cm']}).boule(h / 2, {centre: [h / 2, h / 2, h / 2], cotes: [fr(h / 2) + ' cm']}).description()})
+    ]
+  };
+  if (FG) for (const [slug, liste] of Object.entries(FIGURES)) liste.forEach((figure, i) => {
+    if (!figure) return;
+    const modele = models[slug][i];
+    models[slug][i] = Object.assign({}, modele, {build: p => {
+      const exercice = modele.build(p), f = figure(p, exercice) || {};
+      if (f.e) exercice.figure = f.e;
+      if (f.c) exercice.figure_correction = f.c;
+      return exercice;
+    }});
+  });
   for (const [slug, list] of Object.entries(models)) V.register(slug, list);
   window.TroisiemeExercises = {slugs: Object.keys(models), count: 6};
   window.ExerciseCoaching = {
