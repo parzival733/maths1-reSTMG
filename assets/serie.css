@@ -544,3 +544,13 @@ html body:not(#_p) .answer-row.is-revealed :is(input, select).answer-was-wrong {
 .exercise-figure svg { display: block; width: 100%; max-width: 360px; height: auto; color: var(--color-text); }
 .exercise-figure.figure-large svg { max-width: 540px; }
 .exercise-figure figcaption { margin-top: var(--space-2); color: var(--color-text-muted); font-size: var(--text-sm); }
+/* Grand écran : figures plus larges, leur texte reste proche de la taille du texte courant. */
+@media (min-width: 900px) {
+  .exercise-figure svg { max-width: 440px; }
+  .exercise-figure.figure-large svg { max-width: 620px; }
+}
+/* Téléphone étroit : moins de marge autour de l'énoncé, des réponses et du corrigé, pour laisser la largeur aux tableaux et aux figures. */
+@media (max-width: 460px) {
+  .exercise-statement, .exercise-form { padding: 14px; }
+  .exercise-form details.check { padding-left: 10px; padding-right: 10px; }
+}

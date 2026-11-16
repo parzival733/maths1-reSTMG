@@ -1,9 +1,21 @@
 {
-  "base_sha": "3eba43388eba31d44d36240669c6cc8d712cd9e0",
+  "base_sha": "678cac94bc6a43193e025af166622dd271820114",
   "allowed": {
+    "exercices/suites.html": {
+      "normalization": "page-redesign",
+      "reason": "Sur téléphone, marges réduites autour de l'énoncé, des réponses et du corrigé pour laisser la largeur aux tableaux et aux figures."
+    },
+    "exercices/fonctions.html": {
+      "normalization": "page-redesign",
+      "reason": "Sur téléphone, marges réduites autour de l'énoncé, des réponses et du corrigé pour laisser la largeur aux tableaux et aux figures."
+    },
+    "terminale/exercices/t-inverse.html": {
+      "normalization": "page-redesign",
+      "reason": "Sur téléphone, marges réduites autour de l'énoncé, des réponses et du corrigé pour laisser la largeur aux tableaux et aux figures."
+    },
     "cours/fonctions.html": {
       "normalization": "page-redesign",
-      "reason": "Sans JavaScript, une figure statique de la droite f(x) = x + 1 apparaît sous le graphique à manipuler."
+      "reason": "Sur grand écran, les figures passent de 360 à 440 px de large."
     }
   }
 }

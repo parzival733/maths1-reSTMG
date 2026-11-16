@@ -137,6 +137,9 @@ def main():
             text=text.replace('</title>',f'</title><script src="{base}assets/menu.js"></script>',1)
         # Typographie française du texte produit par JavaScript (tools/typographie.py pour le HTML).
         if 'assets/typographie.js' not in text:text=text.replace('</head>',f'<script src="{base}assets/typographie.js" defer></script></head>',1)
+        # Signal de défilement des tableaux larges : pages qui contiennent un tableau défilant ou qui en produisent (séries).
+        if ('table-scroll' in text or 'table-wrap' in text or template(rel)=='serie') and 'assets/tableaux.js' not in text:
+            text=text.replace('</head>',f'<script src="{base}assets/tableaux.js" defer></script></head>',1)
         text=series_figures(rel,keep_own_generator(rel,text))
         if template(rel)=='serie' and 'assets/saisie-nombres.js' not in text:
             text=text.replace('</head>',f'<script src="{base}assets/saisie-nombres.js" defer></script></head>',1)

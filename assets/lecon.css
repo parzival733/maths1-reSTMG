@@ -477,6 +477,11 @@ body.reading-focus .lesson-content { max-width: 880px; margin-inline: auto; widt
 .lesson-figure.figure-large svg { max-width: 540px; }
 .lesson-figure svg { display:block; width:100%; max-width:360px; height:auto; color: var(--color-text); }
 .lesson-figure figcaption { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
+/* Grand écran : figures plus larges, leur texte reste proche de la taille du texte courant. */
+@media (min-width: 900px) {
+  .lesson-figure svg { max-width: 440px; }
+  .lesson-figure.figure-large svg { max-width: 620px; }
+}
 /* Cartes de choix des pauses mémoire, adaptées au toucher. */
 :is(.terminal-course, .college-course) .study-quiz fieldset > label { display:flex; align-items:flex-start; gap:11px; min-height:44px; min-width:0; padding:12px; margin:10px 0; border:1px solid var(--color-learn-line); border-radius: var(--radius-md); background:var(--color-surface); font-size:15px; line-height:1.5; cursor:pointer; }
 :is(.terminal-course, .college-course) .study-quiz fieldset > label input { flex:0 0 auto; margin-top:4px; accent-color:var(--color-learn); }
