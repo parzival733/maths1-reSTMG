@@ -1490,7 +1490,9 @@
   const repereDe = (titre, liste) => {
     const xs = liste.map(p => p[0]).concat([0]), ys = liste.map(p => p[1]).concat([0]);
     const etendue = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) + 2, pas = etendue > 16 ? 2 : 1;
-    return FG.repere(titre, {xmin: Math.min(...xs) - 1, xmax: Math.max(...xs) + 1, ymin: Math.min(...ys) - 1, ymax: Math.max(...ys) + 1, pas_x: pas, pas_y: pas, orthonorme: true, hauteur: 300});
+    /* Quand tous les points sont à gauche ou en dessous de l'origine, les noms des deux axes se rejoindraient dans le coin : on prolonge l'axe. */
+    const haut = v => v + (v === 0 ? 2 * pas + 1 : 1);
+    return FG.repere(titre, {xmin: Math.min(...xs) - 1, xmax: haut(Math.max(...xs)), ymin: Math.min(...ys) - 1, ymax: haut(Math.max(...ys)), pas_x: pas, pas_y: pas, orthonorme: true, hauteur: 300});
   };
   const placer = (r, pts, noms) => { noms.forEach(n => r.point(pts[n][0], pts[n][1], n)); return r; };
   const liste = pts => Object.keys(pts).map(n => `${n}(${fr(pts[n][0])} ; ${fr(pts[n][1])})`).join(', ');
@@ -1559,16 +1561,67 @@
           .segment([0, eye], [d, eye], {pointilles: true, fin: true}).segment([0, eye], [d, H], {pointilles: true, fin: true}).angle([0, eye], [d, eye], [d, H], {texte: a + '°', rayon: 34})
           .cote_fleche([0, 0], [d, 0], d + ' m', {pos: 's', decalage: 14}).cote_fleche([d + l, 0], [d + l, H], '?', {pos: 'e', decalage: 10}).description()}; }
     ],
-    '3-transformations': [null, null,
+    '3-transformations': [
+      ({k, a, L}) => { const B = [a + L * Math.cos(1.2), L * Math.sin(1.2)];
+        const base = titre => FG.figure(titre, {hauteur: 220}).point('O', 0, 0, {marque: true}).point('A', a, 0).point('B', B[0], B[1]).segment('O', 'A').segment('A', 'B');
+        return {e: base(`Une figure possible : OA = ${a} cm et AB = ${L} cm`).cote('O', 'A', a + ' cm').cote('A', 'B', L + ' cm').description(),
+          c: base(`Homothétie de centre O et de rapport ${fr(k)} : A′ et B′ sont ${k > 0 ? 'du même côté que A et B' : 'de l’autre côté de O'}`)
+            .point('A′', k * a, 0).point('B′', k * B[0], k * B[1]).segment('O', 'A′', {pointilles: true, fin: true}).segment(k > 0 ? 'B' : 'O', 'B′', {pointilles: true, fin: true})
+            .segment('O', 'B', {pointilles: true, fin: true}).segment('A′', 'B′').description()}; },
+      ({k}) => ({e: FG.espace(`Schéma : pyramide coupée parallèlement à sa base, la petite pyramide est une réduction de rapport ${fr(k)}`, {hauteur: 240}).section_pyramide(6, 8, k, {hauteur: false}).description()}),
       (p, ex) => { const pts = pointsDe(ex.statement), image = [pts.A[0] + pts.C[0] - pts.B[0], pts.A[1] + pts.C[1] - pts.B[1]];
         const base = titre => placer(repereDe(titre, [pts.A, pts.B, pts.C, image]).vecteur(pts.B[0], pts.B[1], pts.C[0], pts.C[1]), pts, ['A', 'B', 'C']);
         return {e: base(`Points ${liste(pts)} et vecteur de la translation, de B vers C`).description(),
-          c: base(`Le même déplacement que de B vers C, appliqué à partir de A, donne A′`).vecteur(pts.A[0], pts.A[1], image[0], image[1], null, {pointilles: true}).point(image[0], image[1], 'A′').description()}; }
+          c: base(`Le même déplacement que de B vers C, appliqué à partir de A, donne A′`).vecteur(pts.A[0], pts.A[1], image[0], image[1], null, {pointilles: true}).point(image[0], image[1], 'A′').description()}; },
+      ({kind, x, y}) => { const img = [[-x, -y], [x, -y], [-x, y]][kind], nom = ['de centre O', 'd’axe des abscisses', 'd’axe des ordonnées'][kind];
+        const m = Math.max(Math.abs(x), Math.abs(y)) / 2, base = titre => repereDe(titre, [[x, y], [-x, -y], [x, -y], [-x, y], [m, m], [-m, -m]]).point(x, y, 'P');
+        return {e: base(`Point P(${fr(x)} ; ${fr(y)}) dans un repère orthonormé d’origine O`).description(),
+          c: base(`P et son image P′ par la symétrie ${nom}`).segment(x, y, img[0], img[1], {pointilles: true, fin: true}).point(img[0], img[1], 'P′').description()}; },
+      ({n, k}) => { const S = i => [2 * Math.cos(2 * Math.PI * i / n), 2 * Math.sin(2 * Math.PI * i / n)], nom = i => 'S' + String(i).replace(/\d/g, d => '₀₁₂₃₄₅₆₇₈₉'[d]);
+        const base = titre => { const f = FG.figure(titre, {hauteur: 240}).point('O', 0, 0, {marque: true});
+          for (let i = 0; i < n; i++) f.point(nom(i), S(i)[0], S(i)[1]);
+          return f.polygone(Array.from({length: n}, (_, i) => nom(i))); };
+        return {e: base(`Polygone régulier à ${n} côtés, de centre O`).description(),
+          c: base(`La rotation de centre O qui transforme S₀ en S₁ : un ${n === 3 ? 'tiers' : n === 4 ? 'quart' : n + 'ᵉ'} de tour`)
+            .segment('O', nom(0), {pointilles: true, fin: true}).segment('O', nom(1), {pointilles: true, fin: true}).angle('O', nom(0), nom(1), {texte: fr(360 / n) + '°'}).description()}; },
+      ({a, b, same}) => { const xm = same ? b : -b;
+        return {e: FG.figure(`Points O, M et M′ alignés : OM = ${a} cm et OM′ = ${b} cm`, {hauteur: 110, marge: 30}).point('O', 0, 0, {marque: true, pos: 'n'}).point('M', a, 0, {marque: true, pos: 'n'}).point('M′', xm, 0, {marque: true, pos: 'n'})
+          .segment([Math.min(0, xm, a), 0], [Math.max(0, xm, a), 0]).cote_fleche('O', 'M', a + ' cm', {pos: 's', decalage: same && a > b ? 36 : 14}).cote_fleche('O', 'M′', b + ' cm', {pos: 's', decalage: same && b > a ? 36 : 14}).description()}; }
+    ],
+    '3-fonctions': [null, null, null,
+      ({b, c, p, on, k}) => { const fp = p * p + b * p + c, q = on ? fp : fp + k, w = Math.max(0.5, Math.min(3, 9 / Math.abs(2 * p + b))); /* fenêtre resserrée quand la courbe est raide : un écart d'une unité reste visible */
+        return {c: FG.repere(on ? `A est sur la courbe de f : son ordonnée est f(${fr(p)})` : `A n’est pas sur la courbe de f : son ordonnée n’est pas f(${fr(p)})`,
+          Object.assign({xmin: p - w, xmax: p + w, ymin: Math.min(fp, q) - 8, ymax: Math.max(fp, q) + 8, hauteur: 260}, p + w <= 0 && Math.max(fp, q) + 8 <= 6 ? {nom_y: ''} : {}))
+          .courbe(`x^2${b < 0 ? '-' : '+'}${Math.abs(b)}x${c < 0 ? '-' : '+'}${Math.abs(c)}`, {nom: 'C_f'}).lecture(p, fp, {vx: false}).point(p, q, 'A', {pos: on ? ['se', 'no'] : (q > fp) === (2 * p + b > 0) ? ['o', 'no', 'so'] : ['e', 'se', 'ne']}).description()}; }
+    ],
+    '3-fonctions-affines': [null, null, null,
+      ({a, b, c, s}) => { const d = a * s + b - c * s, y = a * s + b, x1 = Math.min(0, s) - 2, x2 = Math.max(0, s) + 2;
+        const ys = [a * x1 + b, a * x2 + b, c * x1 + d, c * x2 + d, 0].sort((u, v) => u - v);
+        return {c: FG.repere(`Les droites de f et de g se coupent au point (${fr(s)} ; ${fr(y)})`, {xmin: x1, xmax: x2, ymin: ys[0], ymax: ys[4], hauteur: 280})
+          .droite_affine(a, b, {nom: 'f'}).droite_affine(c, d, {nom: 'g', pointilles: true}).lecture(s, y).description()}; },
+      ({m, S, n, k}) => { const x0 = S / (m - n), xmax = Math.max(k + 1, Math.ceil(1.7 * x0));
+        return {c: FG.repere(`Tarif A et tarif B : B devient moins cher après ${fr(r2(x0))} entrées`, {xmin: 0, xmax, ymin: 0, ymax: m * xmax, nom_x: 'entrées', nom_y: 'coût (€)', hauteur: 280})
+          .droite_affine(m, 0, {nom: 'A'}).droite_affine(n, S, {nom: 'B', pointilles: true}).lecture(x0, m * x0, {vx: '≈ ' + fr(r2(x0)), vy: false}).description()}; }
+    ],
+    '3-statistiques': [null, null, null, null, null,
+      ({a, b, swap}) => { const [x, y] = swap ? [b, a] : [a, b], tous = x.concat(y), lo = Math.min(...tous), hi = Math.max(...tous);
+        const d = FG.droite_numerique(`Notes des groupes A et B : plus les points sont resserrés, plus le groupe est homogène`, {min: lo - 1, max: hi + 1, pas: hi - lo > 12 ? 2 : 1, noms_lignes: ['A', 'B']});
+        [x, y].forEach((serie, ligne) => { const vus = {};
+          serie.forEach(v => { d.point(v, null, {ligne, valeur: false, empile: vus[v] || 0}); vus[v] = (vus[v] || 0) + 1; });
+          d.distance(Math.min(...serie), Math.max(...serie), 'étendue ' + (Math.max(...serie) - Math.min(...serie)), {ligne}); });
+        return {c: d.description()}; }
+    ],
+    '3-algorithmique': [null, null, null,
+      ({n, L}) => ({c: FG.programme_trace(`Polygone à ${n} côtés tracé par le lutin : ${n} fois « avancer de ${L}, tourner de ${fr(360 / n)}° »`, n, 360 / n, {cote: String(L), hauteur: 220}).description()})
     ],
     '3-probabilites': [null, null,
       ({r, b}) => { const t = r + b, niveau = () => [{nom: 'R', p: r + '/' + t}, {nom: 'B', p: b + '/' + t}];
         return {c: FG.arbre(`Arbre des deux tirages avec remise : ${r} rouges et ${b} bleus`, niveau().map(n => Object.assign(n, {enfants: niveau()})), {chemin: ['R', 'R']}).description()}; },
-      null, null,
+      ({r, b}) => { const t = r + b;
+        return {c: FG.arbre(`Arbre des deux tirages sans remise : ${r} rouges et ${b} bleues, puis ${t - 1} billes au second tirage`,
+          [{nom: 'R', p: r + '/' + t, enfants: [{nom: 'R', p: (r - 1) + '/' + (t - 1)}, {nom: 'B', p: b + '/' + (t - 1)}]},
+            {nom: 'B', p: b + '/' + t, enfants: [{nom: 'R', p: r + '/' + (t - 1)}, {nom: 'B', p: (b - 1) + '/' + (t - 1)}]}], {chemins: [['R', 'R'], ['B', 'B']]}).description()}; },
+      null,
       ({a, b}) => ({e: FG.statistiques(`Roue à trois secteurs : rouge ${a}°, jaune ${b}°, bleu pour le reste`)
         .diagramme_circulaire([{nom: 'rouge', angle: a}, {nom: 'jaune', angle: b}, {nom: 'bleu', angle: 360 - a - b, texte: '?'}]).description()})
     ],

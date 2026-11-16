@@ -26,6 +26,19 @@ let figures = 0;
 const proche = (a, b, tol, where) => assert.ok(Math.abs(a - b) <= tol, where + ' : ' + a + ' au lieu de ' + b);
 function coherence(slug, index, e, where) {
   const P = e.params, cle = slug + '/' + index;
+  if (e.figure_correction) {
+    const a = FC.analyser(sandbox.window.Figures.svg(e.figure_correction)), p = FC.pointsNommes(a);
+    if (cle === '3-transformations/0') {
+      proche(FC.ecartDroite(p['A′'], p.O, p.A), 0, 0.6, where + ' : O, A et A′ alignés');
+      proche(FC.distance(p.O, p['A′']) / FC.distance(p.O, p.A), Math.abs(P.k), 0.04 * Math.abs(P.k) + 0.02, where + ' : OA′ = |k| × OA');
+      proche(FC.distance(p.O, p['B′']) / FC.distance(p.O, p.B), Math.abs(P.k), 0.04 * Math.abs(P.k) + 0.02, where + ' : OB′ = |k| × OB');
+    }
+    if (cle === '3-fonctions/3') {
+      const ecarts = a.cercles.filter(c => c.f === 'point').map(c => FC.ecartCourbes(a, [c.x, c.y]));
+      proche(Math.min(...ecarts), 0, 0.6, where + ' : point de la courbe');
+      assert.equal(Math.max(...ecarts) > 3, !P.on, where + ' : A sur la courbe seulement si son ordonnée est l’image');
+    }
+  }
   if (!e.figure) return;
   const a = FC.analyser(sandbox.window.Figures.svg(e.figure)), p = FC.pointsNommes(a);
   if (cle === '3-pythagore/0') { proche(FC.distance(p.A, p.B) / FC.distance(p.A, p.C), P.a / P.b, 0.03 * P.a / P.b + 0.01, where + ' AB/AC'); proche(FC.angle(p.A, p.B, p.C), 90, 0.6, where + ' angle droit'); }
@@ -35,6 +48,9 @@ function coherence(slug, index, e, where) {
   if (cle === '3-thales/2') assert.equal(a.chemins.filter(c => c.f === 'parallele').length, 0, where + ' : parallélisme non codé dans une réciproque');
   if (cle === '3-trigonometrie/0') proche(FC.angle(p.A, p.B, p.C), P.a, 0.7, where + ' angle en A');
   if (cle === '3-trigonometrie/2') proche(FC.angle(p.R, p.S, p.T), P.a, 0.7, where + ' angle en R');
+  if (cle === '3-transformations/0') assert.ok(!a.textes.some(t => /′/.test(t.texte)), where + ' : images absentes de l’énoncé');
+  if (cle === '3-transformations/3') assert.equal(a.cercles.filter(c => c.f === 'point').length, 1, where + ' : P seul dans l’énoncé');
+  if (cle === '3-transformations/5') proche(FC.distance(p.O, p['M′']) / FC.distance(p.O, p.M), P.b / P.a, 0.04 * P.b / P.a + 0.02, where + ' : OM′/OM');
   if (['3-pythagore/0', '3-pythagore/1', '3-pythagore/3', '3-pythagore/4', '3-thales/1', '3-thales/3', '3-thales/5', '3-trigonometrie/0', '3-trigonometrie/1', '3-trigonometrie/2', '3-trigonometrie/3', '3-trigonometrie/5'].indexOf(cle) >= 0) assert.ok(a.textes.some(t => t.texte === '?'), where + ' : inconnue notée « ? »');
 }
 const cases = [];
@@ -103,7 +119,7 @@ for (const slug of T.slugs) {
     assert.notEqual(sigs[0], sigs[1]);
   }
 }
-assert.deepEqual(Object.fromEntries(Object.entries(Array.from(avecFigure).reduce((o, c) => { const k = c.split('/')[0]; o[k] = (o[k] || 0) + 1; return o; }, {})).sort()), Object.fromEntries(Object.entries({'3-pythagore': 6, '3-thales': 5, '3-trigonometrie': 6, '3-grandeurs': 4, '3-transformations': 1, '3-probabilites': 2}).sort()), 'modèles avec figure');
+assert.deepEqual(Object.fromEntries(Object.entries(Array.from(avecFigure).reduce((o, c) => { const k = c.split('/')[0]; o[k] = (o[k] || 0) + 1; return o; }, {})).sort()), Object.fromEntries(Object.entries({'3-pythagore': 6, '3-thales': 5, '3-trigonometrie': 6, '3-grandeurs': 4, '3-transformations': 6, '3-probabilites': 3, '3-fonctions': 1, '3-fonctions-affines': 2, '3-statistiques': 1, '3-algorithmique': 1}).sort()), 'modèles avec figure');
 if (process.argv.includes('--json')) process.stdout.write(JSON.stringify(cases));
 else console.log(`TROISIEME OK: 96 modèles × ${SEEDS} graines = ${variants} variantes ; bande de difficulté, ${choiceFields} champs à choix équilibrés, mise en forme, arrondis, recalcul et aides.`);
 if (!process.argv.includes('--json')) console.log(`Figures des exercices : ${figures} figures contrôlées sur ${avecFigure.size} modèles.`);

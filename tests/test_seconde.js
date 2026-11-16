@@ -29,6 +29,9 @@ function coherence(slug, index, e, where) {
   if (!e.figure) return;
   const a = FC.analyser(sandbox.window.Figures.svg(e.figure)), p = FC.pointsNommes(a);
   if (cle === '2-vecteurs/0') { const pts = a.cercles.filter(c => c.f === 'point'); assert.equal(pts.length, 2, where + ' : deux points'); }
+  if (cle === '2-nombres-reels/1') assert.ok(!a.textes.some(t => /AB/.test(t.texte)), where + ' : distance absente de l’énoncé');
+  if (cle === '2-probabilites/1') assert.equal(a.textes.filter(t => t.texte === '?').length, 2, where + ' : probabilités à compléter notées « ? »');
+  if (cle === '2-nombres-reels/5') assert.equal(a.lignes.filter(l => l.f === 'intervalle').length, 2, where + ' : I et J seuls dans l’énoncé');
   void p; void P;
 }
 const cases = [];
@@ -97,7 +100,7 @@ for (const slug of T.slugs) {
     assert.notEqual(sigs[0], sigs[1]);
   }
 }
-assert.deepEqual(Object.fromEntries(Object.entries(Array.from(avecFigure).reduce((o, c) => { const k = c.split('/')[0]; o[k] = (o[k] || 0) + 1; return o; }, {})).sort()), Object.fromEntries(Object.entries({'2-vecteurs': 3, '2-colinearite': 4, '2-droites': 1}).sort()), 'modèles avec figure');
+assert.deepEqual(Object.fromEntries(Object.entries(Array.from(avecFigure).reduce((o, c) => { const k = c.split('/')[0]; o[k] = (o[k] || 0) + 1; return o; }, {})).sort()), Object.fromEntries(Object.entries({'2-vecteurs': 3, '2-colinearite': 4, '2-droites': 5, '2-nombres-reels': 4, '2-fonctions': 4, '2-fonctions-reference': 5, '2-variations': 4, '2-signes': 5, '2-statistiques': 3, '2-probabilites': 3}).sort()), 'modèles avec figure');
 if (process.argv.includes('--json')) process.stdout.write(JSON.stringify(cases));
 else console.log(`SECONDE OK: 96 modèles × ${SEEDS} graines = ${variants} variantes ; bande de difficulté, ${choiceFields} champs à choix équilibrés, mise en forme, arrondis, recalcul et aides.`);
 if (!process.argv.includes('--json')) console.log(`Figures des exercices : ${figures} figures contrôlées sur ${avecFigure.size} modèles.`);

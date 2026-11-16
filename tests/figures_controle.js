@@ -168,9 +168,13 @@ function anglesDroits(a) {
   return a.chemins.filter(c => c.f === 'angle-droit').map(c => Math.abs(angle(c.points[1], c.points[0], c.points[2]) - 90));
 }
 
+/* Figure dont les nombres écrits sont surtout des graduations : repère, droite numérique, diagramme sur des axes. */
+const gradue = d => d.type === 'repere' || d.type === 'droite_numerique'
+  || (d.type === 'statistiques' && !(d.elements || []).some(x => x.t === 'diagramme_circulaire' || x.t === 'diagramme_venn'));
+
 /* Figures d'un exercice à variantes. `F` est le moteur, `e` l'exercice produit, `visible` rend le texte lisible
    d'un énoncé. Renvoie la liste des défauts : figure invalide, illisible, ou réponse attendue affichée dans la
-   figure de l'énoncé (hors graduations d'un repère) alors qu'elle n'est pas une donnée de l'énoncé. */
+   figure de l'énoncé (hors figures graduées) alors qu'elle n'est pas une donnée de l'énoncé. */
 function controlerExercice(F, e, visible) {
   const defauts = [];
   for (const cle of ['figure', 'figure_correction']) {
@@ -178,7 +182,7 @@ function controlerExercice(F, e, visible) {
     let html;
     try { html = F.html(e[cle], {classe: 'exercise-figure', id: 'figure-' + cle}); } catch (erreur) { defauts.push(cle + ' : ' + erreur.message); continue; }
     controler(html).forEach(d => defauts.push(cle + ' : ' + d));
-    if (cle !== 'figure' || e[cle].type === 'repere') continue;
+    if (cle !== 'figure' || gradue(e[cle])) continue;
     const enonce = visible(e.statement), textes = analyser(html).textes.map(t => t.texte);
     for (const champ of e.fields) {
       if (champ.options) continue;
