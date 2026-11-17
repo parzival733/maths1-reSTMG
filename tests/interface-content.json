@@ -97,7 +97,7 @@
   },
   "exercices/derivees.html": {
     "part": "main",
-    "sha256": "cdc2a361536e2021076b66fef7521469408a0b6d1653c9f62e7c96b3b8e71a20"
+    "sha256": "aa9eca404198dfd662ba1825af08643e2d9553ceef44ad2436457f27e3db7b76"
   },
   "exercices/statistiques-deux-variables.html": {
     "part": "main",
@@ -237,7 +237,7 @@
   },
   "assets/variants-analyse.js": {
     "part": "file",
-    "sha256": "d5921eba76954704a6ea70a5a09b4f405366435741c6f52668f1ae5e3fb9a0bb"
+    "sha256": "1fc90f1d5f8ca3f50feb2e8012e6804fc109de9987c2271eb7c6ce281b0c17e1"
   },
   "assets/coaching-donnees.js": {
     "part": "file",

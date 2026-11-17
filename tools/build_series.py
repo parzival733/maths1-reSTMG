@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Fichiers d'exercices par série, pour la 3e, la Seconde et la Terminale.
+"""Fichiers d'exercices par série, pour les quatre niveaux.
 
 Les modèles d'un niveau sont écrits dans un seul fichier (assets/troisieme-exercices.js,
-seconde-exercices.js, terminale-exercices.js), qui reste la source et le fichier des tests.
+seconde-exercices.js, terminale-exercices.js), ou par groupe de chapitres en Première
+(assets/variants-*.js). Ces fichiers restent la source et ceux que lisent les tests.
 Une page de série n'a besoin que de ses propres modèles : cet outil extrait, pour chaque
 série, assets/serie-<série>.js, qui garde les fonctions communes du niveau et les seuls
 modèles, aides et figures de la série. Les pages chargent ce fichier.
@@ -17,7 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / 'assets'
 NIVEAUX = {'troisieme': 'troisieme-exercices.js', 'seconde': 'seconde-exercices.js', 'terminale': 'terminale-exercices.js'}
 ENTREE = re.compile(r"^    '([\w-]+)': ")
-ILLUSTRE = re.compile(r"^    V\.illustrate\('([\w-]+)', \[")
+ILLUSTRE = re.compile(r"^ {2,4}V\.illustrate\('([\w-]+)', \[")
+# Première : chaque série est un appel register('série', [...]) dans un fichier assets/variants-*.js.
+ENREGISTRE = re.compile(r"^  register\('([\w-]+)', \[")
 MOTEUR = ['figures.js', 'figures-statistiques.js', 'figures-geometrie.js']
 
 
@@ -27,6 +30,33 @@ def series(source):
     debut = lignes.index('  const models = {')
     fin = lignes.index('  };', debut)
     return [m.group(1) for m in map(ENTREE.match, lignes[debut:fin]) if m]
+
+
+def premiere():
+    """{fichier source: [séries]} pour les fichiers de Première."""
+    return {p.name: [m.group(1) for m in map(ENREGISTRE.match, p.read_text(encoding='utf-8').split('\n')) if m]
+            for p in sorted(ASSETS.glob('variants-*.js'))}
+
+
+def extraire_premiere(source, serie, fichier):
+    """Fichier de Première réduit à une série : on retire les appels register et V.illustrate des autres séries."""
+    lignes, sortie, i = source.split('\n'), [], 0
+    while not lignes[i].startswith('(() => {'):
+        i += 1
+    sortie.append(f'/* Série {serie} : extrait de assets/{fichier} par tools/build_series.py.\n'
+                  '   Ne pas modifier ce fichier : corriger la source, puis relancer l\'outil. */')
+    while i < len(lignes):
+        appel = ENREGISTRE.match(lignes[i]) or ILLUSTRE.match(lignes[i])
+        if appel:
+            bloc = [lignes[i]]
+            while lignes[i] != '  ]);':
+                i += 1; bloc.append(lignes[i])
+            if appel.group(1) == serie:
+                sortie.extend(bloc)
+            i += 1
+            continue
+        sortie.append(lignes[i]); i += 1
+    return '\n'.join(sortie)
 
 
 def extraire(source, serie, fichier):
@@ -70,6 +100,10 @@ def fichiers():
         source = (ASSETS / fichier).read_text(encoding='utf-8')
         for serie in series(source):
             out[f'serie-{serie}.js'] = extraire(source, serie, fichier)
+    for fichier, liste in premiere().items():
+        source = (ASSETS / fichier).read_text(encoding='utf-8')
+        for serie in liste:
+            out[f'serie-{serie}.js'] = extraire_premiere(source, serie, fichier)
     return out
 
 

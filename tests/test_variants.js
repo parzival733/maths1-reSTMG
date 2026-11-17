@@ -333,7 +333,7 @@ for (const slug of slugs) {
   assert.equal(/assets\/figures\.js/.test(head), illustree, slug + ' : chargement du moteur de figures');
   if (illustree) assert.ok(head.indexOf('assets/figures.js') < head.indexOf('assets/exercices-variants.js'), slug + ' : figures.js avant les variantes');
   assert.equal(/assets\/figures-statistiques\.js/.test(head), diagrammes.has(slug), slug + ' : chargement de la partie « statistiques et probabilités » du moteur');
-  if (slug !== 'fonctions') assert.ok(head.indexOf('assets/variants-') < head.indexOf('assets/exercices-renderer.js'), slug + ' : rendu après les modèles');
+  if (slug !== 'fonctions') assert.ok(head.indexOf('assets/serie-' + slug + '.js') < head.indexOf('assets/exercices-renderer.js'), slug + ' : rendu après les modèles');
 }
 console.log('VARIANTS OK: ' + models + ' modèles × ' + SEEDS + ' graines = ' + variants + ' variantes ; difficulté dans la bande ±20 % à 100 %, '
   + choiceFields + ' champs à choix équilibrés (30–70 %), aucun motif interdit, recalcul indépendant, 10 variantes consécutives sans répétition.');

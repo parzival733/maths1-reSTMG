@@ -22,7 +22,7 @@ TESTS = [
     'python3 tests/test_seconde.py', 'python3 tools/build_series.py --check', 'node tests/test_series.js',
     'node tests/test_calcul_rapide.js', 'python3 tests/test_calcul_rapide.py', 'node tests/test_countdown.js', 'node tests/test_acquis.js',
     'node tests/test_parcours.js', 'node tests/test_domaines.js', 'python3 tests/test_evolution.py', 'node tests/test_cloture.js',
-    'python3 tests/test_cloture.py', 'python3 tests/test_securite.py',
+    'python3 tests/test_cloture.py', 'python3 tests/test_securite.py', 'python3 tests/test_poids.py',
 ]
 
 

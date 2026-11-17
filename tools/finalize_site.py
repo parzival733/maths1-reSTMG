@@ -47,9 +47,8 @@ def template(rel):
 def keep_own_generator(rel,text):
     slug=rel.removeprefix('exercices/').removesuffix('.html')
     if not rel.startswith('exercices/') or slug not in GENERATOR:return text
-    own=GENERATOR[slug]
-    return re.sub(r'[ \t]*<script src="\.\./assets/variants-(\w+)\.js[^"]*" defer></script>\n?',
-                  lambda m:m.group(0) if m.group(1)==own else '',text)
+    # La page charge le fichier de sa seule série (tools/build_series.py), pas celui du groupe de chapitres.
+    return re.sub(r'assets/(?:variants-\w+|serie-[\w-]+)\.js',f'assets/serie-{slug}.js',text)
 
 
 # Séries de Première et de Terminale dont au moins un exercice porte une figure : elles seules
