@@ -462,19 +462,26 @@
   const xy = pts => pts.map(p => [p[0], p[1]]);
   const liste = pts => pts.map(p => `${p[2]}(${fr(p[0])} ; ${fr(p[1])})`).join(', ');
   /* Parabole ax² + c et sa tangente au point d'abscisse x0. */
-  const tangenteFig = ({a, x0, c}) => { const f = x => a * x * x + c, e = Math.abs(x0) + 2, m = 2 * a * x0, t = x => m * (x - x0) + f(x0), expr = `(${a})*x^2+(${c})`;
-    return {c: FG.repere(`Courbe de f et sa tangente au point d’abscisse ${fr(x0)}`, frame([-e, e], sample(f, -e, e).concat([t(-e / 2), t(e / 2), t(0)])))
+  const tangenteFig = ({a, x0, c}, titre) => { const f = x => a * x * x + c, e = Math.abs(x0) + 2, m = 2 * a * x0, t = x => m * (x - x0) + f(x0), expr = `(${a})*x^2+(${c})`;
+    return {c: FG.repere(typeof titre === 'string' ? titre : `Courbe de f et sa tangente au point d’abscisse ${fr(x0)}`, frame([-e, e], sample(f, -e, e).concat([t(-e / 2), t(e / 2), t(0)])))
       .courbe(expr).tangente(expr, x0).point(x0, f(x0)).description()}; };
   /* Courbe sur [x1 ; x2] et lecture de son extremum (h ; k). */
   const extremumFig = (titre, expr, f, x1, x2, h, k, options) => ({c: FG.repere(titre, frame([x1, x2], sample(f, x1, x2), options)).courbe(expr, {de: x1, a: x2}).lecture(h, k).description()});
+  /* Coût C(x) = ax² + bx + c sur [0 ; 2x₀] et sa tangente au point d'abscisse x₀. */
+  const coutFig = ({a, b, c, x0}) => { const f = x => a * x * x + b * x + c, expr = `(${a})*x^2+(${b})*x+(${c})`;
+    return {c: FG.repere(`Courbe du coût et sa tangente en x = ${fr(x0)} : près de ce point, la courbe suit la tangente`, frame([2 * x0], sample(f, 0, 2 * x0), {nom_x: 'x', nom_y: 'C(x)'}))
+      .courbe(expr, {de: 0, a: 2 * x0}).tangente(expr, x0).point(x0, f(x0)).description()}; };
   V.illustrate('derivees', [
     ({a, b, x1, x2}) => { const f = x => a * x * x + b, u = Math.min(x1, -x2) - 1, v = Math.max(x2, -x1) + 1, expr = `(${a})*x^2+(${b})`;
       return {c: FG.repere(`La sécante passe par les points de la courbe d’abscisses ${fr(x1)} et ${fr(x2)}`, frame([u, v], sample(f, u, v))).courbe(expr).secante(expr, x1, x2).description()}; },
-    null,
+    ({a, x, c}) => tangenteFig({a, x0: x, c}, `Courbe de f et sa tangente au point d’abscisse ${fr(x)} : quand h diminue, les sécantes s’en rapprochent`),
     ({m, p, x}) => { const k = (m > 0 ? -1 : 1) * Math.max(1, Math.abs(m) / 2) / 2, g = t => m * t + p + k * (t - x) * (t - x), u = Math.min(-1, x - 3), v = Math.max(1, x + 3), expr = `(${m})*x+(${p})+(${k})*(x-(${x}))^2`;
       return {e: FG.repere(`Une courbe possible pour f et sa tangente au point d’abscisse ${fr(x)}`, frame([u, v], sample(g, u, v).concat([m * u + p, m * v + p])))
         .courbe(expr).tangente(expr, x).point(x, m * x + p).description()}; },
-    tangenteFig, null, null, tangenteFig, null
+    tangenteFig, null, coutFig, tangenteFig,
+    ({x, y, m, dx}) => { const b = y - m * x;
+      return {c: FG.repere(`Tangente en A : droite de pente ${fr(m)} qui passe par A`, frame([x, x + dx + 1], [y, b, m * (x + dx) + b]))
+        .droite_affine(m, b).point(x, y, 'A').lecture(x + dx, m * (x + dx) + b).description()}; }
   ]);
   V.illustrate('variations', [null, null,
     ({a, h, k}) => { const f = x => a * (x - h) ** 2 + k;
@@ -483,7 +490,7 @@
     ({a, d, c}) => { const h = x => a * x ** 3 - 3 * a * d * d * x + c, L = d + 1;
       return {c: FG.repere(`Courbe de h sur [${fr(-L)} ; ${L}] : la variation change en x = ${fr(-d)} et en x = ${d}`, frame([-L, L], sample(h, -L, L)))
         .courbe(`(${a})*x^3+(${-3 * a * d * d})*x+(${c})`, {de: -L, a: L}).lecture(-d, h(-d)).lecture(d, h(d)).description()}; },
-    null, null,
+    null, coutFig,
     ({m, h, c}) => extremumFig(`Courbe de R sur [0 ; ${2 * h}] : maximum ${fr(c + m * h * h)}, atteint en x = ${h}`, `(${-m})*x^2+(${2 * m * h})*x+(${c})`, x => -m * x * x + 2 * m * h * x + c, 0, 2 * h, h, c + m * h * h, {nom_x: 'x', nom_y: 'R(x)'})
   ]);
   /* Nuage des points de l'énoncé ; le corrigé y ajoute une droite, le point moyen ou une lecture. */

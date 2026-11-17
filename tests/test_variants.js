@@ -320,8 +320,9 @@ for (const [slug, solutions] of Object.entries(expectedBridges)) {
 }
 
 assert.deepEqual(Array.from(avecFigure).sort(), ['second-degre/1', 'second-degre/3', 'second-degre/4', 'second-degre/5', 'second-degre/6', 'second-degre/7',
-  'suites/5', 'suites/6', 'suites/7', 'suites-geometriques/6', 'derivees/0', 'derivees/2', 'derivees/3', 'derivees/6',
-  'variations/2', 'variations/3', 'variations/4', 'variations/7',
+  'suites/5', 'suites/6', 'suites/7', 'suites-arithmetiques/7', 'suites-geometriques/6', 'suites-geometriques/7',
+  'derivees/0', 'derivees/1', 'derivees/2', 'derivees/3', 'derivees/5', 'derivees/6', 'derivees/7',
+  'variations/2', 'variations/3', 'variations/4', 'variations/6', 'variations/7',
   'statistiques-deux-variables/0', 'statistiques-deux-variables/1', 'statistiques-deux-variables/3', 'statistiques-deux-variables/5', 'statistiques-deux-variables/7',
   'probabilites-conditionnelles/3', 'probabilites-conditionnelles/7', 'bernoulli/1', 'bernoulli/3', 'bernoulli/7', 'variables-aleatoires/1',
   'statistiques-descriptives/3'].sort(), 'modèles illustrés');
