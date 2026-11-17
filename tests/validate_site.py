@@ -165,12 +165,14 @@ def main():
         lesson = pages[(ROOT / 'cours' / f'{slug}.html').resolve()]
         assert f'../exercices/{slug}.html' in lesson.links, slug
 
-        # Toutes les séries disposent du même moteur ; chacune ne charge que le
-        # générateur de son chapitre, pour garder des pages légères.
-        own = 'variants-' + GENERATOR[slug] + '.js'
+        # Toutes les séries disposent du même moteur ; chacune ne charge que les
+        # modèles de son chapitre (assets/serie-<chapitre>.js, extrait du fichier
+        # variants-*.js de son groupe), pour garder des pages légères.
+        assert slug in GENERATOR, slug
+        own = 'serie-' + slug + '.js'
         for filename in ('exercices-renderer.js','exercices-variants.js', own, 'exercices.js'):
             assert any(link.startswith('../assets/' + filename) for link in page.links), (slug, filename)
-        loaded = {link.split('/')[-1].split('?')[0] for link in page.links if '/assets/variants-' in link}
+        loaded = {link.split('/')[-1].split('?')[0] for link in page.links if '/assets/variants-' in link or '/assets/serie-' in link}
         assert loaded == {own}, (slug, sorted(loaded))
 
         if slug == 'fonctions':

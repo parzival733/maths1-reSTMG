@@ -27,7 +27,7 @@ Site statique, sans framework ni serveur applicatif. Chaque page est un fichier 
 | --- | --- |
 | `exercices-variants.js` | Moteur de variantes à graine |
 | `variants-*.js`, `terminale-exercices.js`, `troisieme-exercices.js` | Modèles d'exercices de Première (par chapitre), de Terminale et de 3e |
-| `serie-*.js` | Modèles d'une seule série de 3e, de Seconde ou de Terminale, extraits du fichier de leur niveau par `tools/build_series.py` : ce sont eux que les pages chargent. Ne pas les modifier à la main |
+| `serie-*.js` | Modèles d'une seule série, extraits par `tools/build_series.py` du fichier de leur niveau (ou, en Première, du fichier `variants-*.js` de leur groupe de chapitres) : ce sont eux que les pages chargent. Ne pas les modifier à la main |
 | `exercices-renderer.js`, `exercices.js` | Affichage des séries, vérification, score, corrections |
 | `coaching-*.js`, `fonctions-coaching.js` | Indices progressifs, calculés sur la variante affichée |
 | `cours.js`, `apprentissage.js`, `graphiques-interactifs.js` | Sommaire, pauses mémoire, confort de lecture, graphiques |
@@ -90,7 +90,7 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 | `typographie.py` | Typographie française du HTML (apostrophes, espaces insécables) |
 | `build_fallbacks.py` | Version de lecture sans JavaScript des séries |
 | `figures_lecons.js`, `figures_lecons.py` | Descriptions des figures des leçons et remplissage des emplacements `data-figure` |
-| `build_series.py` | Extrait de chaque fichier de niveau (`troisieme-exercices.js`, `seconde-exercices.js`, `terminale-exercices.js`) un fichier `assets/serie-<série>.js` par série, et calcule les parties du moteur de figures dont chaque série a besoin ; appelé par `finalize_site.py` ; `--check` vérifie que les fichiers sont à jour |
+| `build_series.py` | Extrait de chaque fichier de niveau (`troisieme-exercices.js`, `seconde-exercices.js`, `terminale-exercices.js`) et de chaque fichier `variants-*.js` de Première un fichier `assets/serie-<série>.js` par série, et calcule les parties du moteur de figures dont chaque série a besoin ; appelé par `finalize_site.py` ; `--check` vérifie que les fichiers sont à jour |
 | `figures.py` | Pont vers `assets/figures.js` pour les pages générées en Python ; lancé seul, écrit la galerie de relecture `.qa-figures/galerie.html` |
 | `build_sujets.py` | Catalogue des sujets à partir de `donnees/sujets.json` |
 | `build_public.py` | Dossier `public/` publié par Cloudflare Pages (pages, assets, icônes, données liées) ; échoue sur un lien local cassé |
@@ -108,6 +108,7 @@ Lors de l'ouverture d'un corrigé, la tentative est évaluée intégralement ava
 | `test_rangs.js` | Les rangs demandés changent d'une variante à l'autre |
 | `test_cloture.js`, `test_cloture.py`, `test_domaines.js` | Domaines de définition, pièges de réponses fausses, sujets blancs |
 | `test_graphiques.js`, `test_calcul_rapide.*`, `test_countdown.js` | Graphiques, calcul rapide, chrono |
+| `test_poids.py` | Poids de chaque page (HTML, scripts, styles et polices qu'elle charge) sous le budget de 400 ko, sans navigateur |
 | `test_series.js` | Fichiers par série : mêmes exercices et mêmes aides que le fichier complet du niveau, page qui charge son fichier et les seules parties utiles du moteur de figures |
 | `test_figures.js`, `test_figures.py` | Moteur de figures : SVG valides et dans leur cadre, étiquettes sans chevauchement, longueurs, angles et points recalculés à partir du SVG, reproductibilité ; pont Python identique au moteur ; figures des pages (identifiants, titre et légende) |
 | `test_acquis.js`, `test_parcours.js`, `test_evolution.py` | Suivi local, diagnostic, révision, empreintes mathématiques |
@@ -192,14 +193,14 @@ Les sujets suivent la même règle : les figures du brevet blanc (`tools/niveaux
 En Première et en Terminale, les figures suivent le même principe, sans la géométrie : `figures.js`, et `figures-statistiques.js` pour les séries qui tracent un arbre, un diagramme ou un triangle de Pascal :
 
 - `V.illustrate('série', [fonction ou null, …])` associe une fonction à chaque modèle déjà enregistré ; elle reçoit les paramètres et l'exercice construit et renvoie `{e, c}`. `V.frame` cadre un repère autour de l'origine et des valeurs données, `V.sample` échantillonne une fonction pour ce cadrage, `V.pointsIn(énoncé)` relit les points écrits dans l'énoncé ;
-- Première : ces appels sont à la fin de chaque fichier `assets/variants-*.js` ;
+- Première : ces appels sont à la fin de chaque fichier `assets/variants-*.js`, après les appels `register` (l'outil `build_series.py` reconnaît les deux formes d'appel) ;
 - Terminale : à la fin de `assets/terminale-exercices.js` pour les séries d'analyse (exponentielles, fonction inverse), dans `assets/terminale-figures.js` pour les séries de statistiques et de probabilités ;
 - quand l'énoncé initial arrive sans figure (JSON écrit dans la page en Première, figures de `terminale-figures.js`), `assets/exercices-renderer.js` lui ajoute celle que calcule le modèle avec les paramètres d'origine : le rendu est chargé après les modèles ;
 - `tools/finalize_site.py` ajoute ces scripts aux seules pages concernées : `SERIES_ILLUSTREES` (moteur), `SERIES_STATISTIQUES` (partie « statistiques et probabilités »), `SERIES_TERMINALE_FIGURES`. `tests/test_variants.js` et `tests/test_terminale.js` vérifient que ces listes correspondent aux modèles illustrés.
 
 **Lectures graphiques du calcul rapide.** Dans `assets/calcul-rapide-data.js`, un modèle déclaré avec `figure` (dernier argument de `add`) renvoie, en plus de sa question, une description de figure écrite à la main (fonction `graph`) ; `assets/calcul-rapide.js` la dessine sous la question et sur la fiche à imprimer. La légende ne donne aucune valeur à lire. Ces modèles ne sont proposés que si `figures.js` est chargé dans la page, et les parcours de révision (`assets/parcours-data.js`) ne les reprennent pas. `tests/test_calcul_rapide.js` vérifie chaque figure et que le point à lire est sur un nœud du quadrillage.
 
-Une page de série de 3e, de Seconde ou de Terminale ne charge pas le fichier de son niveau, mais `assets/serie-<série>.js`, qui n'en contient que les modèles de cette série (12 à 21 ko au lieu de 80 à 145 ko). Après toute modification d'un fichier de niveau, `python3 tools/finalize_site.py` régénère ces fichiers ; les tests et les outils continuent de lire le fichier de niveau, qui reste la source. Le budget de poids de `tests/browser_cloture.py` est de 400 ko transférés sans compression ; la série de Terminale sur la fonction inverse, qui sert de témoin, en est à environ 335 ko.
+Une page de série ne charge pas le fichier de son niveau (ou, en Première, de son groupe de chapitres), mais `assets/serie-<série>.js`, qui n'en contient que les modèles de cette série. Après toute modification d'un fichier source, `python3 tools/finalize_site.py` régénère ces fichiers ; les tests et les outils continuent de lire les fichiers sources. Le budget de poids est de 400 ko transférés sans compression : `tests/browser_cloture.py` le mesure dans le navigateur sur une page témoin, `tests/test_poids.py` l'estime pour toutes les pages.
 
 Règles propres aux exercices :
 

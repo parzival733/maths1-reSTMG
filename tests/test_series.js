@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /* Fichiers d'exercices par série (assets/serie-*.js, produits par tools/build_series.py) :
-   chaque fichier donne exactement les mêmes exercices que le fichier complet de son niveau,
+   chaque fichier donne exactement les mêmes exercices que le fichier complet de son niveau
+   (ou, en Première, que l'ensemble des fichiers variants-*.js),
    et chaque page de série charge son fichier et les seules parties du moteur de figures
    dont ses figures ont besoin. */
 'use strict';
@@ -60,6 +61,28 @@ for (const niveau of NIVEAUX) {
     const head = fs.readFileSync(path.join(ROOT, niveau.dossier, slug + '.html'), 'utf8').split('</head>')[0];
     assert.ok(head.includes('assets/' + fichier) && !head.includes('assets/' + niveau.source), slug + ' : la page charge le fichier de sa série');
     assert.ok(head.indexOf('assets/exercices-variants.js') < head.indexOf('assets/' + fichier) && head.indexOf('assets/' + fichier) < head.indexOf('assets/exercices-renderer.js'), slug + ' : ordre des scripts');
+    for (const partie of MOTEUR) assert.equal(head.includes('assets/' + partie + '?') || head.includes('assets/' + partie + '"'), vues.has(partie), `${slug} : ${partie} ${vues.has(partie) ? 'manque dans la page' : 'chargé sans besoin'}`);
+    series++;
+  }
+}
+/* Première : les modèles viennent des fichiers variants-*.js ; la page ne charge que le fichier de sa série. */
+{
+  const groupes = fs.readdirSync(path.join(ROOT, 'assets')).filter(n => /^variants-[a-z]+\.js$/.test(n)).sort();
+  const complet = bac(MOTEUR.concat(['exercices-variants.js'], groupes)), A = complet.ExerciseVariants;
+  for (const slug of A.slugs()) {
+    const fichier = 'serie-' + slug + '.js';
+    assert.ok(fs.existsSync(path.join(ROOT, 'assets', fichier)), fichier + ' manquant');
+    const B = bac(MOTEUR.concat(['exercices-variants.js', fichier])).ExerciseVariants, vues = new Set();
+    assert.deepEqual(Array.from(B.slugs()), [slug], fichier + ' : une seule série');
+    assert.equal(B.count(slug), A.count(slug), slug + ' : nombre de modèles');
+    for (let i = 0; i < A.count(slug); i++) for (let seed = 0; seed <= SEEDS; seed++) {
+      const a = seed ? A.generate(slug, i, seed) : A.original(slug, i), b = seed ? B.generate(slug, i, seed) : B.original(slug, i);
+      assert.equal(JSON.stringify(b), JSON.stringify(a), `${slug}/${i}/${seed} : même exercice avec le fichier de la série`);
+      parties(a.figure, vues); parties(a.figure_correction, vues);
+      comparaisons++;
+    }
+    const head = fs.readFileSync(path.join(ROOT, 'exercices', slug + '.html'), 'utf8').split('</head>')[0];
+    assert.ok(head.includes('assets/' + fichier) && !/assets\/variants-/.test(head), slug + ' : la page charge le fichier de sa série');
     for (const partie of MOTEUR) assert.equal(head.includes('assets/' + partie + '?') || head.includes('assets/' + partie + '"'), vues.has(partie), `${slug} : ${partie} ${vues.has(partie) ? 'manque dans la page' : 'chargé sans besoin'}`);
     series++;
   }

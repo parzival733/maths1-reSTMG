@@ -474,7 +474,9 @@
   V.illustrate('derivees', [
     ({a, b, x1, x2}) => { const f = x => a * x * x + b, u = Math.min(x1, -x2) - 1, v = Math.max(x2, -x1) + 1, expr = `(${a})*x^2+(${b})`;
       return {c: FG.repere(`La sécante passe par les points de la courbe d’abscisses ${fr(x1)} et ${fr(x2)}`, frame([u, v], sample(f, u, v))).courbe(expr).secante(expr, x1, x2).description()}; },
-    ({a, x, c}) => tangenteFig({a, x0: x, c}, `Courbe de f et sa tangente au point d’abscisse ${fr(x)} : quand h diminue, les sécantes s’en rapprochent`),
+    ({a, x, c}) => { const f = t => a * t * t + c, e = Math.abs(x) + 2, expr = `(${a})*x^2+(${c})`, t = u => 2 * a * x * (u - x) + f(x);
+      return {c: FG.repere(`En pointillés, la sécante entre les abscisses ${fr(x)} et ${fr(x + 1)} (h = 1) ; en trait plein, la tangente en ${fr(x)}. Quand h diminue, la sécante se rapproche de la tangente`,
+        frame([-e, e], sample(f, -e, e).concat([t(-e / 2), t(e / 2), t(0)]))).courbe(expr).secante(expr, x, x + 1, {pointilles: true}).tangente(expr, x).description()}; },
     ({m, p, x}) => { const k = (m > 0 ? -1 : 1) * Math.max(1, Math.abs(m) / 2) / 2, g = t => m * t + p + k * (t - x) * (t - x), u = Math.min(-1, x - 3), v = Math.max(1, x + 3), expr = `(${m})*x+(${p})+(${k})*(x-(${x}))^2`;
       return {e: FG.repere(`Une courbe possible pour f et sa tangente au point d’abscisse ${fr(x)}`, frame([u, v], sample(g, u, v).concat([m * u + p, m * v + p])))
         .courbe(expr).tangente(expr, x).point(x, m * x + p).description()}; },
