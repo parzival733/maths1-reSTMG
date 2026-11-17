@@ -511,8 +511,12 @@
     ({a, b}) => pointsFig('Points (n ; uₙ) du rang 0 au rang 6 : isolés et alignés', b, a, 6),
     ({a, q, r, R}) => comparerFig(a, q, r, R, ['uₙ', 'vₙ'])
   ]);
+  V.illustrate('suites-arithmetiques', [null, null, null, null, null, null, null,
+    ({start, r, n}) => pointsFig(`Points (n ; uₙ) du rang 0 au rang ${n + 1} : alignés, on descend de ${r} à chaque rang`, start, -r, n + 1)
+  ]);
   V.illustrate('suites-geometriques', [null, null, null, null, null, null,
     ({a, q, r, R}) => comparerFig(a, q, r, R, ['Aₙ', 'Gₙ']),
-    null
+    ({v, t, n}) => { const q = 1 - t / 100, pts = Array.from({length: n + 3}, (_, k) => [k, v * q ** k]);
+      return {c: FG.repere(`Valeur année après année : multipliée par ${fr(q)} à chaque rang, les points ne sont pas alignés`, frame([n + 2.6], [v], {nom_x: 'année', nom_y: 'valeur (€)'})).nuage(pts).description()}; }
   ]);
 })();

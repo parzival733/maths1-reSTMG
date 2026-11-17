@@ -113,7 +113,7 @@ for (let n = 1; n <= 10; n++) {
     assert.ok(Math.abs(expectation - n * p) < 1e-10);
   }
 }
-assert.deepEqual(Array.from(avecFigure).sort(), ['t-exponentielles/5', 't-inverse/2', 't-inverse/3', 't-inverse/4', 't-statistiques/0', 't-statistiques/1', 't-statistiques/2', 't-statistiques/5', 't-conditionnelles/1', 't-conditionnelles/2', 't-conditionnelles/3', 't-conditionnelles/5', 't-binomiale/1', 't-variables/0', 't-variables/5'].sort(), 'modèles illustrés');
+assert.deepEqual(Array.from(avecFigure).sort(), ['t-exponentielles/0', 't-exponentielles/5', 't-inverse/2', 't-inverse/3', 't-inverse/4', 't-statistiques/0', 't-statistiques/1', 't-statistiques/2', 't-statistiques/3', 't-statistiques/4', 't-statistiques/5', 't-conditionnelles/1', 't-conditionnelles/2', 't-conditionnelles/3', 't-conditionnelles/5', 't-binomiale/1', 't-variables/0', 't-variables/5'].sort(), 'modèles illustrés');
 for (const slug of T.slugs) {
   const head = fs.readFileSync(path.join(root, 'terminale', 'exercices', slug + '.html'), 'utf8').split('</head>')[0];
   const illustree = Array.from(avecFigure).some(c => c.split('/')[0] === slug);

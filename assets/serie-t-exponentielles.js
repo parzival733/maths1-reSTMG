@@ -140,7 +140,10 @@
      et de probabilités sont dans assets/terminale-figures.js. */
   const FG = window.Figures;
   if (FG) {
-    V.illustrate('t-exponentielles', [null, null, null, null, null,
+    V.illustrate('t-exponentielles', [
+    ({k, a, x}) => ({c: FG.repere('Courbe de f : elle reste au-dessus de l’axe des abscisses, même pour x négatif', V.frame([-1.5, x + 0.4], [k * a ** x]))
+      .courbe(`(${k})*(${a})^x`, {de: -1.5, a: x}).point(x, k * a ** x).point(-1, k / a).description()}),
+    null, null, null, null,
     ({k, q, x0}) => { const cadre = V.frame([x0 + 2.4], [k * q * q * 1.05], {xmin: Math.min(0, x0 - 0.4)});
       return {e: FG.repere(`Points A(${x0} ; ${k}) et B(${x0 + 2} ; ${k * q * q})`, cadre).point(x0, k, 'A').point(x0 + 2, k * q * q, 'B').description(),
         c: FG.repere(`La courbe passe par A et B ; à mi-chemin, l’ordonnée est la moyenne géométrique ${k * q}`, cadre).courbe(`(${k})*(${q})^(x-(${x0}))`)

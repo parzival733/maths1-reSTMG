@@ -54,7 +54,7 @@ def keep_own_generator(rel,text):
 
 # Séries de Première et de Terminale dont au moins un exercice porte une figure : elles seules
 # chargent le moteur (les séries de 3e et de Seconde le reçoivent de leur générateur).
-SERIES_ILLUSTREES={'exercices/':{'second-degre','suites','suites-geometriques','derivees','variations','statistiques-deux-variables',
+SERIES_ILLUSTREES={'exercices/':{'second-degre','suites','suites-arithmetiques','suites-geometriques','derivees','variations','statistiques-deux-variables',
     'probabilites-conditionnelles','bernoulli','variables-aleatoires','statistiques-descriptives'},
   'terminale/exercices/':{'t-exponentielles','t-inverse','t-statistiques','t-conditionnelles','t-binomiale','t-variables'}}
 

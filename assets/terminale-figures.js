@@ -24,7 +24,11 @@
         c: base(`Droite (G₁G₂) : elle coupe l’axe des ordonnées en b`).droite_affine(a, b).point_moyen(x1, y1, 'G₁').point_moyen(x2, y2, 'G₂').description()}; },
     ({a, b, x}) => ({c: FG.repere(`Droite du modèle : en trait épais sur l’axe, la plage observée de 1 à 10 ; l’estimation est lue en x = ${x}`,
       fenetre([16], [a * 16 + b], {xmin: -1, nom_x: 'x', nom_y: 'y'})).droite_affine(a, b).intervalle_solutions(1, 10).lecture(x, a * x + b).description()}),
-    null, null,
+    ({a, b, x}) => ({c: FG.repere(`Dans les variables de départ, le modèle n’est pas une droite : lecture en x = ${x}`, fenetre([x + 1.4], [b, a * x * x + b, a * (x + 1) ** 2 + b]))
+      .courbe(`(${a})*x^2+(${b})`, {de: 0, a: x + 1}).lecture(x, a * x * x + b).description()}),
+    ({a, b, x}) => { const X = Math.max(6, x + 2), f = t => 10 ** (a * t + b);
+      return {c: FG.repere(`Dans les variables de départ, le modèle est une courbe exponentielle : lecture en x = ${x}`, fenetre([X + 0.4], [f(0), f(X)]))
+        .courbe(`10^((${a})*x+(${b}))`, {de: 0, a: X}).lecture(x, f(x)).description()}; },
     ({a, b, e}) => { const y = [a + b + e, 2 * a + b - 2 * e, 3 * a + b + e], pts = points([1, 2, 3], y), cadre = fenetre([4], y.concat([b, b + e, 4 * a + b, 4 * a + b + e]));
       return {e: FG.repere(`Nuage des trois données ${liste(pts)}`, cadre).nuage(pts).description(),
         c: FG.repere(`Modèle A en trait plein, modèle B en pointillés : les écarts sont les distances verticales des points à chaque droite`, cadre)
