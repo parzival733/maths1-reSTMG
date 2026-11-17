@@ -10,49 +10,28 @@ concurrency:
   group: verification-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  verification:
+  # Trois groupes de contrôles sur trois machines, puis « verification » qui résume le tout.
+  tests:
+    name: Tests mathématiques et structurels
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Tests mathématiques et structurels
+        run: python3 tests/lancer.py
+      - name: Dossier publié
+        run: python3 tools/build_public.py
+  navigateur:
+    name: Tests dans le navigateur
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
           fetch-depth: 0
-      - name: Tests mathématiques et structurels
-        run: |
-          for f in assets/*.js; do node --check "$f"; done
-          python3 tests/validate_site.py
-          python3 tests/test_notation.py
-          python3 tests/test_typographie.py
-          python3 tests/test_noms_liens.py
-          node tests/test_variants.js
-          node tests/test_safari.js
-          node tests/test_answer_formats.js
-          node tests/test_rangs.js
-          node tests/test_graphiques.js
-          node tests/test_figures.js
-          python3 tests/test_figures.py
-          node tests/test_terminale.js
-          python3 tests/test_terminale.py
-          node tests/test_troisieme.js
-          python3 tests/test_troisieme.py
-          node tests/test_seconde.js
-          python3 tests/test_seconde.py
-          python3 tools/build_series.py --check
-          node tests/test_series.js
-          node tests/test_calcul_rapide.js
-          python3 tests/test_calcul_rapide.py
-          node tests/test_countdown.js
-          node tests/test_acquis.js
-          node tests/test_parcours.js
-          node tests/test_domaines.js
-          python3 tests/test_evolution.py
-          node tests/test_cloture.js
-          python3 tests/test_cloture.py
-      - name: Dossier publié
-        run: |
-          python3 tests/test_securite.py
-          python3 tools/build_public.py
       - name: Navigateur
         timeout-minutes: 3
         run: sh tools/prepare_browser.sh
@@ -72,15 +51,11 @@ jobs:
           PY
         env:
           VISUAL_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-      - name: Accessibilité et performances mobiles
-        run: |
-          npm install --prefix /tmp/stmg-qa --no-fund --no-audit axe-core@4.10.3
-          AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
       - name: Captures de contrôle
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: controles
+          name: controles-navigateur
           path: |
             .qa-navigation/
             .qa-terminale/
@@ -88,10 +63,44 @@ jobs:
             .qa-evolution/
             .qa-interface/
             .qa-sujets/
-            .qa-cloture/
             .qa-visual/
             .qa-decimal/
             .qa-figures/
           include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 7
+  accessibilite:
+    name: Accessibilité et performances mobiles
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Navigateur
+        timeout-minutes: 3
+        run: sh tools/prepare_browser.sh
+      # Seul sur sa machine : les mesures de performance ne doivent pas partager le processeur.
+      - name: Accessibilité et performances mobiles
+        run: |
+          npm install --prefix /tmp/stmg-qa --no-fund --no-audit axe-core@4.10.3
+          AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
+      - name: Rapports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: controles-accessibilite
+          path: .qa-cloture/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
+  verification:
+    needs: [tests, navigateur, accessibilite]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Résultat des trois groupes
+        run: |
+          echo "tests : ${{ needs.tests.result }} ; navigateur : ${{ needs.navigateur.result }} ; accessibilité : ${{ needs.accessibilite.result }}"
+          test "${{ needs.tests.result }}" = success && test "${{ needs.navigateur.result }}" = success && test "${{ needs.accessibilite.result }}" = success

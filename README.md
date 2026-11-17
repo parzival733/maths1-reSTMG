@@ -71,12 +71,8 @@ python3 tools/finalize_site.py
 Tests structurels et mathématiques (Node et Python 3, sans dépendance) :
 
 ```sh
-for f in assets/*.js; do node --check "$f"; done
-for t in test_variants test_rangs test_graphiques test_figures test_terminale test_troisieme test_seconde \
-         test_calcul_rapide test_countdown test_acquis test_parcours test_domaines test_cloture test_safari \
-         test_answer_formats; do node tests/$t.js; done
-for t in validate_site test_notation test_typographie test_noms_liens test_figures test_terminale test_troisieme \
-         test_seconde test_calcul_rapide test_evolution test_cloture test_securite; do python3 tests/$t.py; done
+python3 tests/lancer.py            # tous les tests, plusieurs à la fois
+python3 tests/lancer.py seconde    # seulement ceux dont le nom contient « seconde »
 python3 tools/build_public.py
 ```
 
@@ -92,7 +88,7 @@ npm install --prefix /tmp/stmg-qa axe-core@4.10.3
 AXE_PATH=/tmp/stmg-qa/node_modules/axe-core/axe.min.js python3 tests/browser_cloture.py
 ```
 
-Le workflow `.github/workflows/verification.yml` lance l'ensemble à chaque pull request et à chaque modification de `main`.
+Le workflow `.github/workflows/verification.yml` lance l'ensemble à chaque pull request et à chaque modification de `main`. Les trois groupes (tests structurels, navigateur, accessibilité et performances) tournent en parallèle sur trois machines ; le contrôle `verification` résume leur résultat.
 
 `browser_visual.py` compare 43 rendus mobiles et PC, clairs, sombres et sans JavaScript au commit précédent (ou à `VISUAL_BASE_SHA`). Les captures brutes et le rapport restent dans `.qa-visual/`. Une différence volontaire se déclare avec sa justification dans `tests/visual-changes.json`, pour une seule référence. La zone de réponses dispose d'une normalisation ciblée pour les changements de présentation explicitement demandés, et de tests séparés de menu, de curseur et de géométrie. Voir la procédure de revue dans `docs/maintenance.md`.
 
